@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+
+        function doLoad() {
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                //cargo datos iniciales
+                var vals = cookie.split("|");
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+
+                getListaUsuarios();
+            }
+
+            //pantalla
+            document.getElementById("usuarios").style.height = window.innerHeight - 400 + "px";
+        }
+
+        function doCrearUsuario() {
+            var nombre = document.getElementById("nombre").value;
+            var email = document.getElementById("email").value;
+            var clave = document.getElementById("clave").value;
+
+            getHttp("doArbol.aspx?actn=newusuario&nombre=" + nombre
+                + "&email=" + email
+                + "&clave=" + clave
+                + "&arbol=" + usuario.arbol,
+                function (data) {
+                    if (data.substring(0, 6) == "Error=")
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    else {
+                        document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+
+                        //limpio valores
+                        document.getElementById("nombre").value = "";
+                        document.getElementById("email").value = "";
+                        document.getElementById("clave").value = "";
+
+                        //actualizo lista
+                        getListaUsuarios();
+                    }
+                });
+        }
+
+        function getListaUsuarios() {
+            getHttp("doArbol.aspx?actn=getusuarios&arbol=" + usuario.arbol,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        //he recibido los usuarios
+                        var usuarios = JSON.parse(data);
+                        var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
+                        s += "<tr>"
+                        s += "<td style='width:220px;'><b>Nombre</b></td>";
+                        s += "<td style='width:220px;'><b>Email</b></td>";
+                        s += "<td style='width:220px;'><b>Ultimo acceso</b></td>";
+                        s += "<td style='width:70px;'><b>Activo</b></td>";
+                        s += "<td style='width:70px;'></td>";
+                        s += "</tr>"
+                        for (var i in usuarios) {
+                            var usu = usuarios[i];
+                            s += "<tr>"
+                            s += "<td style='width:220px;'>" + usu.nombre + "</td>";
+                            s += "<td style='width:220px;'>" + usu.email + "</td>";
+                            s += "<td style='width:220px;'>" + usu.sLastLogin + "</td>";
+                            s += "<td style='width:70px;'>" + (usu.isActive ? "Activo" : "Inactivo") + "</td>";
+                            if (!usu.isAdmin)
+                                s += "<td><div class='titulo3' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'><nobr><font color='blue'>[Borrar]</font></nobr></div></td>";
+                            else
+                                s += "<td>[Admin]</td>";
+                            s += "</tr>"
+                        }
+                        s += "</table>";
+
+                        document.getElementById("usuarios").innerHTML = s;
+                    }
+                });
+        }
+
+        function doBorrarUsuario(email) {
+            getHttp("doArbol.aspx?actn=removeusuario&arbol=" + usuario.arbol + "&email=" + email,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+
+                        //actualizo lista
+                        getListaUsuarios();
+                    }
+                });
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+
+       <div id="login" class="center" >
+        <table>
+            <tr>
+                <td>
+                    <img src="res/logo.png" />
+                </td>
+                <td align=center>
+                    <div class="ventana" style="text-align: left;">
+                        <span class="titulo1">Nab&uacute;</span><br />
+                        <span class="titulo2">Modificar usuarios</span><br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <span class="titulo3">Crear</span><br />
+                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
+                            <input id="email" type="text" class="txt" size="20" placeholder="Email" />
+                            <input id="clave" type="text" class="txt" size="20" placeholder="Clave" />
+                            <input type='button' class='btn' value='Crear' onclick='doCrearUsuario();' />
+                        </div>
+                        <br />
+
+                        <div id="usuarios" style="height: 800px; overflow:scroll;"></div>
+                        <br />
+
+                        <div class="titulo3" style="cursor: pointer;" onclick="document.location='default.html';"><nobr><font color="blue">Volver</font></nobr></div>
+
+                        <div id="response"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,280 @@
+---------------------11/09/2015 13:38:27
+Message:No se pudo encontrar el archivo '\..\..\styles.css'.
+REMOTE_ADDR:::1
+Querystring:actn=toggleflor&email=1&id=14&x=90&arbol=test
+Form:
+Stack:   en System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   en System.IO.File.InternalCopy(String sourceFileName, String destFileName, Boolean overwrite, Boolean checkHost)
+   en nabu.Arbol.generarDocumentoHTML(Nodo n, DateTime now, String fname) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 138
+   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 91
+   en nabu.doArbol.doToggleFlor(String email, Int32 id, Single x, String arbol) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 480
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 262
+
+---------------------11/09/2015 18:36:51
+Message:El índice y la longitud deben hacer referencia a una ubicación en la cadena.
+Nombre del parámetro: length
+REMOTE_ADDR:127.0.0.1
+Querystring:actn=simulacionLive&coopProb=0.5&arbol=Sim2
+Form:
+Stack:   en System.String.InternalSubStringWithChecks(Int32 startIndex, Int32 length, Boolean fAlwaysCopy)
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 300
+
+---------------------11/09/2015 18:37:11
+Message:El índice y la longitud deben hacer referencia a una ubicación en la cadena.
+Nombre del parámetro: length
+REMOTE_ADDR:127.0.0.1
+Querystring:actn=simulacionLive&coopProb=0.5&arbol=Sim2
+Form:
+Stack:   en System.String.InternalSubStringWithChecks(Int32 startIndex, Int32 length, Boolean fAlwaysCopy)
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 300
+
+---------------------11/09/2015 18:37:28
+Message:El índice y la longitud deben hacer referencia a una ubicación en la cadena.
+Nombre del parámetro: length
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.5&arbol=Sim3
+Form:
+Stack:   en System.String.InternalSubStringWithChecks(Int32 startIndex, Int32 length, Boolean fAlwaysCopy)
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 300
+
+---------------------11/09/2015 19:55:57
+Message:La cadena de entrada no tiene el formato correcto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.5&arbol=Sim1&x=
+Form:
+Stack:   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 310
+
+---------------------11/09/2015 19:56:33
+Message:La cadena de entrada no tiene el formato correcto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.5&arbol=Sim2&x=
+Form:
+Stack:   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 310
+
+---------------------11/09/2015 19:56:52
+Message:La cadena de entrada no tiene el formato correcto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.10000000000000003&arbol=Sim1&x=24%3d129.0%2c23%3d141.0
+Form:
+Stack:   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 313
+
+---------------------11/09/2015 19:58:45
+Message:La cadena de entrada no tiene el formato correcto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.5&arbol=Sim2&x=31%3d68.8
+Form:
+Stack:   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 313
+
+---------------------12/09/2015 16:19:45
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim2&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 155
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 418
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 323
+
+---------------------12/09/2015 16:21:29
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim3&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 155
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 418
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 323
+
+---------------------12/09/2015 17:21:12
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=1&arbol=Sim2&x=50%3d6%2c48%3d13%2c47%3d19%2c49%3d26%2c41%3d39%2c28%3d51%2c26%3d58%2c22%3d64%2c27%3d71%2c34%3d84%2c29%3d90
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 178
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 323
+
+---------------------12/09/2015 17:24:15
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=1&arbol=Sim2&x=50%3d8%2c48%3d16%2c47%3d23%2c49%3d31%2c41%3d47%2c28%3d63%2c26%3d70%2c22%3d78%2c27%3d86%2c34%3d102%2c29%3d110
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 178
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 324
+
+---------------------12/09/2015 17:25:58
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=1&arbol=Sim1&x=60%3d42%2c61%3d61%2c58%3d76%2c56%3d84%2c59%3d91
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 183
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 323
+
+---------------------12/09/2015 17:28:58
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim1&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 183
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 324
+
+---------------------12/09/2015 17:31:35
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=1&arbol=Sim2&x=61%3d83%2c55%3d96%2c57%3d103%2c59%3d110%2c64%3d124
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 183
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 325
+
+---------------------12/09/2015 17:31:51
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim1&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 183
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 325
+
+---------------------12/09/2015 17:39:57
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim1&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 218
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 324
+
+---------------------12/09/2015 17:40:03
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim1&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 218
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 324
+
+---------------------12/09/2015 17:41:01
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim2&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 218
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 324
+
+---------------------12/09/2015 17:41:15
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim3&x=
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 218
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 323
+
+---------------------12/09/2015 17:44:07
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0.1&arbol=Sim5&x=15%3d108
+Form:
+Stack:   en nabu.Arbol.comprobarConsenso(Nodo n) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 218
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 420
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 324
+
+---------------------12/09/2015 20:49:19
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0&arbol=Sim1&x=
+Form:
+Stack:   en nabu.Arbol.addNodo(Nodo padre, String email, String nombre, List`1 tts, Int32 modeloID) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 532
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 454
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 325
+
+---------------------12/09/2015 20:54:16
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0&arbol=Sim4&x=
+Form:
+Stack:   en nabu.Arbol.addNodo(Nodo padre, String email, String nombre, List`1 tts, Int32 modeloID) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 532
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 454
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 321
+
+---------------------12/09/2015 21:14:02
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=proponer&email=lania&nombre=5&id=11&arbol=test
+Form:propuestas=%5b%7b%22modeloID%22%3a1%2c%22seccion%22%3a2%2c%22textos%22%3a%5b%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22Materiales%22%2c+%22texto%22%3a%223%22%7d%2c%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22Software%22%2c+%22texto%22%3a%223%22%7d%2c%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22RRHH%22%2c+%22texto%22%3a%223%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a3%2c%22textos%22%3a%5b%7b%22maxLen%22%3a3000%2c+%22titulo%22%3a%22Fases%22%2c+%22texto%22%3a%224%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a4%2c%22textos%22%3a%5b%7b%22maxLen%22%3a500%2c+%22titulo%22%3a%22Documento+adjunto%22%2c+%22texto%22%3a%225%22%7d%5d%7d%5d
+Stack:   en nabu.Arbol.addNodo(Nodo padre, String email, String nombre, List`1 tts, Int32 modeloID) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 532
+   en nabu.doArbol.doProponer(String email, Int32 id, String nombre, String propuestas, String arbol) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 660
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 258
+
+---------------------12/09/2015 21:14:38
+Message:El índice estaba fuera del intervalo. Debe ser un valor no negativo e inferior al tamaño de la colección.
+Nombre del parámetro: index
+REMOTE_ADDR:::1
+Querystring:actn=proponer&email=lania&nombre=5&id=13&arbol=test
+Form:propuestas=%5b%7b%22modeloID%22%3a1%2c%22seccion%22%3a4%2c%22textos%22%3a%5b%7b%22maxLen%22%3a500%2c+%22titulo%22%3a%22Documento+adjunto%22%2c+%22texto%22%3a%225%22%7d%5d%7d%5d
+Stack:   en System.Collections.Generic.List`1.get_Item(Int32 index)
+   en nabu.Arbol.getNodo(Int32 id) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 699
+   en nabu.doArbol.doProponer(String email, Int32 id, String nombre, String propuestas, String arbol) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 643
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 258
+
+---------------------12/09/2015 21:22:11
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=proponer&email=lania&nombre=3&id=1&arbol=test
+Form:propuestas=%5b%7b%22modeloID%22%3a1%2c%22seccion%22%3a0%2c%22textos%22%3a%5b%7b%22maxLen%22%3a3000%2c+%22titulo%22%3a%22Resumen+y+motivacion%22%2c+%22texto%22%3a%221%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a1%2c%22textos%22%3a%5b%7b%22maxLen%22%3a2000%2c+%22titulo%22%3a%22Objetivo+a+lograr%22%2c+%22texto%22%3a%221%22%7d%2c%7b%22maxLen%22%3a3500%2c+%22titulo%22%3a%22Descripcion%22%2c+%22texto%22%3a%221%22%7d%2c%7b%22maxLen%22%3a1000%2c+%22titulo%22%3a%22A+quien+va+dirigido%22%2c+%22texto%22%3a%221%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a2%2c%22textos%22%3a%5b%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22Materiales%22%2c+%22texto%22%3a%222%22%7d%2c%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22Software%22%2c+%22texto%22%3a%222%22%7d%2c%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22RRHH%22%2c+%22texto%22%3a%222%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a3%2c%22textos%22%3a%5b%7b%22maxLen%22%3a3000%2c+%22titulo%22%3a%22Fases%22%2c+%22texto%22%3a%223%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a4%2c%22textos%22%3a%5b%7b%22maxLen%22%3a500%2c+%22titulo%22%3a%22Documento+adjunto%22%2c+%22texto%22%3a%223%22%7d%5d%7d%5d
+Stack:   en nabu.Arbol.addNodo(Nodo padre, String email, String nombre, List`1 tts, Int32 modeloID) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 526
+   en nabu.doArbol.doProponer(String email, Int32 id, String nombre, String propuestas, String arbol) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 660
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 258
+
+---------------------12/09/2015 21:29:29
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=proponer&email=lania&nombre=1&id=1&arbol=test
+Form:propuestas=%5b%7b%22modeloID%22%3a1%2c%22seccion%22%3a0%2c%22textos%22%3a%5b%7b%22maxLen%22%3a3000%2c+%22titulo%22%3a%22Resumen+y+motivacion%22%2c+%22texto%22%3a%221%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a1%2c%22textos%22%3a%5b%7b%22maxLen%22%3a2000%2c+%22titulo%22%3a%22Objetivo+a+lograr%22%2c+%22texto%22%3a%221%22%7d%2c%7b%22maxLen%22%3a3500%2c+%22titulo%22%3a%22Descripcion%22%2c+%22texto%22%3a%221%22%7d%2c%7b%22maxLen%22%3a1000%2c+%22titulo%22%3a%22A+quien+va+dirigido%22%2c+%22texto%22%3a%221%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a2%2c%22textos%22%3a%5b%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22Materiales%22%2c+%22texto%22%3a%221%22%7d%2c%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22Software%22%2c+%22texto%22%3a%221%22%7d%2c%7b%22maxLen%22%3a1500%2c+%22titulo%22%3a%22RRHH%22%2c+%22texto%22%3a%221%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a3%2c%22textos%22%3a%5b%7b%22maxLen%22%3a3000%2c+%22titulo%22%3a%22Fases%22%2c+%22texto%22%3a%221%22%7d%5d%7d%2c%7b%22modeloID%22%3a1%2c%22seccion%22%3a4%2c%22textos%22%3a%5b%7b%22maxLen%22%3a500%2c+%22titulo%22%3a%22Documento+adjunto%22%2c+%22texto%22%3a%221%22%7d%5d%7d%5d
+Stack:   en nabu.Arbol.addNodo(Nodo padre, String email, String nombre, List`1 tts, Int32 modeloID) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 529
+   en nabu.doArbol.doProponer(String email, Int32 id, String nombre, String propuestas, String arbol) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 660
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 258
+
+---------------------13/09/2015 15:00:22
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0&arbol=Sim1&x=
+Form:
+Stack:   en nabu.Arbol.addNodo(Nodo padre, String email, String nombre, List`1 tts, Int32 modeloID) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 544
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 520
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 341
+
+---------------------13/09/2015 15:01:42
+Message:Referencia a objeto no establecida como instancia de un objeto.
+REMOTE_ADDR:::1
+Querystring:actn=simulacionLive&coopProb=0&arbol=Sim2&x=
+Form:
+Stack:   en nabu.Arbol.addNodo(Nodo padre, String email, String nombre, List`1 tts, Int32 modeloID) en c:\inetpub\wwwroot\nabu\def\arbol\Arbol.cs:línea 540
+   en nabu.doArbol.doSimulacionLive(String arbol, Single coopProb) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 520
+   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 341
+
+---------------------14/09/2015 17:56:54
+Message:Nombre repetido
+REMOTE_ADDR:::1
+Querystring:actn=newmodelo&nombre=xxx&arbol=test
+Form:
+Stack:   en nabu.doArbol.Page_Load(Object sender, EventArgs e) en c:\inetpub\wwwroot\nabu\doArbol.aspx.cs:línea 174
+

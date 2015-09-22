@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+        var modelos;
+        var modeloIDSeleccionado = 0;
+
+        function doLoad() {
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                //cargo datos iniciales
+                var vals = cookie.split("|");
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+
+                //pido lista de modelos
+                getHttp("doArbol.aspx?actn=getModelosDocumento&arbol=" + usuario.arbol,
+                    recibirListaModelos);
+            }
+
+            //pantalla
+            document.getElementById("divModelos").style.height = window.innerHeight - 240 + "px";
+        }
+
+        function doCrearModelo() {
+            //creo modelo de 5 secciones vacias
+            var nombre = document.getElementById("nombre").value;
+            modeloIDSeleccionado = 0;
+            getHttp("doArbol.aspx?actn=newmodelo&nombre=" + nombre + "&arbol=" + usuario.arbol,
+                recibirListaModelos);
+            document.getElementById("nombre").value = '';
+        }
+
+        function recibirListaModelos(data) {
+            //atrapo el error si es que hay
+            if (data.substring(0, 6) == "Error=") {
+                //ha habido un error
+                msg('<font color=red>' + data.substring(6) + '</font>');
+            }
+            else {
+                //he recibido la lista de modelos
+                var ret = JSON.parse(data);
+
+                msg('<font color=green>' + ret.msg + '</font>');
+
+                modelos = ret.modelos;
+
+                //cargo la lista de arboles
+                var modelosList = document.getElementById("modelosList");
+                modelosList.options.length = 0;
+                for (var q in modelos) {
+                    var option = document.createElement("option");
+                    option.text = modelos[q].nombre;
+                    option.selected = modeloIDSeleccionado == modelos[q].id;
+                    modelosList.add(option);
+                }
+
+                //muestro el primer modelo
+                selectModelo();
+            }
+        }
+
+        function msg(s) {
+            document.getElementById("divResponse").innerHTML = s;
+            setTimeout(function () {
+                document.getElementById("divResponse").innerHTML = '<br>';
+            }, 3000);
+        }
+
+        function selectModelo() {
+            //muestro contenido
+            var modeloNombre = document.getElementById("modelosList").value;
+
+            var s = "<div style='height:" + (window.innerHeight - 250) + "px;overflow:scroll;'>";
+            for (var i in modelos) {
+                var mod = modelos[i];
+                if (mod.nombre == modeloNombre) {
+                    modeloIDSeleccionado = mod.id;
+                    s += HTMLModelo(mod);
+                }
+            }
+            s += "</div>";
+
+            document.getElementById("divModelos").innerHTML = s;
+        }
+
+        function HTMLModelo(mod) {
+            var s = "<table class='borde' style='background-color: #FFFFFF;'>";
+            s += "<tr>"
+            s += "<td  colspan=2 class='titulo1' style='width:810px;'>" + mod.nombre;
+            s += mod.enUso ? "<font class='titulo3' color=red>(En Uso)</font>" : "<font class='titulo3' color=green>(Sin Usar)</font>";
+            s += mod.activo ? "<font class='titulo3' color=green>(Activo)</font>" : "<font class='titulo3' color=red>(Inactivo)</font>";
+
+            s += mod.activo ? "<font color='blue' class='titulo3' style='cursor: pointer;' onclick='doDesactivar(" + mod.id + ");'>[Desactivar]</font>" : "<font color='blue' class='titulo3' style='cursor: pointer;' onclick='doActivar(" + mod.id + ");'>[Activar]</font>";
+            s += !mod.enUso ? "<font color='blue' class='titulo3' style='cursor: pointer;' onclick='doBorrar(" + mod.id + ");'>[Borrar]</font>" : "";
+
+            //s += "<font color='blue' class='titulo3' style='cursor: pointer;' onclick='doClonar(" + mod.id + ");'>[Clonar]</font>";
+            s += "</td>";
+            s += "</tr>"
+
+            for (var i in mod.secciones) {
+                var sec = mod.secciones[i];
+                s += "<tr>"
+                s += "<td style='width:810px;'>" + HTMLSeccion(mod.id, sec, i, !mod.enUso && !mod.activo) + "</td>";
+                s += "</tr>"
+            }
+            s += "</table>";
+            s += "<br>";
+            s += "<br>";
+            return s;
+        }
+
+        function HTMLSeccion(modeloID, sec, index, editar) {
+            var s = "<table>";
+            var nivel = 1 + parseInt(index);
+            s += "<tr>"
+            s += "<td colspan=3 style='width:810px;'><table><tr><td style='width:150px;'><font size=2><b>Nivel en el arbol " + nivel + "</b></font></td><td style='width:660px;'><hr></td></tr></table></td>";
+            s += "</tr>"
+            for (var i in sec.temas) {
+                var tema = sec.temas[i];
+                s += "<tr>"
+                s += "<td style='width:780px;'>" + tema.titulo + "</td>";
+                s += "<td style='width:30px;'>" + tema.maxLen + "</td>";
+                if (editar)
+                    s += "<td style='width:70px;'><font color='blue' class='titulo3' style='cursor: pointer;' onclick='doBorrarTema(" + modeloID + "," + index + "," + i + ");'>[Borrar]</font></td>";
+                s += "</tr>"
+
+                if (tema.tip != "") {
+                    s += "<tr>"
+                    s += "<td class='smalltip' colspan=2 style='width:810px;'>" + tema.tip + "</td>";
+                    s += "</tr>"
+                }
+
+                //separador
+                s += "<tr>"
+                s += "<td style='width:780px;'>&nbsp;</td>";
+                s += "<td style='width:30px;'>&nbsp;</td>";
+                s += "</tr>"
+
+            }
+            //opcion crear tema
+            if (editar) {
+                s += "<tr>";
+                s += "<td colspan=3 style='width:810px;'>";
+                s += "<div style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
+                s += "<input id='tip" + index + "' type='text' class='txt' size='85' placeholder='Consejo' /><br>";
+                s += "<input id='titulo" + index + "' type='text' class='txt' size='55' placeholder='Titulo de tema' />";
+                s += "<input id='maxLen" + index + "' type='text' class='txt' size='10' placeholder='Maxima longitud' value='3500' />";
+                s += "<font color='blue' class='titulo3' style='cursor: pointer;' onclick='doCrearTema(" + modeloID + "," + index + ");'>[Crear tema]</font>";
+                s += "</div>";
+                s += "</td>";
+                s += "</tr>"
+            }
+            s += "</table>";
+            return s;
+        }
+        
+        function doBorrarTema(modeloID, indexSeccion, indexTema) {
+            getHttp("doArbol.aspx?actn=borrarTema&arbol=" + usuario.arbol + "&modeloID=" + modeloID + "&indexSeccion=" + indexSeccion + "&indexTema=" + indexTema,
+                recibirListaModelos);
+        }
+
+        function doActivar(modeloID) {
+            getHttp("doArbol.aspx?actn=activarModelo&arbol=" + usuario.arbol + "&modeloID=" + modeloID,
+                recibirListaModelos);
+        }
+
+        function doDesactivar(modeloID) {
+            getHttp("doArbol.aspx?actn=desactivarModelo&arbol=" + usuario.arbol + "&modeloID=" + modeloID,
+                recibirListaModelos);
+        }
+
+        function doCrearTema(modeloID, indexSeccion) {
+            var titulo = document.getElementById("titulo" + indexSeccion).value;
+            var tip = document.getElementById("tip" + indexSeccion).value;
+            var maxLen = document.getElementById("maxLen" + indexSeccion).value;
+            getHttp("doArbol.aspx?actn=crearTemaModelo&arbol=" + usuario.arbol + "&modeloID=" + modeloID + "&indexSeccion=" + indexSeccion + "&titulo=" + titulo + "&tip=" + tip + "&maxLen=" + maxLen,
+                recibirListaModelos);
+        }
+        
+        function doBorrar(modeloID) {
+            getHttp("doArbol.aspx?actn=borrarModelo&arbol=" + usuario.arbol + "&modeloID=" + modeloID,
+                recibirListaModelos);
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+
+       <div id="login" class="center" >
+        <table>
+            <tr>
+                <td>
+                    <img src="res/logo.png" />
+                </td>
+                <td align=center>
+                    <div class="ventana" style="text-align: left;">
+                        <span class="titulo1">Nab&uacute;</span>
+                        <span class="titulo2">Modelos de documento</span><br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre de modelo" />
+                            <input type='button' class='btn' value='Crear modelo de documento' onclick='doCrearModelo();' />
+                        </div>
+
+                        <div id="divResponse"><br /></div>
+
+                        <nobr>Seleccionar: <select id="modelosList" class="txt" style="width: 500px;" onchange="selectModelo();"></select></nobr>
+                        <br />
+                        <div id="divModelos"></div>
+
+                        <div class="titulo3" style="cursor: pointer;" onclick="document.location='default.html';"><font color="blue">Volver</font></div>
+
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,306 @@
+﻿body {
+    font-family: verdana, Geneva, Tahoma, sans-serif;
+    background-image: url("res/background.jpg");    
+}
+
+.node {
+  cursor: pointer;
+}
+
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) 
+}
+
+
+.simtxt {
+    border: 3px solid black;
+    padding: 8px;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+    opacity: 0.6;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin: 4px;
+}
+
+.objetivo {
+    border: 1px solid #C0C0C0;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    opacity: 0.6;
+    position: absolute;
+    top: 95%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align:center; 
+    visibility:hidden;    
+}
+
+.pie {
+    padding: 5px;
+    position: absolute;
+    font-size: 10px;
+    top: 98%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align:center; 
+}
+
+.flor {
+}
+
+.florImage {
+}
+
+.doc {
+}
+
+.docImage {
+}
+
+.borde {
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.documento {
+    border: 8px solid black;
+    padding: 5px 25px 5px 25px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    opacity: 0.9;
+    position: absolute;    
+    visibility: hidden;
+    overflow: scroll;
+}
+
+.panel {
+    border: 8px solid black;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    opacity: 0.6;
+    position: absolute;
+    visibility: hidden;
+    overflow: scroll;
+}
+
+.cuadro {
+    border: 1px solid black;
+    text-align: left;
+    padding: 5px;
+    margin: 0px;
+}
+
+.menu {
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align:center; 
+    visibility:hidden;
+}
+
+.menu2 {
+    border: 1px solid #C0C0C0;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    opacity: 0.8;
+}
+
+.menuRoot2 {
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align:center; 
+    visibility:hidden;
+    border: 1px solid #C0C0C0;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    opacity: 0.8;
+}
+
+.comentario {
+    padding: 5px;
+    margin: 5px;
+    border: 2px solid #009933;
+    border-radius: 6px;
+    background-color: #CCFFCC;
+    font-size: 12px;    
+    word-wrap: break-word;
+    overflow: auto;
+}
+
+.actual {
+    padding: 5px;
+    margin: 5px;
+    border: 2px solid #C0C0C0;
+    border-radius: 15px;
+    background-color: #FFFFCC;
+    font-size: 14px;    
+}
+
+.error {
+    border: 8px solid #FF5050;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #FFCCCC;
+    opacity: 0.8;
+}
+
+.ventana {
+    padding: 5px;
+    border-style: solid;
+    border-width: 8px;
+    border-radius: 10px;
+    background-color: #C6ECFF;
+    opacity: 0.8;
+}
+
+.texto {
+    margin: 5px;
+    font-size: 14px;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: auto;
+}
+
+.comentarios {
+    border: 2px solid #009933;
+    border-radius: 8px;
+}
+
+.tip {
+    border: 3px solid #FF0000;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 15px;
+    background-color: #FFFFFF;
+    color: #CC0000;
+    font-size: 18px;
+    text-align: center;
+}
+
+.smalltip {
+    border: 1px solid #FF0000;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    color: #CC0000;
+    font-size: 12px;
+    text-align: center;
+    margin: 5px;
+}
+
+.titulo0 {
+    padding: 5px;
+    font-size: 55px;
+    font-family: 'Times New Roman' , Times, serif;
+}
+
+.tema {
+    padding: 5px;
+    font-size: 25px;
+    font-family: 'Times New Roman' , Times, serif;
+}
+
+.op {
+    padding: 5px;
+    font-size: 16px;
+    font-family: 'Times New Roman' , Times, serif;
+    width: 100%;
+}
+
+.opValor {
+    border: 1px solid #C0C0C0;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 20px;
+    font-family: 'Times New Roman' , Times, serif;
+    text-align: right;
+    width: 100%;
+}
+
+.votos {
+    border: 1px solid #C0C0C0;
+    padding: 2px;
+    border-radius: 10px;
+    background-color: #E1E1E1;
+    vertical-align: middle;
+    color: #999999;
+    width: 65px;
+}
+
+.titulo1 {
+    padding: 5px;
+    font-size: 35px;
+    font-family: 'Times New Roman' , Times, serif;
+}
+
+.titulo2 {
+    padding: 5px;
+    font-size: 20px;
+    font-family: 'Times New Roman' , Times, serif;
+}
+
+.titulo3 {
+    padding: 5px;
+    font-size: 18px;
+    font-family: 'Times New Roman' , Times, serif;
+}
+
+.msg {
+    padding: 5px;
+    font-size: 20px;
+    font-family: 'Times New Roman' , Times, serif;
+    color: red;
+}
+
+.txt {
+    margin: 5px;
+    padding: 2px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 6px;
+    background-color: #FAF5F5;
+    font-size: 15px;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 2.5px;
+}
+
+.node text {
+    font: 16px sans-serif;
+    font-weight: bold;
+}
+
+.btn {
+    border: 2px solid #006666;
+    background-color: #0066CC;
+    color: #FFFFFF;
+    border-radius: 16px;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 5px;
+    margin: 5px;
+}
+
+.btnimg {
+   cursor: pointer;
+}

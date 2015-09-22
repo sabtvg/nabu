@@ -1,0 +1,107 @@
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script>
+        function doCrearArbol() {
+            var arbol = document.getElementById("arbol").value;
+            var objetivo = document.getElementById("objetivo").value;
+            var claveAdmin = document.getElementById("claveAdmin").value;
+            getHttp("doArbol.aspx?actn=newarbol&arbol=" + arbol + "&objetivo=" + objetivo + "&claveAdmin=" + claveAdmin);
+        }
+
+        function doCrearUsuario() {
+            var email = document.getElementById("email").value;
+            var clave = document.getElementById("clave").value;
+            var arbol2 = document.getElementById("arbol2").value;
+            var claveAdmin = document.getElementById("claveAdmin").value;
+            getHttp("doArbol.aspx?actn=newusuario&email=" + email + "&clave=" + clave + "&arbol=" + arbol2 + "&claveAdmin=" + claveAdmin);
+        }
+
+        function getHttp(url, callback) {
+            document.getElementById("response").innerHTML = "";
+
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('get', url, true);
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4) {
+                    document.getElementById("response").innerHTML = '<font color=red>' + xmlhttp.responseText + '</font>';
+                }
+            }
+            xmlhttp.send();
+        }
+
+        function doUsuarios() {
+            var arbol3 = document.getElementById("arbol3").value;
+            doOpen('doArbol.aspx?actn=getListaUsuariosClaves&arbol=' + arbol3);
+        }
+
+        function doOpen(url) {
+            getHttp(url, function (data) {
+                document.getElementById("helpContent").innerHTML = data;
+                document.getElementById("help").style.width = (window.innerWidth - 300) + "px";
+                document.getElementById("help").style.height = (window.innerHeight - 150) + "px";
+                document.getElementById("help").style.left = "100px";
+                document.getElementById("help").style.visibility = "visible";
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <div id="login" class="center" >
+        <table>
+            <tr>
+                <td>
+                    <img src="res/logo.png" />
+                </td>
+                <td align=center>
+                    <div class="ventana" style="text-align: left;">
+                        <span class="titulo1">Nab&uacute;</span><br />
+                        <span class="titulo2">Admin page</span><br />
+                        <input id="claveAdmin" type="password" class="txt" placeholder="Clave de administracion" />
+                        <br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <input id="arbol" type="text" class="txt" placeholder="Nombre de arbol" />
+                            <input id="objetivo" type="text" class="txt" placeholder="Objetivo" />
+                            <input type="button" class="btn" value="Crear" onclick="doCrearArbol();" />
+                        </div>
+                        <br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <input id="email" type="text" class="txt" placeholder="Email" />
+                            <input id="clave" type="text" class="txt" placeholder="Clave" />
+                            <input id="arbol2" type="text" class="txt" placeholder="Nombre del arbol" />
+                            <input type="button" class="btn" value="Crear" onclick="doCrearUsuario();" />
+                        </div>
+                        <br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <input id="arbol3" type="text" class="txt" placeholder="Nombre del arbol" />
+                            <input type="button" class="btn" value="Usuarios" onclick="doUsuarios();" />
+                        </div>
+                        <br />
+
+                        <div id="response"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr><td><br /><br /></td></tr>
+        </table>
+    </div>
+
+    <!--help--------------------------------------------------------------------------------------------------->
+    <div id="help" class="documento" style="opacity: 1; width: 800px; height: 650px;">
+        <table style="width: 100%;">
+            <tr><td style="text-align: right;"><img style="cursor: pointer;" src="res/close.png" onclick="doCloseHelp();" /></td></tr>
+            <tr><td id="helpContent"></td></tr>
+        </table>
+    </div>
+</body>
+</html>

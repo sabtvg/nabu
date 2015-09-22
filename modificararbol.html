@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var arbolPersonal;
+
+        function doLoad() {
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                //cargo datos iniciales
+                var vals = cookie.split("|");
+                var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+
+                getHttp("doArbol.aspx?actn=getArbolPersonal&email=" + usuario.email + "&arbol=" + usuario.arbol,
+                    function (data) {
+                        //atrapo el error si es que hay
+                        if (data.substring(0, 6) == "Error=") {
+                            //ha habido un error
+                            document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        }
+                        else {
+                            //login ok, he recibido el arbol
+                            arbolPersonal = JSON.parse(data);
+                            document.getElementById("nombreArbol").value = arbolPersonal.nombre;
+                            document.getElementById("objetivo").value = arbolPersonal.objetivo;
+                            document.getElementById("URLEstatuto").value = arbolPersonal.URLEstatuto;
+
+                            document.getElementById("nombreAdmin").value = arbolPersonal.usuario.nombre;
+                            document.getElementById("email").value = arbolPersonal.usuario.email;
+
+                            document.getElementById("cantidadFlores").value = arbolPersonal.cantidadFlores;
+
+                            document.getElementById("minSiPc").value = arbolPersonal.minSiPc;
+                            document.getElementById("maxNoPc").value = arbolPersonal.maxNoPc;
+                        }
+                    });
+            }
+        }
+
+        function doModificarArbol() {
+            var nombreArbol = document.getElementById("nombreArbol").value;
+            var objetivo = document.getElementById("objetivo").value;
+            var URLEstatuto = document.getElementById("URLEstatuto").value;
+            var cantidadFlores = document.getElementById("cantidadFlores").value;
+            var minSiPc = document.getElementById("minSiPc").value;
+            var maxNoPc = document.getElementById("maxNoPc").value;
+
+            getHttp("doArbol.aspx?actn=updatearbol&arbol=" + nombreArbol
+                + "&objetivo=" + objetivo
+                + "&URLEstatuto=" + URLEstatuto
+                + "&cantidadFlores=" + cantidadFlores
+                + "&minSiPc=" + minSiPc
+                + "&maxNoPc=" + maxNoPc,
+                function (data) {
+                    if (data.substring(0, 6) == "Error=")
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    else {
+                        document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+                    }
+                });
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+
+       <div id="login" class="center" >
+        <table>
+            <tr>
+                <td>
+                    <img src="res/logo.png" />
+                </td>
+                <td align=center>
+                    <div class="ventana" style="text-align: left;">
+                        <span class="titulo1">Nab&uacute;</span><br />
+                        <span class="titulo2">Modificar &aacute;rbol</span><br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <span class="titulo3">Datos del &aacute;rbol</span><br />
+                            <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/><br />
+                            <input id="objetivo" type="text" class="txt" size="50" placeholder="Objetivo" /><br />
+                            <input id="URLEstatuto" type="text" class="txt" size="50" placeholder="URL a documento de estatuto" />
+                        </div>
+                        <br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <span class="titulo3">Datos del administrador</span><br />
+                            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/><br />
+                            <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
+                        </div>
+                        <br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <span class="titulo3">Flores disponibles para todos los usuarios</span><br />
+                            <input id="cantidadFlores" type="text" class="txt" placeholder="Cantidad de flores"/><br />
+                        </div>
+                        <br />
+
+                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                            <span class="titulo3">Condici&oacute;n de consenso</span><br />
+
+                            <div class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
+                            <input id="minSiPc" type="text" class="txt" />%<br />
+
+                            <div class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
+                            <input id="maxNoPc" type="text" class="txt" />%<br />
+                        </div>
+                        <br />
+
+                        <table>
+                            <tr>
+                                <td><input type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> </td>
+                                <td><div class="titulo3" style="cursor: pointer;" onclick="document.location='default.html';"><nobr><font color="blue">Volver</font></nobr></div></td>
+                            </tr>
+                        </table>                           
+
+                        <div id="response"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </body>
+</html>

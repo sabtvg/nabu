@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <script src="js/d3.min.js"></script>
+    <script src="js/arbol.js"></script>
+    <script src="js/util.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script>
+        var diameter = window.innerHeight / 2;
+        var scale = window.innerWidth / 1920;
+
+        var coopProb = 0;
+        var stopSim = false;
+        var selectedNode; //siempre nulo
+        var playing = false;
+
+        //modelos de documentos
+        var modelosDocumento;
+        var arbolPersonal;
+        
+
+        function doLoad() {
+            //titulo
+            document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
+            document.getElementById("coopProb").value = coopProb;
+
+            setInterval(function () {
+                var sim = document.getElementById("sim");
+                sim.style.visibility = sim.style.visibility == "hidden" ? "visible" : "hidden";
+            }, 1000);
+
+            duration = 250;
+
+            iniciar();
+        }
+
+        function iniciar(){
+            getHttp("doArbol.aspx?actn=crearSimulacion",
+                function (data) {
+                    var js = JSON.parse(data);
+                    arbolPersonal = js.arbolPersonal;
+                    modelosDocumento = js.modelos;
+
+                    if (svg == null)
+                        crearArbol(arbolPersonal.raiz);
+
+                    document.getElementById("startStop").value = "Pausa";
+
+                    playing = false;
+                    startStop();
+                });
+        }
+
+        function startStop() {
+            if (playing) {
+                stopSim = true;
+                playing = false;
+                document.getElementById("startStop").value = "Play";
+                document.getElementById("sim").style.visibility = sim.style.visibility == "hidden";
+            }
+            else {
+                stopSim = false;
+                live();
+                playing = true;
+                document.getElementById("startStop").value = "Pausa";
+            }
+        }
+
+        function live() {
+            var x = getx("", arbolPersonal.raiz); //lista coordenada x de los nodos hoja
+            if (x != "") x = x.substring(0, x.length - 1); //quito la , final
+
+            getHttp("doArbol.aspx?actn=simulacionLive&coopProb=" + coopProb + "&arbol=" + arbolPersonal.nombre + "&x=" + x,
+                function (data) {
+                    if (data.substring(0, 6) == "Error=") 
+                        alert(data);
+                    else
+                    {
+                        //actualizo el arbol recibido
+                    arbolPersonal = JSON.parse(data);
+
+                        dibujarArbol();
+                        actualizarDatosConsenso();
+
+                        if (!stopSim)
+                            setTimeout(live, 300);
+                    }
+                });
+        }
+
+        function getx(l, n){
+            if (n.depth == 5) { //la simulacion usa el modelo 1 de 5 niveles
+                l += n.id + "=" + n.x.toFixed(0) + ",";
+            }
+            else if (n.children) {
+                for (var i in n.children) {
+                    l = getx(l, n.children[i]);
+                }
+            }
+            return l;
+        }
+
+        function actualizarDatosConsenso(n) {
+            var usuarios = document.getElementById("usuarios");
+            var activos = document.getElementById("activos");
+            var minSiPc = document.getElementById("minSiPc");
+            var maxNoPc = document.getElementById("maxNoPc");
+
+            var ap = arbolPersonal;
+
+            if (n && n.nivel > 0) {
+                var modelo = getModelo(n.modeloID);
+
+                if (n.depth == modelo.secciones.length) {
+                    //es una hoja de un debate completo, mido condicion de consenso
+
+                    var negados = getNegados(n);
+
+                    usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
+
+                    if (n.flores >= ap.minSiValue)
+                        minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br><font color=green>' + n.flores + "&ge;" + ap.minSiValue + "</font>";
+                    else
+                        minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br><font color=red>' + n.flores + "&le;" + ap.minSiValue + "</font>";
+
+                    if (negados <= ap.maxNoValue)
+                        maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br><font color=green>' + negados + "&ge;" + ap.maxNoValue + "</font>";
+                    else
+                        maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br><font color=red>' + negados + "&le;" + ap.maxNoValue + "</font>";
+                }
+                else {
+                    //solo parametros de consenso
+                    usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
+                    minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br>' + "?&ge;" + ap.minSiValue;
+                    maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br>' + "?&le;" + ap.maxNoValue;
+                }
+            }
+            else {
+                //solo parametros de consenso
+                usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
+                minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br>' + "?&ge;" + ap.minSiValue;
+                maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br>' + "?&le;" + ap.maxNoValue;
+            }
+        }
+    </script>
+</head>
+<body onload="doLoad();">
+
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+
+
+    <!--panel--------------------------------------------------------------------------------------------------->
+    <div id="Div1" style="padding: 10px; position: absolute; left:10px; top:100px;">
+        <div class="titulo2">Probabilidad de cooperacion</div>
+        <nobr>
+        <input class="simtxt" type="button" value="-" onclick="coopProb -= 0.1; if (coopProb < 0) coopProb = 0; document.getElementById('coopProb').value = coopProb.toFixed(2);" />
+        <input class="simtxt" type="text" size="5" id="coopProb" value="0" />
+        <input class="simtxt" type="button" value="+" onclick="coopProb += 0.1; if (coopProb > 1) coopProb = 1; document.getElementById('coopProb').value = coopProb.toFixed(2);" />
+        </nobr>
+        <br />
+        <nobr>
+        <input class="simtxt" type="button" value="Reiniciar" onclick="iniciar();" />
+        <input class="simtxt" type="button" value="Paso" onclick="live();" />
+        <input id="startStop" class="simtxt" type="button" value="Pausa" onclick="startStop();" />
+        </nobr>
+        <div id="nodes" class="titulo1"></div>
+    </div>
+
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="titulo" style="padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
+        <div class="titulo0"><nobr>Nab&uacute;</nobr></div>
+        <div class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
+        <div class="titulo2"><nobr>Democracia interactiva</nobr></div>
+        <div class="titulo1" id="sim" style="color:red;"><nobr>Simulacion</nobr></div>
+    </div>
+
+    <!--panel consenso--------------------------------------------------------------------------------------------------->
+    <div id="panelConsenso"  class="borde" style="padding: 10px; position: absolute; left:10px; top:280px; color: gray; border: 1px solid gray">
+        <div class="titulo2"><nobr><b>Consenso</b></nobr></div>
+        <div id = "usuarios" class="titulo3"></div>
+        <div id = "activos" class="titulo3"></div>
+        <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
+        <div id = "maxNoPc" class="titulo3" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>
+    </div>
+
+    <!--panel flores--------------------------------------------------------------------------------------------------->
+    <div id="flores" style="visibility: hidden; position: absolute; left: 10px; top: 120px;">
+        <table>
+            <tr>
+                <td><img src="res/icono2.png" /></td>
+                <td style="font-size: 25px; font-weight: bold;">5</td>
+            </tr>
+        </table>
+      
+    </div>
+
+</body>
+</html>
