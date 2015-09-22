@@ -2,4 +2,3 @@ C:\inetpub\wwwroot\nabu\bin\nabu.dll
 C:\inetpub\wwwroot\nabu\bin\nabu.pdb
 C:\inetpub\wwwroot\nabu\obj\Debug\nabu.dll
 C:\inetpub\wwwroot\nabu\obj\Debug\nabu.pdb
-C:\inetpub\wwwroot\nabu\obj\Debug\nabu.csprojResolveAssemblyReference.cache

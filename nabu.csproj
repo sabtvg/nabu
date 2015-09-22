@@ -57,7 +57,39 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="admin.html" />
+    <Content Include="alta.html" />
+    <Content Include="favicon.ico" />
     <Content Include="modelos.html" />
+    <Content Include="res\close.png" />
+    <Content Include="res\documentoModeOff.png" />
+    <Content Include="res\documentoModeOn.png" />
+    <Content Include="res\download.png" />
+    <Content Include="res\escritura.png" />
+    <Content Include="res\florWait.gif" />
+    <Content Include="res\florWait.png" />
+    <Content Include="res\forkme.png" />
+    <Content Include="res\help\abstracto-concreto.png" />
+    <Content Include="res\help\concenso.png" />
+    <Content Include="res\help\consenso.png" />
+    <Content Include="res\help\consenso2.png" />
+    <Content Include="res\help\consenso3.png" />
+    <Content Include="res\help\consenso4.png" />
+    <Content Include="res\help\divergencia1.png" />
+    <Content Include="res\help\divergencia2.png" />
+    <Content Include="res\help\escritura.png" />
+    <Content Include="res\help\escritura2.png" />
+    <Content Include="res\help\noticasVsDebates.png" />
+    <Content Include="res\help\opciones.png" />
+    <Content Include="res\j00.png" />
+    <Content Include="res\jd.png" />
+    <Content Include="res\jl.png" />
+    <Content Include="res\jr.png" />
+    <Content Include="res\ju.png" />
+    <Content Include="res\jzl.png" />
+    <Content Include="res\jzm.png" />
+    <Content Include="res\ponerflor.png" />
+    <Content Include="res\quitarflor.png" />
+    <Content Include="simulacion.html" />
     <Content Include="usuarios.html" />
     <Content Include="modificararbol.html" />
     <Content Include="creararbol.html" />
@@ -85,25 +117,21 @@
     <Content Include="res\estatuto2.png" />
     <Content Include="res\icono.png" />
     <Content Include="res\icono2.png" />
-    <Content Include="res\iconsPath.gif" />
     <Content Include="res\logo.png" />
     <Content Include="res\noticias.png" />
     <Content Include="res\noticias2.png" />
     <Content Include="res\ocultar.png" />
     <Content Include="res\planificacion.png" />
     <Content Include="res\planificacion2.png" />
-    <Content Include="res\ponerficha.png" />
     <Content Include="res\proponer.png" />
     <Content Include="res\realizacion.png" />
     <Content Include="res\realizacion2.png" />
-    <Content Include="res\sacarficha.png" />
     <Content Include="res\save.png" />
     <Content Include="res\ver.png" />
     <Content Include="styles.css" />
-    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="appException.cs" />
+    <Compile Include="def\appException.cs" />
     <Compile Include="def\documentos\Documento.cs" />
     <Compile Include="def\documentos\LogDocumento.cs" />
     <Compile Include="def\modelos\Tema.cs" />
@@ -125,18 +153,13 @@
     <Compile Include="def\documentos\TextoTema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="def\arbol\Usuario.cs" />
-    <Compile Include="Tools.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
+    <Compile Include="def\Tools.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="arboles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
