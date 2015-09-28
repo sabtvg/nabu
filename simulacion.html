@@ -5,6 +5,7 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
     <script src="js/util.js"></script>
@@ -18,6 +19,11 @@
         var stopSim = false;
         var selectedNode; //siempre nulo
         var playing = false;
+        var maxPasos = 200; //la simulacion se corta a los 300 pasos
+        var pasos = 0;
+        //tipo de visualizacion
+        var visual = {level: 10};  //Chrome, Zafari, InternetExplorer. Por ahora solo usa la visualizacion completa 10
+        var joyInterval;
 
         //modelos de documentos
         var modelosDocumento;
@@ -28,6 +34,11 @@
             //titulo
             document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
             document.getElementById("coopProb").value = coopProb;
+            //joystick
+            document.getElementById("joystick").style.visibility = 'visible';
+            document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+
+            treeScale = window.innerWidth / 1920; //valor default
 
             setInterval(function () {
                 var sim = document.getElementById("sim");
@@ -64,6 +75,7 @@
                 document.getElementById("sim").style.visibility = sim.style.visibility == "hidden";
             }
             else {
+                pasos = 0;
                 stopSim = false;
                 live();
                 playing = true;
@@ -86,9 +98,14 @@
 
                         dibujarArbol();
                         actualizarDatosConsenso();
+                        pasos += 1;
 
-                        if (!stopSim)
-                            setTimeout(live, 300);
+                        if (pasos < maxPasos) {
+                            if (!stopSim)
+                                setTimeout(live, 300);
+                        }
+                        else
+                            startStop(); //paro la simulacion
                     }
                 });
         }
@@ -105,48 +122,6 @@
             return l;
         }
 
-        function actualizarDatosConsenso(n) {
-            var usuarios = document.getElementById("usuarios");
-            var activos = document.getElementById("activos");
-            var minSiPc = document.getElementById("minSiPc");
-            var maxNoPc = document.getElementById("maxNoPc");
-
-            var ap = arbolPersonal;
-
-            if (n && n.nivel > 0) {
-                var modelo = getModelo(n.modeloID);
-
-                if (n.depth == modelo.secciones.length) {
-                    //es una hoja de un debate completo, mido condicion de consenso
-
-                    var negados = getNegados(n);
-
-                    usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
-
-                    if (n.flores >= ap.minSiValue)
-                        minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br><font color=green>' + n.flores + "&ge;" + ap.minSiValue + "</font>";
-                    else
-                        minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br><font color=red>' + n.flores + "&le;" + ap.minSiValue + "</font>";
-
-                    if (negados <= ap.maxNoValue)
-                        maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br><font color=green>' + negados + "&ge;" + ap.maxNoValue + "</font>";
-                    else
-                        maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br><font color=red>' + negados + "&le;" + ap.maxNoValue + "</font>";
-                }
-                else {
-                    //solo parametros de consenso
-                    usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
-                    minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br>' + "?&ge;" + ap.minSiValue;
-                    maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br>' + "?&le;" + ap.maxNoValue;
-                }
-            }
-            else {
-                //solo parametros de consenso
-                usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
-                minSiPc.innerHTML = 'MinSi:' + ap.minSiPc + '%<br>' + "?&ge;" + ap.minSiValue;
-                maxNoPc.innerHTML = 'MaxNo:' + ap.maxNoPc + '%<br>' + "?&le;" + ap.maxNoValue;
-            }
-        }
     </script>
 </head>
 <body onload="doLoad();">
@@ -184,7 +159,6 @@
     <div id="panelConsenso"  class="borde" style="padding: 10px; position: absolute; left:10px; top:280px; color: gray; border: 1px solid gray">
         <div class="titulo2"><nobr><b>Consenso</b></nobr></div>
         <div id = "usuarios" class="titulo3"></div>
-        <div id = "activos" class="titulo3"></div>
         <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
         <div id = "maxNoPc" class="titulo3" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>
     </div>
@@ -196,9 +170,28 @@
                 <td><img src="res/icono2.png" /></td>
                 <td style="font-size: 25px; font-weight: bold;">5</td>
             </tr>
-        </table>
-      
+        </table>      
     </div>
 
+    <!--joystick--------------------------------------------------------------------------------------------------->
+    <div id="joystick" style="visibility:hidden; padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
+        <table>
+            <tr>
+                <td><img src="res/jzm.png" onclick="zoom(10);"  /></td>
+                <td><img src="res/ju.png" onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><img src="res/jl.png" onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/j00.png" onclick="translateArbol(translatex = 0, translatey = 0)" /></td>
+                <td><img src="res/jr.png" onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" /></td>
+            </tr>
+            <tr>
+                <td><img src="res/jzl.png" onclick="zoom(-10);" /></td>
+                <td><img src="res/jd.png" onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>

@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -18,6 +19,9 @@
                 //login normal
                 document.location = 'default.html';
             else {
+                document.getElementById("todo").style.top = '30px';
+                document.getElementById("todo").style.left = (window.innerWidth / 2 - 628 / 2).toFixed(0) + 'px';
+
                 //cargo datos iniciales
                 var vals = cookie.split("|");
                 var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
@@ -74,61 +78,52 @@
 </head>
 <body onload="doLoad();" style="overflow:hidden">
 
-       <div id="login" class="center" >
-        <table>
-            <tr>
-                <td>
-                    <img src="res/logo.png" />
-                </td>
-                <td align=center>
-                    <div class="ventana" style="text-align: left;">
-                        <span class="titulo1">Nab&uacute;</span><br />
-                        <span class="titulo2">Modificar &aacute;rbol</span><br />
+        <div id="todo" class="ventana" style="text-align: left;width:628px;top: 100px;position: absolute;">
+            <nobr>
+                <span class="titulo1">Nab&uacute;</span>
+                <img src="res/icono2.png" />
+            </nobr><br />
+            <span class="titulo2">Modificar &aacute;rbol</span><br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Datos del &aacute;rbol</span><br />
-                            <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/><br />
-                            <input id="objetivo" type="text" class="txt" size="50" placeholder="Objetivo" /><br />
-                            <input id="URLEstatuto" type="text" class="txt" size="50" placeholder="URL a documento de estatuto" />
-                        </div>
-                        <br />
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                <span class="titulo3">Datos del &aacute;rbol</span><br />
+                <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/><br />
+                <input id="objetivo" type="text" class="txt" size="50" placeholder="Objetivo" /><br />
+                <input id="URLEstatuto" type="text" class="txt" size="50" placeholder="URL a documento de estatuto" />
+            </div>
+            <br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Datos del administrador</span><br />
-                            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/><br />
-                            <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
-                        </div>
-                        <br />
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                <span class="titulo3">Datos del administrador</span><br />
+                <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/><br />
+                <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
+            </div>
+            <br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Flores disponibles para todos los usuarios</span><br />
-                            <input id="cantidadFlores" type="text" class="txt" placeholder="Cantidad de flores"/><br />
-                        </div>
-                        <br />
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                <span class="titulo3">Flores disponibles para todos los usuarios</span><br />
+                <input id="cantidadFlores" type="text" class="txt" placeholder="Cantidad de flores"/><br />
+            </div>
+            <br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Condici&oacute;n de consenso</span><br />
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                <span class="titulo3">Condici&oacute;n de consenso</span><br />
 
-                            <div class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
-                            <input id="minSiPc" type="text" class="txt" />%<br />
+                <div class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
+                <input id="minSiPc" type="text" class="txt" />%<br />
 
-                            <div class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
-                            <input id="maxNoPc" type="text" class="txt" />%<br />
-                        </div>
-                        <br />
+                <div class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
+                <input id="maxNoPc" type="text" class="txt" />%<br />
+            </div>
+            <br />
 
-                        <table>
-                            <tr>
-                                <td><input type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> </td>
-                                <td><div class="titulo3" style="cursor: pointer;" onclick="document.location='default.html';"><nobr><font color="blue">Volver</font></nobr></div></td>
-                            </tr>
-                        </table>                           
 
-                        <div id="response"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+            <input type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> 
+
+            <div id="response"></div>
+        </div>
+
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
     </body>
 </html>

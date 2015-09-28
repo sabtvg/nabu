@@ -1,6 +1,7 @@
 ﻿body {
     font-family: verdana, Geneva, Tahoma, sans-serif;
     background-image: url("res/background.jpg");    
+    font-size: 14px;
 }
 
 .node {
@@ -42,17 +43,6 @@
     visibility:hidden;    
 }
 
-.pie {
-    padding: 5px;
-    position: absolute;
-    font-size: 10px;
-    top: 98%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-    text-align:center; 
-}
-
 .flor {
 }
 
@@ -82,6 +72,11 @@
     overflow: scroll;
 }
 
+.small {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: small;
+}
+
 .panel {
     border: 8px solid black;
     padding: 5px;
@@ -103,9 +98,6 @@
 .menu {
     position: absolute;
     top: 85%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
     text-align:center; 
     visibility:hidden;
 }
@@ -121,9 +113,6 @@
 .menuRoot2 {
     position: absolute;
     top: 85%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
     text-align:center; 
     visibility:hidden;
     border: 1px solid #C0C0C0;
@@ -207,7 +196,7 @@
 
 .titulo0 {
     padding: 5px;
-    font-size: 55px;
+    font-size: 50px;
     font-family: 'Times New Roman' , Times, serif;
 }
 
@@ -246,19 +235,19 @@
 
 .titulo1 {
     padding: 5px;
-    font-size: 35px;
+    font-size: 30px;
     font-family: 'Times New Roman' , Times, serif;
 }
 
 .titulo2 {
-    padding: 5px;
+    padding: 3px;
     font-size: 20px;
     font-family: 'Times New Roman' , Times, serif;
 }
 
 .titulo3 {
-    padding: 5px;
-    font-size: 18px;
+    padding: 1px;
+    font-size: 15px;
     font-family: 'Times New Roman' , Times, serif;
 }
 

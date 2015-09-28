@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -14,6 +15,9 @@
         var modeloIDSeleccionado = 0;
 
         function doLoad() {
+            document.getElementById("todo").style.top = '20px';
+            document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
+
             //leo cookie
             var cookie = getCookie("nabu");
             if (cookie == "")
@@ -30,7 +34,7 @@
             }
 
             //pantalla
-            document.getElementById("divModelos").style.height = window.innerHeight - 240 + "px";
+            document.getElementById("divModelos").style.height = (window.innerHeight - 270) + "px";
         }
 
         function doCrearModelo() {
@@ -82,7 +86,7 @@
             //muestro contenido
             var modeloNombre = document.getElementById("modelosList").value;
 
-            var s = "<div style='height:" + (window.innerHeight - 250) + "px;overflow:scroll;'>";
+            var s = "<div style='height:" + (window.innerHeight - 280) + "px;overflow:scroll;'>";
             for (var i in modelos) {
                 var mod = modelos[i];
                 if (mod.nombre == modeloNombre) {
@@ -197,34 +201,28 @@
 </head>
 <body onload="doLoad();" style="overflow:hidden">
 
-       <div id="login" class="center" >
-        <table>
-            <tr>
-                <td>
-                    <img src="res/logo.png" />
-                </td>
-                <td align=center>
-                    <div class="ventana" style="text-align: left;">
-                        <span class="titulo1">Nab&uacute;</span>
-                        <span class="titulo2">Modelos de documento</span><br />
+    <div id="todo" class="ventana" style="text-align: left;position: absolute;width:879px;">
+        <nobr>
+            <span class="titulo1">Nab&uacute;</span>
+            <img src="res/icono2.png" />
+        </nobr><br />
+        <span class="titulo2">Modelos de documento</span><br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre de modelo" />
-                            <input type='button' class='btn' value='Crear modelo de documento' onclick='doCrearModelo();' />
-                        </div>
+        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre de modelo" />
+            <input type='button' class='btn' value='Crear modelo de documento' onclick='doCrearModelo();' />
+        </div>
 
-                        <div id="divResponse"><br /></div>
+        <div id="divResponse" style="height: 20px;"></div>
 
-                        <nobr>Seleccionar: <select id="modelosList" class="txt" style="width: 500px;" onchange="selectModelo();"></select></nobr>
-                        <br />
-                        <div id="divModelos"></div>
+        <nobr>Seleccionar: <select id="modelosList" class="txt" style="width: 500px;" onchange="selectModelo();"></select></nobr>
+        <br />
+        <div id="divModelos"></div>
 
-                        <div class="titulo3" style="cursor: pointer;" onclick="document.location='default.html';"><font color="blue">Volver</font></div>
-
-                    </div>
-                </td>
-            </tr>
-        </table>
     </div>
+    
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+
     </body>
 </html>

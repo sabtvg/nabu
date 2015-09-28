@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -18,6 +19,9 @@
                 //login normal
                 document.location = 'default.html';
             else {
+                document.getElementById("todo").style.top = '30px';
+                document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
+
                 //cargo datos iniciales
                 var vals = cookie.split("|");
                 usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
@@ -26,7 +30,7 @@
             }
 
             //pantalla
-            document.getElementById("usuarios").style.height = window.innerHeight - 400 + "px";
+            document.getElementById("usuarios").style.height = (window.innerHeight - 400) + "px";
         }
 
         function doCrearUsuario() {
@@ -114,36 +118,29 @@
 </head>
 <body onload="doLoad();" style="overflow:hidden">
 
-       <div id="login" class="center" >
-        <table>
-            <tr>
-                <td>
-                    <img src="res/logo.png" />
-                </td>
-                <td align=center>
-                    <div class="ventana" style="text-align: left;">
-                        <span class="titulo1">Nab&uacute;</span><br />
-                        <span class="titulo2">Modificar usuarios</span><br />
+        <div id="todo" class="ventana" style="text-align: left;width:877px;top: 100px;position: absolute;">
+            <nobr>
+                <span class="titulo1">Nab&uacute;</span>
+                <img src="res/icono2.png" />
+            </nobr><br />
+            <span class="titulo2">Modificar usuarios</span><br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Crear</span><br />
-                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
-                            <input id="email" type="text" class="txt" size="20" placeholder="Email" />
-                            <input id="clave" type="text" class="txt" size="20" placeholder="Clave" />
-                            <input type='button' class='btn' value='Crear' onclick='doCrearUsuario();' />
-                        </div>
-                        <br />
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                <span class="titulo3">Crear</span><br />
+                <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
+                <input id="email" type="text" class="txt" size="20" placeholder="Email" />
+                <input id="clave" type="text" class="txt" size="20" placeholder="Clave" />
+                <input type='button' class='btn' value='Crear' onclick='doCrearUsuario();' />
+            </div>
+            <br />
 
-                        <div id="usuarios" style="height: 800px; overflow:scroll;"></div>
-                        <br />
+            <div id="usuarios" style="height: 800px; overflow:scroll;"></div>
+            <br />
 
-                        <div class="titulo3" style="cursor: pointer;" onclick="document.location='default.html';"><nobr><font color="blue">Volver</font></nobr></div>
+            <div id="response"></div>
+        </div>
 
-                        <div id="response"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
     </body>
 </html>

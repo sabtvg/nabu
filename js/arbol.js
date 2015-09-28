@@ -138,6 +138,8 @@ function dibujarArbol(referencia) {
         .attr("r", function (d) {
             var r = d.totalFlores / 4 + 2;
             if (r < 10) r = 10;
+            if (visual.level == 1)
+                r = r * 2;
             return r * scale;
         })
         .style("fill", function (d) {
@@ -221,7 +223,11 @@ function dibujarArbol(referencia) {
         });
 
     nodeUpdate.select("text")
-        .style("font-size", function (d) { return (20 * scale > 30 ? 30 : 15 * scale) + 'px'; })
+        .style("font-size", function (d) {
+            var size = 20 * scale > 30 ? 30 : 15 * scale;
+            document.getElementById('t2.' + d.id).style.fontSize = size + 'px'; //actualizo el 2do texto
+            return size + 'px';
+        })
         .text(function (d) {
             if (d.si && !d.consensoAlcanzado) {
                 document.getElementById('t2.' + d.id).innerHTML = d.no; //actualizo el 2do texto
@@ -529,10 +535,12 @@ function nodeClick(d) {
     //activo menu contextual 
     if (selectedNode == arbolPersonal.raiz) {
         menu = document.getElementById("menuRoot");
+        menu.style.left = (window.innerWidth / 2 - 26).toFixed(0) + 'px';
         menu.style.visibility = "visible";
     }
     else {
-        menu = document.getElementById("menuNode");
+        menu = document.getElementById("menuNode");  
+        menu.style.left = (window.innerWidth / 2 - 122).toFixed(0) + 'px';
         menu.style.visibility = "visible";
 
         //enseño los datos de consenso para este nodo
@@ -540,7 +548,24 @@ function nodeClick(d) {
 
         //activo panel
         showPanel();
+
+        //actualizo link a download
+        var btnDownload = document.getElementById("btnDownload");
+        btnDownload.href = 'doArbol.aspx?actn=download&id=' + selectedNode.id + '&arbol=' + arbolPersonal.nombre;
     }
 
 }
 
+function pany(y) {
+    if (visual.level == 1)
+        translateArbol(translatex, translatey += y * 3)  //paso a paso
+    else
+        clearInterval(joyInterval); joyInterval = setInterval(function () { translateArbol(translatex, translatey += y) }, 20); //continuo
+}
+
+function panx(x) {
+    if (visual.level == 1)
+        translateArbol(translatex += x * 3, translatey)  //paso a paso
+    else
+        clearInterval(joyInterval); joyInterval = setInterval(function () { translateArbol(translatex += x, translatey) }, 20); //continuo
+}

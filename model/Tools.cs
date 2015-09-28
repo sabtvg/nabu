@@ -193,5 +193,30 @@ namespace nabu
         {
             return new Point((int)(Math.Cos(angRad) * mod), (int)(Math.Sin(angRad) * mod));
         }
+
+        public static void sendMail(string to, string subject, string body){
+            //envio por mail
+            System.Net.Mail.MailMessage msg = new System.Net.Mail.MailMessage();
+            string SMTPURL = System.Configuration.ConfigurationManager.AppSettings["SMTPURL"];
+            string from = System.Configuration.ConfigurationManager.AppSettings["SMTPFrom"];
+            string user = System.Configuration.ConfigurationManager.AppSettings["SMTPUser"];
+            string pass = System.Configuration.ConfigurationManager.AppSettings["SMTPPass"];
+
+            if (SMTPURL != "")
+            {
+                msg.From = new System.Net.Mail.MailAddress(from, from);
+                msg.Body = body;
+                msg.IsBodyHtml = true;
+                msg.Subject = subject;
+                msg.To.Add(new System.Net.Mail.MailAddress(to, to));
+
+                System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient(SMTPURL);
+                smtp.EnableSsl = false;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential(user, pass);
+                smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+                smtp.Send(msg);
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ var frasesDelDia = [
     "Sincronizamos intereses, <br>tomamos decisiones, <br>generamos acciones.",
     "Buscamos eficiencia, <br>no beneficio.",
     "No necesitamos representantes.",
-    "No te preguntes qu&eacue; puede hacer la cooperativa por ti, <br>preg&uacute;ntate qu&eacute; puedes hacer t&uacute; por ella.",
+    "No te preguntes qu&eacute; puede hacer la cooperativa por ti, <br>preg&uacute;ntate qu&eacute; puedes hacer t&uacute; por ella.",
     "Bienvenid@ al juego de la cooperaci&oacute;n.",
     "El consenso es un proceso cooperativo"];
 
@@ -28,6 +28,9 @@ var joyInterval;
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
 
+//tipo de visualizacion
+var visual;  //Chrome, Zafari, InternetExplorer
+
 //arbol y usuario con sus flores
 var arbolPersonal;
 
@@ -38,139 +41,211 @@ var modelosDocumento;
 var propuestas = [];
 
 function doLoad() {
+    //wait
+    document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
+    document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
+    document.getElementById("florWait").style.visibility = "visible";
+
     //busco arboles
-    getHttp("doArbol.aspx?actn=getConfig", 
+    getHttp("doArbol.aspx?actn=getConfig&width=" + window.innerWidth + "&height=" + window.innerHeight,
         function (data) {
             getConfig(data);
-            //continuo con la carga
-            doLoad2();
+
+            if (visual.level == 0) {
+                //navegador no soporta nabu
+                document.getElementById("florWait").style.visibility = "hidden";
+                document.getElementById("noSoportado").style.visibility = "visible";
+            }
+            else
+                //continuo con la carga
+                doLoad2();
         });
 }
 
-function doLoad2(){
-    //segunda parte del load
-    //titulo
-    document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
+function doLoad2() {
+    try {
+        //segunda parte del load
+        //titulo
+        document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
 
-    //frase del dia
-    document.getElementById("tip").innerHTML = frasesDelDia[Math.round(Math.random() * (frasesDelDia.length - 1))];
+        //pie
+        document.getElementById("pie").style.top = (window.innerHeight - 25) + 'px';
+        document.getElementById("pie").style.left = (window.innerWidth / 2 - 300).toFixed(0) + 'px';
+        document.getElementById("pie").style.visibility = 'visible';
 
-    //forkme
-    document.getElementById("forkme").style.left = (window.innerWidth - 87) + 'px';
-    document.getElementById("forkme").style.top = '0px';
+        //frase del dia
+        document.getElementById("tip").innerHTML = frasesDelDia[Math.round(Math.random() * (frasesDelDia.length - 1))];
+
+        //forkme
+        document.getElementById("forkme").style.left = (window.innerWidth - 87) + 'px';
+        document.getElementById("forkme").style.top = '0px';
+        document.getElementById("forkme").style.visibility = 'visible';
     
-    //resize del menuppal segun pantalla
-    var menuscale = scale * 1.1;
-    document.getElementById("tituloppal").style.width = 800 * menuscale + 'px';
+        //resize del menuppal segun pantalla
+        var menuscale = scale * 1.1;
+        document.getElementById("tituloppal").style.width = 800 * menuscale + 'px';
 
-    document.getElementById("menuppal").style.width = 800 * menuscale + 'px';
-    document.getElementById("menuppal").style.height = 600 * menuscale + 'px';
+        document.getElementById("menuppal").style.width = 800 * menuscale + 'px';
+        document.getElementById("menuppal").style.height = 600 * menuscale + 'px';
 
-    document.getElementById("ciclo").style.width = 508 * menuscale + 'px';
-    document.getElementById("ciclo").style.height = 526 * menuscale + 'px';
-    document.getElementById("ciclo").style.left = 159 * menuscale + 'px';
-    document.getElementById("ciclo").style.top = 47 * menuscale + 'px';
+        document.getElementById("ciclo").style.width = 508 * menuscale + 'px';
+        document.getElementById("ciclo").style.height = 526 * menuscale + 'px';
+        document.getElementById("ciclo").style.left = 159 * menuscale + 'px';
+        document.getElementById("ciclo").style.top = 47 * menuscale + 'px';
 
-    document.getElementById("ppal1").style.width = 269 * menuscale + 'px';
-    document.getElementById("ppal1").style.height = 150 * menuscale + 'px';
-    document.getElementById("ppal1").style.left = 15 * menuscale + 'px';
-    document.getElementById("ppal1").style.top = 145 * menuscale + 'px';
+        document.getElementById("ppal1").style.width = 269 * menuscale + 'px';
+        document.getElementById("ppal1").style.height = 150 * menuscale + 'px';
+        document.getElementById("ppal1").style.left = 15 * menuscale + 'px';
+        document.getElementById("ppal1").style.top = 145 * menuscale + 'px';
 
-    document.getElementById("ppal2").style.width = 269 * menuscale + 'px';
-    document.getElementById("ppal2").style.height = 149 * menuscale + 'px';
-    document.getElementById("ppal2").style.left = 15 * menuscale + 'px';
-    document.getElementById("ppal2").style.top = 292 * menuscale + 'px';
+        document.getElementById("ppal2").style.width = 269 * menuscale + 'px';
+        document.getElementById("ppal2").style.height = 149 * menuscale + 'px';
+        document.getElementById("ppal2").style.left = 15 * menuscale + 'px';
+        document.getElementById("ppal2").style.top = 292 * menuscale + 'px';
 
-    document.getElementById("ppal3").style.width = 259 * menuscale + 'px';
-    document.getElementById("ppal3").style.height = 84 * menuscale + 'px';
-    document.getElementById("ppal3").style.left = 488 * menuscale + 'px';
-    document.getElementById("ppal3").style.top = 129 * menuscale + 'px';
+        document.getElementById("ppal3").style.width = 259 * menuscale + 'px';
+        document.getElementById("ppal3").style.height = 84 * menuscale + 'px';
+        document.getElementById("ppal3").style.left = 488 * menuscale + 'px';
+        document.getElementById("ppal3").style.top = 129 * menuscale + 'px';
 
-    document.getElementById("ppal4").style.width = 258 * menuscale + 'px';
-    document.getElementById("ppal4").style.height = 85 * menuscale + 'px';
-    document.getElementById("ppal4").style.left = 487 * menuscale + 'px';
-    document.getElementById("ppal4").style.top = 389 * menuscale + 'px';
+        document.getElementById("ppal4").style.width = 258 * menuscale + 'px';
+        document.getElementById("ppal4").style.height = 85 * menuscale + 'px';
+        document.getElementById("ppal4").style.left = 487 * menuscale + 'px';
+        document.getElementById("ppal4").style.top = 389 * menuscale + 'px';
 
-    document.getElementById("ppal5").style.width = 124 * menuscale + 'px';
-    document.getElementById("ppal5").style.height = 143 * menuscale + 'px';
-    document.getElementById("ppal5").style.left = 338 * menuscale + 'px';
-    document.getElementById("ppal5").style.top = 31 * menuscale + 'px';
+        document.getElementById("ppal5").style.width = 124 * menuscale + 'px';
+        document.getElementById("ppal5").style.height = 143 * menuscale + 'px';
+        document.getElementById("ppal5").style.left = 338 * menuscale + 'px';
+        document.getElementById("ppal5").style.top = 31 * menuscale + 'px';
 
-    document.getElementById("ppal6").style.width = 195 * menuscale + 'px';
-    document.getElementById("ppal6").style.height = 79 * menuscale + 'px';
-    document.getElementById("ppal6").style.left = 485 * menuscale + 'px';
-    document.getElementById("ppal6").style.top = 267 * menuscale + 'px';
+        document.getElementById("ppal6").style.width = 195 * menuscale + 'px';
+        document.getElementById("ppal6").style.height = 79 * menuscale + 'px';
+        document.getElementById("ppal6").style.left = 485 * menuscale + 'px';
+        document.getElementById("ppal6").style.top = 267 * menuscale + 'px';
 
-    document.getElementById("ppal7").style.width = 221 * menuscale + 'px';
-    document.getElementById("ppal7").style.height = 145 * menuscale + 'px';
-    document.getElementById("ppal7").style.left = 285 * menuscale + 'px';
-    document.getElementById("ppal7").style.top = 439 * menuscale + 'px';
+        document.getElementById("ppal7").style.width = 221 * menuscale + 'px';
+        document.getElementById("ppal7").style.height = 145 * menuscale + 'px';
+        document.getElementById("ppal7").style.left = 285 * menuscale + 'px';
+        document.getElementById("ppal7").style.top = 439 * menuscale + 'px';
 
-    document.getElementById("ppal8").style.width = 159 * menuscale + 'px';
-    document.getElementById("ppal8").style.height = 79 * menuscale + 'px';
-    document.getElementById("ppal8").style.left = 120 * menuscale + 'px';
-    document.getElementById("ppal8").style.top = 258 * menuscale + 'px';
+        document.getElementById("ppal8").style.width = 159 * menuscale + 'px';
+        document.getElementById("ppal8").style.height = 79 * menuscale + 'px';
+        document.getElementById("ppal8").style.left = 120 * menuscale + 'px';
+        document.getElementById("ppal8").style.top = 258 * menuscale + 'px';
 
-    //sinconizo animaciones con el navegador
-    window.requestAnimationFrame(animate);
+        //sinconizo animaciones con el navegador
+        try{
+            var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+            window.requestAnimationFrame = requestAnimationFrame;
+            window.requestAnimationFrame(animate);
+        }
+        catch (ex) {
+            //el navegador no soporta requestAnimationFrame
+            //no puedo usar tweens
+        }
 
-    //si hay cookie, login automatico si no login normal
-    var cookie = getCookie("nabu");
-    if (cookie == "")
-        //login normal
-        loginEffectIn();
-    else {
-        //login automatico to server
-        var vals = cookie.split("|");
-        var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+        treeScale = scale; //valor default
 
-        getHttp("doArbol.aspx?actn=login&email=" + usuario.email + "&clave=" + usuario.clave + "&arbol=" + usuario.arbol,
-            function (data) {
-                //atrapo el error si es que hay
-                if (data.substring(0, 6) == "Error=") {
-                    //ha habido un error
-                    //login normal
-                    loginEffectIn();
-                }
-                else {
-                    //login ok, he recibido el arbol
-                    arbolPersonal = JSON.parse(data);
+        //si hay cookie, login automatico si no login normal
+        var cookie = getCookie("nabu");
+        if (cookie == "")
+            //login normal
+            loginEffectIn();
+        else {
+            //login automatico to server
+            var vals = cookie.split("|");
+            var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
 
-                    //guardo cookie
-                    setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre, 7);
+            getHttp("doArbol.aspx?actn=login&email=" + usuario.email + "&clave=" + usuario.clave + "&arbol=" + usuario.arbol,
+                function (data) {
+                    try{
+                        //atrapo el error si es que hay
+                        if (data.substring(0, 6) == "Error=") {
+                            //ha habido un error
+                            //login normal
+                            loginEffectIn();
+                        }
+                        else {
+                            //login ok, he recibido el arbol
+                            arbolPersonal = JSON.parse(data);
 
-                    //pido modelos de documentos
-                    getHttp("doArbol.aspx?actn=getModelosDocumento&arbol=" + usuario.arbol,
-                        function (data) {
-                            //guardo los modelos de oducmentos
-                            var ret = JSON.parse(data);
-                            modelosDocumento = ret.modelos;
+                            //guardo cookie
+                            setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre, 7);
 
-                            //activo menuppal
-                            doMenuppal();
-                        });
-                }
-            });
+                            //pido modelos de documentos
+                            getHttp("doArbol.aspx?actn=getModelosDocumento&arbol=" + usuario.arbol,
+                                function (data) {
+                                    //guardo los modelos de oducmentos
+                                    var ret = JSON.parse(data);
+                                    modelosDocumento = ret.modelos;
+
+                                    //activo menuppal
+                                    doMenuppal();
+                                });
+                        }
+                    }
+                    catch (ex) {
+                        //envio al server
+                        sendException(ex, "doLoad2.2");
+                    }
+                });
+        }
     }
+    catch (ex) {
+        //envio al server
+        sendException(ex, "doLoad2");
+    }
+}
+
+function sendException(ex, flag) {
+    if (arbolPersonal)
+        getHttp("doArbol.aspx?actn=exception&flag=" + flag + "&message=" + ex.message + "&stack=" + ex.stack + "&email=" + arbolPersonal.usuario.email + "&arbol=" + arbolPersonal.nombre, null);
+    else
+        getHttp("doArbol.aspx?actn=exception&flag=" + flag + "&message=" + ex.message + "&stack=" + ex.stack, null);
 }
 
 function loginEffectIn(){
     //login effect
-    document.getElementById("tip").style.visibility = "hidden";
-    document.getElementById("loginIn").style.visibility = "hidden";
-    document.getElementById("loginFlor").style.visibility = "hidden";
+    try {
+        if (visual.level == 1) {
+            //sin efectos
+            document.getElementById("tip").style.visibility = "visible";
+            document.getElementById("loginIn").style.visibility = "visible";
+            document.getElementById("loginFlor").style.visibility = "visible";
 
-    document.getElementById("tip").style.left = (window.innerWidth / 2 - 200) + 'px';
-    document.getElementById("loginIn").style.top = window.innerHeight / 4 + 'px';
-    document.getElementById("loginFlor").style.top = (window.innerHeight / 4 + 50 * scale) + 'px';
+            document.getElementById("tip").style.top = (window.innerHeight / 2 + 130) + 'px';
+            document.getElementById("tip").style.left = (window.innerWidth / 2 - 200) + 'px';
+            document.getElementById("loginIn").style.top = window.innerHeight / 6 + 'px';
+            document.getElementById("loginFlor").style.top = (window.innerHeight / 6 + 50 * scale) + 'px';
+            document.getElementById("loginIn").style.left = (window.innerWidth / 2 - 50) + 'px';
+            document.getElementById("loginFlor").style.left = (window.innerWidth / 2 - 280) + 'px';
+            document.getElementById("pie").style.left = (window.innerWidth / 2 - 300) + 'px';
+        }
+        else {
+            document.getElementById("tip").style.visibility = "hidden";
+            document.getElementById("loginIn").style.visibility = "hidden";
+            document.getElementById("loginFlor").style.visibility = "hidden";
 
-    efectoLeft(document.getElementById("loginIn"), 0, window.innerWidth, window.innerWidth / 2 - 50, TWEEN.Easing.Cubic.Out);
-    efectoLeft(document.getElementById("loginFlor"), 200, -200, window.innerWidth / 2 - 280, TWEEN.Easing.Exponential.Out);
-    efectoTop(document.getElementById("tip"), 800, window.innerHeight, window.innerHeight / 2 + 130, TWEEN.Easing.Elastic.Out);
-    timerFlores = setInterval(function () {
-        rotFlores += 0.3;
-        document.getElementById("loginFlor").style.transform = "rotate(" + rotFlores + "deg)";
-    }, 100);
+            document.getElementById("tip").style.left = (window.innerWidth / 2 - 200) + 'px';
+            document.getElementById("loginIn").style.top = window.innerHeight / 4 + 'px';
+            document.getElementById("loginFlor").style.top = (window.innerHeight / 4 + 50 * scale) + 'px';
+
+            efectoLeft(document.getElementById("loginIn"), 0, window.innerWidth, window.innerWidth / 2 - 50, TWEEN.Easing.Cubic.Out);
+            efectoLeft(document.getElementById("loginFlor"), 200, -200, window.innerWidth / 2 - 280, TWEEN.Easing.Exponential.Out);
+            efectoTop(document.getElementById("tip"), 800, window.innerHeight, window.innerHeight / 2 + 130, TWEEN.Easing.Elastic.Out);
+            timerFlores = setInterval(function () {
+                rotFlores += 0.3;
+                document.getElementById("loginFlor").style.transform = "rotate(" + rotFlores + "deg)";
+            }, 100);
+        }
+
+        //wait
+        document.getElementById("florWait").style.visibility = "hidden";
+    }
+    catch (ex) {
+        //envio al server
+        sendException(ex, "loginEffectIn");
+    }
 }
 
 function loginEffectOut() {
@@ -208,6 +283,8 @@ function getConfig(data) {
         option.text = list[q];
         arbolList.add(option);
     }
+
+    visual = getVisualizacion(config);
 }
 
 function doLogin() {
@@ -241,31 +318,46 @@ function doLogin() {
 
 function doMenuppal() {
     //paso a menuppal       
-    document.getElementById("tituloppal").innerHTML = arbolPersonal.nombre;
-    document.getElementById("titulo").style.visibility = "visible";
-        
-    //atras
-    document.getElementById("atras").style.visibility = "visible";
-
-    //panel de usuario
-    document.getElementById("usuario").innerHTML = "<div style='color:blue;cursor: pointer; font-size:14px; margin: 10px;' onclick='showCambiarClave();'>" + arbolPersonal.usuario.email + "</div>";
-    document.getElementById("panelUsuario").style.visibility = 'visible';
-    document.getElementById("floresDisponibles").innerHTML = getFloresDisponibles().length;
-
-    //panel consenso
-    document.getElementById("panelConsenso").style.visibility = 'hidden';   
 
     //menu ppal
     setTimeout(function () {
-        efectoOpacity(document.getElementById("menuppal"), 0, 0, 1, TWEEN.Easing.Cubic.Out);
-        timerCiclo = setInterval(function () {
-            document.getElementById("ciclo").style.transform = 'rotate(' + rotacionCiclo++ + 'deg)';
-        }, 100);
+        document.getElementById("tituloppal").innerHTML = arbolPersonal.nombre;
+        document.getElementById("titulo").style.visibility = "visible";
+
+        //atras
+        document.getElementById("atras").style.visibility = "visible";
+
+        //panel de usuario
+        document.getElementById("usuario").innerHTML = "<div style='color:blue;cursor: pointer; font-size:14px; margin: 10px;' onclick='showCambiarClave();'>" + arbolPersonal.usuario.email + "</div>";
+        document.getElementById("panelUsuario").style.visibility = 'visible';
+        document.getElementById("floresDisponibles").innerHTML = getFloresDisponibles().length;
+
+        //panel consenso
+        document.getElementById("panelConsenso").style.visibility = 'hidden';
+
+        //adminOptions
+        document.getElementById("adminOptions").style.visibility = arbolPersonal.usuario.isAdmin ? "visible" : "hidden";
+
+        //menuppal
+        var menuscale = scale * 1.1;
+        document.getElementById("menuppal").style.top = (window.innerHeight / 2 - 300 * menuscale).toFixed(0) + 'px';
+        document.getElementById("menuppal").style.left = (window.innerWidth / 2 - 400 * menuscale).toFixed(0) + 'px';
+        if (visual.level == 1) {
+            document.getElementById("menuppal").style.visibility = 'visible';
+        }
+        else {
+            efectoOpacity(document.getElementById("menuppal"), 0, 0, 1, TWEEN.Easing.Cubic.Out);
+        }
     }, 1000); //doy tiempo a que salga el logInEffectOut()
-    
-    document.getElementById("adminOptions").style.visibility = arbolPersonal.usuario.isAdmin ? "visible" : "hidden";
+
+    timerCiclo = setInterval(function () {
+        document.getElementById("ciclo").style.transform = 'rotate(' + rotacionCiclo++ + 'deg)';
+    }, 100);  
 
     estado = 'menuppal';
+
+    //wait
+    document.getElementById("florWait").style.visibility = "hidden";
 }
 
 function doProponer() {
@@ -330,7 +422,7 @@ function doCambiarClave() {
             function (data) {
                 if (data != '')
                     document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
-                else
+                else 
                     efectoLeft(document.getElementById("cambiarClave"), 0, 20, -260, TWEEN.Easing.Cubic.Out, function () {
                         document.getElementById("cambiarClave").style.visibility = 'hidden';
                     });
@@ -340,8 +432,8 @@ function doCambiarClave() {
 
 function doHideCambiarClave() {
     efectoLeft(document.getElementById("cambiarClave"), 0, 20, -260, TWEEN.Easing.Cubic.In, function () {
-        document.getElementById("cambiarClave").style.visibility = 'hidden';
-    });
+            document.getElementById("cambiarClave").style.visibility = 'hidden';
+        });
 }
 
 function recibirArbolPersonal(data) {
@@ -369,49 +461,6 @@ function recibirArbolPersonal(data) {
     }
 }
 
-function actualizarDatosConsenso(n) {
-    var usuarios = document.getElementById("usuarios");
-    var activos = document.getElementById("activos");
-    var minSiPc = document.getElementById("minSiPc");
-    var maxNoPc = document.getElementById("maxNoPc");
-
-    var ap = arbolPersonal;
-   
-    if (n && n.nivel > 0) {
-        var modelo = getModelo(n.modeloID);
-
-        if (n.depth == modelo.secciones.length) {
-            //es una hoja de un debate completo, mido condicion de consenso
-
-            //var negados = getNegados(n);
-
-            usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
-
-            if (n.flores >= ap.minSiValue)
-                minSiPc.innerHTML = 'Si:' + ap.minSiPc + '%<br><font color=green>' + n.flores + "&ge;" + ap.minSiValue + "</font>";
-            else
-                minSiPc.innerHTML = 'Si:' + ap.minSiPc + '%<br><font color=red>' + n.flores + "&le;" + ap.minSiValue + "</font>";
-
-            if (n.negados <= ap.maxNoValue)
-                maxNoPc.innerHTML = 'No:' + ap.maxNoPc + '%<br><font color=green>' + n.negados + "&ge;" + ap.maxNoValue + "</font>";
-            else
-                maxNoPc.innerHTML = 'No:' + ap.maxNoPc + '%<br><font color=red>' + n.negados + "&le;" + ap.maxNoValue + "</font>";
-        }
-        else {
-            //solo parametros de consenso
-            usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
-            minSiPc.innerHTML = 'Si:' + ap.minSiPc + '%<br>' + "?&ge;" + ap.minSiValue;
-            maxNoPc.innerHTML = 'No:' + ap.maxNoPc + '%<br>' + "?&le;" + ap.maxNoValue;
-        }
-    }
-    else {
-        //solo parametros de consenso
-        usuarios.innerHTML = "Usuarios:<br>" + ap.usuarios + "<br>Activos:<br>" + ap.activos;
-        minSiPc.innerHTML = 'Si:' + ap.minSiPc + '%<br>' + "?&ge;" + ap.minSiValue;
-        maxNoPc.innerHTML = 'No:' + ap.maxNoPc + '%<br>' + "?&le;" + ap.maxNoValue;
-    }
-}
-
 function doToggleFlor() {
     var d = selectedNode;
     getHttp("doArbol.aspx?actn=toggleflor&email=" + arbolPersonal.usuario.email + "&id=" + d.id + "&x=" + d.x0 + "&arbol=" + arbolPersonal.nombre, recibirArbolPersonal);
@@ -436,6 +485,8 @@ function doPreguntarNombre() {
         document.getElementById("tituloDebate").innerHTML = "Define un nombre para la propuesta";
 
     document.getElementById("nombrePropuestaValor").value = "";
+    document.getElementById("nombrePropuesta").style.top = (window.innerHeight / 2 - 94).toFixed(0) + 'px';
+    document.getElementById("nombrePropuesta").style.left = (window.innerWidth / 2 - 275).toFixed(0) + 'px';
     efectoOpacity(document.getElementById("nombrePropuesta"), 250, 0, 1, TWEEN.Easing.Cubic.In);
 }
 
@@ -490,7 +541,7 @@ function doVerDocumento() {
 
     //pido propuestas al servidor (por si hay nuevos comentarios)
     getHttp("doArbol.aspx?actn=getPropuestas&id=" + node.id + "&arbol=" + arbolPersonal.nombre,
-        function (data) { 
+        function (data) {
             recibirPropuestas(data); 
             doVerDocumento2();
         }
@@ -630,7 +681,7 @@ function getDocumento(node) {
             var propuesta = propuestas[path[path.length - i - 1].id];
             for (var t in propuesta.comentarios) {
                 //escribo comentario de propuesta
-                ret += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 10) + "px'><pre>" + propuesta.comentarios[t] + "</pre></div>";
+                ret += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'><pre>" + propuesta.comentarios[t] + "</pre></div>";
             }
         }
 
@@ -693,7 +744,7 @@ function getAnterior(node) {
         ret += "<td class='comentarios' style='vertical-align: text-top;width: 250px;'>";
         for (var t in propuesta.comentarios) {
             //escribo comentario de propuesta
-            ret += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 10) + "px'><pre>" + propuesta.comentarios[t] + "</pre></div>";
+            ret += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'><pre>" + propuesta.comentarios[t] + "</pre></div>";
         }
         ret += "</td>";
         ret += "<tr><td colspan=2><hr></td></tr>";
@@ -936,11 +987,19 @@ function doAtras() {
         //doy tiempo a salir al arbol
         setTimeout(function () {
             document.getElementById("svg").style.visibility = 'hidden';
-            //menu ppal
-            efectoOpacity(document.getElementById("menuppal"), 0, 0, 1, TWEEN.Easing.Cubic.Out);
+
+            if (visual.level == 1) {
+                document.getElementById("menuppal").style.visibility = "visible";
+            }
+            else {
+                //menu ppal
+                efectoOpacity(document.getElementById("menuppal"), 0, 0, 1, TWEEN.Easing.Cubic.Out);
+            }
+
             timerCiclo = setInterval(function () {
                 document.getElementById("ciclo").style.transform = 'rotate(' + rotacionCiclo++ + 'deg)';
             }, 100);
+
         }, 800); //doy tiempo a salir al arbol
 
         estado = 'menuppal';
@@ -977,14 +1036,17 @@ function doArbol() {
             });
     else {
         //menu ppal
-        efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Cubic.Out, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
+        if (visual.level == 1)
+            document.getElementById("menuppal").style.visibility = "hidden";
+        else
+            efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Cubic.Out, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
 
         //panel consenso
         document.getElementById("panelConsenso").style.visibility = 'visible';
 
         //joystick
         document.getElementById("joystick").style.visibility = 'visible';
-        document.getElementById("joystick").style.top = (window.innerHeight - 240) + 'px';
+        document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
 
         //objetivo
         var objetivo = document.getElementById("objetivo");
@@ -1020,6 +1082,3 @@ function pedirArbol() {
     }
 }
 
-function doDownload() {
-    window.open('doArbol.aspx?actn=download&id=' + selectedNode.id + '&arbol=' + arbolPersonal.nombre);
-}

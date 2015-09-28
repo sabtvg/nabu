@@ -791,9 +791,10 @@ namespace nabu
 
         public Usuario getUsuario(string email, string clave)
         {
+            //comparo en minusculas por los moviles y iPad y tablets que ponen la 1ra en mayuscula y confunde
             Usuario ret = getUsuario(email);
 
-            if (ret != null && ret.clave == clave)
+            if (ret != null && ret.clave.ToLower() == clave.ToLower())
                 return ret;
             else
                 return null;
@@ -805,7 +806,7 @@ namespace nabu
 
             foreach (Usuario u in usuarios)
             {
-                if (u.email == email)
+                if (u.email.ToLower() == email.ToLower())
                 {
                     //login correcto
                     ret = u;

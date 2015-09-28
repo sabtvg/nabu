@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+
+        function doLoad() {
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                //cargo datos iniciales
+                var vals = cookie.split("|");
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+
+                getLogs();
+            }
+
+            //pantalla
+            document.getElementById("usuarios").style.height = window.innerHeight - 400 + "px";
+        }
+
+        function getLogs() {
+            getHttp("doArbol.aspx?actn=getLogs&email=" + usuario.email,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        //he recibido los usuarios
+                        var logs = JSON.parse(data);
+                        var s = "<table class='small' style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
+                        s += "<tr>";
+                        s += "<td style='width:120px;'><b>Accion</b></td>";
+                        s += "<td style='width:120px;'><b>IP</b></td>";
+                        s += "<td style='width:120px;'><b>Email</b></td>";
+                        s += "<td style='width:120px;'><b>Arbol</b></td>";
+                        s += "<td style='width:120px;'><b>TS</b></td>";
+                        s += "<td style='width:800px;'><b>Descripcion</b></td>";
+                        s += "</tr>";
+                        for (var i in logs) {
+                            var log = logs[i];
+                            s += "<tr>";
+                            s += "<td>" + log.accion + "</td>";
+                            s += "<td>" + log.ip + "</td>";
+                            s += "<td>" + log.email + "</td>";
+                            s += "<td>" + log.arbol + "</td>";
+                            s += "<td><nobr>" + log.ts + "</nobr></td>";
+                            s += "<td><nobr>" + log.descripcion + "</nobr></td>";
+                            s += "</tr>";
+                        }
+                        s += "</table>";
+
+                        document.getElementById("usuarios").innerHTML = s;
+                    }
+                });
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+        <div class="ventana" style="text-align: left; width:95%; height: 95%;">
+            <span class="titulo1">Nab&uacute;</span><br />
+            <span class="titulo2">Logs de servidor</span><br />
+
+            <div id="usuarios" style="overflow:scroll;"></div>
+            <br />
+
+            <div class="titulo3" style="cursor: pointer;" onclick="document.location='default.html';"><nobr><font color="blue">Volver</font></nobr></div>
+
+            <div id="response"></div>
+            <input type="button" class="btn" value="Enviar mail" onclick="getHttp('doArbol.aspx?actn=sendLogMail', function (data) { alert(data); });" />
+        </div>
+    </body>
+</html>

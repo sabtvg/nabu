@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
     <script src="js/main.js"></script>
@@ -19,18 +20,18 @@
 
     <!--login--------------------------------------------------------------------------------------------------->
     <img id="loginFlor" src="res/logo.png" style="visibility:hidden; position:absolute;"/>
-    <div id="loginIn" class="ventana" style="visibility:hidden;position:absolute; width: 400px; height: 280px; text-align:center;">
+    <div id="loginIn" class="ventana" style="visibility:hidden;position:absolute; width: 400px; height: 240px; text-align:center;">
         <span class="titulo1" style="cursor: pointer;" onclick="doOpen('help.html');"><font color="blue" size="2">[?]</font>Nab&uacute;</span><br />
-        <span class="titulo2">Democracia interactiva</span><br />
+        <span class="titulo3">Democracia interactiva</span><br />
         <input id="email" type="text" class="txt" placeholder="email" value="" /><br />
         <input id="clave" type="password" class="txt" placeholder="clave" value=""/><br />
         <select id="arbolList" class="txt" style="width: 200px;"></select><br />
         <input type="button" class="btn" value="Entrar" onclick="doLogin();" /><br />
-        <div id="loginResponse"></div>
-        <div onclick="document.location='creararbol.html';" style="color:blue; cursor: pointer;">Crear nuevo &aacute;rbol</div>
+        <div id="loginResponse">&nbsp;</div>
+        <div onclick="document.location='creararbol.html';" style="color:blue; cursor: pointer;">Crear nueva cooperativa</div>
     </div>
     <div id="tip" class="tip" style="visibility:hidden;position:absolute; text-align:center; display: table-cell; vertical-align: middle"></div>
-    <div id="forkme" style="position:absolute;" ><a href="https://github.com/sabtvg/nabu" target="_blank"><img src="res/forkme.png" /></a></div>
+    <div id="forkme" style="position:absolute;visibility:hidden;" ><a href="https://github.com/sabtvg/nabu" target="_blank"><img src="res/forkme.png" /></a></div>
 
     <!--modelos documento--------------------------------------------------------------------------------------------------->
     <div id="modelos" class="center" style="visibility: hidden;" >
@@ -42,7 +43,7 @@
     </div>
 
     <!--nombre de propuesta--------------------------------------------------------------------------------------------------->
-    <div id="nombrePropuesta" class="center" style="visibility: hidden;" >
+    <div id="nombrePropuesta" style="visibility: hidden;position:absolute;" >
         <div class="ventana" style="text-align:center;">
             <span id="tituloDebate" class="titulo2">Define un nombre para la propuesta</span><br />
             <div class="smalltip">Escoje un nombre corto para identificar la propuesta en el arbol</div>
@@ -55,7 +56,8 @@
     <div id="objetivo" class="objetivo"></div>
 
     <!--pie--------------------------------------------------------------------------------------------------->
-    <div id="pie" class="pie"><a href="simulacion.html">ver simulacion</a> - 
+    <div id="pie" style="padding: 5px; position: absolute; font-size: 10px; visibility: hidden;">
+        <a href="simulacion.html">ver simulacion</a> - 
         Desarrollo:<a href="http://cooperativa.cat" target="_blank">CIC</a> - 
         15/9/2015 - 
         <a href="mailto:lania@cooperativa.cat">lania@cooperativa.cat</a> - 
@@ -65,12 +67,27 @@
         <a href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
     </div>
 
+    <!--no soportado--------------------------------------------------------------------------------------------------->
+    <div id="noSoportado" style="visibility: hidden; position: absolute; top: 30px; left:30px;">
+        <div class="ventana">
+            <table>
+                <tr>
+                    <td>
+                        <img src="res/icono2.png" />
+                    </td>
+                    <td class="titulo3">
+                        Nab&uacute; no puede mostrarse<br /> en este navegador
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuNode" class="menu">
         <table>
             <tr>  
                 <td class="menu2">
-                    <img class="btnimg" title="Descargar esta version" src="res/download.png" onclick="doDownload();" />
+                    <a id="btnDownload" href="" target="_blank"><img class="btnimg" title="Descargar esta version" src="res/download.png" /></a> 
                     <img id="documentoMode" class="btnimg" title="ver documento por partes" src="res/documentoModeOff.png" onclick="doVerDocumentoMode();" />
                     <img class="btnimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
                 </td>
@@ -88,29 +105,29 @@
     </div>
 
     <!--joystick--------------------------------------------------------------------------------------------------->
-    <div id="joystick" style="visibility:hidden; padding: 10px; text-align:right; position: absolute; left:10px; top:0px;">
+    <div id="joystick" style="visibility:hidden; padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
         <table>
             <tr>
                 <td><img src="res/jzm.png" onclick="zoom(10);"  /></td>
-                <td><img src="res/ju.png" onmousedown="clearInterval(joyInterval); joyInterval = setInterval(function(){translateArbol(translatex, translatey -= 5)}, 20);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/ju.png" onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" /></td>
                 <td></td>
             </tr>
             <tr>
-                <td><img src="res/jl.png" onmousedown="clearInterval(joyInterval); joyInterval = setInterval(function(){translateArbol(translatex -= 5, translatey)}, 20);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jl.png" onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" /></td>
                 <td><img src="res/j00.png" onclick="translateArbol(translatex = 0, translatey = 0)" /></td>
-                <td><img src="res/jr.png" onmousedown="clearInterval(joyInterval); joyInterval = setInterval(function(){translateArbol(translatex += 5, translatey)}, 20);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jr.png" onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" /></td>
             </tr>
             <tr>
                 <td><img src="res/jzl.png" onclick="zoom(-10);" /></td>
-                <td><img src="res/jd.png" onmousedown="clearInterval(joyInterval); joyInterval = setInterval(function(){translateArbol(translatex, translatey += 5)}, 20);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jd.png" onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" /></td>
                 <td></td>
             </tr>
         </table>
     </div>
 
     <!--titulo--------------------------------------------------------------------------------------------------->
-    <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:80px;">
-        <div class="titulo0" style="cursor: pointer;" onclick="doOpen('help.html');"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+    <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
+        <div class="titulo0" style="cursor: pointer;" onclick="doOpen('help.html');"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</nobr></div>
         <div class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
         <div class="titulo2"><nobr>Democracia interactiva</nobr></div>
         <div id="adminOptions">
@@ -122,16 +139,15 @@
     </div>
 
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 10px; position: absolute; left:10px; top:250px; color: gray; border: 1px solid gray">
+    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 10px; position: absolute; left:10px; top:210px; color: gray; border: 1px solid gray">
         <div class="titulo2"><nobr><b>Consenso</b></nobr></div>
         <div id = "usuarios" class="titulo3"></div>
-        <div id = "activos" class="titulo3"></div>
         <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
         <div id = "maxNoPc" class="titulo3" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>
     </div>
 
     <!--menuppal--------------------------------------------------------------------------------------------------->
-    <div id="menuppal" class="center" style="visibility:hidden; width: 800px; height: 600px;">
+    <div id="menuppal" style="position: absolute; visibility:hidden; width: 800px; height: 600px;">
         <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-90px;text-align: center;" class="titulo0"></div>
         <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;" />
         <img id="ppal1" class="btnimg" title="Arbol de debates" src="res/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doArbol();" onmouseover="this.src='res/debates2.png';"  onmouseout="this.src='res/debates.png';"/>
@@ -222,6 +238,8 @@
     </div>
 
 
+    <!--florwait--------------------------------------------------------------------------------------------------->
+    <img id="florWait" src="res/florWait.gif" style="visibility: hidden;position:absolute;" />
 
 </body>
 </html>
