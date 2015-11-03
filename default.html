@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>Nab&uacute</title>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
     <script src="js/main.js"></script>
@@ -16,11 +16,11 @@
     <meta name="robots" content="index,follow">
     <meta name="keywords" content="democracia directa,democracia interactiva,democracia participativa,generador de consensos,cooperativa 2.0,cooperativa integral catalana" />
 </head>
-<body onload="doLoad();" style="overflow:hidden">
+<body onload="doLoad();" style="overflow:hidden"  onresize="resize()">
 
     <!--login--------------------------------------------------------------------------------------------------->
     <img id="loginFlor" src="res/logo.png" style="visibility:hidden; position:absolute;"/>
-    <div id="loginIn" class="ventana" style="visibility:hidden;position:absolute; width: 400px; height: 240px; text-align:center;">
+    <div id="loginIn" class="ventana" style="visibility:hidden;position:absolute; width: 400px; height: 260px; text-align:center;">
         <span class="titulo1" style="cursor: pointer;" onclick="doOpen('help.html');"><font color="blue" size="2">[?]</font>Nab&uacute;</span><br />
         <span class="titulo3">Democracia interactiva</span><br />
         <input id="email" type="text" class="txt" placeholder="email" value="" /><br />
@@ -28,10 +28,11 @@
         <select id="arbolList" class="txt" style="width: 200px;"></select><br />
         <input type="button" class="btn" value="Entrar" onclick="doLogin();" /><br />
         <div id="loginResponse">&nbsp;</div>
+        <div onclick="doAltaUsuario();" style="color:blue; cursor: pointer;">Alta de usuario</div>
         <div onclick="document.location='creararbol.html';" style="color:blue; cursor: pointer;">Crear nueva cooperativa</div>
     </div>
     <div id="tip" class="tip" style="visibility:hidden;position:absolute; text-align:center; display: table-cell; vertical-align: middle"></div>
-    <div id="forkme" style="position:absolute;visibility:hidden;" ><a href="https://github.com/sabtvg/nabu" target="_blank"><img src="res/forkme.png" /></a></div>
+    <div id="forkme" style="position:absolute;visibility:hidden;z-index:1;" ><a href="https://github.com/sabtvg/nabu" target="_blank"><img src="res/forkme.png" /></a></div>
 
     <!--modelos documento--------------------------------------------------------------------------------------------------->
     <div id="modelos" class="center" style="visibility: hidden;" >
@@ -59,9 +60,9 @@
     <div id="pie" style="padding: 5px; position: absolute; font-size: 10px; visibility: hidden;">
         <a href="simulacion.html">ver simulacion</a> - 
         Desarrollo:<a href="http://cooperativa.cat" target="_blank">CIC</a> - 
-        15/9/2015 - 
+        01/11/2015 - 
         <a href="mailto:lania@cooperativa.cat">lania@cooperativa.cat</a> - 
-        Mejor visto en <a href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a> -
+        Mejor visto en <a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a> -
         <font color="red">versi&oacute;n beta</font> - 
         <a href="javascript:doOpen('help.html');">Ayuda</a> -
         <a href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
@@ -75,19 +76,20 @@
                     <td>
                         <img src="res/icono2.png" />
                     </td>
-                    <td class="titulo3">
+                    <td id="noSoportadoMsg" class="titulo3">
                         Nab&uacute; no puede mostrarse<br /> en este navegador
                     </td>
                 </tr>
             </table>
         </div>
     </div>
+
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuNode" class="menu">
         <table>
             <tr>  
                 <td class="menu2">
-                    <a id="btnDownload" href="" target="_blank"><img class="btnimg" title="Descargar esta version" src="res/download.png" /></a> 
+                    <a id="btnDownload" href=""><img class="btnimg" title="Descargar esta version" src="res/download.png" /></a> 
                     <img id="documentoMode" class="btnimg" title="ver documento por partes" src="res/documentoModeOff.png" onclick="doVerDocumentoMode();" />
                     <img class="btnimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
                 </td>
@@ -130,6 +132,9 @@
         <div class="titulo0" style="cursor: pointer;" onclick="doOpen('help.html');"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</nobr></div>
         <div class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
         <div class="titulo2"><nobr>Democracia interactiva</nobr></div>
+        <div id="userOptions">
+            <div class="titulo3" style="cursor: pointer;" onclick="document.location='verusuarios.html';"><nobr><font color="blue">Usuarios</font></nobr></div>
+        </div>
         <div id="adminOptions">
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='modificararbol.html';"><nobr><font color="blue">Arbol</font></nobr></div>
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='modelos.html';"><nobr><font color="blue">Modelos</font></nobr></div>
@@ -184,6 +189,20 @@
         <input id="repeat" type="password" class="txt" placeholder="Repitela" value=""/><br />
         <input type="button" class="btn" value="Cambiar" onclick="doCambiarClave();" /><input type="button" class="btn" value="Cancelar" onclick="doHideCambiarClave();" /><br />
         <div id="cambiarClaveMsg"></div>
+    </div>
+
+    <!--alta usuario--------------------------------------------------------------------------------------------------->
+    <div id="altaUsuario" class="ventana" style="position: absolute; width: 330px; height: 330px; text-align:center; visibility: hidden; opacity: 1;">
+        <span class="titulo2">Alta de usuario</span><br /><br />
+        El alta de usuarios es administrada manualmente.<br /><br />
+        Selecciona la cooperativa<br /> y completa tus datos.<br />
+        Recibiras un email con tus datos de acceso.<br /><br />
+        <select id="altaUsuarioArbolList" class="txt" style="width: 200px;"></select><br />
+        <input id="altaUsuarioNombre" type="text" class="txt" placeholder="Nombre completo" value="" /><br />
+        <input id="altaUsuarioEmail" type="text" class="txt" placeholder="Email" value="" /><br />
+        <input type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
+        <input type="button" class="btn" value="Cancelar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, window.innerHeight / 2 - 330 / 2, -380, TWEEN.Easing.Cubic.Out);" /><br />
+        <div id="altaUsuarioMsg"></div>
     </div>
 
     <!--documento--------------------------------------------------------------------------------------------------->

@@ -72,10 +72,11 @@
                         var usuarios = JSON.parse(data);
                         var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
                         s += "<tr>"
-                        s += "<td style='width:220px;'><b>Nombre</b></td>";
+                        s += "<td style='width:200px;'><b>Nombre</b></td>";
                         s += "<td style='width:220px;'><b>Email</b></td>";
-                        s += "<td style='width:220px;'><b>Ultimo acceso</b></td>";
+                        s += "<td style='width:120px;'><b>Ultimo acceso</b></td>";
                         s += "<td style='width:70px;'><b>Activo</b></td>";
+                        s += "<td style='width:70px;'><b>Email</b></td>";
                         s += "<td style='width:70px;'></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
@@ -85,6 +86,7 @@
                             s += "<td style='width:220px;'>" + usu.email + "</td>";
                             s += "<td style='width:220px;'>" + usu.sLastLogin + "</td>";
                             s += "<td style='width:70px;'>" + (usu.isActive ? "Activo" : "Inactivo") + "</td>";
+                            s += "<td style='width:70px;'><div class='titulo3' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'><nobr><font color='blue'>[Enviar]</font></nobr></div></td>";
                             if (!usu.isAdmin)
                                 s += "<td><div class='titulo3' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'><nobr><font color='blue'>[Borrar]</font></nobr></div></td>";
                             else
@@ -96,6 +98,21 @@
                         document.getElementById("usuarios").innerHTML = s;
                     }
                 });
+        }
+
+        function doEnviarMail(email) {
+            getHttp("doArbol.aspx?actn=sendMailWelcome&arbol=" + usuario.arbol + "&email=" + email,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+                    }
+                });
+
         }
 
         function doBorrarUsuario(email) {

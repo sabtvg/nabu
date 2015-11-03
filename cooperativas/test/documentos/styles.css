@@ -2,7 +2,6 @@
     font-family: verdana, Geneva, Tahoma, sans-serif;
     background-image: url("res/background.jpg");    
     font-size: 14px;
-    background-size: cover;
 }
 
 .node {
@@ -130,6 +129,7 @@
     border-radius: 6px;
     background-color: #CCFFCC;
     font-size: 12px;    
+    word-wrap: break-word;
     overflow: auto;
 }
 
@@ -162,6 +162,8 @@
 .texto {
     margin: 5px;
     font-size: 14px;
+    word-wrap: break-word;
+    word-break: break-all;
     overflow: auto;
 }
 

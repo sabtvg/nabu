@@ -23,7 +23,7 @@ namespace nabu
             if (Application["aplicacion"] == null)
             {
                 Application.Lock();
-                Application["aplicacion"] = new Aplicacion();
+                Application["aplicacion"] = new Aplicacion(Server);
                 Application.UnLock();
             }
             app = (Aplicacion)Application["aplicacion"];
@@ -36,13 +36,11 @@ namespace nabu
                 //limpio flores caducadas periodicamente
                 verifyFloresCaducadas();
 
-                //envio mail de logs si toca
-                verifyLogMail();
-
                 //proceso peticiones
                 Arbol a;
-                string ret = ""; 
-                
+                string ret = "";
+                string msg;
+
                 if (actn != null)
                 {
                     switch (actn.ToLower())
@@ -105,6 +103,27 @@ namespace nabu
                             app.addLog("client exception", Request.UserHostAddress, Request["arbol"], Request["email"], Request["flag"] + " -- " + Request["message"] + " -- " + Request["stack"]);
                             break;
 
+                        case "sendmailwelcome":
+                            a = getArbol(Request["arbol"]);
+                            lock (a)
+                            {
+                                string url = Request.UrlReferrer.OriginalString.Substring(0, Request.UrlReferrer.OriginalString.LastIndexOf("/"));
+                                Usuario u = a.getUsuario(Request["email"]);
+                                msg = Tools.sendMailWelcome(Request["arbol"], Request["email"], u.clave, url, Server.MapPath("mails"));
+                            }
+                            Response.Write(msg);
+                            break;
+
+                        case "sendmailalta":
+                            a = getArbol(Request["arbol"]);
+                            lock (a)
+                            {
+                                Usuario u = a.getAdmin();
+                                msg = Tools.sendMailAlta(Request["arbol"], u.email, Request["nombre"], Request["email"], Server.MapPath("mails"));
+                            }
+                            Response.Write(msg);
+                            break;
+
                         case "getconfig":
                             //plataformas cliente reconocidas
                             //Type=Chrome45;Name=Chrome;Version=45.0;Platform=WinNT;Cookies=True
@@ -116,22 +135,12 @@ namespace nabu
                             cnf.browser = Request.Browser.Browser;
                             cnf.type = Request.Browser.Type;
                             cnf.version = Request.Browser.Version;
+                            cnf.width = int.Parse(Request["width"]);
+                            cnf.height = int.Parse(Request["height"]);
 
                             ret = Tools.toJson(cnf);
                             Response.Write(ret);
                             app.addLog("getConfig", Request.UserHostAddress, "", "", getClientBrowser(Request) + ";width=" + Request["width"] + ";height=" + Request["height"]);
-                            break;
-
-                        case "getmodelosdocumento":
-                            a = getArbol(Request["arbol"]);
-                            lock (a)
-                            {
-                                a.ts = DateTime.Now;
-                                a.actualizarModelosEnUso();
-                                //envio
-                                ret = Tools.toJson(a.modelosDocumento);
-                            }
-                            Response.Write("{\"msg\":\"\", \"modelos\":" + ret + "}");
                             break;
 
                         case "desactivarmodelo":
@@ -252,8 +261,8 @@ namespace nabu
                             break;
 
                         case "creartemamodelo":
-                            string titulo2 = Request["titulo"];
-                            string tip = Request["tip"];
+                            string titulo2 = Server.HtmlEncode(Request["titulo"]);
+                            string tip = Server.HtmlEncode(Request["tip"]);
                             int maxLen = int.Parse(Request["maxLen"]);
                             int indexSeccion2 = int.Parse(Request["indexSeccion"]);
 
@@ -308,7 +317,7 @@ namespace nabu
                             break;
 
                         case "updatearbol":
-                            a = updateArbol(Request["arbol"], Request["objetivo"], Request["URLEstatuto"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]));
+                            a = updateArbol(Request["arbol"], Server.HtmlEncode(Request["objetivo"]), Request["URLEstatuto"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]));
                             Response.Write("Arbol actualizado");
                             break;
 
@@ -336,7 +345,8 @@ namespace nabu
                             a = getArbol(Request["arbol"]);
                             lock (a)
                             {
-                                Response.AddHeader("Content-Disposition", "Attachment;filename=" + a.nombre + ".txt");
+                                Nodo n = a.getNodo(int.Parse(Request["id"]));
+                                Response.AddHeader("Content-Disposition", "Attachment;filename=" + a.nombre + "_" + n.nombre + ".txt");
                             }
                             Response.Write(download(int.Parse(Request["id"]), Request["arbol"]));
                             app.addLog("download", Request.UserHostAddress, Request["arbol"], "", "nodo=" + Request["id"]);
@@ -369,6 +379,18 @@ namespace nabu
                             doSimulacionLive(Request["arbol"], coopProb);
 
                             Response.Write(doSimulacionLive(Request["arbol"], coopProb));
+                            break;
+
+                        case "getmodelosdocumento":
+                            a = getArbol(Request["arbol"]);
+                            lock (a)
+                            {
+                                a.ts = DateTime.Now;
+                                a.actualizarModelosEnUso();
+                                //envio
+                                ret = Tools.toJson(a.modelosDocumento);
+                            }
+                            Response.Write("{\"msg\":\"\", \"modelos\":" + ret + "}");
                             break;
 
                         case "crearsimulacion":
@@ -406,35 +428,6 @@ namespace nabu
                             app.addLog("crearSimulacion", Request.UserHostAddress, "", "", "Simulacion creada");
                             break;
 
-                        case "sendlogmail":
-                            Response.Write(sendLogMail());
-                            break;
-
-                        case "getlogs":
-                            string serverAdmin = System.Configuration.ConfigurationManager.AppSettings["serverAdmin"];
-                            //por ahora entrego logs a cualquiera
-                            //if (Request["email"] == serverAdmin){
-                                //el usuario es el administrador del servidor, envio logs
-                                ret = "[";
-                                lock (app.logs)
-                                {
-                                    foreach (Log l in app.logs)
-                                    {
-                                        ret += "{\"accion\":\"" + l.accion + "\",";
-                                        ret += "\"ip\":\"" + l.ip + "\",";
-                                        ret += "\"email\":\"" + l.email + "\",";
-                                        ret += "\"arbol\":\"" + l.arbol + "\",";
-                                        ret += "\"ts\":\"" + l.ts + "\",";
-                                        ret += "\"descripcion\":\"" + l.descripcion + "\"},";
-                                    }
-                                }
-                                if (ret != "[") ret = ret.Substring(0, ret.Length - 1);
-                                Response.Write(ret + "]");
-                            //}
-                            //else
-                            //    throw new appException("Usuario invalido para obtener logs de servidor");
-                            break;
-
                         default:
                             throw new appException("Peticion no reconocida");
                     }
@@ -457,7 +450,6 @@ namespace nabu
 
                 Response.Write("Error=" + ex.Message);
                 app.addLog("server exception", "", "", "", s);
-                log(ex);
             }
             Response.End();
         }
@@ -488,67 +480,6 @@ namespace nabu
 
                 return s;
             }
-        }
-
-        public void verifyLogMail()
-        {
-            if (DateTime.Now.Subtract(app.lastLogSent).TotalHours > 24)
-            {
-                //hora de enviar logs
-                sendLogMail();
-            }
-        }
-
-        public string sendLogMail()
-        {
-            string logs = "";
-            string ret = "enviado";
-            lock (app)
-            {
-                app.lastLogSent = DateTime.Now;
-
-                logs = "<h1>Nab&uacute;</h1>";
-                logs = "<h2>Logs: " + app.lastLogSent.ToShortDateString() + "</h2>";
-                logs = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: small;'>";
-                logs += "<tr>";
-                logs += "<td style='width:120px;'><b>IP</b></td>";
-                logs += "<td style='width:120px;'><b>Email</b></td>";
-                logs += "<td style='width:120px;'><b>Arbol</b></td>";
-                logs += "<td style='width:120px;'><b>TS</b></td>";
-                logs += "<td style='width:800px;'><b>Descripcion</b></td>";
-                logs += "</tr>";
-                Log l;
-                while (app.logs.Count > 0)
-                {
-                    l = app.logs[0];
-                    logs += "<tr>";
-                    logs += "<td>" + l.ip + "</td>";
-                    logs += "<td>" + l.email + "</td>";
-                    logs += "<td>" + l.arbol + "</td>";
-                    logs += "<td>" + l.ts + "</td>";
-                    logs += "<td>" + l.descripcion + "</td>";
-                    logs += "</tr>";
-                    app.logs.RemoveAt(0);
-                }
-                logs += "</table>";
-                
-
-                //guardo en disco
-                string fname= app.lastLogSent.Day + "-" + app.lastLogSent.Month + "-" + app.lastLogSent.Year;
-                System.IO.File.WriteAllText(Server.MapPath("cooperativas") + "\\Logs" +  fname + ".html", logs);
-            }
-            //envio
-            try
-            {
-                string serverAdmin = System.Configuration.ConfigurationManager.AppSettings["serverAdmin"];
-                Tools.sendMail(serverAdmin, "Nabu Logs", logs);
-            }
-            catch (Exception ex)
-            {
-                ret = ex.Message;
-                log(ex);
-            }
-            return ret;
         }
 
         public string download(int id, string arbol)
@@ -585,7 +516,7 @@ namespace nabu
                         foreach (TextoTema tt in op.textos)
                         {
                             ret += "Titulo: " + tt.titulo + "\r\n";
-                            ret += tt.texto + "\r\n\r\n";
+                            ret += tt.texto.Replace("\n","\r\n").Replace("&quot;","\"") + "\r\n\r\n";
                         }
                         ret += "\r\n";
                         ret += "\r\n";
@@ -609,10 +540,10 @@ namespace nabu
                     Nodo mayor = a.getMayorAgregar(0);
                     Nodo menor = a.getMenorQuitar(mayor.id);
 
-                    if (mayor != menor && menor.flores > 0)
+                    if (mayor != menor && menor.flores > 0 && !mayor.consensoAlcanzado)
                     {
                         Usuario u = a.quitarFlor(menor);
-                        a.asignarflor(u, mayor);
+                        try { a.asignarflor(u, mayor); } catch {}
                     }
                 }
                 else if (action > 2f/4f) {
@@ -620,10 +551,10 @@ namespace nabu
                     var mayor = a.getMayorQuitar(0);
                     var menor = a.getMenorAgregar(mayor.id);
 
-                    if (mayor != menor && mayor.flores > 0)
+                    if (mayor != menor && mayor.flores > 0 && !menor.consensoAlcanzado)
                     {
                         Usuario u = a.quitarFlor(mayor);
-                        a.asignarflor(u, menor);
+                        try { a.asignarflor(u, menor); } catch {}
                     }
                 }
                 else if (action > 1f / 4f)
@@ -682,17 +613,6 @@ namespace nabu
                 ret = Tools.toJson(a.getArbolPersonal("Prueba"));
             }
             return ret;
-        }
-
-        public void log(Exception ex)
-        {
-            string s = "---------------------" + DateTime.Now + "\r\n";
-            s += "Message:" + ex.Message + "\r\n";
-            s += "REMOTE_ADDR:" + Request.ServerVariables["REMOTE_ADDR"] + "\r\n";
-            s += "Querystring:" + Request.QueryString.ToString() + "\r\n";
-            s += "Form:" + Request.Form.ToString() + "\r\n";
-            s += "Stack:" + ex.StackTrace + "\r\n\r\n";
-            System.IO.File.AppendAllText(Server.MapPath("cooperativas") + "\\log.txt", s);
         }
 
         void verifySave()
@@ -928,9 +848,10 @@ namespace nabu
                 if (u != null)
                 {
                     //login correcto
-                    //devuelvo el arbol personal con las flores de este usuario
+                    //devuelvo el arbol personal con las flores de este usuario y sus modelos
                     u.lastLogin = DateTime.Now;
-                    ret = Tools.toJson(a.getArbolPersonal(u.email));
+                    a.actualizarModelosEnUso();
+                    ret = "{\"msg\":\"\", \"modelos\":" + Tools.toJson(a.modelosDocumento) + ", \"arbolPersonal\":" + Tools.toJson(a.getArbolPersonal(u.email)) + "}";
                 }
                 else
                 {

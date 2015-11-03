@@ -156,9 +156,9 @@ function dibujarArbol(referencia) {
         })
         .attr("dy", function (d) {
             if (d.si && !d.consensoAlcanzado)
-                return "-2.5em";
+                return -40;
             else
-                return ".35em";
+                return 0;
         })
         .attr("transform", function (d) {
             if (d.si && !d.consensoAlcanzado)
@@ -176,31 +176,31 @@ function dibujarArbol(referencia) {
 
     //2da linea de texto
     nodeEnter.append("text")
-    .attr("id", function (d) {
-        return 't2.' + d.id;
-    })
-    .attr("x", function (d) {
-        return 0;
-    })
-    .attr("dy", function (d) {
-        if (d.no && !d.consensoAlcanzado)
-            return "-1.5em";
-        else
-            return ".35em";
-    })
-    .attr("transform", function (d) {
-        if (d.si && !d.consensoAlcanzado)
-            return "rotate(90)";
-        else
-            return "rotate(10)";
-    })
-    .attr("fill", function (d) {
-        if (d.no && !d.consensoAlcanzado)
-            return d.noColor;
-        else
-            return "black";
-    })
-    .attr("text-anchor", function (d) { return "middle"; });
+        .attr("id", function (d) {
+            return 't2.' + d.id;
+        })
+        .attr("x", function (d) {
+            return 0;
+        })
+        .attr("dy", function (d) {
+            if (d.si && !d.consensoAlcanzado)
+                return -40 + 16 * scale;
+            else
+                return 0;
+        })
+        .attr("transform", function (d) {
+            if (d.si && !d.consensoAlcanzado)
+                return "rotate(90)";
+            else
+                return "rotate(10)";
+        })
+        .attr("fill", function (d) {
+            if (d.no && !d.consensoAlcanzado)
+                return d.noColor;
+            else
+                return "black";
+        })
+        .attr("text-anchor", function (d) { return "middle"; });
 
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
@@ -513,7 +513,7 @@ function getNodo2(padre, id) {
 
 function docClick(d) {
     if (!arbolPersonal.simulacion)
-        doOpen('arboles/' + d.arbol + '/documentos/' + d.fname + '.html');
+        doOpen('cooperativas/' + d.arbol + '/documentos/' + d.fname + '.html');
 }
 
 function florClick(d) {

@@ -11,5 +11,7 @@ namespace nabu
         public string browser = ""; //tipo de navegador
         public string type = "";
         public string version = "";
+        public int width;
+        public int height;
     }
 }

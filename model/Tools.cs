@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Drawing;
 
+
 namespace nabu
 {
     public class point3D
@@ -194,29 +195,60 @@ namespace nabu
             return new Point((int)(Math.Cos(angRad) * mod), (int)(Math.Sin(angRad) * mod));
         }
 
-        public static void sendMail(string to, string subject, string body){
+        public static string sendMailAlta(string arbol, string to, string nombre, string email, string basepath)
+        {
+            string msg = System.IO.File.ReadAllText(basepath + "\\alta.html");
+            msg = msg.Replace("%1", nombre);
+            msg = msg.Replace("%2", email);
+            msg = msg.Replace("%3", arbol);
+
+            return sendMail(to, "Solicitud de alta en [" + arbol + "]", msg);
+        }
+
+        public static string sendMailWelcome(string arbol, string to, string clave, string url, string basepath)
+        {
+            string msg = System.IO.File.ReadAllText(basepath + "\\welcome.html");
+            msg = msg.Replace("%1", url);
+            msg = msg.Replace("%2", to);
+            msg = msg.Replace("%3", clave);
+            msg = msg.Replace("%4", arbol);
+
+            return sendMail(to, "Alta Nabú", msg);
+        }
+
+        public static string sendMail(string to, string subject, string body)
+        {
             //envio por mail
             System.Net.Mail.MailMessage msg = new System.Net.Mail.MailMessage();
             string SMTPURL = System.Configuration.ConfigurationManager.AppSettings["SMTPURL"];
             string from = System.Configuration.ConfigurationManager.AppSettings["SMTPFrom"];
             string user = System.Configuration.ConfigurationManager.AppSettings["SMTPUser"];
             string pass = System.Configuration.ConfigurationManager.AppSettings["SMTPPass"];
+            string ret = "Enviado";
 
             if (SMTPURL != "")
             {
-                msg.From = new System.Net.Mail.MailAddress(from, from);
-                msg.Body = body;
-                msg.IsBodyHtml = true;
-                msg.Subject = subject;
-                msg.To.Add(new System.Net.Mail.MailAddress(to, to));
+                try
+                {
+                    msg.From = new System.Net.Mail.MailAddress(from, from);
+                    msg.Body = body;
+                    msg.IsBodyHtml = true;
+                    msg.Subject = subject;
+                    msg.To.Add(new System.Net.Mail.MailAddress(to, to));
 
-                System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient(SMTPURL);
-                smtp.EnableSsl = false;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new System.Net.NetworkCredential(user, pass);
-                smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
-                smtp.Send(msg);
+                    System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient(SMTPURL);
+                    smtp.EnableSsl = true;
+                    smtp.UseDefaultCredentials = true;
+                    smtp.Credentials = new System.Net.NetworkCredential(user, pass);
+                    smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+                    smtp.Send(msg);
+                }
+                catch (Exception ex)
+                {
+                    ret = "Error=" + ex.Message;
+                }
             }
+            return ret;
         }
     }
 }

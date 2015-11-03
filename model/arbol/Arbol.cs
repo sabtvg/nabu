@@ -24,6 +24,7 @@ namespace nabu
         public DateTime ts = DateTime.Now;
         public string URLEstatuto = "";
         public string URL = ""; //url base del arbol
+        public DateTime lastBackup = DateTime.Now.AddHours(-1);
 
         //modelos de documento para este arbol
         public List<ModeloDocumento> modelosDocumento = new List<ModeloDocumento>();
@@ -241,6 +242,15 @@ namespace nabu
             return null;
         }
 
+        private bool comprobarConsenso()
+        {
+            List<Nodo> nodos = toList();
+            foreach (Nodo n in nodos)
+                if (comprobarConsenso(n))
+                    return true;
+            return false;
+        }
+
         private bool comprobarConsenso(Nodo n)
         {
             bool ret = false;
@@ -279,7 +289,7 @@ namespace nabu
                     ld.fname = fname;
                     ld.arbol = nombre;
                     ld.objetivo = objetivo;
-                    ld.URL = URL + "/arboles/" + nombre + "/documentos/" + fname + ".html";
+                    ld.URL = URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html";
                     logDocumentos.Add(ld);
                     
                     //marco a todos los nodos del debate
@@ -310,10 +320,19 @@ namespace nabu
         public void save(string folderPath)
         {
             string json = Tools.toJson(this);
-            string filepath = folderPath + "/" + nombre + ".json";
+            string filepath = folderPath + "\\" + nombre + ".json";
 
             if (!System.IO.Directory.Exists(folderPath))
                 System.IO.Directory.CreateDirectory(folderPath);
+            
+            //copa de seguridad
+            if (DateTime.Now.Subtract(lastBackup).TotalDays >= 1)
+            {
+                string date = DateTime.Now.Year.ToString("0000") + "-" + DateTime.Now.Month.ToString("00") + "-" + DateTime.Now.Day.ToString("00") + " " + DateTime.Now.Hour.ToString("00") + "-" + DateTime.Now.Minute.ToString("00"); 
+                string bkpath = folderPath + "/" + nombre + " " + date + ".json";
+                System.IO.File.Copy(filepath, bkpath);
+                lastBackup = DateTime.Now;
+            }
 
             System.IO.StreamWriter fs = System.IO.File.CreateText(filepath);
             fs.Write(json);
@@ -362,7 +381,7 @@ namespace nabu
 
             html += "<div class='titulo2'>" + fname + "</div>";
             html += "<div class='titulo2'>" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</div>";
-            html += "<div class='titulo2'><a target='_blank' href='" + URL + "/arboles/" + nombre + "/documentos/" + fname + ".html'>" + URL + "/arboles/" + nombre + "/documentos/" + fname + ".html</a></div>";
+            html += "<div class='titulo2'><a target='_blank' href='" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html'>" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html</a></div>";
 
             for(int i = pathn.Count - 2; i >= 0; i--) //escribo en orden inverso
             {
@@ -589,6 +608,9 @@ namespace nabu
 
                 //actualizo negados
                 actualizarNegados();
+
+                //veo si algun nodo alcanza el consenso
+                comprobarConsenso();
             }
             else
                 throw new Exception("El nodo no tiene flores para quitar");
@@ -613,6 +635,9 @@ namespace nabu
 
             //actualizo negados
             actualizarNegados();
+
+            //veo si algun nodo alcanza el consenso
+            comprobarConsenso();
 
             return ret;
         }

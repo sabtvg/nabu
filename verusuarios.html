@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+
+        function doLoad() {
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                document.getElementById("todo").style.top = '30px';
+                document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
+                document.getElementById("todo").style.height = (window.innerHeight - 100).toFixed(0) + 'px';
+                document.getElementById("usuarios").style.height = (window.innerHeight - 200).toFixed(0) + 'px';
+
+                //cargo datos iniciales
+                var vals = cookie.split("|");
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+
+                getListaUsuarios();
+            }
+        }
+
+        function getListaUsuarios() {
+            getHttp("doArbol.aspx?actn=getusuarios&arbol=" + usuario.arbol,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        //he recibido los usuarios
+                        var usuarios = JSON.parse(data);
+                        var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
+                        s += "<tr>"
+                        s += "<td style='width:370px;'><b>Nombre</b></td>";
+                        s += "<td style='width:370px;'><b>Email</b></td>";
+                        s += "<td style='width:70px;'><b>Activo</b></td>";
+                        s += "</tr>"
+                        for (var i in usuarios) {
+                            var usu = usuarios[i];
+                            s += "<tr>"
+                            s += "<td style='width:220px;'>" + usu.nombre + "</td>";
+                            s += "<td style='width:220px;'>" + usu.email + "</td>";
+                            s += "<td style='width:70px;'>" + (usu.isActive ? "Activo" : "Inactivo") + "</td>";
+                            s += "</tr>"
+                        }
+                        s += "</table>";
+
+                        document.getElementById("usuarios").innerHTML = s;
+                    }
+                });
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+
+        <div id="todo" class="ventana" style="text-align: left;width:877px;top: 100px;position: absolute;">
+            <nobr>
+                <span class="titulo1">Nab&uacute;</span>
+                <img src="res/icono2.png" />
+            </nobr><br />
+            <span class="titulo2">Usuarios</span><br />
+
+            <br />
+
+            <div id="usuarios" style="overflow:scroll;"></div>
+            <br />
+
+        </div>
+
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+    </body>
+</html>

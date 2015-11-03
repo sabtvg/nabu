@@ -24,12 +24,18 @@ var documentoModeOn = false;
 var refreshArbolInterval = 10000; //10seg
 var lastArbolRecibidoTs = (new Date()).getTime();
 var joyInterval;
+var myWidth=0;
+var myHeight = 0;
+var textAreas;
 
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
 
 //tipo de visualizacion
 var visual;  //Chrome, Zafari, InternetExplorer
+
+//config general del sistema
+var config;
 
 //arbol y usuario con sus flores
 var arbolPersonal;
@@ -55,6 +61,12 @@ function doLoad() {
                 //navegador no soporta nabu
                 document.getElementById("florWait").style.visibility = "hidden";
                 document.getElementById("noSoportado").style.visibility = "visible";
+                document.getElementById("noSoportadoMsg").innerHTML = "Nab&uacute; no puede mostrarse<br /> en esta versi&oacute;n de navegador";
+            }
+            else if (!visual.screen){
+                document.getElementById("florWait").style.visibility = "hidden";
+                document.getElementById("noSoportado").style.visibility = "visible";
+                document.getElementById("noSoportadoMsg").innerHTML = "Nab&uacute; no puede mostrarse<br /> en esta resoluci&oacute;n de pantalla.<br> M&iacute;nimo 800x600.";
             }
             else
                 //continuo con la carga
@@ -144,6 +156,10 @@ function doLoad2() {
             //no puedo usar tweens
         }
 
+        //para resize
+        myWidth = window.innerWidth;
+        myHeight = window.innerHeight;
+
         treeScale = scale; //valor default
 
         //si hay cookie, login automatico si no login normal
@@ -167,21 +183,19 @@ function doLoad2() {
                         }
                         else {
                             //login ok, he recibido el arbol
-                            arbolPersonal = JSON.parse(data);
+                            var loginData = JSON.parse(data);
+
+                            //guardo el arbol
+                            arbolPersonal = loginData.arbolPersonal;
+
+                            //guardo los modelos
+                            modelosDocumento = loginData.modelos;
 
                             //guardo cookie
                             setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre, 7);
 
-                            //pido modelos de documentos
-                            getHttp("doArbol.aspx?actn=getModelosDocumento&arbol=" + usuario.arbol,
-                                function (data) {
-                                    //guardo los modelos de oducmentos
-                                    var ret = JSON.parse(data);
-                                    modelosDocumento = ret.modelos;
-
-                                    //activo menuppal
-                                    doMenuppal();
-                                });
+                            //activo menuppal
+                            doMenuppal();
                         }
                     }
                     catch (ex) {
@@ -273,7 +287,7 @@ function animate(time) {
 }
 
 function getConfig(data) {
-    var config = JSON.parse(data);
+    config = JSON.parse(data);
 
     //cargo la lista de arboles
     var list = config.arbolList;
@@ -305,11 +319,20 @@ function doLogin() {
             else {
                 //login effect
                 //login ok, he recibido el arbol
-                arbolPersonal = JSON.parse(data);
+                var loginData = JSON.parse(data);
+
+                //guardo el arbol
+                arbolPersonal = loginData.arbolPersonal;
+
+                //guardo los modelos
+                modelosDocumento = loginData.modelos;
+
                 //guardo cookie
                 setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre, 7);
+
                 //efecto login out
                 loginEffectOut();
+
                 //activo menuppal
                 doMenuppal(data);
             }
@@ -337,6 +360,9 @@ function doMenuppal() {
 
         //adminOptions
         document.getElementById("adminOptions").style.visibility = arbolPersonal.usuario.isAdmin ? "visible" : "hidden";
+    
+        //user options
+        document.getElementById("userOptions").style.visibility = arbolPersonal.usuario.isAdmin ? "hidden" : "visible";
 
         //menuppal
         var menuscale = scale * 1.1;
@@ -404,10 +430,54 @@ function doCloseHelp() {
 }
 
 function showCambiarClave() {
+    document.getElementById("altaUsuarioNombre").value = "";
+    document.getElementById("altaUsuarioEmail").value = "";
     document.getElementById("cambiarClaveMsg").innerHTML = "";
     document.getElementById("cambiarClave").style.top = '240px';
     document.getElementById("cambiarClave").style.visibility = 'visible';
     efectoLeft(document.getElementById("cambiarClave"), 0, -230, 20, TWEEN.Easing.Cubic.Out);
+}
+
+function doAltaUsuario() {
+    var list = config.arbolList;
+    var arbolList = document.getElementById("altaUsuarioArbolList");
+    for (var q in list) {
+        var option = document.createElement("option");
+        option.text = list[q];
+        arbolList.add(option);
+    }
+
+    document.getElementById("altaUsuarioMsg").innerHTML = "";
+    document.getElementById("altaUsuario").style.left = (window.innerWidth / 2 - 330 / 2).toFixed(0) + 'px';
+    document.getElementById("altaUsuario").style.visibility = 'visible';
+    efectoTop(document.getElementById("altaUsuario"), 0, -330, window.innerHeight / 2 - 330 / 2, TWEEN.Easing.Cubic.Out);
+}
+
+function doAltaUsuarioEnviar() {
+    var nombre = document.getElementById("altaUsuarioNombre");
+    var email = document.getElementById("altaUsuarioEmail");
+    var arbolList = document.getElementById("altaUsuarioArbolList");
+    var msg = document.getElementById("altaUsuarioMsg");
+
+    if (nombre == "")
+        msg.innerHTML = "<font color=green>Nombre no puede ser vac&iacute;o</font>";
+    else if (email == "")
+        msg.innerHTML = "<font color=green>Email no puede ser vac&iacute;o</font>";
+    else {
+        getHttp("doArbol.aspx?actn=sendMailAlta&arbol=" + arbolList.value + "&nombre=" + nombre.value + "&email=" + email.value,
+            function (data) {
+                //atrapo el error si es que hay
+                if (data.substring(0, 6) == "Error=") {
+                    //ha habido un error
+                    msg.innerHTML = "<font color=red>" + data + "</font>";
+                }
+                else {
+                    nombre.value = "";
+                    email.value = "";
+                    msg.innerHTML = "<font color=green>Mensaje enviado al administrador</font>";
+                }
+            });
+    }
 }
 
 function doCambiarClave() {
@@ -458,6 +528,9 @@ function recibirArbolPersonal(data) {
 
         //flores disponibles
         document.getElementById("floresDisponibles").innerHTML = getFloresDisponibles().length;
+
+        //reactivo evento resize por si esta descativado
+        reload = true;
     }
 }
 
@@ -513,7 +586,9 @@ function doEnviarPropuesta() {
                 var area = document.getElementById("area_" + s + "_" + t);
                 if (area) {
                     //estaba editando, envio al servidor
-                    post += "{\"maxLen\":" + tema.maxLen + ", \"titulo\":\"" + tema.titulo + "\", \"texto\":\"" + area.value.replace("\"", "") + "\"},";
+                    var txt = area.value.replace(/\"/g, "\\\"");
+                    txt = txt.replace(/\n/g, "\\n");
+                    post += "{\"maxLen\":" + tema.maxLen + ", \"titulo\":\"" + tema.titulo + "\", \"texto\":\"" + txt + "\"},";
                 }
             }
             post = post.substring(0, post.length - 1);
@@ -527,7 +602,7 @@ function doEnviarPropuesta() {
         postHttp("doArbol.aspx?actn=proponer&email=" + arbolPersonal.usuario.email + "&nombre=" + nombre + "&id=" + node.id + "&arbol=" + arbolPersonal.nombre,
             "propuestas=" + post,
             recibirArbolPersonal);
-
+         
         //cierro pregunta de nombre
         document.getElementById("nombrePropuesta").style.visibility = "hidden";
 
@@ -659,7 +734,7 @@ function getDocumento(node) {
         //escribo secciones
         ret += "<tr>";
         ret += "<td style='vertical-align: text-top;width:" + (window.innerWidth * 0.6) + "px;'>";
-        ret += "<table style='width:100%;'><tr><td style='width:150px;'><font size=2><b>Nivel en el arbol " + (i + 1) + "</b></font></td><td><hr></td></tr></table>";
+        ret += "<table style='width:100%;'><tr><td style='width:150px;'><font size=2 color=lightgray><b>Nivel " + (i + 1) + " en el arbol</b></font></td><td><hr></td></tr></table>";
         var seccion = modelo.secciones[i];
         var nodoActual = path[path.length - i - 1];
         for (var t in seccion.temas) {
@@ -669,7 +744,7 @@ function getDocumento(node) {
 
             if (path.length - i > 0) {
                 var propuesta = propuestas[nodoActual.id];
-                ret += "<div style='width:" + (window.innerWidth * 0.6 - 15) + "px;' class='texto'><pre>" + propuesta.textos[t].texto + "</pre></div><br><br>";
+                ret += "<div style='width:" + (window.innerWidth * 0.6 - 15) + "px;' class='texto'>" + propuesta.textos[t].texto.replace(/\n/g, "<br>") + "</div><br><br>";
             }
         }
         if (i < path.length) ret += HTMLFlores(nodoActual);
@@ -681,7 +756,7 @@ function getDocumento(node) {
             var propuesta = propuestas[path[path.length - i - 1].id];
             for (var t in propuesta.comentarios) {
                 //escribo comentario de propuesta
-                ret += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'><pre>" + propuesta.comentarios[t] + "</pre></div>";
+                ret += "<div class='comentario' class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'>" + propuesta.comentarios[t].replace(/\n/g, "<br>") + "</div>";
             }
         }
 
@@ -710,7 +785,7 @@ function doEnviarComentario(id) {
             "comentario=" + comentario.value,
             function (data) {
                 var replaceComentario = document.getElementById("replaceComentario" + id);
-                replaceComentario.innerHTML = "<div class='comentario' style='width:" + (window.innerWidth * 0.2 - 10) + "px'><pre>" + comentario.value + "</pre></div><br>";
+                replaceComentario.innerHTML = "<div class='comentario' style='width:" + (window.innerWidth * 0.2 - 40) + "px'>" + comentario.value.replace(/\n/g, "<br>") + "</div><br>";
             }
         );
     }
@@ -735,7 +810,7 @@ function getAnterior(node) {
             ret += "<br><font class='tema'>" + tema.titulo + ":</font><br>";
 
             //texto de tema
-            ret += "<div class='texto' style='width:" + (window.innerWidth * 0.6 - 15) + "px;'><pre>" + propuesta.textos[t].texto + "</pre></div><br><br>"; //accedo al texto segun el indice de temas
+            ret += "<div class='texto' style='width:" + (window.innerWidth * 0.6 - 15) + "px;'>" + propuesta.textos[t].texto.replace(/\n/g, "<br>") + "</div><br><br>"; //accedo al texto segun el indice de temas
             ret += HTMLFlores(padre);
         }
         ret += "</td>";
@@ -744,7 +819,7 @@ function getAnterior(node) {
         ret += "<td class='comentarios' style='vertical-align: text-top;width: 250px;'>";
         for (var t in propuesta.comentarios) {
             //escribo comentario de propuesta
-            ret += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'><pre>" + propuesta.comentarios[t] + "</pre></div>";
+            ret += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'>" + propuesta.comentarios[t].replace(/\n/g, "<br>") + "</div>";
         }
         ret += "</td>";
         ret += "<tr><td colspan=2><hr></td></tr>";
@@ -758,7 +833,8 @@ function getActual(node) {
     //enseño interfaz para cargar textos de todas las secciones y temas >= al nivel actual
     var ret = '';
     var modelo = getModelo(node.modeloID);
-   
+
+    textAreas = []; //los usa enableTextareas();
     for (var s = node.depth; s < modelo.secciones.length; s++) {
         var seccion = modelo.secciones[s]; //edito el siguiente al nodo actual
 
@@ -766,15 +842,41 @@ function getActual(node) {
         ret += "<div class='actual'>"
         for (var i in seccion.temas) {
             var tema = seccion.temas[i];
+            textAreas.push("area_" + s + "_" + i);
+
             ret += "<br><font class='tema'>" + tema.titulo + ":</font><br>";
             if (tema.tip != "") ret += "<div class='smalltip'>" + tema.tip + "</div>";
-            ret += "<textarea id='area_" + s + "_" + i + "' maxlength='" + tema.maxLen + "' class='actual' style='width:97%; height: 200px;'  placeholder='[Dejalo vac&iacute;o si no quieres definirlo]'></textarea>";
+            ret += "<textarea id='area_" + s + "_" + i + "' maxlength='" + tema.maxLen + "' class='actual' style='width:97%; height: 200px;' ";
+            ret += (i == "0" ? "placeholder='[Dejalo vac&iacute;o si no quieres definirlo]' " : "placeholder='[Completa la secci&oacute;n anterior primero]' ");
+            ret += (i == "0" ? "" : "disabled");
+            ret += " onkeyup='enableTextareas();'></textarea>"; //solo el primero esta habilitado por default
             ret += "<div style='font-size: 12px; text-align: right;'>(max: " + tema.maxLen + ")</div>"
         }
         ret += "</div>";
         ret += "<br><br>";
     }
     return ret;
+}
+
+function enableTextareas() {
+    var textAreaAnterior = null;
+
+    for (var i = 0; i < textAreas.length; i++) {
+        var textArea = document.getElementById(textAreas[i]);
+        if (!textAreaAnterior) {
+            textArea.disabled = false;
+            textArea.placeholder = "[Dejalo vacio si no quieres definirlo]";
+        }
+        else if ((textAreaAnterior && textAreaAnterior.value != "")) {
+            textArea.disabled = false;
+            textArea.placeholder = "[Dejalo vacio si no quieres definirlo]";
+        }
+        else {
+            textArea.disabled = true;
+            textArea.placeholder = "[Completa la seccion anterior primero]";
+        }
+        textAreaAnterior = textArea;
+    }
 }
 
 function HTMLFlores(node) {
@@ -842,6 +944,7 @@ function showPanel2() {
 
                 panelIzq.style.top = "220px";
                 panelIzq.style.width = 400 * scale + "px";
+                panelIzq2.style.width = 400 * scale + "px";
                 panelIzq.style.height = 550 * scale + "px";
 
                 panel = panelIzq2;
@@ -858,6 +961,7 @@ function showPanel2() {
 
                 panelDer.style.top = "220px";
                 panelDer.style.width = 400 * scale + "px";
+                panelDer2.style.width = 400 * scale + "px";
                 panelDer.style.height = 550 * scale + "px";
 
                 panel = panelDer2;
@@ -877,7 +981,7 @@ function showPanel2() {
             for (var i in propuesta.textos) {
                 var textoTema = propuesta.textos[i];
                 s += "<div class='tema'>" + textoTema.titulo + "</div><br>";
-                s += "<div class='texto'><pre>" + textoTema.texto + "</pre></div><br><br>";
+                s += "<div class='texto' style='width:" + (400 * scale - 30) + "px;'>" + textoTema.texto.replace(/\n/g,"<br>") + "</div><br><br>";
             }
             s += HTMLFlores(node);
 
@@ -885,7 +989,7 @@ function showPanel2() {
             if (propuesta.comentarios.length > 0) s += "<br>Comentarios:"
             for (var t in propuesta.comentarios) {
                 //escribo comentario de propuesta
-                s += "<div class='comentario'><pre>" + propuesta.comentarios[t] + "</pre></div>";
+                s += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'>" + propuesta.comentarios[t].replace(/\n/g, "<br>") + "</div>";
             }
 
             panel.innerHTML = s;
@@ -955,6 +1059,7 @@ function doAtras() {
         setTimeout(loginEffectIn, 600); //doy tiempo al menu a irse
 
         document.getElementById("adminOptions").style.visibility = "hidden";
+        document.getElementById("userOptions").style.visibility = "hidden";
 
         document.getElementById("atras").style.visibility = "hidden";
         root = { "name": "?" };
@@ -975,7 +1080,7 @@ function doAtras() {
         dibujarArbol(arbolPersonal.raiz);
 
         document.getElementById("joystick").style.visibility = 'hidden';
-
+        document.getElementById("modelos").style.visibility = "hidden";
         document.getElementById("panelConsenso").style.visibility = 'hidden';
         document.getElementById("documento").style.visibility = 'hidden';
         document.getElementById("btnProponer").style.visibility = 'hidden';
@@ -1082,3 +1187,10 @@ function pedirArbol() {
     }
 }
 
+function resize() {
+    //evito pequeños resize
+    if (Math.abs(window.innerHeight-myHeight) > 100 || Math.abs(window.innerWidth-myWidth) > 100)
+        document.location.reload();
+    myWidth = window.innerWidth;
+    myHeight = window.innerHeight;
+}

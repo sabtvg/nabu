@@ -22,21 +22,39 @@ function msg(txt) {
     setTimeout(function () { msgDiv.className = ""; msgDiv.innerHTML = ""; }, 4000);
 }
 
-function doOpen(url) {
+function doOpen(url, width, height) {
     getHttp(url, function (data) {
-        if (visual.browser == "Safari") {
-            document.getElementById("help").style.left = "50px";
-            document.getElementById("help").style.top = "50px";
-            document.getElementById("help").style.width = (window.innerWidth - 110) + "px";
+
+        if (width) {
+            document.getElementById("help").style.left = (window.innerWidth / 2 - width / 2).toFixed(0) + "px";
+            document.getElementById("help").style.width = width + "px";
         }
         else {
-            document.getElementById("help").style.left = "100px";
-            document.getElementById("help").style.width = (window.innerWidth - 300) + "px";
-            efectoTop(document.getElementById("help"), 0, -window.innerHeight + 150, 75, TWEEN.Easing.Cubic.Out);
+            if (visual.browser == "Safari") {
+                document.getElementById("help").style.left = "50px";
+                document.getElementById("help").style.width = (window.innerWidth - 110) + "px";
+            }
+            else {
+                document.getElementById("help").style.left = "100px";
+                document.getElementById("help").style.width = (window.innerWidth - 300) + "px";
+            }
+        }
+
+        if (height) {
+            document.getElementById("help").style.top = (window.innerHeight / 2 - height / 2).toFixed(0) + "px";
+            document.getElementById("help").style.height = height + "px";
+        }
+        else {
+            if (visual.browser == "Safari") {
+                document.getElementById("help").style.top = "50px";
+            }
+            else {
+                efectoTop(document.getElementById("help"), 0, -window.innerHeight + 150, 75, TWEEN.Easing.Cubic.Out);
+            }
+            document.getElementById("help").style.height = (window.innerHeight - 150) + "px";
         }
 
         document.getElementById("helpContent").innerHTML = data;
-        document.getElementById("help").style.height = (window.innerHeight - 150) + "px";
         document.getElementById("help").style.visibility = "visible";
     });
 }
@@ -72,7 +90,7 @@ function getVisualizacion(config) {
 
     if ((visual.browser == "Chrome" && visual.version >= "40") ||
         (visual.browser == "InternetExplorer" && visual.version >= "10") ||
-        (visual.browser == "Firefox" && visual.version >= "40") ||
+        (visual.browser == "Firefox" && visual.version >= "34") ||
         (visual.browser == "Safari" && visual.version >= "6")) {
         visual.level = 10; //completo
         //alert("v10");
@@ -85,6 +103,12 @@ function getVisualizacion(config) {
         visual.level = 0; //no se puede ver
         //alert("v0");
     }
+
+    //tamaño de pantalla minimo
+    if (config.width < 800 || config.height < 600)
+        visual.screen = false; //no se puede ver
+    else
+        visual.screen = true; //resolucion de pantalla correcta
 
     return visual;
 }
