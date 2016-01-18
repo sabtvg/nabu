@@ -58,7 +58,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="altausuario.html" />
     <Content Include="verusuarios.html" />
     <Content Include="favicon.ico" />
     <Content Include="modelos.html" />

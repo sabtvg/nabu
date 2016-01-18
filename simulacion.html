@@ -15,7 +15,6 @@
         var diameter = window.innerHeight / 2;
         var scale = window.innerWidth / 1920;
 
-        var coopProb = 0;
         var stopSim = false;
         var selectedNode; //siempre nulo
         var playing = false;
@@ -31,12 +30,21 @@
         
 
         function doLoad() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+            //atras
+            document.getElementById("atras").style.width = (100 * scalex) + 'px';
+            document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+
             //titulo
             document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
-            document.getElementById("coopProb").value = coopProb;
+
             //joystick
             document.getElementById("joystick").style.visibility = 'visible';
-            document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+            document.getElementById("joystick").style.top = (window.innerHeight - 160) + 'px';
+
+            //background
+            document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
             treeScale = window.innerWidth / 1920; //valor default
 
@@ -72,6 +80,7 @@
                 stopSim = true;
                 playing = false;
                 document.getElementById("startStop").value = "Play";
+                document.getElementById("startStop").className = "btnStop";
                 document.getElementById("sim").style.visibility = sim.style.visibility == "hidden";
             }
             else {
@@ -80,12 +89,16 @@
                 live();
                 playing = true;
                 document.getElementById("startStop").value = "Pausa";
+                document.getElementById("startStop").className = "btnPlay";
             }
         }
 
         function live() {
             var x = getx("", arbolPersonal.raiz); //lista coordenada x de los nodos hoja
             if (x != "") x = x.substring(0, x.length - 1); //quito la , final
+
+            var coopProb;
+            if (document.getElementById("tipo1").checked) coopProb = 0; else coopProb = 1;
 
             getHttp("doArbol.aspx?actn=simulacionLive&coopProb=" + coopProb + "&arbol=" + arbolPersonal.nombre + "&x=" + x,
                 function (data) {
@@ -94,18 +107,24 @@
                     else
                     {
                         //actualizo el arbol recibido
-                        arbolPersonal = JSON.parse(data);
+                        var ret = JSON.parse(data);
 
+                        arbolPersonal = ret.arbolPersonal;
                         dibujarArbol();
-                        actualizarDatosConsenso();
-                        pasos += 1;
 
-                        if (pasos < maxPasos) {
-                            if (!stopSim)
-                                setTimeout(live, 300);
-                        }
-                        else
+                        if (ret.stop)
                             startStop(); //paro la simulacion
+                        else {
+                            actualizarDatosConsenso();
+                            pasos += 1;
+
+                            if (pasos < maxPasos) {
+                                if (!stopSim)
+                                    setTimeout(live, 300);
+                            }
+                            else
+                                startStop(); //paro la simulacion
+                        }
                     }
                 });
         }
@@ -132,17 +151,15 @@
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="Div1" style="padding: 10px; position: absolute; left:10px; top:100px;">
-        <div class="titulo2">Probabilidad de cooperacion</div>
         <nobr>
-        <input class="simtxt" type="button" value="-" onclick="coopProb -= 0.1; if (coopProb < 0) coopProb = 0; document.getElementById('coopProb').value = coopProb.toFixed(2);" />
-        <input class="simtxt" type="text" size="5" id="coopProb" value="0" />
-        <input class="simtxt" type="button" value="+" onclick="coopProb += 0.1; if (coopProb > 1) coopProb = 1; document.getElementById('coopProb').value = coopProb.toFixed(2);" />
+            <input id="tipo1" type="radio" style="width: 30px; height:30px;" value="Diverger" name="tipo" checked /><span style="font-size:24px">Diverger</span>
+            <input id="tipo2" type="radio" style="width: 30px; height:30px;" value="Converger" name="tipo" /><span style="font-size:24px">Converger</span>
         </nobr>
         <br />
         <nobr>
         <input class="simtxt" type="button" value="Reiniciar" onclick="iniciar();" />
         <input class="simtxt" type="button" value="Paso" onclick="live();" />
-        <input id="startStop" class="simtxt" type="button" value="Pausa" onclick="startStop();" />
+        <input id="startStop" class="btnPlay" type="button" value="Pausa" onclick="startStop();" />
         </nobr>
         <div id="nodes" class="titulo1"></div>
     </div>

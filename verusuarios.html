@@ -19,10 +19,18 @@
                 //login normal
                 document.location = 'default.html';
             else {
+                var scalex = window.innerWidth / 1920;
+                var scaley = window.innerHeight / 1080;
+                //atras
+                document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
                 document.getElementById("todo").style.top = '30px';
                 document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
                 document.getElementById("todo").style.height = (window.innerHeight - 100).toFixed(0) + 'px';
                 document.getElementById("usuarios").style.height = (window.innerHeight - 200).toFixed(0) + 'px';
+
+                //background
+                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");

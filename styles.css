@@ -2,7 +2,6 @@
     font-family: verdana, Geneva, Tahoma, sans-serif;
     background-image: url("res/background.jpg");    
     font-size: 14px;
-    background-size: cover;
 }
 
 .node {
@@ -17,6 +16,27 @@
     transform: translate(-50%, -50%) 
 }
 
+.btnPlay {
+    border: 3px solid black;
+    padding: 8px;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+    opacity: 0.6;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin: 4px;
+}
+
+.btnStop {
+    border: 3px solid black;
+    padding: 8px;
+    border-radius: 20px;
+    background-color: #CC0000;
+    opacity: 0.6;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin: 4px;
+}
 
 .simtxt {
     border: 3px solid black;
@@ -181,6 +201,17 @@
     text-align: center;
 }
 
+.smalltip2 {
+    border: 1px solid #FF0000;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #CCCCCC;
+    color: #CC0000;
+    font-size: 12px;
+    text-align: center;
+    margin: 5px;
+}
+
 .smalltip {
     border: 1px solid #FF0000;
     padding: 5px;
@@ -254,6 +285,16 @@
     font-size: 20px;
     font-family: 'Times New Roman' , Times, serif;
     color: red;
+}
+
+.txt2 {
+    margin: 5px;
+    padding: 2px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 6px;
+    background-color: #CCCCCC;
+    font-size: 15px;
 }
 
 .txt {

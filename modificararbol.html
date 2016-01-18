@@ -19,8 +19,15 @@
                 //login normal
                 document.location = 'default.html';
             else {
-                document.getElementById("todo").style.top = '30px';
+                var scalex = window.innerWidth / 1920;
+                var scaley = window.innerHeight / 1080;
+                document.getElementById("todo").style.top = '15px';
                 document.getElementById("todo").style.left = (window.innerWidth / 2 - 628 / 2).toFixed(0) + 'px';
+                //atras
+                document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                //background
+                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");
@@ -77,25 +84,28 @@
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
-
-        <div id="todo" class="ventana" style="text-align: left;width:628px;top: 100px;position: absolute;">
-            <nobr>
-                <span class="titulo1">Nab&uacute;</span>
-                <img src="res/icono2.png" />
-            </nobr><br />
+        <div id="todo" class="ventana" style="text-align: left;width:628px;top: 30px;position: absolute;">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="width: 80px;" class="titulo1">Nab&uacute;</td>
+                    <td style="width: 60px;"><img src="res/icono2.png" /></td>
+                    <td><div id="response" style="text-align:center; font-size:20px;"></div></td>
+                </tr>          
+            </table>
+            <br />
             <span class="titulo2">Modificar &aacute;rbol</span><br />
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
                 <span class="titulo3">Datos del &aacute;rbol</span><br />
-                <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/><br />
-                <input id="objetivo" type="text" class="txt" size="50" placeholder="Objetivo" /><br />
-                <input id="URLEstatuto" type="text" class="txt" size="50" placeholder="URL a documento de estatuto" />
+                <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
+                <input id="objetivo" type="text" class="txt" size="45" placeholder="Objetivo" /><br />
+                <input id="URLEstatuto" type="text" class="txt" size="67" placeholder="URL a documento de estatuto" />
             </div>
             <br />
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
                 <span class="titulo3">Datos del administrador</span><br />
-                <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/><br />
+                <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/>
                 <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
             </div>
             <br />
@@ -119,8 +129,6 @@
 
 
             <input type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> 
-
-            <div id="response"></div>
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->

@@ -13,6 +13,28 @@ namespace nabu
         public bool enUso = false;
         public bool activo = true;
 
+        public ModeloDocumento clone()
+        {
+            ModeloDocumento ret = new ModeloDocumento();
+            ret.nombre = nombre;
+            ret.activo = false;
+            foreach (Seccion s in secciones)
+            {
+                Seccion snueva = new Seccion();
+                foreach(Tema t in s.temas)
+                {
+                    Tema tnueva = new Tema();
+                    tnueva.titulo = t.titulo;
+                    tnueva.tip = t.tip;
+                    tnueva.maxLen = t.maxLen;
+                    snueva.temas.Add(tnueva);
+                }
+
+                ret.secciones.Add(snueva);
+            }
+            return ret;
+        }
+
         public ModeloDocumento crear(int seccion, string titulo, string tip, int maxLen)
         {
             if (secciones.Count > seccion)

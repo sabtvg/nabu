@@ -36,6 +36,7 @@ namespace nabu
         public float minSiPc = 60; //porcentaje minimo de usuarios implicados en el debate (en una rama) para alcanzar consenso
         public float maxNoPc = 15; //porcentaje maximo de usuarios en otras ramas del mismo debate (en una rama) para alcanzar consenso
 
+        [NonSerialized]
         public Random rnd = new Random();
 
         public Nodo getMayorAgregar(int notLikeId) {
@@ -263,7 +264,8 @@ namespace nabu
                 n.negados = getNegados(n);
 
                 //condicion de consenso
-                if (n.flores >= minSiValue &&
+                if (!n.consensoAlcanzado &&
+                    n.flores >= minSiValue &&
                     n.negados <= maxNoValue)
                 {
                     //esta rama ha alcanzado el consenso
@@ -379,9 +381,7 @@ namespace nabu
             else
                 html += "<div class='titulo0'>" + m.nombre + ":" + p.titulo + "</div>";
 
-            html += "<div class='titulo2'>" + fname + "</div>";
             html += "<div class='titulo2'>" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</div>";
-            html += "<div class='titulo2'><a target='_blank' href='" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html'>" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html</a></div>";
 
             for(int i = pathn.Count - 2; i >= 0; i--) //escribo en orden inverso
             {
@@ -394,6 +394,19 @@ namespace nabu
                 }
                 html += "<hr>";
             }
+
+            //firma
+            html += "Documento escrito de forma cooperativa.<br>";
+            html += "Documento ID:" + fname + "<br>";
+            html += "Fecha de consenso: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
+            html += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html'>" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html</a><br>";
+            html += "Cooperativa: " + this.nombre + "<br>";
+            html += "Objetivo: " + this.objetivo + "<br>";
+            html += "Usuarios: " + this.usuarios.Count + "<br>";
+            html += "Activos: " + this.activos + "<br>";
+            html += "A favor (Si &ge; " + this.minSiPc + "%): " + n.flores + "<br>";
+            html += "En contra (No &le; " + this.maxNoPc + "%): " + n.negados + "<br>";
+
             html += "</body>";
 
             System.IO.File.WriteAllText(path + "\\documentos\\" + fname + ".html", html);

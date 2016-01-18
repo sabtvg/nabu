@@ -159,10 +159,37 @@ namespace nabu
                             app.addLog("desactivarModelo", Request.UserHostAddress, Request["arbol"], "", m.nombre);
                             break;
 
-                        case "borrartema":
+                        case "guardartema":
                             int modeloID4 = int.Parse(Request["modeloID"]);
                             int indexSeccion = int.Parse(Request["indexSeccion"]);
                             int indexTema = int.Parse(Request["indexTema"]);
+                            string titulo = Request["titulo"];
+                            string tip = Request["tip"];
+                            int maxLen = int.Parse(Request["maxLen"]);
+                            a = getArbol(Request["arbol"]);
+                            lock (a)
+                            {
+                                a.ts = DateTime.Now;
+                                m = a.getModelo(modeloID4);
+                                if (m.enUso)
+                                    throw new appException("El modelo de documento esta en uso, no se puede modificar");
+                                else
+                                {
+                                    Tema t = m.secciones[indexSeccion].temas[indexTema];
+                                    t.maxLen = maxLen;
+                                    t.tip = tip;
+                                    t.titulo = titulo;                                    
+                                }
+                                //envio
+                                ret = Tools.toJson(a.modelosDocumento);
+                            }
+                            Response.Write("{\"msg\":\"Tema guardado\", \"modelos\":" + ret + "}");
+                            break;
+
+                        case "borrartema":
+                            modeloID4 = int.Parse(Request["modeloID"]);
+                            indexSeccion = int.Parse(Request["indexSeccion"]);
+                            indexTema = int.Parse(Request["indexTema"]);
                             a = getArbol(Request["arbol"]);
                             lock (a)
                             {
@@ -180,8 +207,77 @@ namespace nabu
                             Response.Write("{\"msg\":\"Tema borrado\", \"modelos\":" + ret + "}");
                             break;
 
-                        case "newmodelo":
+                        case "clonarmodelo":
+                            modeloID4 = int.Parse(Request["modeloID"]);
                             string nombre = Request["nombre"];
+
+                            if (nombre == "")
+                                throw new appException("El nombre no puede ser vacio");
+                            else
+                            {
+                                a = getArbol(Request["arbol"]);
+                                lock (a)
+                                {
+                                    a.ts = DateTime.Now;
+                                    m = a.getModelo(modeloID4);
+
+                                    ModeloDocumento m2 = m.clone();
+                                    m2.nombre = nombre;
+                                    a.modelosDocumento.Add(m2);
+
+                                    //envio
+                                    ret = Tools.toJson(a.modelosDocumento);
+                                }
+                                Response.Write("{\"msg\":\"Modelo clonado\", \"modelos\":" + ret + "}");
+                            }
+                            break;
+
+                        case "crearseccion":
+                            modeloID4 = int.Parse(Request["modeloID"]);
+
+                            a = getArbol(Request["arbol"]);
+                            lock (a)
+                            {
+                                a.ts = DateTime.Now;
+                                m = a.getModelo(modeloID4);
+                                if (m.enUso)
+                                    throw new appException("El modelo de documento esta en uso, no se puede modificar");
+                                else if (m.secciones.Count >= 5)
+                                    throw new appException("Maximo 5 secciones");
+                                else
+                                {
+                                    Seccion s = new Seccion();
+                                    m.secciones.Add(s);
+                                }
+                                //envio
+                                ret = Tools.toJson(a.modelosDocumento);
+                            }
+                            Response.Write("{\"msg\":\"Seccion creada\", \"modelos\":" + ret + "}");
+                            break;
+
+                        case "borrarseccion":
+                            modeloID4 = int.Parse(Request["modeloID"]);
+                            indexSeccion = int.Parse(Request["indexSeccion"]);
+
+                            a = getArbol(Request["arbol"]);
+                            lock (a)
+                            {
+                                a.ts = DateTime.Now;
+                                m = a.getModelo(modeloID4);
+                                if (m.enUso)
+                                    throw new appException("El modelo de documento esta en uso, no se puede modificar");
+                                else
+                                {
+                                    m.secciones.RemoveAt(indexSeccion);
+                                }
+                                //envio
+                                ret = Tools.toJson(a.modelosDocumento);
+                            }
+                            Response.Write("{\"msg\":\"Seccion borrada\", \"modelos\":" + ret + "}");
+                            break;
+
+                        case "newmodelo":
+                            nombre = Request["nombre"];
                             if (nombre == "")
                                 throw new appException("El nombre no puede ser vacio");
 
@@ -262,8 +358,8 @@ namespace nabu
 
                         case "creartemamodelo":
                             string titulo2 = Server.HtmlEncode(Request["titulo"]);
-                            string tip = Server.HtmlEncode(Request["tip"]);
-                            int maxLen = int.Parse(Request["maxLen"]);
+                            tip = Server.HtmlEncode(Request["tip"]);
+                            maxLen = int.Parse(Request["maxLen"]);
                             int indexSeccion2 = int.Parse(Request["indexSeccion"]);
 
                             if (titulo2 == "")
@@ -322,7 +418,7 @@ namespace nabu
                             break;
 
                         case "newusuario":
-                            Usuario u2 = newUsuario(Request["nombre"], Request["email"], Request["clave"], Request["arbol"]);
+                            Usuario u2 = newUsuario(Server.HtmlEncode(Request["nombre"]), Request["email"], Request["clave"], Request["arbol"]);
                             Response.Write("Usuario [" + u2.email + "] creado");
                             app.addLog("newUsuario", Request.UserHostAddress, Request["arbol"], Request["email"], Request["nombre"]);
                             break;
@@ -372,13 +468,12 @@ namespace nabu
                             }
 
                             //live
-                            doSimulacionLive(Request["arbol"], coopProb);
-                            doSimulacionLive(Request["arbol"], coopProb);
-                            doSimulacionLive(Request["arbol"], coopProb);
-                            doSimulacionLive(Request["arbol"], coopProb);
-                            doSimulacionLive(Request["arbol"], coopProb);
+                            bool consensoAlcanzado = false;                            
+                            a = getArbol(Request["arbol"]);
+                            for(int pasos = 0; pasos < 10 && !consensoAlcanzado; pasos++)
+                                consensoAlcanzado = consensoAlcanzado || doSimulacionLive(a, coopProb);
 
-                            Response.Write(doSimulacionLive(Request["arbol"], coopProb));
+                            Response.Write("{\"stop\": " + (consensoAlcanzado ? "true" : "false") + ", \"arbolPersonal\":" + Tools.toJson(a.getArbolPersonal("Prueba")) + "}");
                             break;
 
                         case "getmodelosdocumento":
@@ -526,10 +621,9 @@ namespace nabu
             return ret;
         }
 
-        public string doSimulacionLive(string arbol, float coopProb)
+        public bool doSimulacionLive(Arbol a, float coopProb)
         {
-            string ret = "";
-            Arbol a = getArbol(arbol);
+            bool ret = false;
             lock (a)
             {
                 a.ts = DateTime.Now;
@@ -544,6 +638,7 @@ namespace nabu
                     {
                         Usuario u = a.quitarFlor(menor);
                         try { a.asignarflor(u, mayor); } catch {}
+                        if (mayor.consensoAlcanzado) ret = true;
                     }
                 }
                 else if (action > 2f/4f) {
@@ -555,6 +650,7 @@ namespace nabu
                     {
                         Usuario u = a.quitarFlor(mayor);
                         try { a.asignarflor(u, menor); } catch {}
+                        if (menor.consensoAlcanzado) ret = true;
                     }
                 }
                 else if (action > 1f / 4f)
@@ -609,8 +705,6 @@ namespace nabu
                         }
                     }
                 }
-
-                ret = Tools.toJson(a.getArbolPersonal("Prueba"));
             }
             return ret;
         }

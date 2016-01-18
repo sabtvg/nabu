@@ -19,8 +19,18 @@
                 //login normal
                 document.location = 'default.html';
             else {
+                var scalex = window.innerWidth / 1920;
+                var scaley = window.innerHeight / 1080;
+                //atras
+                document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
                 document.getElementById("todo").style.top = '30px';
+                document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
+                document.getElementById("usuarios").style.height = (window.innerHeight - 270) + 'px';
                 document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
+
+                //background
+                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");
@@ -28,9 +38,6 @@
 
                 getListaUsuarios();
             }
-
-            //pantalla
-            document.getElementById("usuarios").style.height = (window.innerHeight - 400) + "px";
         }
 
         function doCrearUsuario() {
@@ -109,7 +116,7 @@
                         document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
                     }
                     else {
-                        document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+                        document.getElementById("response").innerHTML = '<font color=green>' + email + ": " + data + '</font>';
                     }
                 });
 
@@ -136,10 +143,14 @@
 <body onload="doLoad();" style="overflow:hidden">
 
         <div id="todo" class="ventana" style="text-align: left;width:877px;top: 100px;position: absolute;">
-            <nobr>
-                <span class="titulo1">Nab&uacute;</span>
-                <img src="res/icono2.png" />
-            </nobr><br />
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 80px;" class="titulo1">Nab&uacute;</td>
+                <td style="width: 60px;"><img src="res/icono2.png" /></td>
+                <td><div id="response" style="text-align:center; font-size:20px;"></div></td>
+            </tr>          
+        </table>
+            <br />
             <span class="titulo2">Modificar usuarios</span><br />
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
@@ -151,10 +162,8 @@
             </div>
             <br />
 
-            <div id="usuarios" style="height: 800px; overflow:scroll;"></div>
+            <div id="usuarios" style="overflow:scroll;"></div>
             <br />
-
-            <div id="response"></div>
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->

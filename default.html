@@ -32,7 +32,7 @@
         <div onclick="document.location='creararbol.html';" style="color:blue; cursor: pointer;">Crear nueva cooperativa</div>
     </div>
     <div id="tip" class="tip" style="visibility:hidden;position:absolute; text-align:center; display: table-cell; vertical-align: middle"></div>
-    <div id="forkme" style="position:absolute;visibility:hidden;z-index:1;" ><a href="https://github.com/sabtvg/nabu" target="_blank"><img src="res/forkme.png" /></a></div>
+    <div id="forkme" style="position:absolute;visibility:hidden;z-index:0;" ><a href="https://github.com/sabtvg/nabu" target="_blank"><img src="res/forkme.png" /></a></div>
 
     <!--modelos documento--------------------------------------------------------------------------------------------------->
     <div id="modelos" class="center" style="visibility: hidden;" >
@@ -129,9 +129,9 @@
 
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
-        <div class="titulo0" style="cursor: pointer;" onclick="doOpen('help.html');"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</nobr></div>
-        <div class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
-        <div class="titulo2"><nobr>Democracia interactiva</nobr></div>
+        <div id="titulo0" class="titulo0" style="cursor: pointer;" onclick="doOpen('help.html');"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</nobr></div>
+        <div id="titulo1" class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
+        <div id="titulo2" class="titulo2"><nobr>Democracia interactiva</nobr></div>
         <div id="userOptions">
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='verusuarios.html';"><nobr><font color="blue">Usuarios</font></nobr></div>
         </div>

@@ -12,6 +12,7 @@ var frasesDelDia = [
     "No necesitamos representantes.",
     "No te preguntes qu&eacute; puede hacer la cooperativa por ti, <br>preg&uacute;ntate qu&eacute; puedes hacer t&uacute; por ella.",
     "Bienvenid@ al juego de la cooperaci&oacute;n.",
+    "Un consenso no se elige, se construye.",
     "El consenso es un proceso cooperativo"];
 
 var selectedNode;
@@ -24,8 +25,6 @@ var documentoModeOn = false;
 var refreshArbolInterval = 10000; //10seg
 var lastArbolRecibidoTs = (new Date()).getTime();
 var joyInterval;
-var myWidth=0;
-var myHeight = 0;
 var textAreas;
 
 //parametros para consenso
@@ -47,6 +46,8 @@ var modelosDocumento;
 var propuestas = [];
 
 function doLoad() {
+    //background
+    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
     //wait
     document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
     document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
@@ -77,76 +78,8 @@ function doLoad() {
 function doLoad2() {
     try {
         //segunda parte del load
-        //titulo
-        document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
-
-        //pie
-        document.getElementById("pie").style.top = (window.innerHeight - 25) + 'px';
-        document.getElementById("pie").style.left = (window.innerWidth / 2 - 300).toFixed(0) + 'px';
-        document.getElementById("pie").style.visibility = 'visible';
-
-        //frase del dia
-        document.getElementById("tip").innerHTML = frasesDelDia[Math.round(Math.random() * (frasesDelDia.length - 1))];
-
-        //forkme
-        document.getElementById("forkme").style.left = (window.innerWidth - 87) + 'px';
-        document.getElementById("forkme").style.top = '0px';
-        document.getElementById("forkme").style.visibility = 'visible';
-    
-        //resize del menuppal segun pantalla
-        var menuscale = scale * 1.1;
-        document.getElementById("tituloppal").style.width = 800 * menuscale + 'px';
-
-        document.getElementById("menuppal").style.width = 800 * menuscale + 'px';
-        document.getElementById("menuppal").style.height = 600 * menuscale + 'px';
-
-        document.getElementById("ciclo").style.width = 508 * menuscale + 'px';
-        document.getElementById("ciclo").style.height = 526 * menuscale + 'px';
-        document.getElementById("ciclo").style.left = 159 * menuscale + 'px';
-        document.getElementById("ciclo").style.top = 47 * menuscale + 'px';
-
-        document.getElementById("ppal1").style.width = 269 * menuscale + 'px';
-        document.getElementById("ppal1").style.height = 150 * menuscale + 'px';
-        document.getElementById("ppal1").style.left = 15 * menuscale + 'px';
-        document.getElementById("ppal1").style.top = 145 * menuscale + 'px';
-
-        document.getElementById("ppal2").style.width = 269 * menuscale + 'px';
-        document.getElementById("ppal2").style.height = 149 * menuscale + 'px';
-        document.getElementById("ppal2").style.left = 15 * menuscale + 'px';
-        document.getElementById("ppal2").style.top = 292 * menuscale + 'px';
-
-        document.getElementById("ppal3").style.width = 259 * menuscale + 'px';
-        document.getElementById("ppal3").style.height = 84 * menuscale + 'px';
-        document.getElementById("ppal3").style.left = 488 * menuscale + 'px';
-        document.getElementById("ppal3").style.top = 129 * menuscale + 'px';
-
-        document.getElementById("ppal4").style.width = 258 * menuscale + 'px';
-        document.getElementById("ppal4").style.height = 85 * menuscale + 'px';
-        document.getElementById("ppal4").style.left = 487 * menuscale + 'px';
-        document.getElementById("ppal4").style.top = 389 * menuscale + 'px';
-
-        document.getElementById("ppal5").style.width = 124 * menuscale + 'px';
-        document.getElementById("ppal5").style.height = 143 * menuscale + 'px';
-        document.getElementById("ppal5").style.left = 338 * menuscale + 'px';
-        document.getElementById("ppal5").style.top = 31 * menuscale + 'px';
-
-        document.getElementById("ppal6").style.width = 195 * menuscale + 'px';
-        document.getElementById("ppal6").style.height = 79 * menuscale + 'px';
-        document.getElementById("ppal6").style.left = 485 * menuscale + 'px';
-        document.getElementById("ppal6").style.top = 267 * menuscale + 'px';
-
-        document.getElementById("ppal7").style.width = 221 * menuscale + 'px';
-        document.getElementById("ppal7").style.height = 145 * menuscale + 'px';
-        document.getElementById("ppal7").style.left = 285 * menuscale + 'px';
-        document.getElementById("ppal7").style.top = 439 * menuscale + 'px';
-
-        document.getElementById("ppal8").style.width = 159 * menuscale + 'px';
-        document.getElementById("ppal8").style.height = 79 * menuscale + 'px';
-        document.getElementById("ppal8").style.left = 120 * menuscale + 'px';
-        document.getElementById("ppal8").style.top = 258 * menuscale + 'px';
-
         //sinconizo animaciones con el navegador
-        try{
+        try {
             var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
             window.requestAnimationFrame = requestAnimationFrame;
             window.requestAnimationFrame(animate);
@@ -156,9 +89,7 @@ function doLoad2() {
             //no puedo usar tweens
         }
 
-        //para resize
-        myWidth = window.innerWidth;
-        myHeight = window.innerHeight;
+        calcularResize();
 
         treeScale = scale; //valor default
 
@@ -209,6 +140,106 @@ function doLoad2() {
         //envio al server
         sendException(ex, "doLoad2");
     }
+}
+
+function calcularResize() {
+    var scalex = window.innerWidth / 1920;
+    var scaley = window.innerHeight / 1080;
+
+    //login
+    document.getElementById("tip").style.top = (window.innerHeight / 2 + 130) + 'px';
+    document.getElementById("tip").style.left = (window.innerWidth / 2 - 200) + 'px';
+    document.getElementById("loginIn").style.top = window.innerHeight / 6 + 'px';
+    document.getElementById("loginFlor").style.top = (window.innerHeight / 6 + 50 * scaley) + 'px';
+    document.getElementById("loginIn").style.left = (window.innerWidth / 2 - 50) + 'px';
+    document.getElementById("loginFlor").style.left = (window.innerWidth / 2 - 280) + 'px';
+
+    //titulo
+    document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
+    document.getElementById("titulo0").style.fontSize = (60 * scaley).toFixed(0) + 'px';
+    document.getElementById("titulo1").style.fontSize = (40 * scaley).toFixed(0) + 'px';
+    document.getElementById("titulo2").style.fontSize = (30 * scaley).toFixed(0) + 'px';
+
+    //atras
+    document.getElementById("atras").style.width = (100 * scalex) + 'px';
+    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+
+    //pie
+    document.getElementById("pie").style.top = (window.innerHeight - 25).toFixed(0) + 'px';
+    document.getElementById("pie").style.left = (window.innerWidth / 2 - 300).toFixed(0) + 'px';
+    document.getElementById("pie").style.visibility = 'visible';
+
+    //frase del dia
+    document.getElementById("tip").innerHTML = frasesDelDia[Math.round(Math.random() * (frasesDelDia.length - 1))];
+
+    //background
+    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+    //joystick
+    document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+
+    //forkme
+    document.getElementById("forkme").style.left = (window.innerWidth - 87) + 'px';
+    document.getElementById("forkme").style.top = '0px';
+    document.getElementById("forkme").style.visibility = 'visible';
+
+    //resize del menuppal segun pantalla
+    var menuscale = scaley * 1.1;
+    document.getElementById("tituloppal").style.width = 800 * menuscale + 'px';
+    document.getElementById("tituloppal").fontSize = (60 * scale).toFixed(0) + 'px';
+
+    document.getElementById("menuppal").style.top = (window.innerHeight - 600 * menuscale) / 2 + 'px';
+    document.getElementById("menuppal").style.left = (window.innerWidth - 800 * menuscale) / 2 + 'px';
+    document.getElementById("menuppal").style.width = 800 * menuscale + 'px';
+    document.getElementById("menuppal").style.height = 600 * menuscale + 'px';
+
+    document.getElementById("ciclo").style.width = 508 * menuscale + 'px';
+    document.getElementById("ciclo").style.height = 526 * menuscale + 'px';
+    document.getElementById("ciclo").style.left = 159 * menuscale + 'px';
+    document.getElementById("ciclo").style.top = 47 * menuscale + 'px';
+
+    document.getElementById("ppal1").style.width = 269 * menuscale + 'px';
+    document.getElementById("ppal1").style.height = 150 * menuscale + 'px';
+    document.getElementById("ppal1").style.left = 15 * menuscale + 'px';
+    document.getElementById("ppal1").style.top = 145 * menuscale + 'px';
+
+    document.getElementById("ppal2").style.width = 269 * menuscale + 'px';
+    document.getElementById("ppal2").style.height = 149 * menuscale + 'px';
+    document.getElementById("ppal2").style.left = 15 * menuscale + 'px';
+    document.getElementById("ppal2").style.top = 292 * menuscale + 'px';
+
+    document.getElementById("ppal3").style.width = 259 * menuscale + 'px';
+    document.getElementById("ppal3").style.height = 84 * menuscale + 'px';
+    document.getElementById("ppal3").style.left = 488 * menuscale + 'px';
+    document.getElementById("ppal3").style.top = 129 * menuscale + 'px';
+
+    document.getElementById("ppal4").style.width = 258 * menuscale + 'px';
+    document.getElementById("ppal4").style.height = 85 * menuscale + 'px';
+    document.getElementById("ppal4").style.left = 487 * menuscale + 'px';
+    document.getElementById("ppal4").style.top = 389 * menuscale + 'px';
+
+    document.getElementById("ppal5").style.width = 124 * menuscale + 'px';
+    document.getElementById("ppal5").style.height = 143 * menuscale + 'px';
+    document.getElementById("ppal5").style.left = 338 * menuscale + 'px';
+    document.getElementById("ppal5").style.top = 31 * menuscale + 'px';
+
+    document.getElementById("ppal6").style.width = 195 * menuscale + 'px';
+    document.getElementById("ppal6").style.height = 79 * menuscale + 'px';
+    document.getElementById("ppal6").style.left = 485 * menuscale + 'px';
+    document.getElementById("ppal6").style.top = 267 * menuscale + 'px';
+
+    document.getElementById("ppal7").style.width = 221 * menuscale + 'px';
+    document.getElementById("ppal7").style.height = 145 * menuscale + 'px';
+    document.getElementById("ppal7").style.left = 285 * menuscale + 'px';
+    document.getElementById("ppal7").style.top = 439 * menuscale + 'px';
+
+    document.getElementById("ppal8").style.width = 159 * menuscale + 'px';
+    document.getElementById("ppal8").style.height = 79 * menuscale + 'px';
+    document.getElementById("ppal8").style.left = 120 * menuscale + 'px';
+    document.getElementById("ppal8").style.top = 258 * menuscale + 'px';
+
+    //arbol
+    translateArbol(translatex = 0, translatey = 0);
 }
 
 function sendException(ex, flag) {
@@ -351,7 +382,7 @@ function doMenuppal() {
         document.getElementById("atras").style.visibility = "visible";
 
         //panel de usuario
-        document.getElementById("usuario").innerHTML = "<div style='color:blue;cursor: pointer; font-size:14px; margin: 10px;' onclick='showCambiarClave();'>" + arbolPersonal.usuario.email + "</div>";
+        document.getElementById("usuario").innerHTML = "<div style='color:blue;cursor: pointer; font-size:14px; margin: 10px;' onclick='showCambiarClave();'>" + arbolPersonal.usuario.nombre + "</div>";
         document.getElementById("panelUsuario").style.visibility = 'visible';
         document.getElementById("floresDisponibles").innerHTML = getFloresDisponibles().length;
 
@@ -1151,7 +1182,7 @@ function doArbol() {
 
         //joystick
         document.getElementById("joystick").style.visibility = 'visible';
-        document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+        document.getElementById("joystick").style.top = (window.innerHeight - 160) + 'px';
 
         //objetivo
         var objetivo = document.getElementById("objetivo");
@@ -1188,9 +1219,5 @@ function pedirArbol() {
 }
 
 function resize() {
-    //evito pequeños resize
-    if (Math.abs(window.innerHeight-myHeight) > 100 || Math.abs(window.innerWidth-myWidth) > 100)
-        document.location.reload();
-    myWidth = window.innerWidth;
-    myHeight = window.innerHeight;
+    calcularResize();
 }

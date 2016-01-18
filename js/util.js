@@ -31,12 +31,12 @@ function doOpen(url, width, height) {
         }
         else {
             if (visual.browser == "Safari") {
-                document.getElementById("help").style.left = "50px";
-                document.getElementById("help").style.width = (window.innerWidth - 110) + "px";
+                document.getElementById("help").style.left = "20px";
+                document.getElementById("help").style.width = (window.innerWidth - 90) + "px";
             }
             else {
-                document.getElementById("help").style.left = "100px";
-                document.getElementById("help").style.width = (window.innerWidth - 300) + "px";
+                document.getElementById("help").style.left = "20px";
+                document.getElementById("help").style.width = (window.innerWidth - 90) + "px";
             }
         }
 
@@ -46,12 +46,12 @@ function doOpen(url, width, height) {
         }
         else {
             if (visual.browser == "Safari") {
-                document.getElementById("help").style.top = "50px";
+                document.getElementById("help").style.top = "30px";
             }
             else {
-                efectoTop(document.getElementById("help"), 0, -window.innerHeight + 150, 75, TWEEN.Easing.Cubic.Out);
+                efectoTop(document.getElementById("help"), 0, -window.innerHeight + 50, 35, TWEEN.Easing.Cubic.Out);
             }
-            document.getElementById("help").style.height = (window.innerHeight - 150) + "px";
+            document.getElementById("help").style.height = (window.innerHeight - 50) + "px";
         }
 
         document.getElementById("helpContent").innerHTML = data;
@@ -106,7 +106,7 @@ function getVisualizacion(config) {
 
     //tamaño de pantalla minimo
     if (config.width < 800 || config.height < 600)
-        visual.screen = false; //no se puede ver
+        visual.screen = true; //no se puede ver
     else
         visual.screen = true; //resolucion de pantalla correcta
 
