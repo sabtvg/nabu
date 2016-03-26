@@ -9,6 +9,8 @@
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
     <script src="js/util.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/tween.min.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
@@ -27,7 +29,10 @@
         //modelos de documentos
         var modelosDocumento;
         var arbolPersonal;
-        
+
+        //propuestas
+        var propuestas = [];
+        var documentoModeOn = true;
 
         function doLoad() {
             var scalex = window.innerWidth / 1920;
@@ -54,6 +59,7 @@
             }, 1000);
 
             duration = 250;
+            visual.level = 1;
 
             iniciar();
         }
@@ -141,6 +147,13 @@
             return l;
         }
 
+        function doVerDocumentoMode() {
+            hidePanelDer();
+        }
+
+        function doCloseHelp() {
+            document.getElementById("help").style.visibility = "hidden";
+        }
     </script>
 </head>
 <body onload="doLoad();">
@@ -148,6 +161,26 @@
     <!--atras--------------------------------------------------------------------------------------------------->
     <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
 
+    <!--panel--------------------------------------------------------------------------------------------------->
+    <div id="panelDer" class="panel" style="visibility: hidden;">
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: right;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="doVerDocumentoMode();" /></td>
+            </tr>
+            <tr>
+                <td id="panelDer2">
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!--help--------------------------------------------------------------------------------------------------->
+    <div id="help" class="documento" style="opacity: 1; width: 700px; height: 350px;z-index:10;visibility: hidden;">
+        <table style="width: 100%;">
+            <tr><td style="text-align: right;"><img style="cursor: pointer;" src="res/close.png" onclick="doCloseHelp();" /></td></tr>
+            <tr><td id="helpContent"></td></tr>
+        </table>
+    </div>
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="Div1" style="padding: 10px; position: absolute; left:10px; top:100px;">

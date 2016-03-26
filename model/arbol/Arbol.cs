@@ -273,12 +273,12 @@ namespace nabu
                     DateTime fdate = DateTime.Now;
                     int docID = lastDocID++;
                     string fname = m.nombre + "_" + docID.ToString("0000");
-                    if (!simulacion)
-                    {
+                    //if (!simulacion)
+                    //{
                         generarDocumentoHTML(n, fdate, fname);
                         generarDocumentoJSON(n, fdate, fname);
                         save(path + "\\documentos\\" + nombre + ".json"); //guardo copia del arbol
-                    }
+                    //}
 
                     //guardo el log historico en el arbol
                     Propuesta p = getPropuesta(pathn[0].id);  //obtengo el titulo del debate de cualquiera de las propuestas 
@@ -437,7 +437,7 @@ namespace nabu
         {
             //creo modelos de documentos default
 
-            ModeloDocumento d = new ModeloDocumento();
+            ModeloDocumento d = new ModeloDocumento();  ////modelo de simulacion !!!
             d.id = 1;
             d.nombre = "Accion";
             d.crear(0, "Resumen y motivacion", "El consenso es un proceso cooperativo. Somos constructivos con nuestras propuestas y consideramos el bien comun", 3000);

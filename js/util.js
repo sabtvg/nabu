@@ -1,4 +1,25 @@
-﻿function setCookie(cname, cvalue, exdays) {
+﻿
+function JSON_encode(s) {
+    s = s.replace('€', '&euro;');
+    s = s.replace('£', '&pound;');
+    s = s.replace('>', '&gt;');
+    s = s.replace('<', '&gl;');
+    s = s.replace('&', '&amp;');
+    s = s.replace('º', '&deg;');
+    return s;
+}
+
+function JSON_decode(s) {
+    s = s.replace('&euro;', '€');
+    s = s.replace('&pound;','£');
+    s = s.replace('&gt;','>');
+    s = s.replace('&gl;','<');
+    s = s.replace('&amp;','&');
+    s = s.replace('&deg;','º');
+    return s;
+}
+
+function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
@@ -51,7 +72,7 @@ function doOpen(url, width, height) {
             else {
                 efectoTop(document.getElementById("help"), 0, -window.innerHeight + 50, 35, TWEEN.Easing.Cubic.Out);
             }
-            document.getElementById("help").style.height = (window.innerHeight - 50) + "px";
+            document.getElementById("help").style.height = (window.innerHeight - 80) + "px";
         }
 
         document.getElementById("helpContent").innerHTML = data;
@@ -62,7 +83,7 @@ function doOpen(url, width, height) {
 function efectoTop(obj, wait, yini, yfin, efecto, complete) {
     if (visual.level == 1) {
         obj.style.visibility = "visible";
-        obj.style.top = yfin + 'px';
+        obj.style.top = yfin.toFixed(0) + 'px';
         if (complete)
             complete();
     }
@@ -75,7 +96,7 @@ function efectoTop(obj, wait, yini, yfin, efecto, complete) {
                 obj.style.visibility = "visible";
             })
             .onUpdate(function () {
-                obj.style.top = this.y + 'px';
+                obj.style.top = this.y.toFixed(0) + 'px';
             })
             .onComplete(function () {
                 if (complete)
@@ -116,7 +137,7 @@ function getVisualizacion(config) {
 function efectoLeft(obj, wait, xini, xfin, efecto, complete) {
     if (visual.level == 1) {
         obj.style.visibility = "visible";
-        obj.style.left = xfin + 'px';
+        obj.style.left = xfin.toFixed(0) + 'px';
         if (complete)
             complete();
     }
@@ -129,7 +150,7 @@ function efectoLeft(obj, wait, xini, xfin, efecto, complete) {
                 obj.style.visibility = "visible";
             })
             .onUpdate(function () {
-                obj.style.left = this.x + 'px';
+                obj.style.left = this.x.toFixed(0) + 'px';
             })
             .onComplete(function () {
                 if (complete)

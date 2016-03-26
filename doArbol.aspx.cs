@@ -490,7 +490,7 @@ namespace nabu
 
                         case "crearsimulacion":
                             a = new Arbol();
-                            int index =1;
+                            a.nombre = getSimName();
                             a.simulacion = true;
                             a.objetivo = "simulacion";
                             a.raiz = new Nodo();
@@ -501,14 +501,8 @@ namespace nabu
                             a.URL = Request.UrlReferrer.AbsoluteUri.Substring(0, Request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
                             lock (app.arboles)
                             {
-                                foreach (Arbol a1 in app.arboles)
-                                {
-                                    if (a.simulacion)
-                                        index+=1;
-                                }
                                 app.arboles.Add(a);
                             }
-                            a.nombre = "Sim" + index;
                             a.minSiPc = 60;
                             a.maxNoPc = 50;
 
@@ -547,6 +541,14 @@ namespace nabu
                 app.addLog("server exception", "", "", "", s);
             }
             Response.End();
+        }
+
+        private string getSimName()
+        {
+            int index = 1;
+            while (System.IO.Directory.Exists(Server.MapPath("cooperativas/__Sim" + index)))
+                index +=1;
+            return "__Sim" + index;
         }
 
         private string getClientBrowser(HttpRequest req)
@@ -667,17 +669,23 @@ namespace nabu
                     //creo una rama nueva
                     //seleccion nodo al azar
                     List<Nodo> nodes = a.toList();
-                    var selected = a.rndElement(nodes);
+                    Nodo selected = a.rndElement(nodes);
 
                     //agrego nuevo nodo
                     if (!selected.consensoAlcanzado && selected.nivel < 5)
                     {
                         //agrego nodo
+                        //creo texto segun nivel y modelo de documento
+                        ModeloDocumento m = a.getModelo(1);  //modelo de simulacion
+                        Seccion sec = m.secciones[selected.nivel];
                         List<TextoTema> tts = new List<TextoTema>();
-                        TextoTema tt = new TextoTema();
-                        tt.titulo = "Prueba";
-                        tt.texto = "Prueba";
-                        tts.Add(tt);
+                        foreach (Tema t in sec.temas)
+                        {
+                            TextoTema tt = new TextoTema();
+                            tt.titulo = t.titulo;
+                            tt.texto = "Opinion simulada<br>Opinion simulada<br>Opinion simulada<br>Opinion simulada<br>Opinion simulada<br>";
+                            tts.Add(tt);
+                        }
 
                         //me aseguro que el usuario tenga flores o agrego otro
                         if (a.lastSimUsuario.flores.Count < 5)
@@ -744,6 +752,12 @@ namespace nabu
                     {
                         //este arbol se puede quitar de memoria
                         //se asume que ya fue guardado
+                        //si es simulacion borro temporales
+                        Arbol a = app.arboles[index];
+                        if (a.simulacion)
+                            if (System.IO.Directory.Exists(a.path))
+                                System.IO.Directory.Delete(a.path,true);
+
                         app.arboles.RemoveAt(index);
                     }
                     else

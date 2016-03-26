@@ -26,6 +26,7 @@ var refreshArbolInterval = 10000; //10seg
 var lastArbolRecibidoTs = (new Date()).getTime();
 var joyInterval;
 var textAreas;
+var preguntarAlSalir = false;
 
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
@@ -46,6 +47,8 @@ var modelosDocumento;
 var propuestas = [];
 
 function doLoad() {
+    //settings
+    window.onbeforeunload = preguntar;
     //background
     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
     //wait
@@ -142,9 +145,14 @@ function doLoad2() {
     }
 }
 
+function preguntar() {
+    if (preguntarAlSalir)
+        return "Se perderan los datos no guardados";
+}
+
 function calcularResize() {
     var scalex = window.innerWidth / 1920;
-    var scaley = window.innerHeight / 1080;
+    var scaley = window.innerHeight / 955; //1080-bordes de pantalla
 
     //login
     document.getElementById("tip").style.top = (window.innerHeight / 2 + 130) + 'px';
@@ -188,8 +196,8 @@ function calcularResize() {
     document.getElementById("tituloppal").style.width = 800 * menuscale + 'px';
     document.getElementById("tituloppal").fontSize = (60 * scale).toFixed(0) + 'px';
 
-    document.getElementById("menuppal").style.top = (window.innerHeight - 600 * menuscale) / 2 + 'px';
-    document.getElementById("menuppal").style.left = (window.innerWidth - 800 * menuscale) / 2 + 'px';
+    document.getElementById("menuppal").style.top = (window.innerHeight / 2 - 600 * menuscale / 2).toFixed(0) + 'px';
+    document.getElementById("menuppal").style.left = (window.innerWidth / 2 - 800 * menuscale / 2).toFixed(0) + 'px';
     document.getElementById("menuppal").style.width = 800 * menuscale + 'px';
     document.getElementById("menuppal").style.height = 600 * menuscale + 'px';
 
@@ -396,9 +404,9 @@ function doMenuppal() {
         document.getElementById("userOptions").style.visibility = arbolPersonal.usuario.isAdmin ? "hidden" : "visible";
 
         //menuppal
-        var menuscale = scale * 1.1;
-        document.getElementById("menuppal").style.top = (window.innerHeight / 2 - 300 * menuscale).toFixed(0) + 'px';
-        document.getElementById("menuppal").style.left = (window.innerWidth / 2 - 400 * menuscale).toFixed(0) + 'px';
+        //var menuscale = scale * 1.1;
+        //document.getElementById("menuppal").style.top = (window.innerHeight / 2 - 300 * menuscale).toFixed(0) + 'px';
+        //document.getElementById("menuppal").style.left = (window.innerWidth / 2 - 400 * menuscale).toFixed(0) + 'px';
         if (visual.level == 1) {
             document.getElementById("menuppal").style.visibility = 'visible';
         }
@@ -574,6 +582,7 @@ function doCerrarDocumento() {
     document.getElementById("btnProponer").style.visibility = 'hidden';
     efectoTop(document.getElementById("documento"), 0, 50, -window.innerHeight, TWEEN.Easing.Cubic.In);
     showPanel();
+    preguntarAlSalir = false;
 }
 
 function doPreguntarNombre() {
@@ -592,6 +601,8 @@ function doPreguntarNombre() {
     document.getElementById("nombrePropuesta").style.top = (window.innerHeight / 2 - 94).toFixed(0) + 'px';
     document.getElementById("nombrePropuesta").style.left = (window.innerWidth / 2 - 275).toFixed(0) + 'px';
     efectoOpacity(document.getElementById("nombrePropuesta"), 250, 0, 1, TWEEN.Easing.Cubic.In);
+
+    preguntarAlSalir = false;
 }
 
 function doEnviarPropuesta() {
@@ -619,7 +630,7 @@ function doEnviarPropuesta() {
                     //estaba editando, envio al servidor
                     var txt = area.value.replace(/\"/g, "\\\"");
                     txt = txt.replace(/\n/g, "\\n");
-                    post += "{\"maxLen\":" + tema.maxLen + ", \"titulo\":\"" + tema.titulo + "\", \"texto\":\"" + txt + "\"},";
+                    post += "{\"maxLen\":" + tema.maxLen + ", \"titulo\":\"" + JSON_encode(tema.titulo) + "\", \"texto\":\"" + JSON_encode(txt) + "\"},";
                 }
             }
             post = post.substring(0, post.length - 1);
@@ -663,6 +674,8 @@ function doVerDocumento2() {
     //puedo mostrar el documento
     hidePanelDer();
     hidePanelIzq();
+
+    preguntarAlSalir = true;
 
     document.getElementById("tituloDocumento").innerHTML = modelo.nombre + ": " + propuesta.titulo;
     document.getElementById("anterior").innerHTML = getDocumento(node);
@@ -725,35 +738,6 @@ function doEditarDocumento() {
 
 }
 
-function tengoPropuestas(node) {
-    //veo si tengo las propuestas de este nodo y sus padres
-    var parent = node;
-    while (parent.id != arbolPersonal.raiz.id) {
-        if (!propuestas[parent.id])
-            return false; //me falta esta
-        parent = parent.parent;
-    }
-    return true; //tengo todas
-}
-
-function recibirPropuestas(data) {
-    var nuevasPropuestas = JSON.parse(data);
-    for (var i in nuevasPropuestas) {
-        var nop = nuevasPropuestas[i];
-        propuestas[nop.nodoID] = nop;
-    }
-}
-
-function getPath(node) {
-    var ret = [];
-
-    while (node.id != arbolPersonal.raiz.id) {
-        ret.push(node);
-        node = node.parent;
-    }
-    return ret;
-}
-
 function getDocumento(node) {
     //devuelvo documento con textos
     var ret = '';
@@ -771,11 +755,13 @@ function getDocumento(node) {
         for (var t in seccion.temas) {
             //escribo temas
             var tema = seccion.temas[t];
-            ret += "<br><font class='tema'>" + tema.titulo + ":</font><br>";
+            ret += "<br><font class='tema'>" + JSON_decode(tema.titulo) + ":</font><br>";
 
             if (path.length - i > 0) {
                 var propuesta = propuestas[nodoActual.id];
-                ret += "<div style='width:" + (window.innerWidth * 0.6 - 15) + "px;' class='texto'>" + propuesta.textos[t].texto.replace(/\n/g, "<br>") + "</div><br><br>";
+                var texto = JSON_decode(propuesta.textos[t].texto);
+                texto = texto.replace(/\n/g, "<br>")
+                ret += "<div style='width:" + (window.innerWidth * 0.6 - 15) + "px;' class='texto'>" + texto + "</div><br><br>";
             }
         }
         if (i < path.length) ret += HTMLFlores(nodoActual);
@@ -935,124 +921,6 @@ function doVerDocumentoMode() {
     documentoModeOn = !documentoModeOn;
 
     showPanel();
-}
-
-function showPanel() {
-    //pido propuestas al servidor
-    var node = selectedNode;
-    if (node) {
-        getHttp("doArbol.aspx?actn=getPropuestas&id=" + node.id + "&arbol=" + arbolPersonal.nombre,
-            function (data) {
-                recibirPropuestas(data);
-                showPanel2();
-            }
-        );
-    }
-}
-
-function showPanel2() {
-    var panelIzq = document.getElementById("panelIzq");
-    var panelDer = document.getElementById("panelDer");
-    var panelIzq2 = document.getElementById("panelIzq2");
-    var panelDer2 = document.getElementById("panelDer2");
-    var panel;
-    var node = selectedNode;
-    var modelo = getModelo(node.modeloID);
-
-    if (documentoModeOn && node.depth > 0) {
-        //enseño panel
-        if (tengoPropuestas(node)) {
-            //puedo mostrar el documento
-            if (node.x > 90) {
-                //panel izquierdo
-                //activo el izq
-                if (panelIzq.style.visibility == "hidden") {
-                    panelIzq.style.visibility = "visible";
-                    efectoLeft(panelIzq, 0, -400 * scale, 20, TWEEN.Easing.Cubic.Out);
-                }
-                //desactivo el der
-                hidePanelDer();
-
-                panelIzq.style.top = "220px";
-                panelIzq.style.width = 400 * scale + "px";
-                panelIzq2.style.width = 400 * scale + "px";
-                panelIzq.style.height = 550 * scale + "px";
-
-                panel = panelIzq2;
-            }
-            else {
-                //panel derecho
-                //activo el derecho
-                if (panelDer.style.visibility == "hidden") {
-                    panelDer.style.visibility = "visible";
-                    efectoLeft(panelDer, 0, window.innerWidth, window.innerWidth - 400 * scale - 40, TWEEN.Easing.Cubic.Out);
-                }
-                //desactivo el izq
-                hidePanelIzq();
-
-                panelDer.style.top = "220px";
-                panelDer.style.width = 400 * scale + "px";
-                panelDer2.style.width = 400 * scale + "px";
-                panelDer.style.height = 550 * scale + "px";
-
-                panel = panelDer2;
-            }
-
-            //resuelvo el titulo del documento
-            var path = getPath(node);
-            var titulo = '';
-            if (path.length > 0) {
-                var propuesta = propuestas[path[0].id];
-                titulo = propuesta.titulo;
-            }
-            
-            //escribo propuesta
-            var s = "<div class='titulo1'>" + titulo + "</div><br>";
-            var propuesta = propuestas[node.id];
-            for (var i in propuesta.textos) {
-                var textoTema = propuesta.textos[i];
-                s += "<div class='tema'>" + textoTema.titulo + "</div><br>";
-                s += "<div class='texto' style='width:" + (400 * scale - 30) + "px;'>" + textoTema.texto.replace(/\n/g,"<br>") + "</div><br><br>";
-            }
-            s += HTMLFlores(node);
-
-            //escribo comentarios
-            if (propuesta.comentarios.length > 0) s += "<br>Comentarios:"
-            for (var t in propuesta.comentarios) {
-                //escribo comentario de propuesta
-                s += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'>" + propuesta.comentarios[t].replace(/\n/g, "<br>") + "</div>";
-            }
-
-            panel.innerHTML = s;
-        }
-        else {
-
-        }
-    }
-    else {
-        //oculto
-        hidePanelIzq();
-        hidePanelDer();
-    }
-}
-
-function hidePanelIzq() {
-    var panelIzq = document.getElementById("panelIzq");
-    if (panelIzq.style.visibility == "visible") {
-        efectoLeft(panelIzq, 0, 20, -450 * scale, TWEEN.Easing.Cubic.Out, function () {
-            document.getElementById("panelIzq").style.visibility = "hidden";
-        });
-    }
-}
-
-function hidePanelDer() {
-    var panelDer = document.getElementById("panelDer");
-    if (panelDer.style.visibility == "visible") {
-        efectoLeft(panelDer, 0, window.innerWidth - 400 * scale - 40, window.innerWidth, TWEEN.Easing.Cubic.Out, function () {
-            document.getElementById("panelDer").style.visibility = "hidden";
-            document.getElementById("panelDer").style.left = "0px"; //evita que aparezcan las barras de scroll
-        });
-    }
 }
 
 function doToggleVer() {

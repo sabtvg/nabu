@@ -213,6 +213,7 @@ function dibujarArbol(referencia) {
         .attr("r", function (d) {
             var r = d.totalFlores / 4 + 2;
             if (r < 10) r = 10;
+            if (d == selectedNode) r += 10;
             return r * scale;
         })
         .style("stroke", function (d) {
@@ -286,6 +287,8 @@ function dibujarArbol(referencia) {
 
     var florUpdate = flor.transition()
         .duration(duration)
+        .attr("width", "37px")
+        .attr("height", "36px")
         .attr("transform", function (d) {
             if (d.id == 0)
                 //flor disponible
@@ -437,6 +440,29 @@ function arrayRemove(parent, node) {
 function txtCut(s) {
     var l = s.length * (scale * 0.6 - 1);
     l = Math.ceil(l);
+    //quito acentos, no van en las etiquetas de los nodos
+    s = s.replace('&#225;', 'a');
+    s = s.replace('&#193;', 'A');
+    s = s.replace('&#233;', 'e');
+    s = s.replace('&#201;', 'E');
+    s = s.replace('&#237;', 'i');
+    s = s.replace('&#205;', 'I');
+    s = s.replace('&#243;', 'o');
+    s = s.replace('&#211;', 'O');
+    s = s.replace('&#250;', 'u');
+    s = s.replace('&#218;', 'U');
+
+    s = s.replace('&#224;', 'a');
+    s = s.replace('&#192;', 'A');
+    s = s.replace('&#232;', 'e');
+    s = s.replace('&#200;', 'E');
+    s = s.replace('&#236;', 'i');
+    s = s.replace('&#204;', 'I');
+    s = s.replace('&#242;', 'o');
+    s = s.replace('&#210;', 'O');
+    s = s.replace('&#249;', 'u');
+    s = s.replace('&#217;', 'U');
+    //corto
     if (l < 20) l = 20;
     if (l < s.length)
         return s.substring(0, l) + '...';
@@ -512,8 +538,7 @@ function getNodo2(padre, id) {
 }
 
 function docClick(d) {
-    if (!arbolPersonal.simulacion)
-        doOpen('cooperativas/' + d.arbol + '/documentos/' + d.fname + '.html');
+    doOpen('cooperativas/' + d.arbol + '/documentos/' + d.fname + '.html');
 }
 
 function florClick(d) {
@@ -532,14 +557,22 @@ function nodeClick(d) {
 
     selectedNode = d;
 
+    //cambio imagen al nodo seleccionado
+    dibujarArbol(selectedNode);
+
+
     //activo menu contextual 
     if (selectedNode == arbolPersonal.raiz) {
         menu = document.getElementById("menuRoot");
         menu.style.left = (window.innerWidth / 2 - 26).toFixed(0) + 'px';
         menu.style.visibility = "visible";
     }
+    if (arbolPersonal.simulacion) {
+        //activo panel
+        showPanel();
+    }
     else {
-        menu = document.getElementById("menuNode");  
+        menu = document.getElementById("menuNode");
         menu.style.left = (window.innerWidth / 2 - 122).toFixed(0) + 'px';
         menu.style.visibility = "visible";
 
