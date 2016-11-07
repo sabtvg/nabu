@@ -5,15 +5,48 @@ using System.Web;
 
 namespace nabu
 {
-    public class Propuesta
+    public class Propuesta: IComparable
     {
         public DateTime born = DateTime.Now;
+        public string titulo = ""; //titulo del documento
+        public string etiqueta = "";
+        public string email = "";
         public int nodoID = 0;
-        public int modeloID = 0;
-        public int seccion = 0;
-        public string titulo = ""; //el nodo de nivel 1 contiene el titulo del debate
-        public List<TextoTema> textos = new List<TextoTema>(); //tantos textos como temas
-        public List<string> comentarios = new List<string>();
+        public string modeloID = "";
+        public int nivel = 0;
         public DateTime ts = DateTime.Now;
+        public Dictionary<string, object> bag = new Dictionary<string, object>();
+        public List<Comentario> comentarios = new List<Comentario>();
+        public bool consensoAlcanzado = false;
+
+        public Propuesta clone()
+        {
+            Propuesta ret = new Propuesta();
+            ret.titulo = titulo;
+            ret.etiqueta = etiqueta;
+            ret.nodoID = nodoID;
+            ret.nivel = nivel;
+            ret.email = email;
+            ret.modeloID = modeloID;
+
+            foreach (KeyValuePair<string, object> var in bag)
+                ret.bag.Add(var.Key, var.Value);
+
+            //no clono comentarios
+
+            return ret;
+        }
+
+        // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
+        int IComparable.CompareTo(Object x)
+        {
+            Propuesta dos = (Propuesta)x;
+            return this.nivel - dos.nivel;
+        }
+
+        public bool esPrevista()
+        {
+            return nodoID == 0;
+        }
     }
 }

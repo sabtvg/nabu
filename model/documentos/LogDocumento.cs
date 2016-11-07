@@ -8,7 +8,9 @@ namespace nabu
     public class LogDocumento
     {
         public DateTime fecha = DateTime.Now;
-        public string nombre;
+        public string modeloNombre;
+        public string icono = "res/doc.png";
+        public string modeloID = "";
         public string titulo = "";
         public float x;
         public string fname = ""; //nombre del archivo del documento
@@ -16,6 +18,8 @@ namespace nabu
         public string arbol = "";
         public string objetivo = "";
         public string URL = "";
+        public int flores = 0;
+        public int negados = 0;
 
         public string sFecha
         {

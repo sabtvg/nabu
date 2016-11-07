@@ -31,45 +31,45 @@
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");
-                var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4] };
 
-                getHttp("doArbol.aspx?actn=getArbolPersonal&email=" + usuario.email + "&arbol=" + usuario.arbol,
-                    function (data) {
-                        //atrapo el error si es que hay
-                        if (data.substring(0, 6) == "Error=") {
-                            //ha habido un error
-                            document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
-                        }
-                        else {
-                            //login ok, he recibido el arbol
-                            arbolPersonal = JSON.parse(data);
-                            document.getElementById("nombreArbol").value = arbolPersonal.nombre;
-                            document.getElementById("objetivo").value = arbolPersonal.objetivo;
-                            document.getElementById("URLEstatuto").value = arbolPersonal.URLEstatuto;
+                if (!usuario.isAdmin) {
+                    alert("Solo disponible para el administrador");
+                    //login normal
+                    document.location = 'default.html';
+                }
+                else
+                    getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + usuario.email + "&grupo=" + usuario.arbol,
+                        function (data) {
+                            //atrapo el error si es que hay
+                            if (data.substring(0, 6) == "Error=") {
+                                //ha habido un error
+                                document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                            }
+                            else {
+                                //login ok, he recibido el arbol
+                                arbolPersonal = JSON.parse(data);
+                                document.getElementById("nombreArbol").value = arbolPersonal.nombre;
 
-                            document.getElementById("nombreAdmin").value = arbolPersonal.usuario.nombre;
-                            document.getElementById("email").value = arbolPersonal.usuario.email;
+                                document.getElementById("nombreAdmin").value = arbolPersonal.usuario.nombre;
+                                document.getElementById("email").value = arbolPersonal.usuario.email;
 
-                            document.getElementById("cantidadFlores").value = arbolPersonal.cantidadFlores;
+                                document.getElementById("cantidadFlores").value = arbolPersonal.cantidadFlores;
 
-                            document.getElementById("minSiPc").value = arbolPersonal.minSiPc;
-                            document.getElementById("maxNoPc").value = arbolPersonal.maxNoPc;
-                        }
-                    });
+                                document.getElementById("minSiPc").value = arbolPersonal.minSiPc;
+                                document.getElementById("maxNoPc").value = arbolPersonal.maxNoPc;
+                            }
+                        });
             }
         }
 
         function doModificarArbol() {
             var nombreArbol = document.getElementById("nombreArbol").value;
-            var objetivo = document.getElementById("objetivo").value;
-            var URLEstatuto = document.getElementById("URLEstatuto").value;
             var cantidadFlores = document.getElementById("cantidadFlores").value;
             var minSiPc = document.getElementById("minSiPc").value;
             var maxNoPc = document.getElementById("maxNoPc").value;
 
-            getHttp("doArbol.aspx?actn=updatearbol&arbol=" + nombreArbol
-                + "&objetivo=" + objetivo
-                + "&URLEstatuto=" + URLEstatuto
+            getHttp("doDecidimos.aspx?actn=updatearbol&grupo=" + nombreArbol
                 + "&cantidadFlores=" + cantidadFlores
                 + "&minSiPc=" + minSiPc
                 + "&maxNoPc=" + maxNoPc,
@@ -90,33 +90,27 @@
                     <td style="width: 80px;" class="titulo1">Nab&uacute;</td>
                     <td style="width: 60px;"><img src="res/icono2.png" /></td>
                     <td><div id="response" style="text-align:center; font-size:20px;"></div></td>
+                    <td><span class="titulo2">Modificar &aacute;rbol</span></td>
                 </tr>          
             </table>
-            <br />
-            <span class="titulo2">Modificar &aacute;rbol</span><br />
 
-            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
                 <span class="titulo3">Datos del &aacute;rbol</span><br />
                 <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
-                <input id="objetivo" type="text" class="txt" size="45" placeholder="Objetivo" /><br />
-                <input id="URLEstatuto" type="text" class="txt" size="67" placeholder="URL a documento de estatuto" />
             </div>
-            <br />
 
-            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
                 <span class="titulo3">Datos del administrador</span><br />
                 <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/>
                 <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
             </div>
-            <br />
 
-            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
                 <span class="titulo3">Flores disponibles para todos los usuarios</span><br />
                 <input id="cantidadFlores" type="text" class="txt" placeholder="Cantidad de flores"/><br />
             </div>
-            <br />
 
-            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
                 <span class="titulo3">Condici&oacute;n de consenso</span><br />
 
                 <div class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
@@ -125,8 +119,6 @@
                 <div class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
                 <input id="maxNoPc" type="text" class="txt" />%<br />
             </div>
-            <br />
-
 
             <input type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> 
         </div>

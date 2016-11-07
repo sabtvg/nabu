@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+        var usuarios;
+        var errores;
+
+        function doLoad() {
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                try
+                {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
+                    //atras
+                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                    document.getElementById("todo").style.top = '30px';
+                    document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
+                    document.getElementById("mensaje").style.height = (window.innerHeight - 270) + 'px';
+                    document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
+                    document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
+
+                    //background
+                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4] };
+
+                    if (!usuario.isAdmin) {
+                        alert("Solo disponible para el administrador");
+                        //login normal
+                        document.location = 'default.html';
+                    }
+                    else
+                        getListaUsuarios();
+                }
+                catch (e) {
+                    //login normal
+                    document.location = 'default.html';
+                }
+            }
+        }
+
+        function getListaUsuarios() {
+            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.arbol,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        //he recibido los usuarios
+                        usuarios = JSON.parse(data);
+                        document.getElementById("response").innerHTML = '<font color=red>' + usuarios.length + ' Usuarios leidos en ' + usuario.arbol + '</font>';
+                    }
+                });
+        }
+
+        function doEnviar() {
+            var body = document.getElementById("body");
+            var subject = document.getElementById("subject");
+
+            if (subject.value == '')
+                document.getElementById("response").innerHTML = '<font color=red>Titulo vacio</font>';
+            else if (body.value == '')
+                document.getElementById("response").innerHTML = '<font color=red>Mensaje vacio</font>';
+            else {
+                //preparo datos de envio
+                errores = 0;
+                pila = [];
+                for (var u in usuarios)
+                    pila.push(usuarios[u]);
+
+                //envio
+                doEnviarMail(pila, subject.value, body.value);
+            }
+        }
+
+        function doEnviarMail(pila, subject, body) {
+            var u = pila[0];
+            postHttp("doMain.aspx?actn=sendMail&grupo=" + usuario.arbol + "&subject=" + subject + "&email=" + u.email,
+                "body=" + body,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        errores++;
+                    }
+                    pila.splice(0, 1);
+                    document.getElementById("response").innerHTML = '<font color=green>' + (usuarios.length - pila.length) + " Enviados, " + errores + ' Errores</font>';
+
+                    //siguiente mail
+                    if (pila.length > 0) {
+                        doEnviarMail(pila, subject, body);
+                    }
+                });
+
+        }
+
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+
+        <div id="todo" class="ventana" style="text-align: left;width:877px;top: 100px;position: absolute;">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="width: 80px;" class="titulo1">Nab&uacute;</td>
+                    <td style="width: 60px;"><img src="res/icono2.png" /></td>
+                    <td><div id="response" style="text-align:center; font-size:20px;"></div></td>
+                </tr>          
+            </table>
+            <br />
+            <span class="titulo2">Mailer a usuarios</span><br />
+
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
+                <input type="text" id="subject" class="txt" style="width:80%;">
+                <input type='button' class='btn' value='Enviar' onclick='doEnviar();' />
+            </div>
+            <br />
+
+            <div id="mensaje" style="overflow:scroll;">
+                <textarea id="body" class="txt" style="width:100%;height:100%;"></textarea>
+            </div>
+            <br />
+        </div>
+
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+    </body>
+</html>

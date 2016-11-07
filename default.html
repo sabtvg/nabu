@@ -3,11 +3,13 @@
 <html>
 <head>
     <title>Nab&uacute</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
     <script src="js/main.js"></script>
     <script src="js/util.js"></script>
+    <script src="js/decidimos.js"></script>
+    <script src="js/aprendemos.js"></script>
     <script src="js/common.js"></script>
     <script src="js/tween.min.js"></script>
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -28,14 +30,13 @@
         <span class="titulo3">Democracia interactiva</span><br />
         <input id="email" type="text" class="txt" placeholder="email" value="" /><br />
         <input id="clave" type="password" class="txt" placeholder="clave" value=""/><br />
-        <select id="arbolList" class="txt" style="width: 200px;"></select><br />
+        <select id="grupos" class="txt" style="width: 200px;"></select><br />
         <input type="button" class="btn" value="Entrar" onclick="doLogin();" /><br />
         <div id="loginResponse">&nbsp;</div>
         <div onclick="doAltaUsuario();" style="color:blue; cursor: pointer;">Alta de usuario</div>
-        <div onclick="document.location='creararbol.html';" style="color:blue; cursor: pointer;">Crear nueva cooperativa</div>
+        <div onclick="document.location='creararbol.html';" style="color:blue; cursor: pointer;">Crear nuevo grupo</div>
     </div>
     <div id="tip" class="tip" style="visibility:hidden;position:absolute; text-align:center; display: table-cell; vertical-align: middle"></div>
-    <div id="forkme" style="position:absolute;visibility:hidden;z-index:0;" ><a href="https://github.com/sabtvg/nabu" target="_blank"><img src="res/forkme.png" /></a></div>
 
     <!--modelos documento--------------------------------------------------------------------------------------------------->
     <div id="modelos" class="center" style="visibility: hidden;" >
@@ -43,16 +44,6 @@
             <span class="titulo1">Modelos de debate</span><br />
             <div id="modelosList"></div><br />
             <input type="button" value="Cancelar" class="btn" onclick="document.getElementById('modelos').style.visibility = 'hidden';" style="margin: 0 auto;" />
-        </div>             
-    </div>
-
-    <!--nombre de propuesta--------------------------------------------------------------------------------------------------->
-    <div id="nombrePropuesta" style="visibility: hidden;position:absolute;" >
-        <div class="ventana" style="text-align:center;">
-            <span id="tituloDebate" class="titulo2">Define un nombre para la propuesta</span><br />
-            <div class="smalltip">Escoje un nombre corto para identificar la propuesta en el arbol</div>
-            <input id="nombrePropuestaValor" type="text" class="actual" style="width: 500px; height: 35px; font-size: 20px; font-weight:bold; text-align: center;"/><br />
-            <input type="button" value="Agregar" class="btn" onclick="if (document.getElementById('nombrePropuesta').value != '') doEnviarPropuesta();" />
         </div>             
     </div>
 
@@ -92,13 +83,8 @@
         <table>
             <tr>  
                 <td class="menu2">
-                    <a id="btnDownload" href=""><img class="btnimg" title="Descargar esta version" src="res/download.png" /></a> 
-                    <img id="documentoMode" class="btnimg" title="ver documento por partes" src="res/documentoModeOff.png" onclick="doVerDocumentoMode();" />
                     <img class="btnimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
-                </td>
-                <td class="menu2">
                     <img class="btnimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();" />
-                    <img class="btnimg" title="proponer" src="res/proponer.png" onclick="doProponer();" />
                 </td>
             </tr>
         </table>
@@ -106,25 +92,25 @@
 
     <!--root node options--------------------------------------------------------------------------------------------------->
     <div id="menuRoot" class="menuRoot2">
-        <img class="btnimg" title="proponer" src="res/proponer.png" onclick="doProponerRoot();" />
+        <img class="btnimg" title="proponer" src="res/documento.png" onclick="seleccionarModelo();" />
     </div>
 
     <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystick" style="visibility:hidden; padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
         <table>
             <tr>
-                <td><img src="res/jzm.png" onclick="zoom(10);"  /></td>
-                <td><img src="res/ju.png" onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jzm.png" style='cursor:pointer;' onclick="zoom(10);"  /></td>
+                <td><img src="res/ju.png" style='cursor:pointer;' onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" /></td>
                 <td></td>
             </tr>
             <tr>
-                <td><img src="res/jl.png" onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" /></td>
-                <td><img src="res/j00.png" onclick="translateArbol(translatex = 0, translatey = 0)" /></td>
-                <td><img src="res/jr.png" onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jl.png" style='cursor:pointer;' onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/j00.png" style='cursor:pointer;' onclick="translateArbol(translatex = 0, translatey = 0)" /></td>
+                <td><img src="res/jr.png" style='cursor:pointer;' onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" /></td>
             </tr>
             <tr>
-                <td><img src="res/jzl.png" onclick="zoom(-10);" /></td>
-                <td><img src="res/jd.png" onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jzl.png" style='cursor:pointer;' onclick="zoom(-10);" /></td>
+                <td><img src="res/jd.png" style='cursor:pointer;' onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" /></td>
                 <td></td>
             </tr>
         </table>
@@ -133,7 +119,7 @@
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
         <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
-            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</nobr></div>
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
         </a>
         <div id="titulo1" class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
         <div id="titulo2" class="titulo2"><nobr>Democracia interactiva</nobr></div>
@@ -142,36 +128,41 @@
         </div>
         <div id="adminOptions">
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='modificararbol.html';"><nobr><font color="blue">Arbol</font></nobr></div>
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='modelos.html';"><nobr><font color="blue">Modelos</font></nobr></div>
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='usuarios.html';"><nobr><font color="blue">Usuarios</font></nobr></div>
+            <div class="titulo3" style="cursor: pointer;" onclick="document.location='mailer.html';"><nobr><font color="blue">Mailer</font></nobr></div>
         </div>
         <div id="msgDiv" class="msg"></div>
     </div>
 
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 10px; position: absolute; left:10px; top:210px; color: gray; border: 1px solid gray">
-        <div class="titulo2"><nobr><b>Consenso</b></nobr></div>
-        <div id = "usuarios" class="titulo3"></div>
-        <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
-        <div id = "maxNoPc" class="titulo3" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>
+    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
+    </div>
+
+    <!--panel grupo--------------------------------------------------------------------------------------------------->
+    <div id="panelGrupo"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
     </div>
 
     <!--menuppal--------------------------------------------------------------------------------------------------->
     <div id="menuppal" style="position: absolute; visibility:hidden; width: 800px; height: 600px;">
         <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-90px;text-align: center;" class="titulo0"></div>
         <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;" />
-        <img id="ppal1" class="btnimg" title="Arbol de debates" src="res/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doArbol();" onmouseover="this.src='res/debates2.png';"  onmouseout="this.src='res/debates.png';"/>
-        <img id="ppal2" class="btnimg" title="Noticias" src="res/noticias.png" style="position: inherit; left:15px; top:292px;"  onmouseover="this.src='res/noticias2.png';"  onmouseout="this.src='res/noticias.png';" onclick="msg('Aun no implementado');"/>
-        <img id="ppal3" class="btnimg" title="Planificacion" src="res/planificacion.png" style="position: inherit; left:488px; top:129px;"  onmouseover="this.src='res/planificacion2.png';"  onmouseout="this.src='res/planificacion.png';" onclick="msg('Aun no implementado');"/>
-        <img id="ppal4" class="btnimg" title="Realizacion" src="res/realizacion.png" style="position: inherit; left:487px; top:389px;"  onmouseover="this.src='res/realizacion2.png';"  onmouseout="this.src='res/realizacion.png';" onclick="msg('Aun no implementado');"/>
-        <img id="ppal5" class="btnimg" title="Documentos" src="res/docConsensos.png" style="position: inherit; left:338px; top:31px;"  onmouseover="this.src='res/docConsensos2.png';"  onmouseout="this.src='res/docConsensos.png';" onclick="msg('Aun no implementado');"/>
-        <img id="ppal6" class="btnimg" title="Documentos" src="res/docPlanificacion.png" style="position: inherit; left:485px; top:267px;"  onmouseover="this.src='res/docPlanificacion2.png';"  onmouseout="this.src='res/docPlanificacion.png';" onclick="msg('Aun no implementado');"/>
-        <img id="ppal7" class="btnimg" title="Documentos" src="res/docRealizacion.png" style="position: inherit; left:285px; top:439px;"  onmouseover="this.src='res/docRealizacion2.png';"  onmouseout="this.src='res/docRealizacion.png';" onclick="msg('Aun no implementado');"/>
-        <img id="ppal8" class="btnimg" title="Estatuto" src="res/estatuto.png" style="position: inherit; left:120px; top:258px;"  onmouseover="this.src='res/estatuto2.png';"  onmouseout="this.src='res/estatuto.png';" onclick="window.open(arbolPersonal.URLEstatuto);"/>
+        <img id="ppal1" class="btnimg" src="res/es/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doDecidimos();"/>
+        <img id="ppal2" class="btnimg" src="res/es/noticias.png" style="position: inherit; left:15px; top:192px;" onclick="doAprendemos();"/>
+        <img id="ppal3" class="btnimg" src="res/es/vert.png" style="position: inherit; left:488px; top:129px;" onclick="msg('Aun no implementado');"/>
+        <img id="ppal5" class="btnimg" src="res/es/docConsensos.png" style="position: inherit; left:338px; top:31px;" onclick="doListaConsensos();"/>
+        <img id="ppal7" class="btnimg" src="res/es/docRealizacion.png" style="position: inherit; left:285px; top:439px;" onclick="msg('Aun no implementado');"/>
+        <img id="ppal8" class="btnimg" src="res/es/manifiesto.png" style="position: inherit; left:190px; top:278px;"/>
+        <img id="ppal9" class="btnimg" src="res/doc.png" style="position: inherit; left:120px; top:258px;" onclick="doManifiesto();"/>
+        <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;"/>
+        <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;" />
     </div>
 
     <!--atras--------------------------------------------------------------------------------------------------->
     <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:hidden; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
+
+    <!--aprendemos--------------------------------------------------------------------------------------------------->
+    <div id="aprendemos" style="left: 0px; top: 0px; width:100%; height:100%"></div>
+
 
     <!--panel flores--------------------------------------------------------------------------------------------------->
     <div id="panelUsuario" style="visibility: hidden; position: absolute; left: 10px; top: 120px;">
@@ -200,40 +191,29 @@
     <div id="altaUsuario" class="ventana" style="position: absolute; width: 330px; height: 330px; text-align:center; visibility: hidden; opacity: 1;">
         <span class="titulo2">Alta de usuario</span><br /><br />
         El alta de usuarios es administrada manualmente.<br /><br />
-        Selecciona la cooperativa<br /> y completa tus datos.<br />
+        Selecciona el grupo<br /> y completa tus datos.<br />
         Recibiras un email con tus datos de acceso.<br /><br />
-        <select id="altaUsuarioArbolList" class="txt" style="width: 200px;"></select><br />
+        <select id="altaUsuarioGrupos" class="txt" style="width: 200px;"></select><br />
         <input id="altaUsuarioNombre" type="text" class="txt" placeholder="Nombre completo" value="" /><br />
         <input id="altaUsuarioEmail" type="text" class="txt" placeholder="Email" value="" /><br />
         <input type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
-        <input type="button" class="btn" value="Cancelar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, window.innerHeight / 2 - 330 / 2, -380, TWEEN.Easing.Cubic.Out);" /><br />
+        <input type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, window.innerHeight / 2 - 330 / 2, -380, TWEEN.Easing.Cubic.Out);" /><br />
         <div id="altaUsuarioMsg"></div>
+    </div>
+        
+    <!--lista consensos--------------------------------------------------------------------------------------------------->
+    <div id="panelListaConsensos" style="visibility: hidden;position:absolute;width:1024px;" >
     </div>
 
     <!--documento--------------------------------------------------------------------------------------------------->
     <div id="documento" class="documento" style="top: -1000px;">
-        <table style="width: 100%">
-            <tr>
-                <td style="text-align: right;"><img id="docClose" style="cursor: pointer;" src="res/close.png" onclick="doCerrarDocumento();" /></td>
-            </tr>
-            <tr>
-                <td>
-                    <div id="tituloDocumento" class="titulo1" style="text-align:center;"></div>
-                    <div id="anterior" style="width:95%"></div>
-                    <div id="actual" style="width:99%"></div>
-                    <br /><br /><br />
-                    <input type="button" class="btn" value="Cerrar" title="Cerrar" onclick="doCerrarDocumento();" />        
-                    <input type="button" class="btn" value="Agregar propuesta" id="btnProponer" title="Agregar propuesta al arbol" onclick="doPreguntarNombre();" />
-                </td>
-            </tr>
-        </table>
     </div>
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="panelDer" class="panel" style="visibility: hidden;">
-        <table style="width: 100%;">
+        <table style="width: 95%;">
             <tr>
-                <td style="text-align: right;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="doVerDocumentoMode();" /></td>
+                <td style="text-align: right;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="hidePanelDer();" /></td>
             </tr>
             <tr>
                 <td id="panelDer2">
@@ -242,9 +222,9 @@
         </table>
     </div>
     <div id="panelIzq" class="panel" style="visibility: hidden;">
-        <table style="width: 100%;">
+        <table style="width: 95%;">
             <tr>
-                <td style="text-align: right;"><img id="Img2" style="cursor: pointer;" src="res/close.png" onclick="doVerDocumentoMode();" /></td>
+                <td style="text-align: right;"><img id="Img2" style="cursor: pointer;" src="res/close.png" onclick="hidePanelIzq();" /></td>
             </tr>
             <tr>
                 <td id="panelIzq2">
@@ -264,6 +244,20 @@
 
     <!--florwait--------------------------------------------------------------------------------------------------->
     <img id="florWait" src="res/florWait.gif" style="visibility: hidden;position:absolute;" />
+
+    <!--demoMsg--------------------------------------------------------------------------------------------------->
+    <div id="demoMsg" style="visibility:hidden; padding: 10px; text-align:left; position: absolute; left:0px; top:110px;color:red;" class="titulo1">
+        Modulo en desarrollo<br />Version demo<br />No operativa
+    </div>
+
+    <!--confirmar quitar ultima flor--------------------------------------------------------------------------------------------------->
+    <div id="ultimaFlor" style="visibility: hidden;position:absolute;width:300px;" >
+        <div class="ventana" style="text-align:center;">
+            <span id="Span1" class="titulo2">Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir</span><br /><br />
+            <input type="button" value="Aceptar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
+            <input type="button" value="Cancelar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
+        </div>             
+    </div>
 
 </body>
 </html>

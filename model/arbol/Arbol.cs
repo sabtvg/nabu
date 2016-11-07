@@ -9,25 +9,20 @@ namespace nabu
     public class Arbol
     {
         public string nombre = "";
-        public string objetivo = "";
         public int cantidadFlores = 5;
-        public List<Usuario> usuarios = new List<Usuario>();
+        public Grupo grupo;
         public Nodo raiz;
         public bool leftRight = false; //alterna agregado de nuevos nodos de un lado y del otro
         public List<Propuesta> propuestas = new List<Propuesta>();
         public DateTime born = DateTime.Now;
-        public string path = ""; //ruta fisica en el servidor
         public int lastDocID = 1;
         public int lastNodoID = 10;
         public bool simulacion = false;
         public Usuario lastSimUsuario;
-        public DateTime ts = DateTime.Now;
-        public string URLEstatuto = "";
-        public string URL = ""; //url base del arbol
-        public DateTime lastBackup = DateTime.Now.AddHours(-1);
 
         //modelos de documento para este arbol
-        public List<ModeloDocumento> modelosDocumento = new List<ModeloDocumento>();
+        //POR AHORA SON TODOS
+        public List<Modelo> modelos = Modelo.getModelos();
 
         //log de consensos alcanzados
         public List<LogDocumento> logDocumentos = new List<LogDocumento>();
@@ -67,6 +62,44 @@ namespace nabu
             if (temp.Count > 0) return rndElement(temp);
 
             return nodes[0];
+        }
+
+        public int getApoyos(Usuario u)
+        {
+    		return getApoyos(u, toList());
+	    }
+
+        private int getApoyos(Usuario u, List<Nodo> nodos)
+        {
+		int ret = 0;
+		//obtengo nodos de este usuario
+		List<int> mios = new List<int>();
+		foreach (Nodo n in nodos)
+		{
+			if (n.email == u.email)
+				mios.Add(n.id);
+		}
+		//obtengo apoyos
+        foreach (Usuario u2 in grupo.usuarios)
+		{
+			foreach (int id in mios)
+			{
+				foreach (Flor f in u2.flores)
+				if (f.id == id)
+					ret++;
+			}
+		}
+		return ret;
+	}
+
+        public void actualizarApoyos()
+        {
+		//recuento los apoyos que tiene cada usuario
+		List<Nodo> nodos = toList();
+        foreach (Usuario u in grupo.usuarios)
+		{
+			u.apoyos = getApoyos(u, nodos);		
+		}
         }
 
         public Nodo getMayorQuitar(int notLikeId)
@@ -181,6 +214,29 @@ namespace nabu
             return nodes;
         }
 
+        public string getEtiqueta(string prefijo, Nodo n)
+        {
+            //busco un id libre en este subarbol
+            List<Nodo> subarbol = toList(n);
+            int ret = 0;
+            bool found = true;
+            while (found)
+            {
+                found = false;
+                ret++;
+                foreach (Nodo hijo in subarbol)
+                    if (hijo.nombre == prefijo + ret.ToString())
+                        found = true;
+            }
+            return prefijo + ret.ToString();
+        }
+
+        public List<Nodo> toList(Nodo n)
+        {
+            var nodes = toList2(n, new List<Nodo>());
+            return nodes;
+        }
+
         private List<Nodo> scrumble(List<Nodo> nodes) {
             //scrumble
             for(int i = 0; i<nodes.Count / 3; i++)
@@ -205,23 +261,11 @@ namespace nabu
             return ret;
         }
 
-        public int activos
-        {
-            get
-            {
-                int ret = 0;
-                foreach (Usuario u2 in usuarios)
-                    if (u2.isActive)
-                        ret += 1;
-                return ret;
-            }
-        }
-
         public float minSiValue
         {
             get
             {
-                return (float)Math.Ceiling(usuarios.Count * minSiPc / 100);
+                return (float)Math.Ceiling(grupo.usuarios.Count * minSiPc / 100);
             }
         }
 
@@ -233,32 +277,33 @@ namespace nabu
             }
         }
 
-        public Usuario getAdmin()
-        {
-            foreach (Usuario u in usuarios)
-            {
-                if (u.isAdmin)
-                    return u;
-            }
-            return null;
-        }
-
         private bool comprobarConsenso()
         {
             List<Nodo> nodos = toList();
             foreach (Nodo n in nodos)
-                if (comprobarConsenso(n))
-                    return true;
+                if (n.nivel > 0)
+                    if (comprobarConsenso(n))
+                        return true;
             return false;
+        }
+
+        public LogDocumento getLogDocumento(int docID)
+        {
+            foreach (LogDocumento ld in logDocumentos)
+            {
+                if (ld.docID == docID)
+                    return ld;
+            }
+            return null;
         }
 
         private bool comprobarConsenso(Nodo n)
         {
             bool ret = false;
-            ModeloDocumento m = getModelo(n.modeloID);
+            Modelo m = Modelo.getModelo(n.modeloID);
             List<Nodo> pathn = getPath(n.id);
 
-            if (m != null && pathn.Count - 1 == m.secciones.Count)
+            if (m != null && pathn.Count - 1 == m.niveles)
             {
                 //es una hoja de documento completo, verifico condicion
                 n.negados = getNegados(n);
@@ -273,31 +318,60 @@ namespace nabu
                     DateTime fdate = DateTime.Now;
                     int docID = lastDocID++;
                     string fname = m.nombre + "_" + docID.ToString("0000");
-                    //if (!simulacion)
-                    //{
-                        generarDocumentoHTML(n, fdate, fname);
-                        generarDocumentoJSON(n, fdate, fname);
-                        save(path + "\\documentos\\" + nombre + ".json"); //guardo copia del arbol
-                    //}
+                    
+                    //guardo HTML
+                    generarDocumentoHTML(n, fdate, fname);
+
+                    //guardo documento
+                    Documento doc = crearDocumento(n, fdate, fname);
+
+                    //ejecuto proceso de consenso alcanzado
+                    try
+                    {
+                        doc.grupo = grupo;
+                        doc.EjecutarConsenso();
+                    }
+                    catch (Exception ex)
+                    {
+                        doc.addLog("EjecutarConsenso: <font color=red>" + ex.Message + "</font>");
+                    }
+
+                    //guardo el documento
+                    doc.save();
+
+                    grupo.save(grupo.path + "\\documentos\\"); //guardo copia del arbol
+
+                    //notifico via email a todos los socios
+                    if (!simulacion)
+                    {
+                        foreach (Usuario u in grupo.usuarios)
+                            Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, grupo.path + "\\documentos\\" + nombre + ".json");
+                    }
 
                     //guardo el log historico en el arbol
-                    Propuesta p = getPropuesta(pathn[0].id);  //obtengo el titulo del debate de cualquiera de las propuestas 
+                    Propuesta p = getPropuesta(n.id);  //obtengo el titulo del debate de cualquiera de las propuestas 
                     LogDocumento ld = new LogDocumento();
                     ld.fecha = fdate;
                     ld.titulo = p.titulo;
-                    ld.nombre = getModelo(n.modeloID).nombre;
-                    ld.x = n.x;
+                    ld.icono = getModelo(n.modeloID).icono;
+                    if (ld.titulo.Length > 50) ld.titulo = ld.titulo.Substring(0, 50);
+                    ld.modeloNombre = getModelo(n.modeloID).nombre;
+                    ld.modeloID = n.modeloID;
+                    ld.x = n.x; if (ld.x == 0) ld.x = 90;
                     ld.docID = docID;
                     ld.fname = fname;
                     ld.arbol = nombre;
-                    ld.objetivo = objetivo;
-                    ld.URL = URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html";
+                    ld.objetivo = grupo.objetivo;
+                    ld.flores = n.flores;
+                    ld.negados = n.negados;
+                    ld.URL = grupo.URL + "/grupos/" + nombre + "/documentos/" + fname + ".html";
                     logDocumentos.Add(ld);
-                    
-                    //marco a todos los nodos del debate
+
+                    //marco a todos los nodos del debate y sus propuestas
                     for (int i = 0; i < pathn.Count - 1; i++) //menos la raiz
                     {
                         pathn[i].consensoAlcanzado = true;
+                        getPropuesta(pathn[i]).consensoAlcanzado = true;
                         foreach (Nodo n2 in pathn[i].children)
                             marcarConsenso(n2);
                     }
@@ -312,105 +386,118 @@ namespace nabu
         {
             //marco sus hijos
             n.consensoAlcanzado = true;
+            getPropuesta(n).consensoAlcanzado = true;
             foreach (Nodo n2 in n.children)
             {
                 n2.consensoAlcanzado = true;
+                getPropuesta(n2).consensoAlcanzado = true;
                 marcarConsenso(n2);
             }
         }
 
-        public void save(string folderPath)
+        private Documento crearDocumento(Nodo n, DateTime now, string fname)
         {
-            string json = Tools.toJson(this);
-            string filepath = folderPath + "\\" + nombre + ".json";
-
-            if (!System.IO.Directory.Exists(folderPath))
-                System.IO.Directory.CreateDirectory(folderPath);
-            
-            //copa de seguridad
-            if (DateTime.Now.Subtract(lastBackup).TotalDays >= 1)
-            {
-                string date = DateTime.Now.Year.ToString("0000") + "-" + DateTime.Now.Month.ToString("00") + "-" + DateTime.Now.Day.ToString("00") + " " + DateTime.Now.Hour.ToString("00") + "-" + DateTime.Now.Minute.ToString("00"); 
-                string bkpath = folderPath + "/" + nombre + " " + date + ".json";
-                System.IO.File.Copy(filepath, bkpath);
-                lastBackup = DateTime.Now;
-            }
-
-            System.IO.StreamWriter fs = System.IO.File.CreateText(filepath);
-            fs.Write(json);
-            fs.Close();
-        }
-
-        private void generarDocumentoJSON(Nodo n, DateTime now, string fname)
-        {
-            ModeloDocumento m = getModelo(n.modeloID);
+            Modelo m = getModelo(n.modeloID);
             Documento doc = new Documento();
             doc.fecha = now;
             doc.nombre = m.nombre;
-            foreach(Nodo n2 in getPath(n.id))
-                doc.propuestas.Add(getPropuesta(n2.id));
-            doc.raiz = raiz;
+            doc.fname = fname;
+            doc.modeloID = n.modeloID;
+            doc.path = grupo.path + "\\documentos\\" + fname + ".json";
+            doc.URLPath = grupo.URL + "/grupos/" + grupo.nombre + "/documentos/" + fname + ".html";
 
-            //guardo
-            System.IO.File.WriteAllText(path + "\\documentos\\" + fname + ".json", Tools.toJson(doc));
+            //obtengo el titulo
+            //debo dibujar el documento
+            //junto propuestas
+            List<Propuesta> props = new List<Propuesta>();
+            foreach (Nodo n1 in getPath(n.id))
+            {
+                Propuesta p = getPropuesta(n1);
+                if (p != null) //la raiz
+                    props.Add(p);
+            }
+            //armo HTML
+            m.toHTML(props, this.grupo, "", 1024, Modelo.eModo.consenso);
+            doc.titulo = m.titulo;
+            
+            //guardo propuestas
+            doc.propuestas = props;
+            
+            //doc.raiz = raiz;
+
+            return doc;
         }
 
         private void generarDocumentoHTML(Nodo n, DateTime now, string fname)
         {
             List<Nodo> pathn = getPath(n.id);
-            ModeloDocumento m = getModelo(n.modeloID);
+            Modelo m = getModelo(n.modeloID);
 
-            if (!System.IO.Directory.Exists(path + "\\documentos"))
-                System.IO.Directory.CreateDirectory(path + "\\documentos");
+            if (!System.IO.Directory.Exists(grupo.path + "\\documentos"))
+                System.IO.Directory.CreateDirectory(grupo.path + "\\documentos");
 
-            if (!System.IO.File.Exists(path + "\\documentos\\styles.css"))
-                System.IO.File.Copy(path + "\\..\\..\\styles.css", path + "\\documentos\\styles.css");
+            if (!System.IO.File.Exists(grupo.path + "\\documentos\\styles.css"))
+                System.IO.File.Copy(grupo.path + "\\..\\..\\styles.css", grupo.path + "\\documentos\\styles.css");
+
+            //junto propuestas
+            List<Propuesta> props = new List<Propuesta>();
+            foreach (Nodo n1 in pathn)
+            {
+                Propuesta p = getPropuesta(n1);
+                if (p != null) //la raiz
+                    props.Add(p);
+            }
+           
+            //firma consenso
+            string ret = "";
+            ret += "Documento escrito de forma cooperativa.<br>";
+            ret += "Documento ID:" + fname + "<br>";
+            ret += "Fecha de consenso: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
+            ret += "Ubicaci&oacute;n: <a target='_blank' href='" + grupo.URL + "/grupos/" + nombre + "/documentos/" + fname + ".html'>" + grupo.URL + "/grupos/" + nombre + "/documentos/" + fname + ".html</a><br>";
+            ret += "Cooperativa: " + this.nombre + "<br>";
+            ret += "Objetivo: " + this.grupo.objetivo + "<br>";
+            ret += "Usuarios: " + this.grupo.usuarios.Count + "<br>";
+            ret += "Activos: " + this.grupo.activos + "<br>";
+            ret += "Si: (&ge; " + this.minSiPc + "%): " + n.flores + "<br>";
+            ret += "No: (&le; " + this.maxNoPc + "%): " + n.negados + "<br>";
 
             //armo HTML
-            string html = "<html>";
-            html += "<head>";
-            html += "<title></title>";
-            html += "<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1' />";
-            html += "<link rel='stylesheet' type='text/css' href='styles.css'>";
-            html += "</head>";
-            html += "<body>";
-
-            Propuesta p = getPropuesta(pathn[0].id);  //obtengo el titulo del debate de cualquiera de las propuestas 
-            if (p == null)
-                html += "<div class='titulo0'>" + m.nombre + ":</div>";
-            else
-                html += "<div class='titulo0'>" + m.nombre + ":" + p.titulo + "</div>";
-
-            html += "<div class='titulo2'>" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</div>";
-
-            for(int i = pathn.Count - 2; i >= 0; i--) //escribo en orden inverso
-            {
-                p = getPropuesta(pathn[i].id);
-
-                foreach(TextoTema tt in p.textos)
-                {
-                    html += "<div class='titulo1'>" + tt.titulo + "</div><br>";
-                    html += tt.texto + "<br><br>";
-                }
-                html += "<hr>";
-            }
-
-            //firma
-            html += "Documento escrito de forma cooperativa.<br>";
-            html += "Documento ID:" + fname + "<br>";
-            html += "Fecha de consenso: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
-            html += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html'>" + URL + "/cooperativas/" + nombre + "/documentos/" + fname + ".html</a><br>";
-            html += "Cooperativa: " + this.nombre + "<br>";
-            html += "Objetivo: " + this.objetivo + "<br>";
-            html += "Usuarios: " + this.usuarios.Count + "<br>";
-            html += "Activos: " + this.activos + "<br>";
-            html += "A favor (Si &ge; " + this.minSiPc + "%): " + n.flores + "<br>";
-            html += "En contra (No &le; " + this.maxNoPc + "%): " + n.negados + "<br>";
-
-            html += "</body>";
-
-            System.IO.File.WriteAllText(path + "\\documentos\\" + fname + ".html", html);
+            m.firmaConsenso = ret;
+            string html = m.toHTML(props, this.grupo, "", 1024, Modelo.eModo.consenso);
+           
+            //escribo
+            System.IO.File.WriteAllText(grupo.path + "\\documentos\\" + fname + ".html", html);
         }
+
+        //private string JSON_decode(string s) {
+        //    //esta funcion esta reptida del lado del cliente
+        //    s = s.Replace("[euro]", "€");
+        //    s = s.Replace("[pound]", "&pound;");
+        //    s = s.Replace("[mayor]", "&gt;");
+        //    s = s.Replace("[menor]","&lt;");
+        //    s = s.Replace("[amp]","&");
+        //    s = s.Replace("[deg]", "&deg;");
+        //    s = s.Replace("[ordf]", "&ordf;");
+        //    s = s.Replace("[h64]", "&#64;");
+        //    s = s.Replace("[Ntilde]", "&Ntilde;");
+        //    s = s.Replace("[ntilde]", "&ntilde;");
+        //    s = s.Replace("[ccedil]", "&ccedil;");
+        //    s = s.Replace("[h43]", "&#43;");
+        //    s = s.Replace("[h45]", "&#45;");
+        //    s = s.Replace("[iquest]", "&iquest;");
+        //    s = s.Replace("[h63]", "&#63;");
+        //    s = s.Replace("[h35]", "&#35;");
+        //    s = s.Replace("[frasl]","/");
+        //    s = s.Replace("[h92]","\\");
+        //    s = s.Replace("[h61]", "&#61;");
+        //    s = s.Replace("[h36]","$");
+        //    s = s.Replace("[h124]","|");
+        //    s = s.Replace("[lsquo]","\"");
+        //    s = s.Replace("[ldquo]", "\"");
+        //    s = s.Replace("\\n", "<br>");
+        //    return s;
+        //}
+
 
         private int getNegados(Nodo n)
         {
@@ -433,79 +520,73 @@ namespace nabu
             return ret;
         }
 
-        public void setModelosDocumentoDefault()
-        {
-            //creo modelos de documentos default
+        //public void setModelosDocumentoDefault()
+        //{
+        //    //creo modelos de documentos default
 
-            ModeloDocumento d = new ModeloDocumento();  ////modelo de simulacion !!!
-            d.id = 1;
-            d.nombre = "Accion";
-            d.crear(0, "Resumen y motivacion", "El consenso es un proceso cooperativo. Somos constructivos con nuestras propuestas y consideramos el bien comun", 3000);
-            d.crear(1, "Objetivo a lograr", "Describe que pretendes que logremos", 2000);
-            d.crear(1, "Descripcion", "Describe con mayor detalle como sera", 3500);
-            d.crear(1, "A quien va dirigido", "Quienes se beneficiaran", 1000);
-            d.crear(2, "Materiales", "Describe los recursos que seran necesarios sin olvidar un presupuesto estimado", 1500);
-            d.crear(2, "Software", "Describe los recursos que seran necesarios sin olvidar un presupuesto estimado", 1500);
-            d.crear(2, "RRHH", "Describe los recursos que seran necesarios sin olvidar un presupuesto estimado", 1500);
-            d.crear(3, "Fases", "Describe las fases que se deben alcanzar para lograr el objetivo", 3000);
-            d.crear(4, "Presupuesto y plazo de entrega", "Adjunta un documento PDF detallando la propuesta, puedes usar graficos para entendernos mejor", 500);
-            modelosDocumento.Add(d);
+        //    d = new ModeloDocumento();
+        //    d.id = 2;
+        //    d.nombre = "Comision";
+        //    d.crear(0, "Resumen y motivacion", "&iquest;porque neceistamos una nueva comision? &iquest;Que actividades realizara?", 2000);
+        //    d.crear(1, "Objetivo de la comision", "&iquest;Que debe lograr la nueva comision?", 3500);
+        //    d.crear(1, "Descripcion de actividades de la comision", "Detalla las actividades a realizar", 3500);
+        //    d.crear(1, "A quien van dirigidas sus actuaciones", "", 3500);
+        //    d.crear(2, "Capacidades necesarias", "", 3500);
+        //    d.crear(3, "Composicion de la comision", "", 3500);
+        //    d.crear(4, "Como medir su eficiencia", "", 3500);
+        //    modelosDocumento.Add(d);
 
-            d = new ModeloDocumento();
-            d.id = 2;
-            d.nombre = "Comision";
-            d.crear(0, "Resumen y motivacion", "&iquest;porque neceistamos una nueva comision? &iquest;Que actividades realizara?", 2000);
-            d.crear(1, "Objetivo de la comision", "&iquest;Que debe lograr la nueva comision?", 3500);
-            d.crear(1, "Descripcion de actividades de la comision", "Detalla las actividades a realizar", 3500);
-            d.crear(1, "A quien van dirigidas sus actuaciones", "", 3500);
-            d.crear(2, "Capacidades necesarias", "", 3500);
-            d.crear(3, "Composicion de la comision", "", 3500);
-            d.crear(4, "Como medir su eficiencia", "", 3500);
-            modelosDocumento.Add(d);
+        //    d = new ModeloDocumento();
+        //    d.id = 3;
+        //    d.nombre = "Evento";
+        //    d.crear(0, "Resumen y motivacion", "&iquest;Como sera el evento?", 3500);
+        //    d.crear(1, "Objetivo del evento", "", 3500);
+        //    d.crear(1, "Descripcion", "", 3500);
+        //    d.crear(1, "A quien va dirigido el evento", "", 3500);
+        //    d.crear(2, "Lugar", "", 3500);
+        //    d.crear(2, "Materiles", "", 3500);
+        //    d.crear(2, "Transporte", "", 3500);
+        //    d.crear(3, "Organizacion del evento", "", 3500);
+        //    d.crear(4, "Como medir su eficiencia", "", 3500);
+        //    modelosDocumento.Add(d);
 
-            d = new ModeloDocumento();
-            d.id = 3;
-            d.nombre = "Evento";
-            d.crear(0, "Resumen y motivacion", "&iquest;Como sera el evento?", 3500);
-            d.crear(1, "Objetivo del evento", "", 3500);
-            d.crear(1, "Descripcion", "", 3500);
-            d.crear(1, "A quien va dirigido el evento", "", 3500);
-            d.crear(2, "Lugar", "", 3500);
-            d.crear(2, "Materiles", "", 3500);
-            d.crear(2, "Transporte", "", 3500);
-            d.crear(3, "Organizacion del evento", "", 3500);
-            d.crear(4, "Como medir su eficiencia", "", 3500);
-            modelosDocumento.Add(d);
-
-            d = new ModeloDocumento();
-            d.id = 4;
-            d.nombre = "Metodologia";
-            d.crear(0, "Resumen y motivacion", "&iquest;Como sera la metodologia?", 3500);
-            d.crear(1, "Para que sirve", "", 3500);
-            d.crear(1, "Descripcion", "", 3500);
-            d.crear(1, "A quien va dirigida", "", 3500);
-            d.crear(2, "Definicion de la metodologia", "", 4500);
-            d.crear(3, "Como medir su eficiencia", "", 3500);
-            d.crear(3, "Como implantarla", "", 3500);
-            d.crear(4, "Fases del desarrollo", "", 3500);
-            d.crear(4, "Tiempo de desarrollo", "", 3500);
-            modelosDocumento.Add(d);
-        }
+        //    d = new ModeloDocumento();
+        //    d.id = 4;
+        //    d.nombre = "Metodologia";
+        //    d.crear(0, "Resumen y motivacion", "&iquest;Como sera la metodologia?", 3500);
+        //    d.crear(1, "Para que sirve", "", 3500);
+        //    d.crear(1, "Descripcion", "", 3500);
+        //    d.crear(1, "A quien va dirigida", "", 3500);
+        //    d.crear(2, "Definicion de la metodologia", "", 4500);
+        //    d.crear(3, "Como medir su eficiencia", "", 3500);
+        //    d.crear(3, "Como implantarla", "", 3500);
+        //    d.crear(4, "Fases del desarrollo", "", 3500);
+        //    d.crear(4, "Tiempo de desarrollo", "", 3500);
+        //    modelosDocumento.Add(d);
+        //}
 
         public ArbolPersonal getArbolPersonal(string email)
         {
-            Usuario u = getUsuario(email);
+            return getArbolPersonal(email, 0);
+        }
+
+        public ArbolPersonal getArbolPersonal(string email, int nuevoNodoID)
+        {
+            Usuario u = grupo.getUsuario(email);
             if (u != null)
             {
                 ArbolPersonal ap = new ArbolPersonal();
                 ap.raiz = raiz;
-                ap.objetivo = objetivo;
-                ap.URLEstatuto = URLEstatuto;
-                ap.nombre = nombre;
-                ap.usuarios = usuarios.Count;
+                ap.objetivo = grupo.objetivo;
+                ap.URLEstatuto = grupo.URLEstatuto;
+                ap.nombre = grupo.nombre;
+                ap.usuarios = grupo.usuarios.Count;
                 ap.cantidadFlores = cantidadFlores;
-                ap.activos = activos;
+                ap.activos = grupo.activos;
                 ap.simulacion = simulacion;
+                ap.nuevoNodoID = nuevoNodoID;
+                ap.born = born;
+                ap.documentos = logDocumentos.Count;
 
                 ap.usuario = u;
                 ap.minSiPc = minSiPc;
@@ -522,24 +603,23 @@ namespace nabu
                 throw new appException("El usuario no existe");
         }
 
-        public Nodo addNodo(Nodo padre, string email, string nombre, List<TextoTema> tts, int modeloID){
+        public Nodo addNodo(Nodo padre, Propuesta prop){
             //verifico que el usuario tiene al menos una flor disponible
-            Usuario u = getUsuario(email);
+            Usuario u = grupo.getUsuario(prop.email);
             if (nombre == null)
                 throw new appException("Nombre de nodo no puede ser vacio");
             else if (u == null)
                 throw new appException("El usuario no existe");
-            else if (tts.Count == 0)
-                throw new appException("Los textos no pueden ser vacios");
             else if (padre == null)
                 throw new appException("El nodo no existe");
             else
             {
                 //agrego nuevo nodo
                 Nodo nuevo = new Nodo();
-                nuevo.nombre = nombre;
+                nuevo.nombre = prop.etiqueta;
                 nuevo.id = lastNodoID++;
-                nuevo.modeloID = modeloID;
+                nuevo.modeloID = prop.modeloID;
+                nuevo.email = prop.email;
 
                 try
                 {
@@ -549,23 +629,18 @@ namespace nabu
                     else
                         padre.children.Insert(0, nuevo);
 
+                    //seguridad
+                    if (prop.nivel != getPath(nuevo.id).Count - 1)  //quito la raiz
+                        throw new Exception("El nivel de la propuesta no coincide con el del arbol");
+
                     //fijo nivel
-                    nuevo.nivel = getPath(nuevo.id).Count - 1;  //quito la raiz
+                    nuevo.nivel = prop.nivel;
 
                     leftRight = !leftRight;
 
                     //agrego la propuesta
-                    ModeloDocumento m = getModelo(modeloID);
-                    Propuesta op = new Propuesta();
-                    op.titulo = nombre;
-                    op.modeloID = modeloID;
-                    op.nodoID = nuevo.id;
-                    op.seccion = getPath(nuevo.id).Count - 2;
-                    foreach (TextoTema tt in tts)
-                    {
-                        op.textos.Add(tt);
-                    }
-                    propuestas.Add(op);
+                    prop.nodoID = nuevo.id;  //ahora si tiene nodo
+                    propuestas.Add(prop);
 
                     //consumo una flor
                     asignarflor(u, nuevo);
@@ -583,7 +658,7 @@ namespace nabu
         public Usuario getUsuarioConFloresDisponibles()
         {
             Usuario ret = null;
-            foreach (Usuario u in usuarios)
+            foreach (Usuario u in grupo.usuarios)
             {
                 if (u.floresDisponibles().Count > 0)
                 {
@@ -602,7 +677,7 @@ namespace nabu
             if (n.flores > 0)
             {
                 //busco un usuario que haya votado ese nodo
-                foreach (Usuario u2 in usuarios)
+                foreach (Usuario u2 in grupo.usuarios)
                 {
                     foreach (Flor f2 in u2.flores)
                         if (f2.id == n.id)
@@ -704,8 +779,8 @@ namespace nabu
             List<Nodo> nodos = toList();
             foreach (Nodo n in nodos)
             {
-                ModeloDocumento m = getModelo(n.modeloID);
-                if (m != null && n.nivel == m.secciones.Count())
+                Modelo m = getModelo(n.modeloID);
+                if (m != null && n.nivel == m.niveles)
                 {
                     //es una hoja de final de documento
                     n.negados = getNegados(n);
@@ -775,7 +850,7 @@ namespace nabu
         public Nodo getNodo(int id)
         {
             List<Nodo> p = getPath(id);
-            if (p != null)
+            if (p != null && p.Count > 0)
                 return p[0];
             else
                 return null;
@@ -789,6 +864,13 @@ namespace nabu
             List<Nodo> ret = new List<Nodo>();
             getPath(raiz, id, ret);
             return ret;
+        }
+
+        public Propuesta getPropuesta(Nodo n)
+        {
+            //devuelvo la propuesta resultado de comparar el texto con sus hermanos
+            Propuesta op = getPropuesta(n.id);
+            return op;
         }
 
         private void getPath(Nodo padre, int id, List<Nodo> ret)
@@ -815,7 +897,7 @@ namespace nabu
         public void actualizarModelosEnUso()
         {
             //marco los modelos de documentos que estan en uso
-            foreach (ModeloDocumento m in modelosDocumento)
+            foreach (Modelo m in modelos)
             {
                 m.enUso = false;
                 foreach (Propuesta p in propuestas)
@@ -827,37 +909,11 @@ namespace nabu
             }
         }
 
-        public Usuario getUsuario(string email, string clave)
+        public Modelo getModelo(string modeloID)
         {
-            //comparo en minusculas por los moviles y iPad y tablets que ponen la 1ra en mayuscula y confunde
-            Usuario ret = getUsuario(email);
+            Modelo ret = null;
 
-            if (ret != null && ret.clave.ToLower() == clave.ToLower())
-                return ret;
-            else
-                return null;
-        }
-
-        public Usuario getUsuario(string email)
-        {
-            Usuario ret = null;
-
-            foreach (Usuario u in usuarios)
-            {
-                if (u.email.ToLower() == email.ToLower())
-                {
-                    //login correcto
-                    ret = u;
-                }
-            }
-            return ret;
-        }
-
-        public ModeloDocumento getModelo(int modeloID)
-        {
-            ModeloDocumento ret = null;
-
-            foreach (ModeloDocumento m in modelosDocumento)
+            foreach (Modelo m in modelos)
             {
                 if (m.id == modeloID)
                 {
@@ -867,30 +923,6 @@ namespace nabu
             return ret;
         }
 
-        public Usuario removeUsuario(string email)
-        {
-            Usuario u = getUsuario(email);
-            if (u == null)
-                throw new appException("El usuario no existe");
-            else
-            {
-                //quito sus flores
-                foreach (Flor f in u.flores)
-                {
-                    if (f.id != 0)
-                    {
-                        //quito la flor
-                        List<Nodo> pathn = getPath(f.id);
-                        Nodo n = pathn[0];
-                        n.flores -= 1;
-                        f.id = 0;
-                    }
-                }
 
-                //borro
-                usuarios.Remove(u);
-            }
-            return u;
-        }
     }
 }

@@ -1,21 +1,58 @@
 ﻿
 function JSON_encode(s) {
-    s = s.replace('€', '&euro;');
-    s = s.replace('£', '&pound;');
-    s = s.replace('>', '&gt;');
-    s = s.replace('<', '&gl;');
-    s = s.replace('&', '&amp;');
-    s = s.replace('º', '&deg;');
+    s = s.replace('&', '[amp]');  //este va primero
+    s = s.replace('€', '[euro]'); //uso codigo particular porque si no falla al enviarlo  al servidor
+    s = s.replace('£', '[pound]');
+    s = s.replace('>', '[mayor]'); //uso codigo particular porque si no falla al enviarlo  al servidor
+    s = s.replace('<', '[menor]'); //uso codigo particular porque si no falla al enviarlo  al servidor
+    s = s.replace('º', '[deg]');
+    s = s.replace('ª', '[ordf]');
+    s = s.replace('@', '[h64]');
+    s = s.replace('Ñ', '[Ntilde]');
+    s = s.replace('ñ', '[ntilde]');
+    s = s.replace('ç', '[ccedil]');
+    s = s.replace('+', '[h43]');
+    s = s.replace('-', '[h45]');
+    s = s.replace('¿', '[iquest]');
+    s = s.replace('?', '[h63]');
+    s = s.replace('#', '[h35]');
+    s = s.replace('/', '[frasl]');
+    s = s.replace('\\', '[h92]');
+    s = s.replace('=', '[h61]');
+    s = s.replace('$', '[h36]');
+    s = s.replace('|', '[h124]');
+    s = s.replace('\'', '[lsquo]');
+    s = s.replace('\"', '[ldquo]');
+    s = s.replace(/\n/g, "\\n");
     return s;
 }
 
 function JSON_decode(s) {
-    s = s.replace('&euro;', '€');
-    s = s.replace('&pound;','£');
-    s = s.replace('&gt;','>');
-    s = s.replace('&gl;','<');
-    s = s.replace('&amp;','&');
-    s = s.replace('&deg;','º');
+    //esta funcion esta reptida del lado del servidor para poder generar consensos
+    s = s.replace('[euro]', '€');
+    s = s.replace('[pound]','£');
+    s = s.replace('[mayor]','>');
+    s = s.replace('[menor]','<');
+    s = s.replace('[amp]','&');
+    s = s.replace('[deg]','º');
+    s = s.replace('[ordf]','ª');
+    s = s.replace('[h64]', '@');
+    s = s.replace('[Ntilde]', 'Ñ');
+    s = s.replace('[ntilde]', 'ñ');
+    s = s.replace('[ccedil]', 'ç');
+    s = s.replace('[h43]','+');
+    s = s.replace('[h45]','-');
+    s = s.replace('[iquest]','¿');
+    s = s.replace('[h63]','?');
+    s = s.replace('[h35]','#');
+    s = s.replace('[frasl]','/');
+    s = s.replace('[h92]','\\');
+    s = s.replace('[h61]','=');
+    s = s.replace('[h36]','$');
+    s = s.replace('[h124]','|');
+    s = s.replace('[lsquo]','\'');
+    s = s.replace('[ldquo]', '\"');
+    s = s.replace("\\n", "<br>");
     return s;
 }
 
@@ -169,7 +206,7 @@ function efectoOpacity(obj, wait, oini, ofin, efecto, complete) {
     }
     else
         var tween = new TWEEN.Tween({ o: oini })
-            .to({ o: ofin }, 900)
+            .to({ o: ofin }, 1000)
             .easing(efecto)
             .onStart(function () {
                 obj.style.visibility = "visible";
@@ -212,44 +249,51 @@ function postHttp(url, post, callback) {
     xmlhttp.send(post);
 }
 
-function actualizarDatosConsenso(n) {
-    var usuarios = document.getElementById("usuarios");
-    var minSiPc = document.getElementById("minSiPc");
-    var maxNoPc = document.getElementById("maxNoPc");
-
+function actualizarDatosConsenso() {
+    var panel = document.getElementById("panelConsenso");
+    var ret = "";
     var ap = arbolPersonal;
 
-    if (n && n.nivel > 0) {
-        var modelo = getModelo(n.modeloID);
+    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>Consenso</b></nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Usuarios: " + ap.usuarios + "<br>Activos: " + ap.activos + "</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Si&ge;" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>No&le;" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
+    panel.innerHTML = ret;
+}
 
-        if (n.depth == modelo.secciones.length) {
-            //es una hoja de un debate completo, mido condicion de consenso
+function actualizarDatosGrupo() {
+    var panel = document.getElementById("panelGrupo");
+    var ret = "";
+    var ap = arbolPersonal;
+    var born = new Date(ap.born.match(/\d+/)[0] * 1);
+    var dias = Math.abs(new Date() - born) / (24 * 60 * 60 * 1000);
+    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>Grupo</b></nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("D&iacute;as") + ":" + dias.toFixed(0) + "</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Consensos") + ":" + ap.documentos + "</nobr></div>";
+    //ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Comunes:0</nobr></div>";
+    panel.innerHTML = ret;
+    panel.style.visibility = 'visible';
+}
 
-            //var negados = getNegados(n);
+function formatDate(d) {
+    var day = d.getDate();
+    var month = d.getMonth() + 1;
+    var year = d.getFullYear();
+    return (day + '/' + month + '/' + year);
+}
 
-            usuarios.innerHTML = "Usuarios: " + ap.usuarios + "<br>Activos: " + ap.activos;
+function jsonToDate(jsondate) {
+    return new Date(jsondate.match(/\d+/)[0] * 1);
+}
 
-            if (n.flores >= ap.minSiValue)
-                minSiPc.innerHTML = 'Si &ge; ' + ap.minSiPc + '%<br><font color=green>' + n.flores + " &ge; " + ap.minSiValue + "</font>";
-            else
-                minSiPc.innerHTML = 'Si &ge; ' + ap.minSiPc + '%<br><font color=red>' + n.flores + " &le; " + ap.minSiValue + "</font>";
-
-            if (n.negados <= ap.maxNoValue)
-                maxNoPc.innerHTML = 'No &le; ' + ap.maxNoPc + '%<br><font color=green>' + n.negados + " &ge; " + ap.maxNoValue + "</font>";
-            else
-                maxNoPc.innerHTML = 'No &le; ' + ap.maxNoPc + '%<br><font color=red>' + n.negados + " &le; " + ap.maxNoValue + "</font>";
-        }
-        else {
-            //solo parametros de consenso
-            usuarios.innerHTML = "Usuarios: " + ap.usuarios + "<br>Activos: " + ap.activos;
-            minSiPc.innerHTML = 'Si &ge; ' + ap.minSiPc + '%<br>' + "? &ge; " + ap.minSiValue;
-            maxNoPc.innerHTML = 'No &le; ' + ap.maxNoPc + '%<br>' + "? &le; " + ap.maxNoValue;
-        }
+function tr(mensaje) {
+    //aplico traduccion
+    if (grupo) {
+        if (grupo.idioma = "ES")
+            return mensaje;
     }
-    else {
-        //solo parametros de consenso
-        usuarios.innerHTML = "Usuarios: " + ap.usuarios + "<br>Activos: " + ap.activos;
-        minSiPc.innerHTML = 'Si &ge; ' + ap.minSiPc + '%<br>' + "? &ge; " + ap.minSiValue;
-        maxNoPc.innerHTML = 'No &le; ' + ap.maxNoPc + '%<br>' + "? &le; " + ap.maxNoValue;
-    }
+    else
+        return mensaje; //por ahora
 }

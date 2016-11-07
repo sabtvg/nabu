@@ -7,20 +7,98 @@ namespace nabu
 {
     public class Aplicacion
     {
-        public List<Arbol> arboles = new List<Arbol>();
+        public List<Grupo> grupos = new List<Grupo>();
         public HttpServerUtility server;
+        public HttpRequest request;
 
-        public Aplicacion(HttpServerUtility server){
+        public Aplicacion(HttpServerUtility server, HttpRequest request)
+        {
             this.server = server;
+            this.request = request;
         }
 
-        public void addLog(string accion, string ip, string arbol, string email, string descripcion)
+        public void saveGrupos()
+        {
+            lock (grupos)
+            {
+                foreach (Grupo g in grupos)
+                {
+                    lock (g)
+                    {
+                        g.save(server.MapPath("grupos/" + g.nombre));
+                    }
+                }
+            }
+        }
+
+        public Grupo getGrupo(string nombre)
+        {
+            Grupo ret = null;
+
+            lock (grupos)
+            {
+                foreach (Grupo g in grupos)
+                {
+                    if (g.nombre == nombre)
+                    {
+                        ret = g;
+                    }
+                }
+
+                if (ret == null)
+                {
+                    //no existe en la lista lo busco en la carpeta y lo cargo
+                    ret = loadGrupo(nombre);
+                    grupos.Add(ret);
+                }
+            }
+
+            return ret;
+        }
+
+        public Grupo loadGrupo(string nombre)
+        {
+            string jsonpath = server.MapPath("grupos/" + nombre + "/" + nombre + ".json");
+            if (System.IO.File.Exists(jsonpath))
+            {
+                Grupo ret;
+                System.IO.StreamReader fs = System.IO.File.OpenText(jsonpath);
+                string s = fs.ReadToEnd();
+                fs.Close();
+
+                List<Type> tipos = new List<Type>();
+                tipos.Add(typeof(Arbol));
+                tipos.Add(typeof(Usuario));
+                tipos.Add(typeof(Nodo));
+                tipos.Add(typeof(Comentario));
+                tipos.Add(typeof(Variable));
+
+                //modelos
+                foreach (Modelo m in Modelo.getModelos())
+                {
+                    tipos.Add(m.GetType());
+                }
+
+                ret = Tools.fromJson<Grupo>(s, tipos);
+                ret.path = server.MapPath("grupos/" + nombre);
+                ret.URL = request.UrlReferrer.AbsoluteUri.Substring(0, request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
+
+                //actualizo modelos
+                ret.arbol.modelos = Modelo.getModelos();
+                ret.arbol.grupo = ret;  //padre del arbol, referencia ciclica, no se puede serializar
+                return ret;
+            }
+            else
+                throw new appException("El grupo no existe");
+        }
+
+        public void addLog(string accion, string ip, string grupo, string email, string descripcion)
         {
             lock (this)
             {
                 string l = "<tr><td>" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</td>";
                 l += "<td>" + accion + "</td>";
-                l += "<td>" + arbol + "</td>";
+                l += "<td>" + grupo + "</td>";
                 l += "<td>" + email + "</td>";
                 l += "<td>" + descripcion + "</td></tr>";
 

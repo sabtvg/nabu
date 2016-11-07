@@ -40,7 +40,6 @@ namespace nabu
 
     public static class Tools
     {
-        public static List<Type> knowntypes;
         private static char coma = ' ';
         public static string startupPath;
         private static int fileIndex = 0;
@@ -132,6 +131,22 @@ namespace nabu
             return ret;
         }
 
+        public static string toJson(object objeto, List<Type> knowntypes)
+        {
+            if (objeto == null)
+                return "null";
+            else
+            {
+                //http://www.esasp.net/2010/06/c-serializar-json-datacontract.html
+                string s = string.Empty;
+                DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(objeto.GetType(), knowntypes);
+                MemoryStream ms = new MemoryStream();
+                jsonSerializer.WriteObject(ms, objeto);
+                s = Encoding.Default.GetString(ms.ToArray());
+                return s;
+            }
+        }
+
         public static string toJson(object objeto)
         {
             if (objeto == null)
@@ -148,7 +163,7 @@ namespace nabu
             }
         }
 
-        public static T fromJson<T>(this string jsonSerializado, List<Type> knowntypes)
+        public static T fromJson<T>(string jsonSerializado, List<Type> knowntypes)
         {
             try
             {
@@ -164,14 +179,14 @@ namespace nabu
             catch (Exception ex) { throw new Exception("fromJson:" + ex.Message); }//return default(T); }
         }
 
-        public static T fromJson<T>(this string jsonSerializado)
+        public static T fromJson<T>(string jsonSerializado)
         {
             try
             {
                 //deserializo
                 T obj = Activator.CreateInstance<T>();
                 MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonSerializado));
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType(), knowntypes);
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
                 obj = (T)serializer.ReadObject(ms);
                 ms.Close();
                 ms.Dispose();
@@ -195,23 +210,23 @@ namespace nabu
             return new Point((int)(Math.Cos(angRad) * mod), (int)(Math.Sin(angRad) * mod));
         }
 
-        public static string sendMailAlta(string arbol, string to, string nombre, string email, string basepath)
+        public static string sendMailAlta(string grupo, string to, string nombre, string email, string basepath)
         {
             string msg = System.IO.File.ReadAllText(basepath + "\\alta.html");
             msg = msg.Replace("%1", nombre);
             msg = msg.Replace("%2", email);
-            msg = msg.Replace("%3", arbol);
+            msg = msg.Replace("%3", grupo);
 
-            return sendMail(to, "Solicitud de alta en [" + arbol + "]", msg);
+            return sendMail(to, "Solicitud de alta en [" + grupo + "]", msg);
         }
 
-        public static string sendMailWelcome(string arbol, string to, string clave, string url, string basepath)
+        public static string sendMailWelcome(string grupo, string to, string clave, string url, string basepath)
         {
             string msg = System.IO.File.ReadAllText(basepath + "\\welcome.html");
             msg = msg.Replace("%1", url);
             msg = msg.Replace("%2", to);
             msg = msg.Replace("%3", clave);
-            msg = msg.Replace("%4", arbol);
+            msg = msg.Replace("%4", grupo);
 
             return sendMail(to, "Alta Nabú", msg);
         }
@@ -237,16 +252,66 @@ namespace nabu
                     msg.To.Add(new System.Net.Mail.MailAddress(to, to));
 
                     System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient(SMTPURL);
-                    smtp.EnableSsl = true;
-                    smtp.UseDefaultCredentials = true;
+                    //smtp.EnableSsl = true;                                                    //esto en la CIC no funciona
+                    smtp.UseDefaultCredentials = true;                                        
                     smtp.Credentials = new System.Net.NetworkCredential(user, pass);
                     smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+
+                    //System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate(object s,  
+                    //    System.Security.Cryptography.X509Certificates.X509Certificate certificate, 
+                    //    System.Security.Cryptography.X509Certificates.X509Chain chain,
+                    //    System.Net.Security.SslPolicyErrors sslPolicyErrors) { return true; };
+
                     smtp.Send(msg);
                 }
                 catch (Exception ex)
                 {
                     ret = "Error=" + ex.Message;
                 }
+            }
+            return ret;
+        }
+
+        public static string encolarMailInactivo(string to)
+        {
+            string msg = System.IO.File.ReadAllText(startupPath + "\\mails\\modelos\\ES\\inactivo.html");
+            return encolarMail(to, "Inactivo en Nabu", msg);
+        }
+
+        public static string encolarMailNuevoConsenso(string to, int si, int no, string link)
+        {
+            string msg = System.IO.File.ReadAllText(startupPath + "\\mails\\modelos\\ES\\nuevoConsenso.html");
+            msg = msg.Replace("%1", si.ToString());
+            msg = msg.Replace("%2", no.ToString());
+            msg = msg.Replace("%3", link);
+            msg = msg.Replace("%4", link);
+
+            return encolarMail(to, "Usuario inactivo", msg);
+        }
+
+        public static string encolarMail(string to, string subject, string body)
+        {
+            //envio por mail
+            string msg = "";
+            string ret = "Encolado";
+            Random rnd = new Random();
+
+            try
+            {      
+                //obtengo nonmbre
+                string name = startupPath + "\\mails\\cola\\" + ((int)(rnd.NextDouble() * 100000)).ToString() + ".txt";
+                while (System.IO.File.Exists(name))
+                    name = startupPath + "\\mails\\cola\\" + ((int)(rnd.NextDouble() * 100000)).ToString() + ".txt";
+
+                msg += to + "\r\n";
+                msg += subject + "\r\n";
+                msg += body + "\r\n";
+
+                System.IO.File.AppendAllText(name,msg);
+            }
+            catch (Exception ex)
+            {
+                ret = "Error=" + ex.Message;
             }
             return ret;
         }

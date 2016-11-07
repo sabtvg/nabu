@@ -12,16 +12,39 @@ function showPanel() {
     //pido propuestas al servidor
     var node = selectedNode;
     if (node) {
-        getHttp("doArbol.aspx?actn=getPropuestas&id=" + node.id + "&arbol=" + arbolPersonal.nombre,
+        getHttp("doDecidimos.aspx?actn=HTMLPropuesta&id=" + node.id + "&grupo=" + arbolPersonal.nombre + "&email=" + arbolPersonal.usuario.email + "&width=" + 365 * scale,
             function (data) {
-                recibirPropuestas(data);
-                showPanel2();
+                var panelIzq = document.getElementById("panelIzq");
+                var panelDer = document.getElementById("panelDer");
+
+                if (node.depth > 0) {
+                    //enseño panel
+                    if (arbolPersonal.simulacion) {
+                        //panel derecho
+                        showPanelDer(data);
+                    }
+                    else if (node.x > 90) {
+                        //panel izquierdo
+                        showPanelIzq(data);
+                        //desactivo el izq
+                        hidePanelDer();
+                    }
+                    else {
+                        //panel derecho
+                        showPanelDer(data);
+                        //desactivo el izq
+                        hidePanelIzq();
+                    }
+                }
+                else {
+
+                }
             }
         );
     }
 }
 
-function showPanelIzq() {
+function showPanelIzq(data) {
     //activo el izq
     var panelIzq = document.getElementById("panelIzq");
     var panelIzq2 = document.getElementById("panelIzq2");
@@ -32,13 +55,13 @@ function showPanelIzq() {
 
     panelIzq.style.top = "220px";
     panelIzq.style.width = 400 * scale + "px";
-    panelIzq2.style.width = 400 * scale + "px";
+    panelIzq2.style.width = 390 * scale + "px";
     panelIzq.style.height = 550 * scale + "px";
 
-    fillPanel(panelIzq2);
+    panelIzq2.innerHTML = data;
 }
 
-function showPanelDer() {
+function showPanelDer(data) {
     //activo el derecho
     var panelDer = document.getElementById("panelDer");
     var panelDer2 = document.getElementById("panelDer2");
@@ -49,79 +72,10 @@ function showPanelDer() {
 
     panelDer.style.top = "220px";
     panelDer.style.width = 400 * scale + "px";
-    panelDer2.style.width = 400 * scale + "px";
+    panelDer2.style.width = 390 * scale + "px";
     panelDer.style.height = 550 * scale + "px";
 
-    fillPanel(panelDer2);
-}
-
-function fillPanel(panel) {
-    //resuelvo el titulo del documento
-    var node = selectedNode;
-    var path = getPath(node);
-    var titulo = '';
-    if (path.length > 0) {
-        var propuesta = propuestas[path[0].id];
-        titulo = propuesta.titulo;
-    }
-
-    //escribo propuesta
-    var s = "<div class='titulo1'>" + titulo + "</div><br>";
-    var propuesta = propuestas[node.id];
-    for (var i in propuesta.textos) {
-        var textoTema = propuesta.textos[i];
-        s += "<div class='tema'>" + textoTema.titulo + "</div><br>";
-        s += "<div class='texto' style='width:" + (400 * scale - 30) + "px;'>" + textoTema.texto.replace(/\n/g, "<br>") + "</div><br><br>";
-    }
-    s += HTMLFlores(node);
-
-    //escribo comentarios
-    if (propuesta.comentarios.length > 0) s += "<br>Comentarios:"
-    for (var t in propuesta.comentarios) {
-        //escribo comentario de propuesta
-        s += "<div class='comentario' style='overflow: auto;width:" + (window.innerWidth * 0.2 - 40) + "px'>" + propuesta.comentarios[t].replace(/\n/g, "<br>") + "</div>";
-    }
-
-    panel.innerHTML = s;
-}
-
-function showPanel2() {
-    var panelIzq = document.getElementById("panelIzq");
-    var panelDer = document.getElementById("panelDer");
-    var node = selectedNode;
-    var modelo = getModelo(node.modeloID);
-
-    if (documentoModeOn && node.depth > 0) {
-        //enseño panel
-        if (tengoPropuestas(node)) {
-            //puedo mostrar el documento
-
-            if (arbolPersonal.simulacion) {
-                //panel derecho
-                showPanelDer();
-            }
-            else if (node.x > 90) {
-                //panel izquierdo
-                showPanelIzq();
-                //desactivo el izq
-                hidePanelDer();
-            }
-            else {
-                //panel derecho
-                showPanelDer();
-                //desactivo el izq
-                hidePanelIzq();
-            }
-        }
-        else {
-
-        }
-    }
-    else {
-        //oculto
-        hidePanelIzq();
-        hidePanelDer();
-    }
+    panelDer2.innerHTML = data;
 }
 
 function hidePanelIzq() {
@@ -143,30 +97,87 @@ function hidePanelDer() {
     }
 }
 
-function tengoPropuestas(node) {
-    //veo si tengo las propuestas de este nodo y sus padres
-    var parent = node;
-    while (parent.id != arbolPersonal.raiz.id) {
-        if (!propuestas[parent.id])
-            return false; //me falta esta
-        parent = parent.parent;
-    }
-    return true; //tengo todas
-}
-
-function recibirPropuestas(data) {
-    var nuevasPropuestas = JSON.parse(data);
-    for (var i in nuevasPropuestas) {
-        var nop = nuevasPropuestas[i];
-        propuestas[nop.nodoID] = nop;
-    }
-}
-
-function HTMLFlores(node) {
+function HTMLFlores(node, showVariante) {
     var ret;
-    ret = "<div class='votos'>";
+    ret = "<table style='width:100%;'><tr>"
+    ret += "<td class='votos'  style='vertical-align:center;'>";
     ret += "<img src='res/icono.png'>";
     ret += "&nbsp;" + node.totalFlores;
-    ret += "</div>";
+    ret += "</td><td style='text-align:right;'>";
+    if (arbolPersonal.raiz != node.parent && showVariante) {
+        if (getFloresDisponibles().length == 0)
+            ret += "<input type='button' class='btnDis' value='Crear variante' title='No tienes flores disponibles' disabled>";
+        else
+            ret += "<input type='button' class='btn' value='Crear variante' title='Crea otra propuesta basada en esta' onclick='doVariante(" + node.id + ");'>";
+    }
+    ret += "</tr></table>"
     return ret;
+}
+
+function getPost(n) {
+    //alert('&_MouseX=' + mouseX() +  '&_MouseY=' + mouseY());
+    //var sToSend = '&_MouseX=' + window.event.clientX +  '&_MouseY=' + window.event.clientY ;  
+    var sToSend = '';
+    if (n.nodeName == 'INPUT' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
+        //hay que enviarlo en el post
+        if (n.type == 'checkbox' || n.type == 'radio') {
+            sToSend += '&' + n.id + '=' + n.checked;
+        } else
+            sToSend += '&' + n.id + '=' + HTMLEncode(n.value);
+    } else {
+        if (n.nodeName == 'SELECT' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
+            sToSend += '&' + n.id + '.selectedIndex=' + getSelectedIndex(n); // n.selectedIndex;
+            sToSend += '&' + n.id + '.id=' + getSelectedId(n); //n.options[n.selectedIndex].id;
+            sToSend += '&' + n.id + '.text=' + HTMLEncode(getSelectedText(n)); //n.options[n.selectedIndex].text;
+        }
+        if (n.nodeName == 'TEXTAREA' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
+            sToSend += '&' + n.id + '=' + HTMLEncode(n.value);
+        }
+    }
+
+    //recurso  
+    var children = n.childNodes;
+    for (var i = 0; i < children.length; i++) {
+        sToSend += getPost(children[i]);
+    }
+
+    return sToSend;
+}
+
+function HTMLEncode(s) {
+    while(s.indexOf("<")>=0)
+        s = s.replace("<", "&lt;");
+
+    while (s.indexOf(">") >= 0)
+        s = s.replace(">", "&gt;");
+
+    s = encodeURIComponent(s);
+    return (s);
+}
+
+function getSelectedIndex(n) {
+    var ret = '';
+    for (var i = 0; i < n.options.length; i++) {
+        if (n.options[i].selected) ret += i + ';';
+    }
+    if (ret != '') ret = ret.substr(0, ret.length - 1);
+    return ret;
+}
+
+function getSelectedId(n) {
+    var i;
+    var ret = '';
+    for (i = 0; i < n.options.length; i++)
+        if (n.options[i].selected) ret = ret + n.options[i].id + ';';
+    if (ret != '') ret = ret.substr(0, ret.length - 1);
+    return (ret);
+}
+
+function getSelectedText(n) {
+    var i;
+    var ret = '';
+    for (i = 0; i < n.options.length; i++)
+        if (n.options[i].selected) ret = ret + n.options[i].text + ';';
+    if (ret != '') ret = ret.substr(0, ret.length - 1);
+    return (ret);
 }

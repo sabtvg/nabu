@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+
+        function doLoad() {
+                var scalex = window.innerWidth / 1920;
+                var scaley = window.innerHeight / 1080;
+                //atras
+                document.getElementById("todo").style.top = '30px';
+                document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
+                document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
+                document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
+
+                //background
+                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+                getHttp("doMain.aspx?actn=resumen",
+                    function (data) {
+                        document.getElementById("todo").innerHTML = data;
+                    })
+            }  
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+
+        <div id="todo" style="text-align: left;width:877px;top: 100px;position: absolute;"></div>
+
+    </body>
+</html>

@@ -1,18 +1,18 @@
 ﻿var duration = 750,
-    tree,
+    d3Arbol,
     diagonal,
-    svg,
+    svgArbol,
     treeScale = 1;
 
 var menu;
 var downEvent = null;
 var translatex = 0;
 var translatey = 0;
-var rotFlores;
+var rotFlores = 0;
 
 function crearArbol() {
     var diameter = window.innerHeight / 2;
-    tree = d3.layout.tree()
+    d3Arbol = d3.layout.tree()
         .size([180, diameter / 2])
         .separation(function (a, b) {
             return (a.parent == b.parent ? 1 : 2) / a.depth;
@@ -21,21 +21,20 @@ function crearArbol() {
     diagonal = d3.svg.diagonal.radial()
         .projection(function (d) { return [d.y, d.x / 180 * Math.PI - Math.PI / 2]; });
 
-    svg = d3.select("body").append("svg")
-        .attr("id", "svg")
-        .attr("width", window.innerWidth - 40)
-        .attr("height", window.innerHeight - 50)
+    svgArbol = d3.select("body").append("svg")
+        .attr("id", "arbol")
+        .attr("style", "width: " + (window.innerWidth - 40) + "px;height:" + (window.innerHeight - 50) + "px;top;0px;left0px;position:absolute;z-index:-1")
         .on("mousedown", doMousedown)
         .on("mousemove", doMousemove)
         .on("mouseup", doMouseup)
-        .on("mousewheel", doMousewheel)
-        .on("DOMMouseScroll", doMousewheel)  //firefox
+        .on("mousewheel", doMousewheel1)
+        //.on("DOMMouseScroll", doMousewheel2)  //firefox  //NO FUNCIONA EVENT
         .append("g")
         .on("mousedown", doMousedown)
         .on("mousemove", doMousemove)
         .on("mouseup", doMouseup)
-        .on("mousewheel", doMousewheel)  //chrome
-        .attr("transform", "translate(" + window.innerWidth / 2 + "," + (window.innerHeight * 0.90) + ")");
+        .on("mousewheel", doMousewheel1)  //chrome
+        .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
 
     dibujarArbol(arbolPersonal.raiz);
 
@@ -43,14 +42,14 @@ function crearArbol() {
 }
 
 function getModelo(id) {
-    for (var i in modelosDocumento) {
-        if (modelosDocumento[i].id == id)
-            return modelosDocumento[i];
+    for (var i in modelos) {
+        if (modelos[i].id == id)
+            return modelos[i];
     }
     return null;
 }
 
-function doMousewheel() {
+function doMousewheel1() {
     var e = window.event || Event; // old IE support
     var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
     zoom(delta);
@@ -72,16 +71,20 @@ function doMousedown() {
     downEvent = { "x": e.clientX, "y": e.clientY, "translatex": translatex, "translatey": translatey };
     if (menu)
         menu.style.visibility = "hidden";
+    selectedNode = null;
+    dibujarArbol(selectedNode);
 }
 
 function doMousemove() {
-    if (downEvent) {
-        var e = window.event || Event || e; // old IE support
-        translatex = downEvent.translatex - (downEvent.x - e.clientX);
-        translatey = downEvent.translatey - (downEvent.y - e.clientY);
-        if (translatey < 0) translatey = 0;
-        translateArbol(translatex, translatey);        
-    }
+    //causa confucion y falla en algunos navegadores
+    //se peirde el arbol cuando se presiones la tecla CTRL
+    //if (downEvent) {
+    //    var e = window.event || Event || e; // old IE support
+    //    translatex = downEvent.translatex - (downEvent.x - e.clientX);
+    //    translatey = downEvent.translatey - (downEvent.y - e.clientY);
+    //    if (translatey < 0) translatey = 0;
+    //    translateArbol(translatex, translatey);        
+    //}
 }
 
 function doMouseup() {
@@ -89,14 +92,14 @@ function doMouseup() {
 }
 
 function translateArbol(x, y) {
-    d3.select("svg").select("g").attr("transform", "translate(" + (window.innerWidth / 2 + x) + "," + (window.innerHeight * 0.90 + y) + ")");
+    d3.select("svg").select("g").attr("transform", "translate(" + (window.innerWidth / 2 + x).toFixed(0) + "," + (window.innerHeight * 0.90 + y).toFixed(0) + ")");
 }
 
 function rotarFlores() {
     rotFlores++;
 
-    d3.select("svg").selectAll(".florImage")
-        .attr("transform", "rotate(" + rotFlores + ")translate(-19, -19)");
+    svgArbol.selectAll(".florImage")
+        .attr("transform", "rotate(" + rotFlores.toFixed(0) + ")translate(" + (-19 * scale).toFixed(0) + "," + (-19 * scale).toFixed(0) + ")");
 }
 
 function dibujarArbol(referencia) {
@@ -105,8 +108,8 @@ function dibujarArbol(referencia) {
     updateFloresTotales(arbolPersonal.raiz);
 
     // Compute the new tree layout.
-    var nodes = tree.nodes(arbolPersonal.raiz).reverse(),
-        links = tree.links(nodes);
+    var nodes = d3Arbol.nodes(arbolPersonal.raiz).reverse(),
+        links = d3Arbol.links(nodes);
 
     // Normalize for fixed-depth.
     nodes.forEach(function (d) {
@@ -115,7 +118,7 @@ function dibujarArbol(referencia) {
     });
 
     //node -----------------------------------------------------------------------------------------------------------------------
-    var node = svg.selectAll("g.node")
+    var node = svgArbol.selectAll("g.node")
         .data(nodes, function (d) { return 'g' + d.id; });
 
     // Enter any new nodes at the parent's previous position.
@@ -126,9 +129,9 @@ function dibujarArbol(referencia) {
         .attr("class", "node")
         .attr("transform", function (d) {
             if (referencia)
-                return "rotate(" + (referencia.x - 180) + ")translate(" + referencia.y + ")";
+                return "rotate(" + (referencia.x - 180).toFixed(0) + ")translate(" + (referencia.y).toFixed(0) + ")";
             else if (d.parent)
-                return "rotate(" + (d.parent.x - 180) + ")translate(" + d.parent.y + ")";
+                return "rotate(" + (d.parent.x - 180).toFixed(0) + ")translate(" + (d.parent.y).toFixed(0) + ")";
             else
                 return "rotate(0)translate(0)";
         })
@@ -172,7 +175,9 @@ function dibujarArbol(referencia) {
             else
                 return "black";
         })
-        .attr("text-anchor", function (d) { return "middle"; });
+        .attr("text-anchor", function (d) {
+            return "middle";
+        });
 
     //2da linea de texto
     nodeEnter.append("text")
@@ -200,27 +205,35 @@ function dibujarArbol(referencia) {
             else
                 return "black";
         })
-        .attr("text-anchor", function (d) { return "middle"; });
+        .attr("text-anchor", function (d) {
+            return "middle";
+        });
 
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
         .duration(duration)
         .attr("transform", function (d) {
-            return "rotate(" + (d.x - 180) + ")translate(" + d.y + ")";
+            return "rotate(" + (d.x - 180).toFixed(0) + ")translate(" + d.y.toFixed(0) + ")";
         })
 
     nodeUpdate.select("circle")
         .attr("r", function (d) {
             var r = d.totalFlores / 4 + 2;
             if (r < 10) r = 10;
-            if (d == selectedNode) r += 10;
+            if (selectedNode && d.id == selectedNode.id) r += 10;
             return r * scale;
         })
         .style("stroke", function (d) {
-            return d == selectedNode ? "black" : "steelblue";
+            if (selectedNode)
+                return d.id == selectedNode.id ? "black" : "steelblue";
+            else
+                return "black";
         })
         .style("fill", function (d) {
-            return d.consensoAlcanzado ? "gray" : (d == selectedNode ? "blue" : "yellow");
+            if (selectedNode)
+                return d.consensoAlcanzado ? "gray" : (d.id == selectedNode.id ? "blue" : "yellow");
+            else
+                return d.consensoAlcanzado ? "gray" : "yellow";
         });
 
     nodeUpdate.select("text")
@@ -250,9 +263,9 @@ function dibujarArbol(referencia) {
         .duration(duration)
         .attr("transform", function (d) {
             if (referencia)
-                return "rotate(" + (referencia.x - 180) + ")translate(" + referencia.y + ")";
+                return "rotate(" + (referencia.x - 180).toFixed(0) + ")translate(" + referencia.y.toFixed(0) + ")";
             else if (d.parent)
-                return "rotate(" + (d.parent.x - 180) + ")translate(" + d.parent.y + ")";
+                return "rotate(" + (d.parent.x - 180).toFixed(0) + ")translate(" + d.parent.y.toFixed(0) + ")";
             else
                 return "rotate(0)translate(0)";
         })
@@ -270,25 +283,25 @@ function dibujarArbol(referencia) {
         .attr("transform", function (d) { return d.x < 180 ? "translate(10)" : "rotate(180)translate(-8)"; });
 
     //flores ------------------------------------------------------------------------------------------------------------------
-    var flor = svg.selectAll("g.flor")
+    var flor = svgArbol.selectAll("g.flor")
         .data(arbolPersonal.usuario.flores);
 
     var florEnter = flor.enter().append("g")
         .attr("class", "flor")
-        .attr("transform", "translate(0,0)")
+        .attr("transform", "translate(0)")
         .on("click", florClick);
 
     florEnter.append("image")
         .attr("class", "florImage")
-        .attr("width", "37px")
-        .attr("height", "36px")
-        .attr("transform", "translate(-19, -19)")
+        .attr("width", 37 * scale + "px")
+        .attr("height", 36 * scale + "px")
+        .attr("transform", "translate(0)")
         .attr("xlink:href", "res/icono2.png");
 
     var florUpdate = flor.transition()
         .duration(duration)
-        .attr("width", "37px")
-        .attr("height", "36px")
+        .attr("width", 37 * scale + "px")
+        .attr("height", 36 * scale + "px")
         .attr("transform", function (d) {
             if (d.id == 0)
                 //flor disponible
@@ -296,7 +309,7 @@ function dibujarArbol(referencia) {
             else {
                 var n = getNodo(d.id);
                 if (n)
-                    return "rotate(" + (n.x - 180) + ")translate(" + n.y + ")";
+                    return "rotate(" + (n.x - 180).toFixed(0) + ")translate(" + n.y.toFixed(0) + ")";
                 else
                     //error de consistencia
                     return "rotate(0)translate(0)";
@@ -304,8 +317,8 @@ function dibujarArbol(referencia) {
         });
 
     florUpdate.select("image")
-        .attr("width", "37px")
-        .attr("height", "36px")
+        .attr("width", 37 * scale + "px")
+        .attr("height", 36 * scale + "px")
         .attr("xlink:href", "res/icono2.png");
 
     var florExit = flor.exit().transition()
@@ -314,7 +327,7 @@ function dibujarArbol(referencia) {
         .remove();
 
     //documentos ------------------------------------------------------------------------------------------------------------------
-    var doc = svg.selectAll("g.doc")
+    var doc = svgArbol.selectAll("g.doc")
         .data(arbolPersonal.logDocumentos, function (d) { return 'd' + d.docID; });
 
     var docEnter = doc.enter().append("g")
@@ -327,6 +340,7 @@ function dibujarArbol(referencia) {
         .attr("width", "32px")
         .attr("height", "40px")
         .attr("transform", "translate(-16, -20)")
+        .style("cursor", "pointer")
         .attr("xlink:href", "res/doc.png");
 
     docEnter.append("text")
@@ -346,6 +360,7 @@ function dibujarArbol(referencia) {
         .attr("dy", ".35em")
         .attr("transform", "rotate(90)translate(-5, 45)")
         .style("font-size", function (d) { return '12px'; })
+        .style("cursor", "pointer")
         .attr("text-anchor", "middle ")
         .text(function (d) { return d.titulo; });
 
@@ -356,16 +371,23 @@ function dibujarArbol(referencia) {
         .attr("dy", ".35em")
         .attr("transform", "rotate(90)translate(-5, 60)")
         .style("font-size", function (d) { return '12px'; })
+        .style("cursor", "pointer")
         .attr("text-anchor", "middle ")
         .text(function (d) { return d.sFecha; });
 
     var docUpdate = doc.transition()
         .duration(duration)
         .attr("transform", function (d) {
-            if (arbolPersonal.simulacion)
-                return "rotate(" + (d.x - 180) + ")translate(" + (5 * 140 * treeScale + d.minutos * 50 + 120) + ")";
-            else
-                return "rotate(" + (d.x - 180) + ")translate(" + (5 * 140 * treeScale + d.dias * 50 + 120) + ")";
+            if (arbolPersonal.simulacion) {
+                var distancia = 5 * 140 * treeScale + d.minutos * 5 + 120;
+                if (distancia > 1400) distancia = 1400;
+                return "rotate(" + (d.x - 180).toFixed(0) + ")translate(" + (distancia).toFixed(0) + ")";
+            }
+            else {
+                var distancia = 5 * 140 * treeScale + d.dias * 5 + 120;
+                if (distancia > 1400) distancia = 1400;
+                return "rotate(" + (d.x - 180).toFixed(0) + ")translate(" + (distancia).toFixed(0) + ")";
+            }
         });
 
     docUpdate.select("image")
@@ -380,18 +402,13 @@ function dibujarArbol(referencia) {
         .remove();
 
     // link ------------------------------------------------------------------------------------------------------------------------
-    var link = svg.selectAll("path")
+    var link = svgArbol.selectAll("path")
         .data(links, function (d) {
             return d.target.id;
         });
 
     // Enter any new links at the parent's previous position.
     link.enter().insert("path", "g")
-        .attr("style", function (d) {
-            var w = d.target.totalFlores + 1;
-            var r = Math.round(200 / d.target.depth);
-            return "fill: none; stroke: " + (d.target.consensoAlcanzado ? "gray" : "rgb(100," + (255 - r) + ",0)") + ";stroke-width: " + w * scale + "px;";
-        })
         .attr("d", function (d) {
             var o;
             if (referencia)
@@ -406,8 +423,11 @@ function dibujarArbol(referencia) {
         .duration(duration)
         .attr("style", function (d) {
             var w = d.target.totalFlores + 1;
-            var r = Math.round(200 / d.target.depth);
-            return "fill: none; stroke: " + (d.source.consensoAlcanzado ? "gray" : "rgb(100," + (255 - r) + ",0)") + ";stroke-width: " + w * scale + "px;";
+            var r = Math.round(255 / d.target.depth);
+            var stroke = "rgb(100," + (255 - r) + ",0)";
+            if (d.target.consensoAlcanzado) stroke = "gray";
+            else if (d.target.email == arbolPersonal.usuario.email) stroke = "Crimson";
+            return "fill: none; stroke: " + stroke + ";stroke-width: " + (w * scale).toFixed(0) + "px;";
         })
         .attr("d", diagonal);
 
@@ -498,16 +518,16 @@ function updateFloresTotales(node) {
     //node.negados = getNegados(node);
     var modelo = getModelo(node.modeloID);
     var ap = arbolPersonal;
-    if (modelo && node.nivel == modelo.secciones.length) {
+    if (modelo && node.nivel == modelo.niveles) {
         //es una hoja de un debate completo, mido condicion de consenso
 
-        node.si = 'Si:' + node.flores + "≥" + ap.minSiValue;
+        node.si = 'Si:' + node.flores; // + "≥" + ap.minSiValue;
         if (node.flores >= ap.minSiValue)
             node.siColor = 'green';
         else
             node.siColor = 'red';
 
-        node.no = 'No:' + node.negados + "≤" + ap.maxNoValue;
+        node.no = 'No:' + node.negados; // + "≤" + ap.maxNoValue;
         if (node.negados <= ap.maxNoValue)
             node.noColor = 'green';
         else
@@ -538,7 +558,7 @@ function getNodo2(padre, id) {
 }
 
 function docClick(d) {
-    doOpen('cooperativas/' + d.arbol + '/documentos/' + d.fname + '.html');
+    doOpen('grupos/' + d.arbol + '/documentos/' + d.fname + '.html');
 }
 
 function florClick(d) {
@@ -560,6 +580,8 @@ function nodeClick(d) {
     //cambio imagen al nodo seleccionado
     dibujarArbol(selectedNode);
 
+    //activo panel
+    showPanel();
 
     //activo menu contextual 
     if (selectedNode == arbolPersonal.raiz) {
@@ -567,26 +589,14 @@ function nodeClick(d) {
         menu.style.left = (window.innerWidth / 2 - 26).toFixed(0) + 'px';
         menu.style.visibility = "visible";
     }
-    if (arbolPersonal.simulacion) {
-        //activo panel
-        showPanel();
-    }
     else {
         menu = document.getElementById("menuNode");
-        menu.style.left = (window.innerWidth / 2 - 122).toFixed(0) + 'px';
+        menu.style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
         menu.style.visibility = "visible";
-
-        //enseño los datos de consenso para este nodo
-        actualizarDatosConsenso(selectedNode);
 
         //activo panel
         showPanel();
-
-        //actualizo link a download
-        var btnDownload = document.getElementById("btnDownload");
-        btnDownload.href = 'doArbol.aspx?actn=download&id=' + selectedNode.id + '&arbol=' + arbolPersonal.nombre;
     }
-
 }
 
 function pany(y) {

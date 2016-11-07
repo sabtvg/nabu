@@ -27,16 +27,23 @@
                 document.getElementById("todo").style.top = '30px';
                 document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
                 document.getElementById("usuarios").style.height = (window.innerHeight - 270) + 'px';
-                document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
+                document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
+                document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
 
                 //background
                 document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");
-                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4] };
 
-                getListaUsuarios();
+                if (!usuario.isAdmin) {
+                    alert("Solo disponible para el administrador");
+                    //login normal
+                    document.location = 'default.html';
+                }
+                else
+                    getListaUsuarios();
             }
         }
 
@@ -45,10 +52,10 @@
             var email = document.getElementById("email").value;
             var clave = document.getElementById("clave").value;
 
-            getHttp("doArbol.aspx?actn=newusuario&nombre=" + nombre
+            getHttp("doMain.aspx?actn=newusuario&nombre=" + nombre
                 + "&email=" + email
                 + "&clave=" + clave
-                + "&arbol=" + usuario.arbol,
+                + "&grupo=" + usuario.arbol,
                 function (data) {
                     if (data.substring(0, 6) == "Error=")
                         document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
@@ -67,7 +74,7 @@
         }
 
         function getListaUsuarios() {
-            getHttp("doArbol.aspx?actn=getusuarios&arbol=" + usuario.arbol,
+            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.arbol,
                 function (data) {
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
@@ -81,21 +88,23 @@
                         s += "<tr>"
                         s += "<td style='width:200px;'><b>Nombre</b></td>";
                         s += "<td style='width:220px;'><b>Email</b></td>";
-                        s += "<td style='width:120px;'><b>Ultimo acceso</b></td>";
-                        s += "<td style='width:70px;'><b>Activo</b></td>";
-                        s += "<td style='width:70px;'><b>Email</b></td>";
-                        s += "<td style='width:70px;'></td>";
+                        s += "<td style='width:80px;text-align:center;'><b>Apoyos</b></td>";
+                        s += "<td style='width:80px;text-align:center;'><b>Ultimo</b></td>";
+                        s += "<td style='width:70px;text-align:center;'><b>Activo</b></td>";
+                        s += "<td style='width:70px;text-align:center;'><b>Email</b></td>";
+                        s += "<td style='width:70px;text-align:center;'><b>Borrar</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
                             s += "<tr>"
-                            s += "<td style='width:220px;'>" + usu.nombre + "</td>";
-                            s += "<td style='width:220px;'>" + usu.email + "</td>";
-                            s += "<td style='width:220px;'>" + usu.sLastLogin + "</td>";
-                            s += "<td style='width:70px;'>" + (usu.isActive ? "Activo" : "Inactivo") + "</td>";
-                            s += "<td style='width:70px;'><div class='titulo3' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'><nobr><font color='blue'>[Enviar]</font></nobr></div></td>";
+                            s += "<td>" + usu.nombre + "</td>";
+                            s += "<td>" + usu.email + "</td>";
+                            s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
+                            s += "<td>" + usu.sLastLogin + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;'><img src='res/men.gif' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
                             if (!usu.isAdmin)
-                                s += "<td><div class='titulo3' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'><nobr><font color='blue'>[Borrar]</font></nobr></div></td>";
+                                s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
                             else
                                 s += "<td>[Admin]</td>";
                             s += "</tr>"
@@ -108,7 +117,7 @@
         }
 
         function doEnviarMail(email) {
-            getHttp("doArbol.aspx?actn=sendMailWelcome&arbol=" + usuario.arbol + "&email=" + email,
+            getHttp("doMain.aspx?actn=sendMailWelcome&grupo=" + usuario.arbol + "&email=" + email,
                 function (data) {
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
@@ -123,7 +132,7 @@
         }
 
         function doBorrarUsuario(email) {
-            getHttp("doArbol.aspx?actn=removeusuario&arbol=" + usuario.arbol + "&email=" + email,
+            getHttp("doMain.aspx?actn=removeusuario&grupo=" + usuario.arbol + "&email=" + email,
                 function (data) {
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
@@ -157,7 +166,7 @@
                 <span class="titulo3">Crear</span><br />
                 <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
                 <input id="email" type="text" class="txt" size="20" placeholder="Email" />
-                <input id="clave" type="text" class="txt" size="20" placeholder="Clave" />
+                <input id="clave" type="text" class="txt" size="15" placeholder="Clave" />
                 <input type='button' class='btn' value='Crear' onclick='doCrearUsuario();' />
             </div>
             <br />

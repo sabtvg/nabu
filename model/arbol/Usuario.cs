@@ -14,6 +14,9 @@ namespace nabu
         public DateTime lastLogin = DateTime.Now;
         public DateTime born = DateTime.Now;
         public bool isAdmin = false;
+        public int apoyos = 0; //cantidad de apoyos por parte de otros usuarios
+        public DateTime notificado = DateTime.Now;
+        public Prevista prevista = null;
 
         public Usuario()
         {

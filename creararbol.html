@@ -12,8 +12,6 @@
     <script>
         function doCrearArbol() {
             var nombreArbol = document.getElementById("nombreArbol").value;
-            var objetivo = document.getElementById("objetivo").value;
-            var URLEstatuto = document.getElementById("URLEstatuto").value;
             var nombreAdmin = document.getElementById("nombreAdmin").value;
             var email = document.getElementById("email").value;
             var clave = document.getElementById("clave").value;
@@ -23,9 +21,7 @@
                 document.getElementById("response").innerHTML = "<font color=red>Las claves no coinciden</font>";
             }
             else
-                getHttp("doArbol.aspx?actn=newarbol&arbol=" + nombreArbol
-                    + "&objetivo=" + objetivo
-                    + "&URLEstatuto=" + URLEstatuto
+                getHttp("doMain.aspx?actn=newgrupo&grupo=" + nombreArbol
                     + "&nombreAdmin=" + nombreAdmin
                     + "&email=" + email
                     + "&clave=" + clave,
@@ -33,10 +29,13 @@
                         if (data.substring(0, 6) == "Error=")
                             document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
                         else {
-                            document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+                            //document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
 
                             //guardo cookie
                             setCookie("nabu", nombreAdmin + "|" + email + "|" + clave + "|" + nombreArbol, 7);
+
+                            //atras
+                            document.location = 'default.html';
                         }
                     });
         }
@@ -53,22 +52,20 @@
                 <td align=center>
                     <div class="ventana" style="text-align: left;">
                         <span class="titulo1">Nab&uacute;</span><br />
-                        <span class="titulo2">Crear &aacute;rbol</span><br />
+                        <span class="titulo2">Crear grupo</span><br />
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Datos del &aacute;rbol</span><br />
-                            <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" /><br />
-                            <input id="objetivo" type="text" class="txt" size="50" placeholder="Objetivo" /><br />
-                            <input id="URLEstatuto" type="text" class="txt" size="50" placeholder="URL a documento de estatuto" />
+                            <span class="titulo3">Datos del grupo</span><br />
+                            <input id="nombreArbol" type="text" class="txt" size="25" placeholder="Nombre" /><br />
                         </div>
                         <br />
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
                             <span class="titulo3">Datos del administrador</span><br />
-                            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" /><br />
-                            <input id="email" type="text" class="txt" placeholder="Email" /><br />
-                            <input id="clave" type="password" class="txt" placeholder="Clave" /><br />
-                            <input id="clave2" type="password" class="txt" placeholder="Repetir clave" />
+                            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  size="25"/><br />
+                            <input id="email" type="text" class="txt" placeholder="Email"  size="25"/><br />
+                            <input id="clave" type="password" class="txt" placeholder="Clave"  size="25"/><br />
+                            <input id="clave2" type="password" class="txt" placeholder="Repetir clave"  size="25"/>
                         </div>
                         <br />
 

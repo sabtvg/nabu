@@ -14,6 +14,9 @@ namespace nabu
         public Nodo raiz;
         public int cantidadFlores = 5;
         public bool simulacion = false;
+        public int nuevoNodoID = 0;
+        public DateTime born = DateTime.Now;
+        public int documentos;
 
         //log de consensos alcanzados
         public List<LogDocumento> logDocumentos = new List<LogDocumento>();

@@ -41,7 +41,7 @@
         }
 
         function getListaUsuarios() {
-            getHttp("doArbol.aspx?actn=getusuarios&arbol=" + usuario.arbol,
+            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.arbol,
                 function (data) {
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
@@ -55,6 +55,7 @@
                         s += "<tr>"
                         s += "<td style='width:370px;'><b>Nombre</b></td>";
                         s += "<td style='width:370px;'><b>Email</b></td>";
+                        s += "<td style='width:60px;'><b>Apoyos</b></td>";
                         s += "<td style='width:70px;'><b>Activo</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
@@ -62,7 +63,8 @@
                             s += "<tr>"
                             s += "<td style='width:220px;'>" + usu.nombre + "</td>";
                             s += "<td style='width:220px;'>" + usu.email + "</td>";
-                            s += "<td style='width:70px;'>" + (usu.isActive ? "Activo" : "Inactivo") + "</td>";
+                            s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
+                            s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
                             s += "</tr>"
                         }
                         s += "</table>";

@@ -27,12 +27,11 @@
         var joyInterval;
 
         //modelos de documentos
-        var modelosDocumento;
+        var modelos;
         var arbolPersonal;
 
         //propuestas
         var propuestas = [];
-        var documentoModeOn = true;
 
         function doLoad() {
             var scalex = window.innerWidth / 1920;
@@ -61,17 +60,20 @@
             duration = 250;
             visual.level = 1;
 
+            //flores
+            timerFlores = setInterval(rotarFlores, 200);
+
             iniciar();
         }
 
         function iniciar(){
-            getHttp("doArbol.aspx?actn=crearSimulacion",
+            getHttp("doDecidimos.aspx?actn=crearSimulacion",
                 function (data) {
                     var js = JSON.parse(data);
                     arbolPersonal = js.arbolPersonal;
-                    modelosDocumento = js.modelos;
+                    modelos = js.modelos;
 
-                    if (svg == null)
+                    if (svgArbol == null)
                         crearArbol(arbolPersonal.raiz);
 
                     document.getElementById("startStop").value = "Pausa";
@@ -106,7 +108,7 @@
             var coopProb;
             if (document.getElementById("tipo1").checked) coopProb = 0; else coopProb = 1;
 
-            getHttp("doArbol.aspx?actn=simulacionLive&coopProb=" + coopProb + "&arbol=" + arbolPersonal.nombre + "&x=" + x,
+            getHttp("doDecidimos.aspx?actn=simulacionLive&coopProb=" + coopProb + "&grupo=" + arbolPersonal.nombre + "&x=" + x,
                 function (data) {
                     if (data.substring(0, 6) == "Error=") 
                         alert(data);
@@ -163,7 +165,7 @@
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="panelDer" class="panel" style="visibility: hidden;">
-        <table style="width: 100%;">
+        <table style="width: 95%;">
             <tr>
                 <td style="text-align: right;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="doVerDocumentoMode();" /></td>
             </tr>
@@ -183,7 +185,7 @@
     </div>
 
     <!--panel--------------------------------------------------------------------------------------------------->
-    <div id="Div1" style="padding: 10px; position: absolute; left:10px; top:100px;">
+    <div id="Div1" style="padding: 10px; position: absolute; left:110px; top:10px;">
         <nobr>
             <input id="tipo1" type="radio" style="width: 30px; height:30px;" value="Diverger" name="tipo" checked /><span style="font-size:24px">Diverger</span>
             <input id="tipo2" type="radio" style="width: 30px; height:30px;" value="Converger" name="tipo" /><span style="font-size:24px">Converger</span>

@@ -11,14 +11,24 @@ namespace nabu
         public int id = 1;
         public List<Nodo> children = new List<Nodo>(); //debe mantenerse con este nombre o falla el cliente
         public int flores = 0;
-        public int modeloID = 0;
+        public string modeloID = "";
         public DateTime born = DateTime.Now;
         public bool consensoAlcanzado = false;
         public float x = 0; //posicion x en el cliente
         public int negados = 0; //votos en contra
         public int nivel = 0;
-    }
+        public string email = ""; //creador
 
+        
+        public int getFloresTotales() {
+            int ret=0;
+            foreach (Nodo hijo in children) 
+            {           
+                ret += hijo.getFloresTotales();
+            }
+            return ret + flores;
+        }
+    }
 
     public class NodoComparerMayor : IComparer<Nodo>
     {
