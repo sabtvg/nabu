@@ -11,6 +11,7 @@ namespace nabu
         public Arbol arbol;
         public string objetivo = "";
         public string idioma = "ES";
+        public Organizacion organizacion;
         public DateTime born = DateTime.Now;
         public DateTime ts = DateTime.Now;
         public List<Usuario> usuarios = new List<Usuario>();
@@ -18,6 +19,9 @@ namespace nabu
         public string path = ""; //ruta fisica en el servidor
         public string URLEstatuto = "";
         public string URL = ""; //url base del arbol
+        public string padreURL = "";
+        public string padreNombre = "";
+        public List<Tuple<string, string>> hijos = new List<Tuple<string, string>>();
 
         public DateTime lastLogin
         {
@@ -43,18 +47,25 @@ namespace nabu
             }
         }
 
+        public string toJsonCompleto()
+        {
+            arbol.grupo = null; //luego lo recupero
+
+            List<Type> tipos = new List<Type>();
+            foreach (Modelo m in organizacion.getModelos()) tipos.Add(m.GetType());
+            foreach (Organizacion m in Organizacion.getOrganizaciones()) tipos.Add(m.GetType());
+            string json = Tools.toJson(this, tipos);
+
+            //restauro al padre
+            arbol.grupo = this;
+            return json;
+        }
+
         public void save(string folderPath)
         {
             if (!arbol.simulacion)
             {
-                List<Type> tipos = new List<Type>();
-                foreach (Modelo m in Modelo.getModelos())
-                {
-                    tipos.Add(m.GetType());
-                }
-                arbol.grupo = null;
-                string json = Tools.toJson(this, tipos);
-
+                string json = toJsonCompleto();
                 string filepath = folderPath + "\\" + nombre + ".json";
 
                 if (!System.IO.Directory.Exists(folderPath))
@@ -70,19 +81,18 @@ namespace nabu
                         System.IO.File.Delete(bkpath);
                 
                     //guardo foto con fecha
-                    fs = System.IO.File.CreateText(filepath);
+                    fs = new System.IO.StreamWriter(filepath, false, System.Text.Encoding.UTF8);
+                    //fs = System.IO.File.CreateText(filepath);
                     fs.Write(json);
                     fs.Close();
 
                     lastBackup = DateTime.Now;
                 }
 
-                fs = System.IO.File.CreateText(filepath);
+                fs = new System.IO.StreamWriter(filepath, false, System.Text.Encoding.UTF8);
+                //fs = System.IO.File.CreateText(filepath);
                 fs.Write(json);
                 fs.Close();
-
-                //restauro al padre
-                arbol.grupo = this;
             }
         }
 
@@ -94,6 +104,34 @@ namespace nabu
                     return u;
             }
             return null;
+        }
+
+        public List<Usuario> getUsuariosHabilitadosActivos()
+        {
+            List<Usuario> ret = new List<Usuario>();
+            foreach (Usuario u in usuarios)
+                if (u.habilitado && u.isActive)
+                    ret.Add(u);
+            return ret;
+        }
+
+        public List<Usuario> getUsuariosHabilitados()
+        {
+            List<Usuario> ret = new List<Usuario>();
+            foreach (Usuario u in usuarios)
+                if (u.habilitado)
+                    ret.Add(u);
+            return ret;
+        }
+
+        public List<Usuario> getUsuariosOrdenados()
+        {
+            //creo una copia ordenada
+            List<Usuario> ret = new List<Usuario>();
+            foreach (Usuario u in usuarios)
+                ret.Add(u);
+            ret.Sort();
+            return ret;
         }
 
         public Usuario getUsuario(string email, string clave)
@@ -113,10 +151,13 @@ namespace nabu
 
             foreach (Usuario u in usuarios)
             {
-                if (u.email.ToLower() == email.ToLower())
+                if (u.habilitado && u.email.ToLower() == email.ToLower())
                 {
-                    //login correcto
                     ret = u;
+                    //muevo al inicio, cola lifo
+                    usuarios.Remove(u);
+                    usuarios.Insert(0, u);
+                    break;
                 }
             }
             return ret;

@@ -12,7 +12,11 @@ function showPanel() {
     //pido propuestas al servidor
     var node = selectedNode;
     if (node) {
-        getHttp("doDecidimos.aspx?actn=HTMLPropuesta&id=" + node.id + "&grupo=" + arbolPersonal.nombre + "&email=" + arbolPersonal.usuario.email + "&width=" + 365 * scale,
+        getHttp("doDecidimos.aspx?actn=HTMLPropuesta&id=" + node.id
+            + "&grupo=" + arbolPersonal.nombre
+            + "&email=" + arbolPersonal.usuario.email
+            + "&clave=" + arbolPersonal.usuario.clave
+            + "&width=" + (365 * scale).toFixed(0),
             function (data) {
                 var panelIzq = document.getElementById("panelIzq");
                 var panelDer = document.getElementById("panelDer");
@@ -65,7 +69,7 @@ function showPanelDer(data) {
     //activo el derecho
     var panelDer = document.getElementById("panelDer");
     var panelDer2 = document.getElementById("panelDer2");
-    if (panelDer.style.visibility == "hidden") {
+    if (panelDer && panelDer.style.visibility == "hidden") {
         panelDer.style.visibility = "visible";
         efectoLeft(panelDer, 0, window.innerWidth, window.innerWidth - 400 * scale - 40, TWEEN.Easing.Cubic.Out);
     }
@@ -80,7 +84,7 @@ function showPanelDer(data) {
 
 function hidePanelIzq() {
     var panelIzq = document.getElementById("panelIzq");
-    if (panelIzq.style.visibility == "visible") {
+    if (panelIzq && panelIzq.style.visibility == "visible") {
         efectoLeft(panelIzq, 0, 20, -450 * scale, TWEEN.Easing.Cubic.Out, function () {
             document.getElementById("panelIzq").style.visibility = "hidden";
         });
@@ -120,15 +124,20 @@ function getPost(n) {
     var sToSend = '';
     if (n.nodeName == 'INPUT' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
         //hay que enviarlo en el post
-        if (n.type == 'checkbox' || n.type == 'radio') {
+        if (n.type == 'checkbox') 
             sToSend += '&' + n.id + '=' + n.checked;
-        } else
+        else if (n.type == 'radio' && event.srcElement.type == 'radio' && event.srcElement.id == n.id) //tengo que poner dos condiciones para RADIO porque al hacer click aun no es checked
+            sToSend += '&' + n.name + '=' + n.value;
+        else if (n.type == 'radio' && n.checked) 
+            sToSend += '&' + n.name + '=' + n.value;
+        else
             sToSend += '&' + n.id + '=' + HTMLEncode(n.value);
     } else {
         if (n.nodeName == 'SELECT' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
-            sToSend += '&' + n.id + '.selectedIndex=' + getSelectedIndex(n); // n.selectedIndex;
-            sToSend += '&' + n.id + '.id=' + getSelectedId(n); //n.options[n.selectedIndex].id;
-            sToSend += '&' + n.id + '.text=' + HTMLEncode(getSelectedText(n)); //n.options[n.selectedIndex].text;
+            //sToSend += '&' + n.id + '.selectedIndex=' + getSelectedIndex(n); // n.selectedIndex;
+            //sToSend += '&' + n.id + '.id=' + getSelectedId(n); //n.options[n.selectedIndex].id;
+            //sToSend += '&' + n.id + '.text=' + HTMLEncode(getSelectedText(n)); //n.options[n.selectedIndex].text;
+            sToSend += '&' + n.id + '=' + getSelectedId(n); //n.options[n.selectedIndex].id;
         }
         if (n.nodeName == 'TEXTAREA' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
             sToSend += '&' + n.id + '=' + HTMLEncode(n.value);
@@ -142,6 +151,33 @@ function getPost(n) {
     }
 
     return sToSend;
+}
+
+function getSelectedIndex(n) {
+    var ret = '';
+    for (var i = 0; i < n.options.length; i++) {
+        if (n.options[i].selected) ret += i + ';';
+    }
+    if (ret != '') ret = ret.substr(0, ret.length - 1);
+    return ret;
+}
+
+function getSelectedId(n) {
+    var i;
+    var ret = '';
+    for (i = 0; i < n.options.length; i++)
+        if (n.options[i].selected) ret = ret + n.options[i].id + ';';
+    if (ret != '') ret = ret.substr(0, ret.length - 1);
+    return (ret);
+}
+
+function getSelectedText(n) {
+    var i;
+    var ret = '';
+    for (i = 0; i < n.options.length; i++)
+        if (n.options[i].selected) ret = ret + n.options[i].text + ';';
+    if (ret != '') ret = ret.substr(0, ret.length - 1);
+    return (ret);
 }
 
 function HTMLEncode(s) {

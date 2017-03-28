@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+        var offsetX = 0;
+        var offsetY = 0;
+        var zoom = 1;
+        var bosque;
+
+        //var bosque = {
+        //    nombre: 'a1',
+        //    hijos: [
+        //    {
+        //        nombre: 'a2',
+        //        hijos: [
+        //            { nombre: 'a1', hijos: [] },
+        //            {
+        //                nombre: 'a1', hijos: [
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    },
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    }
+        //                ]
+        //            },
+        //        { nombre: 'a1', hijos: [] }
+        //    ]
+        //    },
+        //    {
+        //        nombre: 'a3',
+        //        hijos: [
+        //            { nombre: 'a1', hijos: [] },
+        //            {
+        //                nombre: 'a1', hijos: [
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    },
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    }
+        //                ]
+        //            },
+        //        { nombre: 'a1', hijos: [] }
+        //        ]
+        //    },
+        //    {
+        //        nombre: 'a4',
+        //        hijos: [
+        //            { nombre: 'a1', hijos: [] },
+        //            {
+        //                nombre: 'a1', hijos: [
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    },
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    }
+        //                ]
+        //            },
+        //        { nombre: 'a1', hijos: [] }
+        //        ]
+        //    },
+        //    {
+        //        nombre: 'a4',
+        //        hijos: [
+        //            { nombre: 'a1', hijos: [] },
+        //            {
+        //                nombre: 'a1', hijos: [
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    },
+        //                    {
+        //                        nombre: 'a1', hijos: [
+        //                            { nombre: 'a1', hijos: [] },
+        //                            { nombre: 'a1', hijos: [] }
+        //                        ]
+        //                    }
+        //                ]
+        //            },
+        //        { nombre: 'a1', hijos: [] }
+        //        ]
+        //    }
+        //    ]
+        //}
+
+        function doLoad() {
+            //wait
+            document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
+            document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
+            document.getElementById("florWait").style.visibility = "visible";
+
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                var scalex = window.innerWidth / 1920;
+                var scaley = window.innerHeight / 1080;
+                document.getElementById("todo").style.top = '0px';
+                document.getElementById("todo").style.left = '0px';
+                document.getElementById("todo").style.width = window.innerWidth + 'px';
+                document.getElementById("todo").style.height = window.innerHeight + 'px';
+                document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+
+                //atras
+                document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                //background
+                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+                //cargo datos iniciales
+                var vals = cookie.split("|");
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
+
+                if (!usuario) {
+                    //login normal
+                    document.location = 'default.html';
+                }
+                else
+                    getHttp("doMain.aspx?actn=getBosque&email=" + usuario.email
+                        + "&grupo=" + usuario.grupo
+                        + "&clave=" + usuario.clave,
+                         function (data) {
+                            //atrapo el error si es que hay
+                            if (data.substring(0, 6) == "Error=") {
+                                //ha habido un error
+                                document.getElementById("todo").innerHTML = '<font color=red>' + data + '</font>';
+                            }
+                            else {
+                                //tengo el bosque
+                                //document.getElementById("todo").innerHTML = data;
+                                bosque = JSON.parse(data);
+                                //bosque = poblarNodo({ nombre: 'a1', hijos: [] }, 6);
+
+                                document.getElementById("florWait").style.visibility = "hidden";
+                                dibujarTodo();
+                            }
+                        });
+            }
+        }
+
+        function poblarNodo(nodo, hijos) {
+            for (var i = 0; i < hijos; i++) {
+                var hijo = { nombre: 'a1', hijos: [] };
+                //if (i == 0)
+                poblarNodo(hijo, hijos - 1);
+                nodo.hijos.push(hijo);
+            }
+            return nodo;
+        }
+
+        function dibujarTodo() {
+            var s = "";
+            s += "<text x='125' y='65' fill='black' style='font-size:40px'>El bosque</text>";
+            s += "<text x='70' y='170' fill='black' style='font-size:14px'>Acceso</text>";
+            s += "<text x='70' y='190' fill='black' style='font-size:14px'>Solo lectura</text>";
+            s += "<text x='70' y='210' fill='black' style='font-size:14px'>Sin acceso</text>";
+            s += "<circle cx='55' cy='165' r='8' stroke='#6B8E23' stroke-width='2' fill='#6B8E23' fill-opacity='0.5' />";
+            s += "<circle cx='55' cy='185' r='8' stroke='#B8860B' stroke-width='2' fill='#B8860B' fill-opacity='0.5' />";
+            s += "<circle cx='55' cy='205' r='8' stroke='#C71585' stroke-width='2' fill='#C71585' fill-opacity='0.5' />";
+
+            s += dibujarBosque(bosque, window.innerWidth / 2 + offsetX, window.innerHeight / 2 + offsetY, window.innerWidth / 8 * zoom);
+            document.getElementById("todo").innerHTML = s;
+        }
+
+        function dibujarBosque(bosque, x, y, radioInicial) {
+            var centro = toPolar(x, y);
+            var niveles = getNiveles(bosque, 0);
+            var s = dibujarArbol(bosque, centro, radioInicial, 0, niveles, 360, 90);
+            return s;
+        }
+
+        function dibujarArbol(nodo, centro, radio, nivel, niveles, apertura, direccion) {
+            var s = '';
+
+            if (nodo.exception) {
+                var rect = toRect(centro.m, centro.a);
+                s += circulo(nodo.exception, "", "", centro, radio, "red", 3)
+            }
+            else {
+                //circulo de grupo
+
+                //color acceso
+                var colorAcceso;
+                if (nodo.acceso == "NoExiste" || nodo.acceso == "NoHabilitado")
+                    colorAcceso = "#C71585";
+                else if (nodo.acceso == "readOnly")
+                    colorAcceso = "#B8860B";
+                else
+                    colorAcceso = "#6B8E23";
+
+                //verifico fallo de defincion de padre
+                if (nodo.padreVerificado != "Ok")
+                    s += circulo(nodo.nombre, "[Grupo padre no corresponde]", nodo.usuarios + " Usuarios", centro, radio, colorAcceso, nodo.nombre == usuario.grupo ? 8 : 3);
+                else
+                    s += circulo(nodo.nombre, cut(nodo.objetivo, 25), nodo.usuarios + " Usuarios", centro, radio, colorAcceso, nodo.nombre == usuario.grupo ? 8 : 3);
+
+                if (nodo.hijos.length > 0) {
+                    var paso = apertura / nodo.hijos.length;
+                    var hijoRadio;
+                    if (nivel == 0)
+                        hijoRadio = Math.PI * 2 * radio * 360 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
+                    else
+                        hijoRadio = Math.PI * 2 * radio / 2 * 180 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
+                    if (hijoRadio > radio * 0.7)
+                        hijoRadio = radio * 0.7;
+
+                    for (i in nodo.hijos) {
+                        var hijo = nodo.hijos[i];
+                        var angulo = direccion - paso * (nodo.hijos.length - 1) / 2 + paso * i; //centrado en la direccion
+                        var hijoCentro = addPolar(centro, { m: radio, a: angulo });
+                        s += dibujarArbol(hijo, hijoCentro, hijoRadio, nivel + 1, niveles, 180, angulo);
+                    }
+                }
+            }
+            return s;
+        }
+
+        function cut(s, len) {
+            if (s.length <= len)
+                return s;
+            else
+                return s.substring(0, 25) + "...";
+        }
+
+        function getNiveles(nodo, nivel) {
+            var ret = 1;
+            var maxHijo = 0;
+            for (i in nodo.hijos) {
+                var hijo = nodo.hijos[i];
+                var hijoNiveles = getNiveles(hijo, nivel + 1);
+                if (hijoNiveles > maxHijo) maxHijo = hijoNiveles;
+            }
+            return ret + maxHijo;
+        }
+
+        function addPolar(p1, p2){
+            var r1 = toRect(p1.m, p1.a);
+            var r2 = toRect(p2.m, p2.a);
+            return toPolar(r1.x + r2.x, r1.y + r2.y);
+        }
+
+        function circulo(t1, t2, t3, centro, r, colorb, width) {
+            var rect = toRect(centro.m, centro.a);
+            var x = rect.x;
+            var y = rect.y;
+            var s = "<circle cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+            s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='" + colorb + "' style='font-size:" + (10 + r * 0.15).toFixed(0) + "px' text-anchor='middle'>" + t1 + "</text>";
+            if (t2 != "") 
+                s += "<text x='" + x.toFixed(0) + "' y='" + (y + 19).toFixed(0) + "' fill='" + colorb + "' style='font-size:16px' text-anchor='middle'>" + t2 + "</text>";
+            if (t3 != "")
+                s += "<text x='" + x.toFixed(0) + "' y='" + (y + 19 * 2).toFixed(0) + "' fill='" + colorb + "' style='font-size:16px' text-anchor='middle'>" + t3 + "</text>";
+            return s;
+        }
+
+        function toPolar(x, y){
+            var ret = { m: 0, a: 0 };
+            ret.m = Math.sqrt(x * x + y * y);
+            if (x == 0)
+                if (y > 0) ret.a = 90; else ret.a = 270;
+            else if (y == 0)
+                if (x > 0) ret.a = 0; else ret.a = 180;
+            else
+            {
+                if (y >= 0 && x >= 0) ret.a = Math.atan(y / x) * 180 / Math.PI;
+                if (y >= 0 && x <= 0) ret.a = Math.atan(y / -x) * 180 / Math.PI + 90;
+                if (y <= 0 && x <= 0) ret.a = Math.atan(y / x) * 180 / Math.PI + 180;
+                if (y <= 0 && x >= 0) ret.a = Math.atan(-y / x) * 180 / Math.PI + 270;
+            }
+            return ret;
+        }
+
+            
+        function toRect(m, a)
+        {
+            //en grados
+            return { x: Math.cos(a * Math.PI / 180) * m, y: Math.sin(a * Math.PI / 180) * m };
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+        <!--florwait--------------------------------------------------------------------------------------------------->
+        <img id="florWait" src="res/florWait.gif" style="visibility: hidden;position:absolute;" />
+
+        <svg id="todo"  style="position: absolute;">
+        </svg>
+
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+    
+        <!--joystick--------------------------------------------------------------------------------------------------->
+        <div id="joystick" style="padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
+            <table>
+                <tr>
+                    <td><img src="res/jzm.png" style='cursor:pointer;' onclick="zoom *= 1.1; dibujarTodo();"  /></td>
+                    <td><img src="res/ju.png" style='cursor:pointer;' onclick="offsetY -= 30; dibujarTodo();" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><img src="res/jl.png" style='cursor:pointer;' onclick="offsetX -= 30; dibujarTodo();" /></td>
+                    <td><img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" /></td>
+                    <td><img src="res/jr.png" style='cursor:pointer;' onclick="offsetX += 30; dibujarTodo();" /></td>
+                </tr>
+                <tr>
+                    <td><img src="res/jzl.png" style='cursor:pointer;' onclick="zoom *= 0.9; dibujarTodo();" /></td>
+                    <td><img src="res/jd.png" style='cursor:pointer;' onclick="offsetY += 30; dibujarTodo();" /></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

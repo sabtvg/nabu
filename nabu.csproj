@@ -58,6 +58,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bosque.html" />
+    <Content Include="operativo.html" />
     <Content Include="resumen.html" />
     <Content Include="doMain.aspx" />
     <Content Include="grupos\test\documentos\Accion_0001.html" />
@@ -151,15 +153,20 @@
     </Compile>
     <Compile Include="model\Aplicacion.cs" />
     <Compile Include="model\appException.cs" />
-    <Compile Include="model\documentos\Comentario.cs" />
+    <Compile Include="model\documento\Comentario.cs" />
     <Compile Include="model\Grupo.cs" />
-    <Compile Include="model\documentos\Documento.cs" />
-    <Compile Include="model\documentos\LogDocumento.cs" />
-    <Compile Include="model\documentos\Comparador.cs" />
-    <Compile Include="model\modelos\Accion.cs" />
-    <Compile Include="model\modelos\Manifiesto.cs" />
-    <Compile Include="model\modelos\Modelo.cs" />
-    <Compile Include="model\modelos\Prevista.cs" />
+    <Compile Include="model\documento\Documento.cs" />
+    <Compile Include="model\documento\LogDocumento.cs" />
+    <Compile Include="model\documento\Comparador.cs" />
+    <Compile Include="model\organizacion\plataforma\Proceso.cs" />
+    <Compile Include="model\organizacion\plataforma\GrupoTrabajo.cs" />
+    <Compile Include="model\organizacion\plataforma\modelos\Accion.cs" />
+    <Compile Include="model\organizacion\plataforma\modelos\Proceso.cs" />
+    <Compile Include="model\organizacion\plataforma\modelos\GrupoTrabajo.cs" />
+    <Compile Include="model\organizacion\plataforma\modelos\Evento.cs" />
+    <Compile Include="model\organizacion\plataforma\modelos\Manifiesto.cs" />
+    <Compile Include="model\modelo\Modelo.cs" />
+    <Compile Include="model\modelo\Prevista.cs" />
     <Compile Include="model\arbol\Arbol.cs" />
     <Compile Include="model\arbol\ArbolPersonal.cs" />
     <Compile Include="model\Config.cs" />
@@ -172,8 +179,12 @@
     <Compile Include="doDecidimos.aspx.designer.cs">
       <DependentUpon>doDecidimos.aspx</DependentUpon>
     </Compile>
-    <Compile Include="model\documentos\Propuesta.cs" />
-    <Compile Include="model\modelos\Variable.cs" />
+    <Compile Include="model\documento\Propuesta.cs" />
+    <Compile Include="model\modelo\Variable.cs" />
+    <Compile Include="model\organizacion\Organizacion.cs" />
+    <Compile Include="model\organizacion\cooperativa\Cooperativa.cs" />
+    <Compile Include="model\organizacion\colegio\Colegio.cs" />
+    <Compile Include="model\organizacion\plataforma\Plataforma.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="model\arbol\Usuario.cs" />
     <Compile Include="model\Tools.cs" />

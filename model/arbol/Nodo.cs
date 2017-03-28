@@ -18,6 +18,7 @@ namespace nabu
         public int negados = 0; //votos en contra
         public int nivel = 0;
         public string email = ""; //creador
+        public int niveles = 0; //niveles del modelo en el momento de crear el nodo
 
         
         public int getFloresTotales() {

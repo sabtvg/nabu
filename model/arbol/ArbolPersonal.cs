@@ -17,6 +17,12 @@ namespace nabu
         public int nuevoNodoID = 0;
         public DateTime born = DateTime.Now;
         public int documentos;
+        public string idioma = "ES";
+        public string organizacion = "";
+        public string padreURL = "";
+        public string padreNombre = "";
+        public List<Tuple<string, string>> hijos = new List<Tuple<string, string>>();
+
 
         //log de consensos alcanzados
         public List<LogDocumento> logDocumentos = new List<LogDocumento>();

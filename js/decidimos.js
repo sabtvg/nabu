@@ -1,55 +1,46 @@
 ﻿
 function doDecidimos() {
-    if (arbolPersonal.podado)
-        //el arbol esta podado, lo pido de nuevo
-        getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + arbolPersonal.usuario.email + "&grupo=" + arbolPersonal.nombre,
-            function (data) {
-                recibirArbolPersonal(data);
-                doDecidimos();
-            });
-    else {
-        //menu ppal
-        if (visual.level == 1)
-            document.getElementById("menuppal").style.visibility = "hidden";
-        else
-            efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Cubic.Out, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
-
+    //menu ppal
+    if (visual.level == 1)
         document.getElementById("menuppal").style.visibility = "hidden";
-        document.getElementById("panelGrupo").style.visibility = 'hidden';
+    else
+        efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Cubic.Out, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
 
-        //panel consenso
-        document.getElementById("panelConsenso").style.visibility = 'visible';
+    document.getElementById("menuppal").style.visibility = "hidden";
+    document.getElementById("panelGrupo").style.visibility = 'hidden';
 
-        //joystick
-        document.getElementById("joystick").style.visibility = 'visible';
-        document.getElementById("joystick").style.top = (window.innerHeight - 160) + 'px';
+    //panel consenso
+    document.getElementById("panelConsenso").style.visibility = 'visible';
 
-        //objetivo
-        var objetivo = document.getElementById("objetivo");
-        objetivo.innerHTML = arbolPersonal.objetivo;
-        objetivo.style.visibility = 'visible';
+    //joystick
+    document.getElementById("joystick").style.visibility = 'visible';
+    document.getElementById("joystick").style.top = (window.innerHeight - 160) + 'px';
 
-        //flores
-        timerFlores = setInterval(rotarFlores, 200);
+    //objetivo
+    var objetivo = document.getElementById("objetivo");
+    objetivo.innerHTML = arbolPersonal.objetivo;
+    objetivo.style.visibility = 'visible';
 
-        //dibujo el arbol
-        if (svgArbol == null)
-            crearArbol();
-        else {
-            dibujarArbol(arbolPersonal.raiz);
-            document.getElementById("arbol").style.visibility = 'visible';
-            document.getElementById("arbol").style.top = '0px';
-            document.getElementById("arbol").style.left = '0px';
-        }
+    //flores
+    timerFlores = setInterval(rotarFlores, 200);
 
-        actualizarDatosConsenso();
-
-        //fijo intervalo de actualizacion del arbol
-        timerArbol = setInterval(pedirArbol, refreshArbolInterval);
-
-        estado = 'decidimos';
-        clearInterval(timerCiclo);
+    //dibujo el arbol
+    if (svgArbol == null)
+        crearArbol();
+    else {
+        dibujarArbol(arbolPersonal.raiz);
+        document.getElementById("arbol").style.visibility = 'visible';
+        document.getElementById("arbol").style.top = '0px';
+        document.getElementById("arbol").style.left = '0px';
     }
+
+    actualizarDatosConsenso();
+
+    //fijo intervalo de actualizacion del arbol
+    timerArbol = setInterval(pedirArbol, refreshArbolInterval);
+
+    estado = 'decidimos';
+    clearInterval(timerCiclo);
 }
 
 function seleccionarModelo() {
@@ -57,14 +48,19 @@ function seleccionarModelo() {
     if (getFloresDisponibles().length == 0)
         msg("No tienes flores disponibles");
     else {
-        var list = "<table>";
+        var list = "<table style='width:100%'>";
 
         //si no hay manifiesto solo permito crear modelo Manifiesto
         for (var i in modelos) {
             var modelo = modelos[i];
             if (modelo.activo && 
-                ((arbolPersonal.URLEstatuto == "" && modelo.id=='nabu.modelos.Manifiesto') || arbolPersonal.URLEstatuto != ""))
-                list += "<tr><td class='btn' style='text-align: center; width: 300px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td></tr>";
+                ((arbolPersonal.URLEstatuto == "" && modelo.id.indexOf('Manifiesto')>=0) || arbolPersonal.URLEstatuto != ""))
+            {
+                list += "<tr>";
+                list += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
+                list += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                list += "</tr>";
+            }
         }
         list += "</table>";
 
@@ -141,23 +137,36 @@ function doToggleFlor2() {
     var d = selectedNode;
     if (!tieneFlor(d)) d.totalFlores += 1;
 
-    if (d.totalFlores == 1 && tieneFlor(d) && !d.consensoAlcanzado) {
-        //quitara la ultima flor de un ultimo nodo
-        //quito seleccionado y apago menu
-        doMousedown();
-        hidePanelIzq();
-        hidePanelDer();
-    }
-    else if (d.consensoAlcanzado) {
-        //quitara la ultima flor de un ultimo nodo
-        //quito seleccionado y apago menu
-        doMousedown();
-        hidePanelIzq();
-        hidePanelDer();
-    }
+    //quito seleccionado y apago menu
+    if (menu)
+        menu.style.visibility = "hidden";
+    selectedNode = null;
+    dibujarArbol(selectedNode);
+    hidePanelDer();
+    hidePanelIzq();
+
+    //if (d.totalFlores == 1 && tieneFlor(d) && !d.consensoAlcanzado) {
+    //    //quitara la ultima flor de un ultimo nodo
+    //    //quito seleccionado y apago menu
+    //    doMousedown();
+    //    hidePanelIzq();
+    //    hidePanelDer();
+    //}
+    //else if (d.consensoAlcanzado) {
+    //    //quitara la ultima flor de un ultimo nodo
+    //    //quito seleccionado y apago menu
+    //    doMousedown();
+    //    hidePanelIzq();
+    //    hidePanelDer();
+    //}
 
     //pido nuevo arbol
-    getHttp("doDecidimos.aspx?actn=toggleflor&email=" + arbolPersonal.usuario.email + "&id=" + d.id + "&x=" + d.x0 + "&grupo=" + arbolPersonal.nombre, recibirArbolPersonal);
+    getHttp("doDecidimos.aspx?actn=toggleflor&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&id=" + d.id
+        + "&x=" + d.x0
+        + "&grupo=" + arbolPersonal.nombre,
+        recibirArbolPersonal);
 }
 
 function doCerrarDocumento() {
@@ -170,7 +179,12 @@ function doRevisar() {
     var node = selectedNode;
 
     //envio
-    getHttp("doDecidimos.aspx?actn=revisar&modelo=" + node.modeloID + "&email=" + arbolPersonal.usuario.email + "&id=" + node.id + "&grupo=" + arbolPersonal.nombre + "&width=" + (window.innerWidth - 80),
+    getHttp("doDecidimos.aspx?actn=revisar&modelo=" + node.modeloID
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&id=" + node.id
+        + "&grupo=" + arbolPersonal.nombre
+        + "&width=" + (window.innerWidth - 80).toFixed(0),
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
@@ -183,7 +197,12 @@ function doPrevista() {
     var post = getPost(document);
 
     //envio
-    postHttp("doDecidimos.aspx?actn=prevista&modelo=" + node.modeloID + "&email=" + arbolPersonal.usuario.email + "&id=" + node.id + "&grupo=" + arbolPersonal.nombre + "&width=" + (window.innerWidth - 80),
+    postHttp("doDecidimos.aspx?actn=prevista&modelo=" + node.modeloID
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&id=" + node.id
+        + "&grupo=" + arbolPersonal.nombre
+        + "&width=" + (window.innerWidth - 80).toFixed(0),
         post,
         function (data) {
             //muestro
@@ -199,7 +218,12 @@ function doProponer() {
     doMousedown();
 
     //envio
-    getHttp("doDecidimos.aspx?actn=proponer&modelo=" + node.modeloID + "&email=" + arbolPersonal.usuario.email + "&id=" + node.id + "&grupo=" + arbolPersonal.nombre + "&width=" + (window.innerWidth - 80),
+    getHttp("doDecidimos.aspx?actn=proponer&modelo=" + node.modeloID
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&id=" + node.id
+        + "&grupo=" + arbolPersonal.nombre
+        + "&width=" + (window.innerWidth - 80).toFixed(0),
         recibirArbolPersonal);
 
     //cierro documento
@@ -212,7 +236,12 @@ function doVerDocumento() {
 
     //pido propuestas al servidor (por si hay nuevos comentarios)
     //agrego el modelo por si de un documento nuevo y el node es la raiz, hay que decir el modeloID
-    getHttp("doDecidimos.aspx?actn=HTMLDocumento&modelo=" + node.modeloID + "&id=" + node.id + "&grupo=" + arbolPersonal.nombre + "&email=" + arbolPersonal.usuario.email + "&width=" + (window.innerWidth - 80),
+    getHttp("doDecidimos.aspx?actn=HTMLDocumento&modelo=" + node.modeloID
+        + "&id=" + node.id
+        + "&grupo=" + arbolPersonal.nombre
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&width=" + (window.innerWidth - 80).toFixed(0),
         function (data) {
             //puedo mostrar el documento
             hidePanelDer();
@@ -234,7 +263,10 @@ function doVerDocumento() {
 
 function doComentar(id) {
     var comentario = HTMLEncode(document.getElementById("comentario" + id).value);
-    postHttp("doDecidimos.aspx?actn=doComentar&id=" + id + "&grupo=" + arbolPersonal.nombre + "&email=" + arbolPersonal.usuario.email,
+    postHttp("doDecidimos.aspx?actn=doComentar&id=" + id
+        + "&grupo=" + arbolPersonal.nombre
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave,
         "comentario=" + comentario,
         function (data) {
             //muestro
@@ -246,10 +278,13 @@ function doComentar(id) {
 function doVariante(id) {
     var n = getNodo(id);
     selectedNode = n.parent;
-    ////obtengo texto actual
 
     //pido propuestas al servidor sin resaltar
-    getHttp("doDecidimos.aspx?actn=variante&id=" + id + "&grupo=" + arbolPersonal.nombre + "&email=" + arbolPersonal.usuario.email + "&width=" + (window.innerWidth - 80),
+    getHttp("doDecidimos.aspx?actn=variante&id=" + id
+        + "&grupo=" + arbolPersonal.nombre
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&width=" + (window.innerWidth - 80).toFixed(0),
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
@@ -298,6 +333,36 @@ function pedirArbol() {
     if (arbolPersonal) {
         var now = (new Date()).getTime();
         if (now - lastArbolRecibidoTs > refreshArbolInterval)
-            getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + arbolPersonal.usuario.email + "&grupo=" + arbolPersonal.nombre, recibirArbolPersonal);
+            getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + arbolPersonal.usuario.email
+                + "&clave=" + arbolPersonal.usuario.clave
+                + "&grupo=" + arbolPersonal.nombre,
+                recibirArbolPersonal);
     }
+}
+
+function setNotEmpyList(id) {
+    //caso especial lkista vacia debe ser <>'' para que se envie en el submit
+    var list = document.getElementById(id);
+    if (list.value == '')
+        list.value = "*";
+}
+
+function documentSubmit(accion, parametro) {
+    //envio mensaje al documento y redibujo
+    var node = selectedNode;
+    var post = getPost(document);
+
+    postHttp("doDecidimos.aspx?actn=documentSubmit&modelo=" + node.modeloID
+        + "&accion=" + accion
+        + "&parametro=" + parametro
+        + "&id=" + node.id
+        + "&grupo=" + arbolPersonal.nombre
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&width=" + (window.innerWidth - 80).toFixed(0),
+        post,
+        function (data) {
+            //muestro
+            document.getElementById("documento").innerHTML = data;
+        });
 }

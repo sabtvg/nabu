@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+        var offsetX = 0;
+        var offsetY = 0;
+        var zoom = 1;
+        var operativo;
+        var col = 200;
+        var row = 90;
+
+        //var operativo = {
+        //    objetivo: 'xxxxx', URLEstatuto: 'xxx',
+        //    gruposTrabajo: [
+        //        { nombre: 'g1', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
+        //        { nombre: 'g2', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
+        //        { nombre: 'g3', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
+        //    ]
+        //};
+
+        function doLoad() {
+            //leo cookie
+            var cookie = getCookie("nabu");
+            if (cookie == "")
+                //login normal
+                document.location = 'default.html';
+            else {
+                var scalex = window.innerWidth / 1920;
+                var scaley = window.innerHeight / 1080;
+                document.getElementById("todo").style.top = '0px';
+                document.getElementById("todo").style.left = '0px';
+                document.getElementById("todo").style.width = window.innerWidth + 'px';
+                document.getElementById("todo").style.height = window.innerHeight + 'px';
+                document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+
+                //atras
+                document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                //background
+                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+                //cargo datos iniciales
+                var vals = cookie.split("|");
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
+
+                if (!usuario) {
+                    //login normal
+                    document.location = 'default.html';
+                }
+                else
+                    getHttp("doMain.aspx?actn=getOperativo&email=" + usuario.email
+                        + "&grupo=" + usuario.grupo
+                        + "&clave=" + usuario.clave,
+                         function (data) {
+                            //atrapo el error si es que hay
+                            if (data.substring(0, 6) == "Error=") {
+                                //ha habido un error
+                                document.getElementById("todo").innerHTML = '<font color=red>' + data + '</font>';
+                            }
+                            else {
+                                //tengo el bosque
+                                //document.getElementById("todo").innerHTML = data;
+                                operativo = JSON.parse(data);
+                                dibujarTodo();
+                            }
+                        });
+            }
+        }
+
+        function dibujarTodo() {
+            var s = "";
+            s += "<defs>";
+            s += "<marker id='markerCircle' markerWidth='8' markerHeight='8' refX='5' refY='5'>";
+            s += "<circle cx='5' cy='5' r='3' style='stroke: none; fill:#000000;opacity:0.4;'/>";
+            s += "</marker>";
+            s += "<marker id='markerArrow' markerWidth='20' markerHeight='20' refX='2' refY='6' orient='auto'>";
+            s += "<path d='M2,2 L2,11 L10,6 L2,2' style='fill: #000000;opacity:0.4' />";
+            s += "</marker>";
+            s += "</defs>";
+
+            s += "<text x='125' y='65' fill='black' style='font-size:40px'>Estructuras organizativas</text>";
+            s += dibujarOperativo(operativo, window.innerWidth / 2 + offsetX, 100 + offsetY, zoom);
+
+            document.getElementById("todo").innerHTML = s;
+        }
+
+        function flecha(d) {
+            var s = "";
+            s += "<path d='" + d + "' ";
+            s += "style='stroke: #6666ff; stroke-width: 2px; fill: none; ";
+            s += "marker-start: url(#markerCircle); ";
+            s += "marker-end: url(#markerArrow);' />";
+            return s;
+        }
+
+        function dibujarOperativo(operativo, x, y, zoom) {
+            //manifiesto
+            var zrow = row * zoom;
+            var zcol = col * zoom;
+            var s = "";
+            //var txt = "<a href='" + operativo.URLEstatuto + "' target='_blank'>" + operativo.objetivo + "</a>";
+            s += caja(operativo.objetivo, x, y, "#F08080", zoom, "openManifiesto();");
+
+            //grupos de trabjo
+            for (i in operativo.gruposTrabajo) {
+                var gt = operativo.gruposTrabajo[i];
+                //var gtX = x - operativo.gruposTrabajo.length * 2 * ancho / 2 + i * 2 * ancho;
+                var gtX = x - operativo.gruposTrabajo.length * 2 * zcol / 2 + i * 2 * zcol + 2 * zcol / 2;
+                var gtY = y + zrow * 1.5;
+                s += caja(gt.nombre, gtX, gtY, "#4169E1", zoom, "openGT('" + gt.nombre + "');");
+
+                //flecha
+                s += flecha("M" + x.toFixed(0) + "," + (y + zrow * 0.8 / 2).toFixed(0)
+                    + " L" + x.toFixed(0) + "," + (y + zrow * 0.8 / 2 + 20 * zoom).toFixed(0)
+                    + " L" + gtX.toFixed(0) + "," + (y + zrow * 0.8 / 2 + 20 * zoom).toFixed(0)
+                    + " L" + (gtX).toFixed(0) + "," + (gtY - zrow * 0.8 / 2 - 20).toFixed(0));
+
+                //procesos
+                for (j in gt.procesos) {
+                    var pr = gt.procesos[j];
+                    var prX = gtX + 10 + zcol / 2;
+                    var prY = y + 2.5 * zrow + zrow * j;
+                    s += caja(pr.nombre, prX, prY, "#FF6347", zoom, "openPR('" + gt.nombre + "','" + pr.nombre + "');");
+
+                    //flecha
+                    s += flecha("M" + gtX.toFixed(0) + "," + (gtY + zrow * 0.8 / 2).toFixed(0)
+                        + " L" + gtX.toFixed(0) + "," + (prY).toFixed(0)
+                        + " L" + (prX - zcol * 0.8 / 2 - 20).toFixed(0) + "," + (prY).toFixed(0));
+                }
+
+                //publis
+                for (j in gt.publis) {
+                    var pr = gt.publis[i];
+                    var prX = gtX - 10 - zcol / 2;
+                    var prY = y + 3 * zrow + zrow * j;
+                    s += caja(pr.nombre, prX, prY, "#F5F5F5", zoom);
+
+                    //flecha
+                    s += flecha("M" + gtX.toFixed(0) + "," + (gtY + zrow * 0.8 / 2).toFixed(0)
+                        + " L" + gtX.toFixed(0) + "," + (prY).toFixed(0)
+                        + " L" + (prX + zcol * 0.8 / 2 + 20).toFixed(0) + "," + (prY).toFixed(0));
+                }
+            }
+            return s;
+        }
+
+        function caja(nombre, x, y, color, zoom, onclick) {
+            var boxWidth = col * 0.8 * zoom;
+            var boxHeight = row * 0.8 * zoom;
+            var nom = nombre;
+            if (nom.length > 20)
+                nom = nom.substring(0, 20) + "...";
+
+            var s = "<rect x='" + (x - boxWidth / 2).toFixed(0) + "' y='" + (y - boxHeight / 2).toFixed(0) + "' rx='20' ry='20' "
+                + "width='" + boxWidth.toFixed(0) + "' height='" + boxHeight.toFixed(0) + "' "
+                + "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:" + (5 * zoom).toFixed(0) + ";opacity:0.4' "
+                + "onclick=\"" + onclick + "\"/>"
+                + "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (20 * zoom).toFixed(0) + "px' text-anchor='middle' "
+                + "onclick=\"" + onclick + "\">"
+                + nom
+                + "</text>";
+            return s;
+        }
+
+        function openManifiesto() {
+            window.open(operativo.URLEstatuto);
+        }
+
+        function openPR(gtnombre, prnombre) {
+            document.getElementById("GT").style.top = ((window.innerHeight - 600) / 2).toFixed(0) + 'px';
+            document.getElementById("GT").style.left = ((window.innerWidth - 800) / 2).toFixed(0) + 'px';
+            document.getElementById("GT").style.width = '800px';
+            document.getElementById("GT").style.height = '600px';
+
+            var s = "";
+            for (var i in operativo.gruposTrabajo) {
+                var GT = operativo.gruposTrabajo[i];
+                if (GT.nombre == gtnombre) {
+                    for (var j in GT.procesos) {
+                        var PR = GT.procesos[j];
+                        if (PR.nombre == prnombre) {
+                            s = "<b>GrupoTrabajo:</b> " + GT.nombre + "<br>";
+                            s += "<b>Proceso:</b> " + PR.nombre + "<br>";
+                            s += "<b>Nacido:</b> " + PR.born + "<br>";
+                            s += "<b>Consenso fecha:</b> " + PR.docTs + "<br>";
+                            s += "<b>Consenso:</b> <a href='" + PR.docURL + "' target='_blank'>" + PR.docURL + "</a><br>";
+                            s += "<b>Objetivo:</b> " + PR.objetivo + "<br>";
+                            s += "<b>Revisi&oacute;n:</b> " + PR.revision + "<br>";
+                            s += "<b>Entradas:</b><br> " + PR.entradas + "<br>";
+                            s += "<b>Definici&oacute;n:</b><br> " + PR.definicion + "<br>";
+                            s += "<br>";
+                        }
+                    }
+                }
+            }
+            s += "<input type='button' class='btn' value='Cerrar' onclick='doCerrarDocumento();'>";
+            document.getElementById("GT").innerHTML = s;
+            document.getElementById("GT").style.visibility = "visible";
+
+        }
+
+        function openGT(nombre) {
+            document.getElementById("GT").style.top = ((window.innerHeight - 600) / 2).toFixed(0) + 'px';
+            document.getElementById("GT").style.left = ((window.innerWidth - 800) / 2).toFixed(0) + 'px';
+            document.getElementById("GT").style.width = '800px';
+            document.getElementById("GT").style.height = '600px';
+
+            var s = "";
+            for (var i in operativo.gruposTrabajo) {
+                var GT = operativo.gruposTrabajo[i];
+                if (GT.nombre == nombre) {
+                    s = "<b>Nombre:</b> " + nombre + "<br>";
+                    s += "<b>Nacido:</b> " + GT.born + "<br>";
+                    s += "<b>Consenso fecha:</b> " + GT.docTs + "<br>";
+                    s += "<b>Consenso:</b> <a href='" + GT.docURL + "' target='_blank'>" + GT.docURL + "</a><br>";
+                    s += "<b>Objetivo:</b> " + GT.objetivo + "<br>";
+                    s += "<b>Revisi&oacute;n:</b> " + GT.revision + "<br>";
+                    s += "<br>";
+                    s += "<b>Integrantes:</b><br>";
+                    for (j in GT.usuarios) {
+                        var u = GT.usuarios[j];
+                        s += "&nbsp;&nbsp;&nbsp;" + u.email + " - ";
+                        if (u.estado)
+                            s += "<font color='red'>" + u.estado + "</font><br>";
+                        else
+                            s += u.nombre + "<br>";
+                    }
+                    s += "<br>";
+
+                }
+            }
+            s += "<input type='button' class='btn' value='Cerrar' onclick='doCerrarDocumento();'>";
+            document.getElementById("GT").innerHTML = s;
+            document.getElementById("GT").style.visibility = "visible";
+
+        }
+
+        function doCerrarDocumento() {
+            document.getElementById("GT").style.visibility = "hidden";
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+        <svg id="todo"  style="position: absolute;">
+        </svg>
+
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+    
+        <!--joystick--------------------------------------------------------------------------------------------------->
+        <div id="joystick" style="padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
+            <table>
+                <tr>
+                    <td><img src="res/jzm.png" style='cursor:pointer;' onclick="zoom *= 1.1; dibujarTodo();"  /></td>
+                    <td><img src="res/ju.png" style='cursor:pointer;' onclick="offsetY -= 30; dibujarTodo();" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><img src="res/jl.png" style='cursor:pointer;' onclick="offsetX -= 30; dibujarTodo();" /></td>
+                    <td><img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" /></td>
+                    <td><img src="res/jr.png" style='cursor:pointer;' onclick="offsetX += 30; dibujarTodo();" /></td>
+                </tr>
+                <tr>
+                    <td><img src="res/jzl.png" style='cursor:pointer;' onclick="if (zoom > 0.6) zoom *= 0.9; dibujarTodo();" /></td>
+                    <td><img src="res/jd.png" style='cursor:pointer;' onclick="offsetY += 30; dibujarTodo();" /></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!--GT--------------------------------------------------------------------------------------------------->
+        <div id="GT" class="documento" style="fill:#4169E1;stroke:black;stroke-width:5;visibility:hidden;position:absolute;"></div>
+    </body>
+</html>

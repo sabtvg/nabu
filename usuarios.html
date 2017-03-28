@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script>
+        var usuarios;
         var usuario;
 
         function doLoad() {
@@ -35,10 +36,10 @@
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");
-                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4] };
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
 
                 if (!usuario.isAdmin) {
-                    alert("Solo disponible para el administrador");
+                    alert("Solo disponible para el jardinero");
                     //login normal
                     document.location = 'default.html';
                 }
@@ -47,15 +48,23 @@
             }
         }
 
-        function doCrearUsuario() {
+        function doActualizarUsuario() {
             var nombre = document.getElementById("nombre").value;
             var email = document.getElementById("email").value;
             var clave = document.getElementById("clave").value;
+            var readOnly = document.getElementById("readOnly").checked;
+            var isAdmin = document.getElementById("isAdmin").checked;
+            var habilitado = document.getElementById("habilitado").checked;
 
-            getHttp("doMain.aspx?actn=newusuario&nombre=" + nombre
-                + "&email=" + email
-                + "&clave=" + clave
-                + "&grupo=" + usuario.arbol,
+            getHttp("doMain.aspx?actn=actualizarUsuario&nuevonombre=" + nombre
+                + "&nuevoemail=" + email
+                + "&nuevaclave=" + clave
+                + "&grupo=" + usuario.grupo
+                + "&readOnly=" + readOnly
+                + "&isAdmin=" + isAdmin
+                + "&habilitado=" + habilitado
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
                 function (data) {
                     if (data.substring(0, 6) == "Error=")
                         document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
@@ -66,6 +75,9 @@
                         document.getElementById("nombre").value = "";
                         document.getElementById("email").value = "";
                         document.getElementById("clave").value = "";
+                        document.getElementById("readOnly").checked = false;
+                        document.getElementById("isAdmin").checked = false;
+                        document.getElementById("habilitado").checked = false;
 
                         //actualizo lista
                         getListaUsuarios();
@@ -73,8 +85,24 @@
                 });
         }
 
+        function doSelect(email) {
+            for (q in usuarios) {
+                var u = usuarios[q];
+                if (u.email == email) {
+                    document.getElementById("nombre").value = u.nombre;
+                    document.getElementById("email").value = u.email;
+                    document.getElementById("clave").value = u.clave;
+                    document.getElementById("readOnly").checked = u.readOnly;
+                    document.getElementById("isAdmin").checked = u.isAdmin;
+                    document.getElementById("habilitado").checked = u.habilitado;
+                }
+            }
+        }
+
         function getListaUsuarios() {
-            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.arbol,
+            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.grupo
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
                 function (data) {
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
@@ -83,26 +111,34 @@
                     }
                     else {
                         //he recibido los usuarios
-                        var usuarios = JSON.parse(data);
+                        usuarios = JSON.parse(data);
                         var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
                         s += "<tr>"
+                        s += "<td style='width:20px;'></td>";
                         s += "<td style='width:200px;'><b>Nombre</b></td>";
                         s += "<td style='width:220px;'><b>Email</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>Apoyos</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>Ultimo</b></td>";
                         s += "<td style='width:70px;text-align:center;'><b>Activo</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>Solo Lectura</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>Habilitado</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>Admin</b></td>";
                         s += "<td style='width:70px;text-align:center;'><b>Email</b></td>";
                         s += "<td style='width:70px;text-align:center;'><b>Borrar</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
                             s += "<tr>"
+                            s += "<td><img src='res/ver.gif' onclick=\"doSelect('" + usu.email + "');\" style='cursor:pointer;'></td>";
                             s += "<td>" + usu.nombre + "</td>";
                             s += "<td>" + usu.email + "</td>";
                             s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
                             s += "<td>" + usu.sLastLogin + "</td>";
                             s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
-                            s += "<td style='text-align:center;'><img src='res/men.gif' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
+                            s += "<td style='text-align:center;'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.isAdmin ? "<img src='res/luzverde.gif'>" : "") + "</td>";
+                            s += "<td style='text-align:center;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
                             if (!usu.isAdmin)
                                 s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
                             else
@@ -117,7 +153,10 @@
         }
 
         function doEnviarMail(email) {
-            getHttp("doMain.aspx?actn=sendMailWelcome&grupo=" + usuario.arbol + "&email=" + email,
+            getHttp("doMain.aspx?actn=sendMailWelcome&grupo=" + usuario.grupo
+                + "&usuarioemail=" + email
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
                 function (data) {
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
@@ -132,20 +171,27 @@
         }
 
         function doBorrarUsuario(email) {
-            getHttp("doMain.aspx?actn=removeusuario&grupo=" + usuario.arbol + "&email=" + email,
-                function (data) {
-                    //atrapo el error si es que hay
-                    if (data.substring(0, 6) == "Error=") {
-                        //ha habido un error
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
-                    }
-                    else {
-                        document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+            if (email == usuario.email)
+                document.getElementById("response").innerHTML = '<font color=red>No se puede borrar el usuario actual</font>';
+            else {
+                getHttp("doMain.aspx?actn=removeusuario&grupo=" + usuario.grupo
+                    + "&usuarioemail=" + email
+                    + "&email=" + usuario.email
+                    + "&clave=" + usuario.clave,
+                    function (data) {
+                        //atrapo el error si es que hay
+                        if (data.substring(0, 6) == "Error=") {
+                            //ha habido un error
+                            document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        }
+                        else {
+                            document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
 
-                        //actualizo lista
-                        getListaUsuarios();
-                    }
-                });
+                            //actualizo lista
+                            getListaUsuarios();
+                        }
+                    });
+            }
         }
     </script>
 </head>
@@ -166,8 +212,11 @@
                 <span class="titulo3">Crear</span><br />
                 <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
                 <input id="email" type="text" class="txt" size="20" placeholder="Email" />
-                <input id="clave" type="text" class="txt" size="15" placeholder="Clave" />
-                <input type='button' class='btn' value='Crear' onclick='doCrearUsuario();' />
+                <input id="clave" type="password" class="txt" size="15" placeholder="Clave" />
+                Solo lectura<input id="readOnly" type="checkbox" class="txt" />
+                Admin<input id="isAdmin" type="checkbox" class="txt" />
+                Habilitado<input id="habilitado" type="checkbox" class="txt" />
+                <input type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' />
             </div>
             <br />
 

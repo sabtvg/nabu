@@ -28,5 +28,6 @@ namespace nabu
         public string format = "0.00";
         public int nivel = 0;
         public string className = "texto";
+        public string editClassName = "editar";
     }
 }

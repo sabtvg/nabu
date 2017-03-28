@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Drawing;
+using System.Net;
 
 
 namespace nabu
@@ -44,6 +44,24 @@ namespace nabu
         public static string startupPath;
         private static int fileIndex = 0;
         private static StreamWriter logFile;
+        public static DateTime minValue = new DateTime(2000, 1, 1);
+       
+        public static string getHttp(string sincroURL)
+        {
+            WebRequest request = WebRequest.Create(sincroURL);
+            System.IO.StreamReader sr = new System.IO.StreamReader(request.GetResponse().GetResponseStream());
+            string ret = sr.ReadToEnd();
+            return ret;
+        }
+
+        public static string getHttp(string sincroURL, string post)
+        {
+            WebClient wc = new WebClient();
+            wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+            post = System.Web.HttpUtility.UrlEncode(post);
+            string ret = wc.UploadString(sincroURL, "sinf=" + post);
+            return ret;
+        }
 
         public static string dateToString(DateTime d)
         {
@@ -142,7 +160,7 @@ namespace nabu
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(objeto.GetType(), knowntypes);
                 MemoryStream ms = new MemoryStream();
                 jsonSerializer.WriteObject(ms, objeto);
-                s = Encoding.Default.GetString(ms.ToArray());
+                s = Encoding.UTF8.GetString(ms.ToArray());
                 return s;
             }
         }
@@ -158,9 +176,28 @@ namespace nabu
                 DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(objeto.GetType());
                 MemoryStream ms = new MemoryStream();
                 jsonSerializer.WriteObject(ms, objeto);
-                s = Encoding.Default.GetString(ms.ToArray());
+                s = Encoding.UTF8.GetString(ms.ToArray());
                 return s;
             }
+        }
+
+        public static DateTime getDateFromJSON(string value)
+        {
+            System.Text.RegularExpressions.Regex dateRegex = new System.Text.RegularExpressions.Regex(@"/Date\((\d+)([-+])(\d+)\)/");
+            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime d = DateTime.MinValue;
+            System.Text.RegularExpressions.Match match = dateRegex.Match(value);
+            if (match.Success)
+            {
+                // try to parse the string into a long. then create a datetime and convert to local time.
+                long msFromEpoch;
+                if (long.TryParse(match.Groups[1].Value, out msFromEpoch))
+                {
+                    TimeSpan fromEpoch = TimeSpan.FromMilliseconds(msFromEpoch);
+                    d = TimeZoneInfo.ConvertTimeFromUtc(epoch.Add(fromEpoch), TimeZoneInfo.Local);
+                }
+            }
+            return d;
         }
 
         public static T fromJson<T>(string jsonSerializado, List<Type> knowntypes)
@@ -169,7 +206,7 @@ namespace nabu
             {
                 //deserializo
                 T obj = Activator.CreateInstance<T>();
-                MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonSerializado));
+                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonSerializado));
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType(), knowntypes);
                 obj = (T)serializer.ReadObject(ms);
                 ms.Close();
@@ -185,7 +222,7 @@ namespace nabu
             {
                 //deserializo
                 T obj = Activator.CreateInstance<T>();
-                MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonSerializado));
+                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonSerializado));
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
                 obj = (T)serializer.ReadObject(ms);
                 ms.Close();

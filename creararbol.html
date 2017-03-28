@@ -5,6 +5,7 @@
     <title>Nab&uacute</title>
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
+    <script src="js/common.js"></script>
     <script src="js/tween.min.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -16,14 +17,18 @@
             var email = document.getElementById("email").value;
             var clave = document.getElementById("clave").value;
             var clave2 = document.getElementById("clave2").value;
+            var idioma = getSelectedId(document.getElementById("idioma"));
+            var organizacion = getSelectedId(document.getElementById("organizacion"));
 
             if (clave != clave2) {
                 document.getElementById("response").innerHTML = "<font color=red>Las claves no coinciden</font>";
             }
             else
                 getHttp("doMain.aspx?actn=newgrupo&grupo=" + nombreArbol
+                    + "&organizacion=" + organizacion
                     + "&nombreAdmin=" + nombreAdmin
                     + "&email=" + email
+                    + "&idioma=" + idioma
                     + "&clave=" + clave,
                     function (data) {
                         if (data.substring(0, 6) == "Error=")
@@ -56,12 +61,18 @@
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
                             <span class="titulo3">Datos del grupo</span><br />
-                            <input id="nombreArbol" type="text" class="txt" size="25" placeholder="Nombre" /><br />
+                            <input id="nombreArbol" type="text" class="txt" size="25" maxlength="25" placeholder="Nombre" /><br />
+                            <select id="idioma" class="txt" style="width: 100%">
+                                <option id="ES">Espa&ntilde;ol</option>
+                            </select>
+                            <select id="organizacion" class="txt" style="width: 100%">
+                                <option id="Plataforma">Plataforma social</option>
+                            </select>                        
                         </div>
                         <br />
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Datos del administrador</span><br />
+                            <span class="titulo3">Datos del jardinero</span><br />
                             <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  size="25"/><br />
                             <input id="email" type="text" class="txt" placeholder="Email"  size="25"/><br />
                             <input id="clave" type="password" class="txt" placeholder="Clave"  size="25"/><br />

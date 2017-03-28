@@ -11,6 +11,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script>
         var arbolPersonal;
+        var usuario;
+        var hijos;
 
         function doLoad() {
             //leo cookie
@@ -31,16 +33,18 @@
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");
-                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4] };
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
 
                 if (!usuario.isAdmin) {
-                    alert("Solo disponible para el administrador");
+                    alert("Solo disponible para el jardinero");
                     //login normal
                     document.location = 'default.html';
                 }
                 else
-                    getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + usuario.email + "&grupo=" + usuario.arbol,
-                        function (data) {
+                    getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + usuario.email
+                        + "&grupo=" + usuario.grupo
+                        + "&clave=" + usuario.clave,
+                         function (data) {
                             //atrapo el error si es que hay
                             if (data.substring(0, 6) == "Error=") {
                                 //ha habido un error
@@ -50,14 +54,22 @@
                                 //login ok, he recibido el arbol
                                 arbolPersonal = JSON.parse(data);
                                 document.getElementById("nombreArbol").value = arbolPersonal.nombre;
+                                document.getElementById("idioma").value = arbolPersonal.idioma;
+                                document.getElementById("organizacion").value = arbolPersonal.organizacion;
 
                                 document.getElementById("nombreAdmin").value = arbolPersonal.usuario.nombre;
                                 document.getElementById("email").value = arbolPersonal.usuario.email;
+
+                                document.getElementById("padreURL").value = arbolPersonal.padreURL;
+                                document.getElementById("padreNombre").value = arbolPersonal.padreNombre;
 
                                 document.getElementById("cantidadFlores").value = arbolPersonal.cantidadFlores;
 
                                 document.getElementById("minSiPc").value = arbolPersonal.minSiPc;
                                 document.getElementById("maxNoPc").value = arbolPersonal.maxNoPc;
+
+                                hijos = arbolPersonal.hijos;
+                                showHijos();
                             }
                         });
             }
@@ -68,19 +80,137 @@
             var cantidadFlores = document.getElementById("cantidadFlores").value;
             var minSiPc = document.getElementById("minSiPc").value;
             var maxNoPc = document.getElementById("maxNoPc").value;
+            var padreURL = document.getElementById("padreURL").value;
+            var padreNombre = document.getElementById("padreNombre").value;
 
             getHttp("doDecidimos.aspx?actn=updatearbol&grupo=" + nombreArbol
                 + "&cantidadFlores=" + cantidadFlores
                 + "&minSiPc=" + minSiPc
-                + "&maxNoPc=" + maxNoPc,
-                function (data) {
+                + "&maxNoPc=" + maxNoPc
+                + "&padreURL=" + padreURL
+                + "&padreNombre=" + padreNombre
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
+                 function (data) {
                     if (data.substring(0, 6) == "Error=")
                         document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
                     else {
-                        document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+                        document.location="default.html";
                     }
                 });
         }
+
+        function doCrearUsuariosArbolPadre() {
+            //obtengo usuarios
+            getListaUsuarios(function(data){
+                var usuarios = JSON.parse(data);
+
+                //armo lista parametro
+                var param = "usuarios=[";
+                for(i in usuarios){
+                    var u = usuarios[i];
+                    param += "{";
+                    param += "\"nombre\":\"" + u.nombre + "\",";
+                    param += "\"email\":\"" + u.email + "\",";
+                    param += "\"clave\":\"" + u.clave + "\"";
+                    param += "},";
+                }
+                param = param.substring(0, param.length - 1);
+                param += "]";
+
+                var padreURL = document.getElementById("padreURL").value;
+                var padreNombre = document.getElementById("padreNombre").value;
+                postHttp(padreURL + "/doMain.aspx?actn=crearUsuarios&grupo=" + padreNombre,
+                    param,
+                    function(data){
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    });
+            });
+        }
+
+        function doCrearHijo() {
+            var hijoURL = document.getElementById("hijoURL").value;
+            var hijoNombre = document.getElementById("hijoNombre").value;
+            getHttp("doMain.aspx?actn=crearHijo&grupo=" + usuario.grupo
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave
+                + "&hijoURL=" + hijoURL
+                + "&hijoNombre=" + hijoNombre,
+                function (data) {
+                    document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    getListaHijos();
+                });
+        }
+
+        function doBorrarHijo(index) {
+            var hijo = hijos[index];
+            getHttp("doMain.aspx?actn=borrarHijo&grupo=" + usuario.grupo
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave
+                + "&hijoURL=" + hijo.m_Item1,
+                function (data) {
+                    document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    getListaHijos();
+                });
+        }
+
+        function getListaHijos() {
+            getHttp("doDecidimos.aspx?actn=getArbolPersonal&grupo=" + usuario.grupo
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        //he recibido los hijos
+                        var arbolPersonal = JSON.parse(data);
+                        hijos = arbolPersonal.hijos;
+
+                        showHijos();
+                    }
+                });
+        }
+
+        function showHijos() {
+            var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
+            s += "<tr>"
+            s += "<td style='width:200px;'><b>URL</b></td>";
+            s += "<td style='width:220px;'><b>Nombre</b></td>";
+            s += "<td style='width:70px;text-align:center;'><b>Borrar</b></td>";
+            s += "</tr>"
+            for (var i in hijos) {
+                var hijo = hijos[i];
+                s += "<tr>"
+                s += "<td>" + hijo.m_Item1 + "</td>";
+                s += "<td>" + hijo.m_Item2 + "</td>";
+                s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarHijo(" + i + ");'></td>";
+                s += "</tr>"
+            }
+            s += "</table>";
+
+            document.getElementById("hijos").innerHTML = s;
+        }
+
+        function getListaUsuarios(callback) {
+            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.grupo
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        //he recibido los usuarios
+                        callback(data);
+                    }
+                });
+        }
+
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
@@ -89,35 +219,56 @@
                 <tr>
                     <td style="width: 80px;" class="titulo1">Nab&uacute;</td>
                     <td style="width: 60px;"><img src="res/icono2.png" /></td>
-                    <td><div id="response" style="text-align:center; font-size:20px;"></div></td>
-                    <td><span class="titulo2">Modificar &aacute;rbol</span></td>
+                    <td><div id="response" style="text-align:center; font-size:14px;"></div></td>
+                </tr>          
+                <tr>
+                    <td colspan="3"><span class="titulo2">Modificar &aacute;rbol</span></td>
                 </tr>          
             </table>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
                 <span class="titulo3">Datos del &aacute;rbol</span><br />
-                <input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
+                <nobr>
+                Nombre:<input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
+                Idioma:<input id="idioma" type="text" class="txt" size="1" placeholder="Idioma" disabled/>
+                Organizaci&oacute;n:<input id="organizacion" type="text" class="txt" size="15" placeholder="Organizacion" disabled/>
+                </nobr>
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
-                <span class="titulo3">Datos del administrador</span><br />
+                <span class="titulo3">Datos del jardinero</span><br />
                 <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/>
                 <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
+                <span class="titulo3">Grupo padre</span><br />
+                <input id="padreURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo padre"/>
+                <input id="padreNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo padre"/><br />
+                <input type="button" class="btn" value="Crear usuarios en grupo padre" onclick="doCrearUsuariosArbolPadre();" /> 
+            </div>
+
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
+                <span class="titulo3">Grupos hijos</span><br />
+                <input id="hijoURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo hijo"/>
+                <input id="hijoNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo hijo"/>
+                <input type="button" class="btn" value="Crear" onclick="doCrearHijo();" /> 
+                <div id="hijos"></div>
+            </div>
+
+            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
                 <span class="titulo3">Flores disponibles para todos los usuarios</span><br />
-                <input id="cantidadFlores" type="text" class="txt" placeholder="Cantidad de flores"/><br />
+                <input id="cantidadFlores" type="text" class="txt" size="8" placeholder="Cantidad de flores"/><br />
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
                 <span class="titulo3">Condici&oacute;n de consenso</span><br />
 
                 <div class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
-                <input id="minSiPc" type="text" class="txt" />%<br />
+                <input id="minSiPc" type="text" class="txt" size="8" />%<br />
 
                 <div class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
-                <input id="maxNoPc" type="text" class="txt" />%<br />
+                <input id="maxNoPc" type="text" class="txt" size="8" />%<br />
             </div>
 
             <input type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> 

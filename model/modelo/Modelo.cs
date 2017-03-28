@@ -9,17 +9,16 @@ namespace nabu
         public enum eModo { ver, editar, prevista, revisar, consenso };
 
         public string nombre = "";
+        public string descripcion = "";
         public string icono = "res/doc.png";
-        public int niveles = 0;
         public bool enUso = false;
         public bool activo = true;
-        public string titulo = "";
-        public string etiqueta = "";
+        public string titulo = ""; //esto es parte del documento
+        public string etiqueta = ""; //esto es parte del documento
         public string idioma = "ES";
         public string firmaConsenso = ""; //solo se usa para generar el consenso
-        
-        private static List<Modelo> modelos;
 
+        protected int niveles = 0;
         protected List<Variable> variables = new List<Variable>();
         protected eModo modo = eModo.editar;
         protected bool consensoAlcanzado = false;
@@ -27,6 +26,8 @@ namespace nabu
 
         protected abstract string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width);
         protected abstract void crearVariables();
+
+        public abstract string carpeta();
 
         public virtual void ejecutarConsenso(Documento doc)
         {
@@ -48,11 +49,37 @@ namespace nabu
             set { }
         }
 
+        protected virtual string HTMLEncabezado(Propuesta prop, Grupo g, string email, int width)
+        {
+            string ret = "";
+            Usuario u = g.getUsuario(email);
+            bool tieneFlores = false;
+            if (u != null) tieneFlores = u.floresDisponibles().Count > 0;
+
+            titulo = getText("s.titulo", prop);
+            etiqueta = getText("s.etiqueta", prop);
+
+            //titulo
+            ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
+            ret += "<div class='titulo2'><nobr>" + tr("T&iacute;tulo") + ":" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores) + "</nobr></div>";
+
+            //etiqueta
+            ret += "<div class='titulo2'><nobr>" + tr("Etiqueta") + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores);
+            if (prop == null)
+                ret += "<span style='color:gray;font-size:12px;'>" + tr("(Etiqueta en el arbol)") + "</span>";
+            ret += "</nobr></div>";
+            return ret;
+        }
+
         public string toHTML(Propuesta prop, Grupo g, string email, int width, eModo modo)
         {
             string ret = "";
             this.modo = modo;
             this.grupo = g;
+
+            if (prop != null && prop.nivel != 1)
+                ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
+            
             ret += toHTMLContenido(prop.nivel, prop, g, email, width);
             ret += "<br>Comentarios:";
             ret += toHTMLComentarios(prop.nivel, prop, g, email, width - 30, false);
@@ -196,7 +223,7 @@ namespace nabu
                 foreach (Comentario c in prop.comentarios)
                 {
                     ret += "<div class='comentario' style='overflow: auto;width:" + (width - 15) + "px'>";
-                    ret += toHTML(c.texto);
+                    ret += toHTMLText(c.texto);
                     ret += "</div>";
                     //fecha
                     ret += "<div style='text-align:right;color:gray;font-size:10px;width:" + (width - 10) + "px'>";
@@ -246,31 +273,7 @@ namespace nabu
             return null;
         }
 
-        public static List<Modelo> getModelos()
-        {
-            //aqui se dan de alta los modelos existentes
-            if (modelos != null)
-                return modelos;
-            else
-            {
-                modelos = new List<Modelo>();
-                modelos.Add(new modelos.Manifiesto());
-                modelos.Add(new modelos.Accion());
-            }
-            return modelos;
-        }
-
-        public static Modelo getModelo(string id)
-        {
-            foreach (Modelo m in getModelos())
-            {
-                if (m.id == id)
-                    return m;
-            }
-            throw new Exception("Modelo [" + id + "] no existe");
-        }
-
-        private string toHTML(string s)
+        private string toHTMLText(string s)
         {
             string ret = s;
 
@@ -302,7 +305,55 @@ namespace nabu
             return ret;
         }
 
-        public string area(string id, Propuesta prop, int width, int height, bool tieneFlores)
+        public string HTMLLista(string id, string valores, Propuesta prop, int width, bool tieneFlores)
+        {
+            Variable v = getVariable(id);
+            string ret = "";
+            if (prop == null && tieneFlores && !consensoAlcanzado)
+            {
+                if (modo != eModo.prevista)
+                {
+                    //editar en blanco
+                    ret += "<select id='" + id + "'  ";
+                    ret += "class='" + v.editClassName + "' ";
+                    ret += "style='width:" + width + "px;'>";
+                    foreach (string l in valores.Split(':'))
+                    {
+                        ret += "<option id='" + l + "'>" + l + "</option>";
+                    }
+                    ret += "</select>";
+                }
+            }
+            else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
+            {
+                //revision
+                string value = (string)getValue(id, prop);
+                ret += "<select id='" + id + "' ";
+                ret += "class='" + v.editClassName + "' ";
+                ret += "style='width:" + width + "px;'>";
+                foreach (string l in valores.Split(':'))
+                {
+                    ret += "<option " + (value == l ? "selected" : "") + " id='" + l + "'>" + l + "</option>";
+                }
+                ret += "</select>";
+            }
+            else if (prop != null)
+            {
+                //ver
+                string value = (string)getValue(id, prop);
+                ret += "<input type='text' readonly ";
+                ret += "class='" + v.className + "' ";
+                ret += "style='width:" + width + "px;' ";
+                ret += "value='" + value + "'>";
+            }
+            else
+                //sin flores
+                ret += "<span style='color:gray;font-size:12px;float:left;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+
+            return ret;
+        }
+
+        public string HTMLArea(string id, Propuesta prop, int width, int height, bool tieneFlores)
         {
             Variable v = getVariable(id);
             string ret = "";
@@ -311,7 +362,7 @@ namespace nabu
                 if (modo != eModo.prevista && !consensoAlcanzado)
                 {
                     ret += "<textarea id='" + id + "' ";
-                    ret += "class='editar' ";
+                    ret += "class='" + v.editClassName + "' ";
                     ret += "maxlength='" + v.len + "' ";
                     ret += "style='width:" + width + "px;height:" + height + "px;'>";
                     ret += "</textarea>";
@@ -323,7 +374,7 @@ namespace nabu
             {
                 //revisar
                 ret += "<textarea id='" + id + "' ";
-                ret += "class='editar' ";
+                ret += "class='" + v.editClassName + "' ";
                 ret += "maxlength='" + v.len + "' ";
                 ret += "style='width:" + width + "px;height:" + height + "px;'>";
                 ret += getValue(id, prop);
@@ -337,7 +388,11 @@ namespace nabu
                 ret += "<div ";
                 ret += "class='" + v.className + "' ";
                 ret += "style='width:" + width + "px;'>";
-                ret += toHTML((string)getValueResaltado(id, prop)) + "</div>";
+                if (prop.consensoAlcanzado)
+                    ret += toHTMLText((string)getValue(id, prop)) + "</div>";
+                else
+
+                    ret += toHTMLText((string)getValueResaltado(id, prop)) + "</div>";
                 ret += "<br>";
             }
             else
@@ -350,7 +405,161 @@ namespace nabu
             return ret;
         }
 
-        public string txt(string id, Propuesta prop, int width, bool tieneFlores)
+        public virtual string documentSubmit(string accion, string parametro, List<Propuesta> props, Grupo g, string email, int width, Modelo.eModo modo)
+        {
+            //submit(accion, parametro, props, g, email, width, modo);
+            return toHTML(props, g, email, width, modo);
+        }
+       
+        public string HTMLListaSeleccion(string id, Propuesta prop, int width, int height, bool tieneFlores, string lista, string pertenece, string NoPertenece)
+        {
+            Variable v = getVariable(id);
+            string value = getText(id, prop);
+            //if (value == "") value = "*"; //no vacio para que lo envie en el submit
+            string ret = "";
+
+            if (prop == null && tieneFlores)
+            {
+                if (modo != eModo.prevista && !consensoAlcanzado)
+                {
+                    //edicion
+                    //seleccionados
+                    ret += "<table style='width:" + width + "px;height:" + height + "px;'>";
+                    ret += "<tr><td><b>" + pertenece + "</b></td><td><b>" + NoPertenece + "</b></td></tr>";
+                    ret += "<tr><td class='" + v.editClassName + "' style='overflow:scroll;width:" + (width / 2 - 10) + "px;vertical-align:top;'>";
+                    if (value != "" && value != "*")
+                        foreach (string item in value.Split('|'))
+                        {
+                            ret += "<nobr>";
+                            ret += "<img src='res/quitar.png' ";
+                            ret += "onclick=\"documentSubmit('" + id + "_quitar','" + item + "')\" style='cursor:pointer;'>";
+                            ret += item.Split(':')[1];
+                            ret += "</nobr>";
+                            ret += "<br>";
+                        }
+                    ret += "</td>"; 
+
+                    //disponibles
+                    ret += "<td class='" + v.editClassName + "' style='float:left;width:" + (width / 2 - 10) + "px;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
+                    if (lista != "")
+                        foreach (string item in lista.Split('|'))
+                        {
+                            if (value.IndexOf(item.Split(':')[0]) == -1)
+                            {
+                                ret += "<nobr>";
+                                ret += "<img src='res/agregar.png' ";
+                                ret += "onclick=\"setNotEmpyList('" + id + "');documentSubmit('" + id + "_agregar','" + item + "')\" style='cursor:pointer;'>";
+                                ret += item.Split(':')[1];
+                                ret += "</nobr>";
+                                ret += "<br>";
+                            }
+                        }
+                    ret += "</td></tr>";
+                    ret += "</table>";
+                    //pongo input invisible para guardar el valor como cualquier otro
+                    ret += "<br><input type='hidden' id='" + id + "' value='" + value + "' size=90>"; //no vacio para que lo envie en el submit
+                    ret += "<br>";
+                }
+            }
+            else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
+            {
+                //revisar
+                //seleccionados
+                ret += "<table style='width:" + width + "px;height:" + height + "px;'>";
+                ret += "<tr><td><b>" + pertenece + "</b></td><td><b>" + NoPertenece + "</b></td></tr>";
+                ret += "<tr><td class='" + v.editClassName + "' ";
+                ret += "style='overflow:scroll;width:" + (width / 2 - 10) + "px;vertical-align:top;'>";
+                if (value != "" && value != "*")
+                    foreach (string item in value.Split('|'))
+                    {
+                        ret += "<nobr>";
+                        ret += "<img src='res/quitar.png' onclick=\"documentSubmit('" + id + "_quitar','" + item + "')\" style='cursor:pointer;'>";
+                        ret += item.Split(':')[1];
+                        ret += "</nobr>";
+                        ret += "<br>";
+                    }
+                ret += "</td>";
+
+                //disponibles
+                ret += "<td class='" + v.editClassName + "' style='float:left;width:" + (width / 2 - 10) + "px;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
+                if (lista != "")
+                    foreach (string item in lista.Split('|'))
+                    {
+                        if (value.IndexOf(item.Split(':')[0]) == -1)
+                        {
+                            ret += "<nobr>";
+                            ret += "<img src='res/agregar.png' ";
+                            ret += "onclick=\"setNotEmpyList('" + id + "');documentSubmit('" + id + "_agregar','" + item + "')\" style='cursor:pointer;'>";
+                            ret += item.Split(':')[1];
+                            ret += "</nobr>";
+                            ret += "<br>";
+                        }
+                    }
+                ret += "</td></tr>";
+                ret += "</table>";
+                //pongo input invisible para guardar el valor como cualquier otro
+                ret += "<br><input type='hidden' id='" + id + "' value='" + value + "' size=90>"; //no vacio para que lo envie en el submit
+                ret += "<br>";
+            }
+            else if (prop != null)
+            {
+                //ver
+                //seleccionados
+                if (value == "*")
+                    ret += "(vac&iacute;o)";
+                else
+                {
+                    ret += "<div ";
+                    ret += "class='" + v.className + "'>";
+                    if (value != "")
+                    {
+                        foreach (string item in value.Split('|'))
+                        {
+                            ret += "<nobr>";
+                            ret += item.Split(':')[1]; ;
+                            ret += "</nobr>";
+                            ret += "<br>";
+                        }
+                    }
+                    ret += "</div>";
+                }
+                ret += "<br>";
+            }
+            else
+            {
+                ret += "<span style='color:gray;font-size:12px;padding:5px;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+                ret += "<br>";
+            }
+
+
+            return ret;
+        }
+
+        public string HTMLDate(string id, Propuesta prop,  bool tieneFlores)
+        {
+            DateTime d = getDate(id, prop);
+            string value = "";
+            if (d == Tools.minValue)
+                //valor nulo
+                value ="";
+            else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
+            {
+                //revision
+                value = d.Year.ToString("0000") + "-" + d.Month.ToString("00") + "-" + d.Day.ToString("00");
+            }
+            else
+                //ver
+                value = d.Day.ToString("00") + "/" + d.Month.ToString("00") + "/" + d.Year.ToString("0000");
+             
+            return input(id, prop, 130, tieneFlores, "date", value);
+        }
+
+        public string HTMLText(string id, Propuesta prop, int width, bool tieneFlores)
+        {
+            return input(id, prop, width, tieneFlores, "text", getText(id, prop));
+        }
+
+        public string HTMLRadio(string id, int index, Propuesta prop, bool tieneFlores, string value)
         {
             Variable v = getVariable(id);
             string ret = "";
@@ -359,8 +568,47 @@ namespace nabu
                 if (modo != eModo.prevista)
                 {
                     //editar en blanco
-                    ret += "<input id='" + id + "' type='text' ";
-                    ret += "class='editar' ";
+                    ret += "<input id='" + id + index + "' name='" + id + "' type='radio' ";
+                    ret += "class='" + v.editClassName + "' ";
+                    ret += "value='" + value + "' ";
+                    ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:2em;height:2em;'>";
+                }
+            }
+            else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
+            {
+                //revision
+                ret += "<input id='" + id + index + "' name='" + id + "' type='radio' ";
+                ret += "class='" + v.editClassName + "' ";
+                ret += "value='" + value + "' ";
+                if (getText(id, prop) == value) ret += "checked ";
+                ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:2em;height:2em;'>";
+            }
+            else if (prop != null)
+            {
+                //ver
+                ret += "<input type='radio' ";
+                ret += "class='" + v.editClassName + "' ";
+                if (value == getText(id, prop)) ret += "checked ";
+                ret += "value='" + value + "' disabled='true' style='cursor:pointer;width:2em;height:2em;'>";
+            }
+            else
+                //sin flores
+                ret += "<span style='color:gray;font-size:12px;float:left;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+
+            return ret;
+        }
+
+        private string input(string id, Propuesta prop, int width, bool tieneFlores, string tipo, string value )
+        {
+            Variable v = getVariable(id);
+            string ret = "";
+            if (prop == null && tieneFlores && !consensoAlcanzado)
+            {
+                if (modo != eModo.prevista)
+                {
+                    //editar en blanco
+                    ret += "<input id='" + id + "' type='" + tipo + "' ";
+                    ret += "class='" + v.editClassName + "' ";
                     ret += "maxlength='" + v.len + "' ";
                     ret += "style='width:" + width + "px;'>";
                 }
@@ -368,36 +616,58 @@ namespace nabu
             else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
             {
                 //revision
-                ret += "<input id='" + id + "' type='text' ";
-                ret += "class='editar' ";
+                ret += "<input id='" + id + "' type='" + tipo + "' ";
+                ret += "class='" + v.editClassName + "' ";
                 ret += "maxlength='" + v.len + "' ";
                 ret += "style='width:" + width + "px;' ";
-                ret += "value='" + getValue(id, prop) + "'>";
+                ret += "value='" + value + "'>";
             }
             else if (prop != null)
             {
                 //ver
-                ret += "<span type='text' readonly ";
+                ret += "<input type='text' readonly ";
                 ret += "class='" + v.className + "' ";
-                ret += "style='width:" + width + "px;'>";
-                ret += getValue(id, prop) + "</span>";
+                ret += "style='width:" + width + "px;' ";
+                ret += "value='" + value + "'>";
             }
             else
                 //sin flores
-                ret += "<span style='color:gray;font-size:12px;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;float:left;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
 
             return ret;
         }
 
         public object parse(string id, string valor)
         {
+            object ret;
             Variable v = getVariable(id);
-            if (v.id.StartsWith("s"))
-                return valor;
-            else if (v.id.StartsWith("f"))
-                return float.Parse(valor);
+            if (v.id.StartsWith("s."))
+                ret= valor;
+            else if (v.id.StartsWith("d."))
+                try
+                {
+                    ret = DateTime.Parse(valor);
+                }
+                catch(Exception ex)
+                {
+                    ret = Tools.minValue;
+                }
+            else if (v.id.StartsWith("r."))
+                ret = valor;
+            else if (v.id.StartsWith("f."))
+            {
+                try
+                {
+                    ret = float.Parse(valor);
+                }
+                catch(Exception ex)
+                {
+                    ret = 0.0f;
+                }
+            }
             else
                 throw new Exception("Modelo.parse: Tipo no implementado");
+            return ret;
         }
 
         public bool isVariable(string id)
@@ -460,14 +730,48 @@ namespace nabu
             return ret;
         }
 
-        public object getValue(string id, Propuesta prop)
+        public DateTime getDate(string id, Propuesta prop)
+        {
+            try
+            {
+                return (DateTime)getValue(id, prop);
+            }
+            catch (Exception)
+            {
+                return Tools.minValue;
+            }
+        }
+
+        public string getText(string id, Propuesta prop)
+        {
+            return (string)getValue(id, prop);
+        }
+
+        public bool getBool(string id, Propuesta prop)
+        {
+            return (bool)getValue(id, prop);
+        }
+
+        private object getValue(string id, Propuesta prop)
         {
             if (prop == null)
                 return "";
             else
             {
                 if (prop.bag.ContainsKey(id))
-                    return prop.bag[id];
+                {
+                    //ejemplo "\"/Date(1445301615000-0700)/\"";
+                    if (prop.bag[id].GetType().Name == "DateTime")
+                        return prop.bag[id];
+                    else
+                    {
+                        string value = prop.bag[id].ToString();
+                        if (value.StartsWith("/Date("))
+                            return Tools.getDateFromJSON(value);
+                        else
+                            return prop.bag[id];
+                    }
+                }
                 else
                     return "";
             }

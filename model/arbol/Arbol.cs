@@ -20,10 +20,6 @@ namespace nabu
         public bool simulacion = false;
         public Usuario lastSimUsuario;
 
-        //modelos de documento para este arbol
-        //POR AHORA SON TODOS
-        public List<Modelo> modelos = Modelo.getModelos();
-
         //log de consensos alcanzados
         public List<LogDocumento> logDocumentos = new List<LogDocumento>();
 
@@ -33,6 +29,16 @@ namespace nabu
 
         [NonSerialized]
         public Random rnd = new Random();
+
+        public Arbol()
+        {
+            raiz = new Nodo();
+        }
+
+        public List<Modelo> getModelos()
+        {
+            return grupo.organizacion.getModelos();
+        }
 
         public Nodo getMayorAgregar(int notLikeId) {
             //busco un candidato con muchas flores para agregarle otra
@@ -265,7 +271,7 @@ namespace nabu
         {
             get
             {
-                return (float)Math.Ceiling(grupo.usuarios.Count * minSiPc / 100);
+                return (float)Math.Ceiling(grupo.getUsuariosHabilitadosActivos().Count * minSiPc / 100);
             }
         }
 
@@ -300,10 +306,10 @@ namespace nabu
         private bool comprobarConsenso(Nodo n)
         {
             bool ret = false;
-            Modelo m = Modelo.getModelo(n.modeloID);
+            Modelo m = grupo.organizacion.getModelo(n.modeloID);
             List<Nodo> pathn = getPath(n.id);
 
-            if (m != null && pathn.Count - 1 == m.niveles)
+            if (m != null && n.nivel == n.niveles)
             {
                 //es una hoja de documento completo, verifico condicion
                 n.negados = getNegados(n);
@@ -318,12 +324,27 @@ namespace nabu
                     DateTime fdate = DateTime.Now;
                     int docID = lastDocID++;
                     string fname = m.nombre + "_" + docID.ToString("0000");
-                    
+                    string docPath = "documentos\\" + m.carpeta() + "\\" + docID.ToString("0000");
+
+                    //creo carpeta se salida
+                    //crearCarpeta(docPath);
+                    if (!System.IO.Directory.Exists(grupo.path + "\\" + docPath))
+                    {
+                        System.IO.Directory.CreateDirectory(grupo.path + "\\" + docPath);
+                        System.IO.Directory.CreateDirectory(grupo.path + "\\" + docPath + "\\res\\documentos");
+                        System.IO.File.Copy(grupo.path + "\\..\\..\\styles.css", grupo.path + "\\" + docPath + "\\styles.css");
+                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(grupo.path + "\\..\\..\\res\\documentos");
+                        foreach (System.IO.FileInfo fi in di.GetFiles())
+                        {
+                            System.IO.File.Copy(fi.FullName, grupo.path + "\\" + docPath + "\\res\\documentos\\" + fi.Name);
+                        }
+                    }
+
                     //guardo HTML
-                    generarDocumentoHTML(n, fdate, fname);
+                    generarDocumentoHTML(n, fdate, fname, docPath);
 
                     //guardo documento
-                    Documento doc = crearDocumento(n, fdate, fname);
+                    Documento doc = crearDocumento(n, fdate, fname, docPath);
 
                     //ejecuto proceso de consenso alcanzado
                     try
@@ -339,13 +360,13 @@ namespace nabu
                     //guardo el documento
                     doc.save();
 
-                    grupo.save(grupo.path + "\\documentos\\"); //guardo copia del arbol
+                    grupo.save(grupo.path + "\\" + docPath ); //guardo copia del arbol
 
                     //notifico via email a todos los socios
                     if (!simulacion)
                     {
                         foreach (Usuario u in grupo.usuarios)
-                            Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, grupo.path + "\\documentos\\" + nombre + ".json");
+                            Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, grupo.path + "\\" + docPath + "\\" + nombre + ".json");
                     }
 
                     //guardo el log historico en el arbol
@@ -364,7 +385,8 @@ namespace nabu
                     ld.objetivo = grupo.objetivo;
                     ld.flores = n.flores;
                     ld.negados = n.negados;
-                    ld.URL = grupo.URL + "/grupos/" + nombre + "/documentos/" + fname + ".html";
+                    ld.carpeta = m.carpeta();
+                    ld.URL = grupo.URL + "/grupos/" + nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
                     logDocumentos.Add(ld);
 
                     //marco a todos los nodos del debate y sus propuestas
@@ -395,7 +417,7 @@ namespace nabu
             }
         }
 
-        private Documento crearDocumento(Nodo n, DateTime now, string fname)
+        private Documento crearDocumento(Nodo n, DateTime now, string fname, string docPath)
         {
             Modelo m = getModelo(n.modeloID);
             Documento doc = new Documento();
@@ -403,8 +425,8 @@ namespace nabu
             doc.nombre = m.nombre;
             doc.fname = fname;
             doc.modeloID = n.modeloID;
-            doc.path = grupo.path + "\\documentos\\" + fname + ".json";
-            doc.URLPath = grupo.URL + "/grupos/" + grupo.nombre + "/documentos/" + fname + ".html";
+            doc.path = grupo.path + "\\" + docPath + "\\" + fname + ".json";
+            doc.URLPath = grupo.URL + "/grupos/" + grupo.nombre + "/" + docPath.Replace('\\','/') + "/" + fname + ".html";
 
             //obtengo el titulo
             //debo dibujar el documento
@@ -428,16 +450,10 @@ namespace nabu
             return doc;
         }
 
-        private void generarDocumentoHTML(Nodo n, DateTime now, string fname)
+        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath)
         {
             List<Nodo> pathn = getPath(n.id);
             Modelo m = getModelo(n.modeloID);
-
-            if (!System.IO.Directory.Exists(grupo.path + "\\documentos"))
-                System.IO.Directory.CreateDirectory(grupo.path + "\\documentos");
-
-            if (!System.IO.File.Exists(grupo.path + "\\documentos\\styles.css"))
-                System.IO.File.Copy(grupo.path + "\\..\\..\\styles.css", grupo.path + "\\documentos\\styles.css");
 
             //junto propuestas
             List<Propuesta> props = new List<Propuesta>();
@@ -449,14 +465,15 @@ namespace nabu
             }
            
             //firma consenso
+            string URL = grupo.URL + "/grupos/" + nombre + "/" + docPath.Replace("\\","/") + "/" + fname + ".html";
             string ret = "";
             ret += "Documento escrito de forma cooperativa.<br>";
+            ret += "Grupo: " + this.nombre + "<br>";
             ret += "Documento ID:" + fname + "<br>";
             ret += "Fecha de consenso: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
-            ret += "Ubicaci&oacute;n: <a target='_blank' href='" + grupo.URL + "/grupos/" + nombre + "/documentos/" + fname + ".html'>" + grupo.URL + "/grupos/" + nombre + "/documentos/" + fname + ".html</a><br>";
-            ret += "Cooperativa: " + this.nombre + "<br>";
+            ret += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
             ret += "Objetivo: " + this.grupo.objetivo + "<br>";
-            ret += "Usuarios: " + this.grupo.usuarios.Count + "<br>";
+            ret += "Usuarios: " + this.grupo.getUsuariosHabilitados().Count + "<br>";
             ret += "Activos: " + this.grupo.activos + "<br>";
             ret += "Si: (&ge; " + this.minSiPc + "%): " + n.flores + "<br>";
             ret += "No: (&le; " + this.maxNoPc + "%): " + n.negados + "<br>";
@@ -466,7 +483,7 @@ namespace nabu
             string html = m.toHTML(props, this.grupo, "", 1024, Modelo.eModo.consenso);
            
             //escribo
-            System.IO.File.WriteAllText(grupo.path + "\\documentos\\" + fname + ".html", html);
+            System.IO.File.WriteAllText(grupo.path + "\\" + docPath + "\\" + fname + ".html", html, System.Text.Encoding.UTF8);
         }
 
         //private string JSON_decode(string s) {
@@ -576,17 +593,26 @@ namespace nabu
             if (u != null)
             {
                 ArbolPersonal ap = new ArbolPersonal();
-                ap.raiz = raiz;
+                ap.raiz = raiz; //referecia cruzada pero no importa porque este objeto es para serializar
                 ap.objetivo = grupo.objetivo;
                 ap.URLEstatuto = grupo.URLEstatuto;
                 ap.nombre = grupo.nombre;
-                ap.usuarios = grupo.usuarios.Count;
+                ap.usuarios = grupo.getUsuariosHabilitados().Count;
                 ap.cantidadFlores = cantidadFlores;
                 ap.activos = grupo.activos;
                 ap.simulacion = simulacion;
                 ap.nuevoNodoID = nuevoNodoID;
                 ap.born = born;
                 ap.documentos = logDocumentos.Count;
+                ap.idioma = grupo.idioma;
+                ap.organizacion = grupo.organizacion.GetType().Name;
+                ap.padreNombre = grupo.padreNombre;
+                ap.padreURL = grupo.padreURL;
+
+                foreach(Tuple<string,string> hijo in grupo.hijos)
+                {
+                    ap.hijos.Add(hijo);//referecia cruzada pero no importa porque este objeto es para serializar
+                }
 
                 ap.usuario = u;
                 ap.minSiPc = minSiPc;
@@ -620,6 +646,7 @@ namespace nabu
                 nuevo.id = lastNodoID++;
                 nuevo.modeloID = prop.modeloID;
                 nuevo.email = prop.email;
+                nuevo.niveles = prop.niveles;
 
                 try
                 {
@@ -660,7 +687,7 @@ namespace nabu
             Usuario ret = null;
             foreach (Usuario u in grupo.usuarios)
             {
-                if (u.floresDisponibles().Count > 0)
+                if (u.habilitado && u.floresDisponibles().Count > 0)
                 {
                     ret = u;
                     break;
@@ -779,8 +806,7 @@ namespace nabu
             List<Nodo> nodos = toList();
             foreach (Nodo n in nodos)
             {
-                Modelo m = getModelo(n.modeloID);
-                if (m != null && n.nivel == m.niveles)
+                if (n.nivel == n.niveles)
                 {
                     //es una hoja de final de documento
                     n.negados = getNegados(n);
@@ -897,7 +923,7 @@ namespace nabu
         public void actualizarModelosEnUso()
         {
             //marco los modelos de documentos que estan en uso
-            foreach (Modelo m in modelos)
+            foreach (Modelo m in getModelos())
             {
                 m.enUso = false;
                 foreach (Propuesta p in propuestas)
@@ -913,7 +939,7 @@ namespace nabu
         {
             Modelo ret = null;
 
-            foreach (Modelo m in modelos)
+            foreach (Modelo m in getModelos())
             {
                 if (m.id == modeloID)
                 {

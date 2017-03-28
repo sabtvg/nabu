@@ -131,18 +131,6 @@
     opacity: 0.8;
 }
 
-.menuRoot2 {
-    position: absolute;
-    top: 85%;
-    text-align:center; 
-    visibility:hidden;
-    border: 1px solid #C0C0C0;
-    padding: 5px;
-    border-radius: 10px;
-    background-color: #FFFFFF;
-    opacity: 0.8;
-}
-
 .comentario {
     padding: 2px;
     margin: 2px;
@@ -153,8 +141,19 @@
     overflow: auto;
 }
 
+.editarBig {
+    padding: 2px;
+    padding-left: 7px;
+    margin: 2px;
+    border: 2px solid #C0C0C0;
+    border-radius: 15px;
+    background-color: #FFFFCC;
+    font-size: 20px;    
+}
+
 .editar {
-    padding: 5px;
+    padding: 2px;
+    padding-left: 7px;
     margin: 2px;
     border: 2px solid #C0C0C0;
     border-radius: 15px;
@@ -183,11 +182,20 @@
     font-size: 14px;    
 }
 
+.textoBig {
+    padding: 5px;
+    margin: 2px;
+    font-size: 20px;
+    overflow: auto;
+    border:0px;
+}
+
 .texto {
     padding: 5px;
     margin: 2px;
     font-size: 14px;
     overflow: auto;
+    border:0px;
 }
 
 .ventana {
@@ -278,13 +286,13 @@
 
 .titulo1 {
     padding: 5px;
-    font-size: 25px;
+    font-size: 24px;
     font-family: 'Times New Roman' , Times, serif;
 }
 
 .titulo2 {
     padding: 3px;
-    font-size: 18px;
+    font-size: 20px;
     font-family: 'Times New Roman' , Times, serif;
 }
 

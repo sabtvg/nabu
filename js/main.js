@@ -31,6 +31,8 @@ var preguntarAlSalir = false;
 var propuestaTemp;
 var scalex = window.innerWidth / 1920;
 var scaley = window.innerHeight / 955; //1080-bordes de pantalla
+var docsTimeScale = 15;
+var usuario;
 
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
@@ -107,52 +109,76 @@ function doLoad2() {
         }
         else {
             //login automatico to server
+            //obtengo datos de cookie
             var vals = cookie.split("|");
             var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
 
-            getHttp("doMain.aspx?actn=login&email=" + usuario.email + "&clave=" + usuario.clave + "&grupo=" + usuario.grupo,
-                function (data) {
-                    try {
-                        //atrapo el error si es que hay
-                        if (data.substring(0, 6) == "Error=") {
-                            //ha habido un error
-                            //login normal
-                            calcularResize();
-                            loginEffectIn();
-                        }
-                        else {
-                            //login ok, he recibido el arbol
-                            var loginData = JSON.parse(data);
+            //obtengo datos de los parametros
+            var grupoParam = getParameterByName('grupo');
+            var emailParam = getParameterByName('email');
+            var claveParam = getParameterByName('clave');
 
-                            //guardo el grupo
-                            grupo = loginData.grupo;
-
-                            //guardo el arbol
-                            arbolPersonal = loginData.arbolPersonal;
-
-                            //guardo los modelos
-                            modelos = loginData.modelos;
-
-                            //guardo cookie
-                            setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre + "|" + arbolPersonal.usuario.isAdmin, 7);
-
-                            //activo menuppal
-                            doMenuppal();
-
-                            calcularResize();
-                        }
-                    }
-                    catch (ex) {
-                        //envio al server
-                        sendException(ex, "doLoad2.2");
-                    }
-                });
+            if (grupoParam && emailParam && claveParam) {
+                //intento ligin Automatico
+                loginAutomatico(emailParam, claveParam, grupoParam);
+            }
+            else if (grupoParam && grupoParam != usuario.grupo) {
+                //esta entrando a otro arbol, envio a login
+                //login normal
+                loginEffectIn();
+                calcularResize();
+            }
+            else {
+                loginAutomatico(usuario.email, usuario.clave, usuario.grupo);
+            }
         }
     }
     catch (ex) {
         //envio al server
         sendException(ex, "doLoad2");
     }
+}
+
+function loginAutomatico(email, clave, grupo) {
+    getHttp("doMain.aspx?actn=login&email=" + email
+        + "&clave=" + clave
+        + "&grupo=" + grupo,
+        function (data) {
+            try {
+                //atrapo el error si es que hay
+                if (data.substring(0, 6) == "Error=") {
+                    //ha habido un error
+                    //login normal
+                    calcularResize();
+                    loginEffectIn();
+                }
+                else {
+                    //login ok, he recibido el arbol
+                    var loginData = JSON.parse(data);
+
+                    //guardo el grupo
+                    grupo = loginData.grupo;
+
+                    //guardo el arbol
+                    arbolPersonal = loginData.arbolPersonal;
+
+                    //guardo los modelos
+                    modelos = loginData.modelos;
+
+                    //guardo cookie
+                    setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre + "|" + arbolPersonal.usuario.isAdmin, 7);
+
+                    //activo menuppal
+                    doMenuppal();
+
+                    calcularResize();
+                }
+            }
+            catch (ex) {
+                //envio al server
+                sendException(ex, "doLoad2.2");
+            }
+        });
 }
 
 function preguntar() {
@@ -210,6 +236,12 @@ function calcularResize() {
     var idioma = grupo ? grupo.idioma : "ES"; //por si aun no se ha cargado el grupo
 
     var menuscale = scaley * 1.1;
+    document.getElementById("padrenombre").style.width = 800 * menuscale + 'px';
+    document.getElementById("padrenombre").fontSize = (45 * scale).toFixed(0) + 'px';
+
+    document.getElementById("hijos").style.width = 800 * menuscale + 'px';
+    document.getElementById("hijos").style.top = (700 * scaley) + "px";
+
     document.getElementById("tituloppal").style.width = 800 * menuscale + 'px';
     document.getElementById("tituloppal").fontSize = (60 * scale).toFixed(0) + 'px';
 
@@ -276,10 +308,20 @@ function calcularResize() {
     document.getElementById("ppal8").style.left = 210 * menuscale + 'px';
     document.getElementById("ppal8").style.top = 268 * menuscale + 'px';
 
+    //pongo icono ce manifiesto
     if (arbolPersonal && arbolPersonal.URLEstatuto != "")
         document.getElementById("ppal9").src = "res/documentos/manifiesto.png";
     else
         document.getElementById("ppal9").src = "res/noManifiesto.png";
+
+    //activo la rueda
+    if (arbolPersonal && arbolPersonal.URLEstatuto != "" && timerCiclo == null)
+        timerCiclo = setInterval(function () {
+            document.getElementById("ciclo").style.transform = 'rotate(' + rotacionCiclo++ + 'deg)';
+        }, 100);
+    else
+        timerCiclo == null;
+
 
     document.getElementById("ppal9").style.width = 64 * menuscale + 'px';
     document.getElementById("ppal9").style.height = 79 * menuscale + 'px';
@@ -414,7 +456,9 @@ function doLogin() {
     loginResponse.innerHTML = '';
 
     //login to server
-    getHttp("doMain.aspx?actn=login&email=" + email + "&clave=" + clave + "&grupo=" + grupos.value,
+    getHttp("doMain.aspx?actn=login&email=" + email
+        + "&clave=" + clave
+        + "&grupo=" + grupos.value,
         function (data) {
             if (data.substring(0, 6) == "Error=") {
                 //ha habido un error
@@ -452,8 +496,24 @@ function doMenuppal() {
 
     //menu ppal
     setTimeout(function () {
+        //link al padre
+        var padreURL = arbolPersonal.padreURL + "/default.html?grupo=" + arbolPersonal.padreNombre + "&email=" + arbolPersonal.usuario.email + "&clave=" + arbolPersonal.usuario.clave;
+        document.getElementById("padrenombre").innerHTML = "<a href='" + padreURL + "'>" + arbolPersonal.padreNombre + "</a>";
+
+        //nombre del arbol
         document.getElementById("tituloppal").innerHTML = arbolPersonal.nombre;
         document.getElementById("titulo").style.visibility = "visible";
+
+        //hijos
+        var hijos = "<nobr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        for (q in arbolPersonal.hijos) {
+            var thijo = arbolPersonal.hijos[q];
+            var hijoURL = thijo.m_Item1 + "/default.html?grupo=" + thijo.m_Item2 + "&email=" + arbolPersonal.usuario.email + "&clave=" + arbolPersonal.usuario.clave;
+            hijos += "<td><a href='" + hijoURL + "'>" + thijo.m_Item2 + "</a></td>";
+            hijos += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        }
+        hijos += "</nobr>";
+        document.getElementById("hijos").innerHTML = hijos;
 
         //atras
         document.getElementById("atras").style.visibility = "visible";
@@ -490,10 +550,7 @@ function doMenuppal() {
         }
     }, 1000); //doy tiempo a que salga el logInEffectOut()
 
-    timerCiclo = setInterval(function () {
-        document.getElementById("ciclo").style.transform = 'rotate(' + rotacionCiclo++ + 'deg)';
-    }, 100);  
-
+    
     estado = 'menuppal';
 
     //wait
@@ -547,7 +604,11 @@ function doAltaUsuarioEnviar() {
     else if (email == "")
         msg.innerHTML = "<font color=green>Email no puede ser vac&iacute;o</font>";
     else {
-        getHttp("doMain.aspx?actn=sendMailAlta&grupo=" + grupos.value + "&nombre=" + nombre.value + "&email=" + email.value,
+        getHttp("doMain.aspx?actn=sendMailAlta&grupo=" + grupos.value
+            + "&nombre=" + nombre.value
+            + "&usuarioemail=" + email.value,
+            + "&email=" + arbolPersonal.usuario.email
+            + "&clave=" + arbolPersonal.usuario.clave,
             function (data) {
                 //atrapo el error si es que hay
                 if (data.substring(0, 6) == "Error=") {
@@ -557,7 +618,7 @@ function doAltaUsuarioEnviar() {
                 else {
                     nombre.value = "";
                     email.value = "";
-                    msg.innerHTML = "<font color=green>Mensaje enviado al administrador</font>";
+                    msg.innerHTML = "<font color=green>Mensaje enviado al jardinero</font>";
                 }
             });
     }
@@ -571,7 +632,10 @@ function doCambiarClave() {
     if (newPass != repeat)
         document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>Las nuevas claves no coinciden</font>";
     else {
-        getHttp("doMain.aspx?actn=cambiarClave&grupo=" + arbolPersonal.nombre + "&email=" + arbolPersonal.usuario.email + "&claveActual=" + oldPass + "&nuevaClave=" + newPass,
+        getHttp("doMain.aspx?actn=cambiarClave&grupo=" + arbolPersonal.nombre
+            + "&email=" + arbolPersonal.usuario.email
+            + "&claveActual=" + oldPass
+            + "&nuevaClave=" + newPass,
             function (data) {
                 if (data != '')
                     document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
@@ -610,7 +674,6 @@ function doAtras() {
     else if (estado == 'aprendemos') {
         //aprendemos voy a menuppal
 
-        //document.getElementById("joystick").style.visibility = 'hidden';
         document.getElementById("aprendemos").style.visibility = "hidden";
         document.getElementById("aprendemos").style.display = "none";
 
@@ -664,10 +727,14 @@ function doAtras() {
         document.getElementById("panelUsuario").style.visibility = 'visible';
 
         //efecto de salida: podo el arbol
-        arbolPersonal.podado = true;
+        var children = arbolPersonal.raiz.children;
+        var logDocumentos = arbolPersonal.logDocumentos;
         arbolPersonal.raiz.children = [];
         arbolPersonal.logDocumentos = [];
         dibujarArbol(arbolPersonal.raiz);
+        arbolPersonal.raiz.children = children;
+        arbolPersonal.logDocumentos = logDocumentos;
+
 
         document.getElementById("joystick").style.visibility = 'hidden';
         document.getElementById("modelos").style.visibility = "hidden";
@@ -728,25 +795,12 @@ function doListaConsensos() {
     document.getElementById("menuppal").style.visibility = "hidden";
     document.getElementById("panelGrupo").style.visibility = 'hidden';
 
-    //creo listado
-    var ret = "";
-    ret += "<table>"   
-    ret += "<tr><td colspan=2><h1>" + tr("Consensos") + "</h1></td></tr>"
-    for (var i in modelos) {
-        var m = modelos[i];
-        ret += "<tr>";
-        ret += "<td style='height: 60px;text-align:center;'><b>" + m.nombre + "</b></td>";
-        ret += "<td>" + doListaConsensosModelo(m.id) + "</td>";
-        ret += "</tr>"
-    }
-    ret += "</table>"
-
     //panel lista consensos
-    document.getElementById("panelListaConsensos").style.height = (900 * scaley).toFixed(0) + 'px'; 
-    document.getElementById("panelListaConsensos").style.width = (1700 * scalex).toFixed(0) + 'px';
-    document.getElementById("panelListaConsensos").style.top = (window.innerHeight / 2 - 900 * scaley / 2).toFixed(0) + 'px';
-    document.getElementById("panelListaConsensos").style.left = '120px';
-    document.getElementById("panelListaConsensos").innerHTML = ret;
+    document.getElementById("panelListaConsensos").style.height = (850 * scaley).toFixed(0) + 'px';
+    document.getElementById("panelListaConsensos").style.width = (1550 * scalex).toFixed(0) + 'px';
+    document.getElementById("panelListaConsensos").style.top = '10px';
+    document.getElementById("panelListaConsensos").style.left = '90px';
+    showListaConsensos();
 
     if (visual.level == 1)
         document.getElementById("panelListaConsensos").style.visibility = 'visible';
@@ -756,16 +810,47 @@ function doListaConsensos() {
     estado = 'listaConsensos';
 }
 
-function doListaConsensosModelo(modeloID) {
+function showListaConsensos() {
+    //obtengo ancho total
+    var ret = "";
+    var width = 0;
+    for (var i in arbolPersonal.logDocumentos) {
+        var ld = arbolPersonal.logDocumentos[i];
+        if (150 + docsTimeScale * ld.dias > width) width = 150 + docsTimeScale * ld.dias;
+    }
+    width += 100;
+
+    //creo listado
+    var ret = "";
+    ret += "<div style='height:" + (modelos.length * 60 + 140) + "px;width=" + width.toFixed(0) + "px'>";
+    ret += "<span style='position:absolute;left:15px;top:25px;vertical-align:middle' class='titulo0'>" + tr("Consensos");
+    ret += "&nbsp;&nbsp;&nbsp;<img src='res/jzm.png' style='cursor:pointer;' onclick='docsTimeScale+=5;showListaConsensos();' />";
+    ret += "<img src='res/jzl.png' style='cursor:pointer;' onclick='if (docsTimeScale > 10) {docsTimeScale-=5;showListaConsensos();}' />";
+    ret += "</span>";
+    for (var i in modelos) {
+        var m = modelos[i];
+        var top = 80 + (i * 75);
+        ret += "<div style='position:absolute;text-align:right;left:0px;top:" + (top + 20) + "px;width:150px;'>" + m.nombre + "</div>";
+        ret += doListaConsensosModelo(top, m.id);
+    }
+    ret += "</div>"
+    document.getElementById("panelListaConsensos").innerHTML = ret;
+    return ret;
+}
+
+function doListaConsensosModelo(top, modeloID) {
     var ret = "";
     for (var i in arbolPersonal.logDocumentos) {
         var ld = arbolPersonal.logDocumentos[i];
         if (ld.modeloID == modeloID) {
-            ret += "<div style='float:left;'>";
+            var x = (150 + docsTimeScale * ld.dias).toFixed(0);
+            var tit = ld.titulo;
+            if (tit.length > 20) tit = tit.substring(0, 20) + '...';
+            ret += "<div style='position:absolute;left:" + x + "px;top:" + top + "px;width:162px;height:80px;'>";
             ret += "<table>";
             ret += "<tr>";
-            ret += "<td><img src='" + ld.icono + "' style='height: 40px; width:32px;'></td>";
-            ret += "<td style='font-size:12px;curso:pointer;'><a href='" + ld.URL + "' target='_blank'>" + ld.fname + "<br>" + ld.titulo + "<br>" + ld.sFecha + "</a></td>"
+            ret += "<td><img src='" + ld.icono + "' style='height: 40px; width:32px;'></td>";                      
+            ret += "<td style='font-size:12px;cursor:pointer;'><a href='" + ld.URL + "' target='_blank'>" + tit + "<br>" + ld.fname + "<br>" + formatDate(jsonToDate(ld.fecha)) + "</a></td>";
             ret += "</tr>";
             ret += "<tr>";
             ret += "<td colspan=2 style='font-size:12px;cursor:pointer;'><font color='blue' onclick='doSeguimiento(" + ld.docID + ");'><u>(ver seguimiento)</u></font></td>";
@@ -787,7 +872,11 @@ function getLogDocumento(docID) {
 
 function doSeguimiento(docID) {
     //envio
-    getHttp("doDecidimos.aspx?actn=seguimiento&docID=" + docID + "&grupo=" + arbolPersonal.nombre + "&width=" + (window.innerWidth - 80),
+    getHttp("doDecidimos.aspx?actn=seguimiento&docID=" + docID
+        + "&grupo=" + arbolPersonal.nombre
+        + "&width=" + (window.innerWidth - 80)
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave,
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;

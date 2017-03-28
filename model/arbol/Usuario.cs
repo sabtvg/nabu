@@ -5,7 +5,7 @@ using System.Web;
 
 namespace nabu
 {
-    public class Usuario
+    public class Usuario: IComparable
     {
         public string nombre = "";
         public string email = "";
@@ -17,6 +17,8 @@ namespace nabu
         public int apoyos = 0; //cantidad de apoyos por parte de otros usuarios
         public DateTime notificado = DateTime.Now;
         public Prevista prevista = null;
+        public bool readOnly = false;
+        public bool habilitado = true;
 
         public Usuario()
         {
@@ -29,6 +31,12 @@ namespace nabu
             {
                 flores.Add(new Flor());
             }
+        }
+
+        int IComparable.CompareTo(Object x)
+        {
+            Usuario dos = (Usuario)x;
+            return (int)this.lastLogin.Subtract(dos.lastLogin).TotalSeconds;
         }
 
         public bool isActive

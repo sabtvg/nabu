@@ -34,14 +34,16 @@
 
                 //cargo datos iniciales
                 var vals = cookie.split("|");
-                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3] };
+                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3] };
 
                 getListaUsuarios();
             }
         }
 
         function getListaUsuarios() {
-            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.arbol,
+            getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.grupo
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
                 function (data) {
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
@@ -55,6 +57,9 @@
                         s += "<tr>"
                         s += "<td style='width:370px;'><b>Nombre</b></td>";
                         s += "<td style='width:370px;'><b>Email</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>Solo Lectura</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>Habilitado</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>Admin</b></td>";
                         s += "<td style='width:60px;'><b>Apoyos</b></td>";
                         s += "<td style='width:70px;'><b>Activo</b></td>";
                         s += "</tr>"
@@ -63,6 +68,9 @@
                             s += "<tr>"
                             s += "<td style='width:220px;'>" + usu.nombre + "</td>";
                             s += "<td style='width:220px;'>" + usu.email + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.isAdmin ? "<img src='res/luzverde.gif'>" : "") + "</td>";
                             s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
                             s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
                             s += "</tr>"

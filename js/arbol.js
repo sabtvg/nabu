@@ -30,10 +30,6 @@ function crearArbol() {
         .on("mousewheel", doMousewheel1)
         //.on("DOMMouseScroll", doMousewheel2)  //firefox  //NO FUNCIONA EVENT
         .append("g")
-        .on("mousedown", doMousedown)
-        .on("mousemove", doMousemove)
-        .on("mouseup", doMouseup)
-        .on("mousewheel", doMousewheel1)  //chrome
         .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
 
     dibujarArbol(arbolPersonal.raiz);
@@ -69,10 +65,15 @@ function zoom(delta){
 function doMousedown() {
     var e = window.event || Event || e; // old IE support
     downEvent = { "x": e.clientX, "y": e.clientY, "translatex": translatex, "translatey": translatey };
-    if (menu)
-        menu.style.visibility = "hidden";
-    selectedNode = null;
-    dibujarArbol(selectedNode);
+    if (e.toElement.nodeName == 'svg') {
+        //ha picado en el fondo
+        if (menu)
+            menu.style.visibility = "hidden";
+        selectedNode = null;
+        dibujarArbol(selectedNode);
+        hidePanelDer();
+        hidePanelIzq();
+    }
 }
 
 function doMousemove() {
@@ -518,7 +519,7 @@ function updateFloresTotales(node) {
     //node.negados = getNegados(node);
     var modelo = getModelo(node.modeloID);
     var ap = arbolPersonal;
-    if (modelo && node.nivel == modelo.niveles) {
+    if (modelo && node.nivel == node.niveles) {
         //es una hoja de un debate completo, mido condicion de consenso
 
         node.si = 'Si:' + node.flores; // + "≥" + ap.minSiValue;
@@ -558,7 +559,7 @@ function getNodo2(padre, id) {
 }
 
 function docClick(d) {
-    doOpen('grupos/' + d.arbol + '/documentos/' + d.fname + '.html');
+    window.open(d.URL);
 }
 
 function florClick(d) {
@@ -584,18 +585,15 @@ function nodeClick(d) {
     showPanel();
 
     //activo menu contextual 
-    if (selectedNode == arbolPersonal.raiz) {
-        menu = document.getElementById("menuRoot");
-        menu.style.left = (window.innerWidth / 2 - 26).toFixed(0) + 'px';
-        menu.style.visibility = "visible";
-    }
-    else {
-        menu = document.getElementById("menuNode");
-        menu.style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
-        menu.style.visibility = "visible";
-
-        //activo panel
-        showPanel();
+    if (arbolPersonal.usuario.habilitado) {
+        if (selectedNode == arbolPersonal.raiz) {
+            seleccionarModelo();
+        }
+        else {
+            menu = document.getElementById("menuNode");
+            menu.style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
+            menu.style.visibility = "visible";
+        }
     }
 }
 

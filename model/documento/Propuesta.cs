@@ -14,6 +14,7 @@ namespace nabu
         public int nodoID = 0;
         public string modeloID = "";
         public int nivel = 0;
+        public int niveles = 0; //niveles en el momento de crear la propuesta
         public DateTime ts = DateTime.Now;
         public Dictionary<string, object> bag = new Dictionary<string, object>();
         public List<Comentario> comentarios = new List<Comentario>();
@@ -28,6 +29,7 @@ namespace nabu
             ret.nivel = nivel;
             ret.email = email;
             ret.modeloID = modeloID;
+            ret.niveles = niveles;
 
             foreach (KeyValuePair<string, object> var in bag)
                 ret.bag.Add(var.Key, var.Value);
@@ -37,7 +39,6 @@ namespace nabu
             return ret;
         }
 
-        // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
         int IComparable.CompareTo(Object x)
         {
             Propuesta dos = (Propuesta)x;

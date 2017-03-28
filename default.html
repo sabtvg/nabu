@@ -90,11 +90,6 @@
         </table>
     </div>
 
-    <!--root node options--------------------------------------------------------------------------------------------------->
-    <div id="menuRoot" class="menuRoot2">
-        <img class="btnimg" title="proponer" src="res/documento.png" onclick="seleccionarModelo();" />
-    </div>
-
     <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystick" style="visibility:hidden; padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
         <table>
@@ -115,7 +110,7 @@
             </tr>
         </table>
     </div>
-
+   
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
         <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
@@ -124,10 +119,12 @@
         <div id="titulo1" class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
         <div id="titulo2" class="titulo2"><nobr>Democracia interactiva</nobr></div>
         <div id="userOptions">
+            <div class="titulo3" style="cursor: pointer;" onclick="document.location='bosque.html';"><nobr><font color="blue">El bosque</font></nobr></div>
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='verusuarios.html';"><nobr><font color="blue">Usuarios</font></nobr></div>
         </div>
         <div id="adminOptions">
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='modificararbol.html';"><nobr><font color="blue">Arbol</font></nobr></div>
+            <div class="titulo3" style="cursor: pointer;" onclick="document.location='bosque.html';"><nobr><font color="blue">El bosque</font></nobr></div>
+            <div class="titulo3" style="cursor: pointer;" onclick="document.location='modificararbol.html';"><nobr><font color="blue">El &aacute;rbol</font></nobr></div>
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='usuarios.html';"><nobr><font color="blue">Usuarios</font></nobr></div>
             <div class="titulo3" style="cursor: pointer;" onclick="document.location='mailer.html';"><nobr><font color="blue">Mailer</font></nobr></div>
         </div>
@@ -144,17 +141,19 @@
 
     <!--menuppal--------------------------------------------------------------------------------------------------->
     <div id="menuppal" style="position: absolute; visibility:hidden; width: 800px; height: 600px;">
+        <div id="padrenombre" style="position: inherit; width:800px; left:0px; top:-120px;text-align: center;" class="titulo1"></div>
         <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-90px;text-align: center;" class="titulo0"></div>
         <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;" />
         <img id="ppal1" class="btnimg" src="res/es/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doDecidimos();"/>
         <img id="ppal2" class="btnimg" src="res/es/noticias.png" style="position: inherit; left:15px; top:192px;" onclick="doAprendemos();"/>
-        <img id="ppal3" class="btnimg" src="res/es/vert.png" style="position: inherit; left:488px; top:129px;" onclick="msg('Aun no implementado');"/>
+        <img id="ppal3" class="btnimg" src="res/es/vert.png" style="position: inherit; left:488px; top:129px;" onclick="document.location='operativo.html';"/>
         <img id="ppal5" class="btnimg" src="res/es/docConsensos.png" style="position: inherit; left:338px; top:31px;" onclick="doListaConsensos();"/>
         <img id="ppal7" class="btnimg" src="res/es/docRealizacion.png" style="position: inherit; left:285px; top:439px;" onclick="msg('Aun no implementado');"/>
         <img id="ppal8" class="btnimg" src="res/es/manifiesto.png" style="position: inherit; left:190px; top:278px;"/>
         <img id="ppal9" class="btnimg" src="res/doc.png" style="position: inherit; left:120px; top:258px;" onclick="doManifiesto();"/>
         <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;"/>
         <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;" />
+        <div id="hijos" style="position: inherit; width:800px; left:0px; top:480px;text-align: center;" class="titulo1"></div>
     </div>
 
     <!--atras--------------------------------------------------------------------------------------------------->
@@ -202,7 +201,7 @@
     </div>
         
     <!--lista consensos--------------------------------------------------------------------------------------------------->
-    <div id="panelListaConsensos" style="visibility: hidden;position:absolute;width:1024px;" >
+    <div id="panelListaConsensos" style="visibility: hidden;position:absolute;width:1024px;overflow-x:auto;" >
     </div>
 
     <!--documento--------------------------------------------------------------------------------------------------->

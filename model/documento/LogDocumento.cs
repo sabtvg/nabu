@@ -20,6 +20,7 @@ namespace nabu
         public string URL = "";
         public int flores = 0;
         public int negados = 0;
+        public string carpeta = "";
 
         public string sFecha
         {

@@ -10,11 +10,56 @@ namespace nabu
         public List<Grupo> grupos = new List<Grupo>();
         public HttpServerUtility server;
         public HttpRequest request;
+        public DateTime lastSave = DateTime.MinValue;
+        public int saveTime = 10; //guardar arboles cada x minutos
+        public int cleanTime = 40; //quito arbol de memoria si no se toca en 20 minutos
 
         public Aplicacion(HttpServerUtility server, HttpRequest request)
         {
             this.server = server;
             this.request = request;
+        }
+
+        public void verifySave()
+        {
+            lock (this)
+            {
+                if (DateTime.Now.Subtract(lastSave).TotalMinutes > saveTime)
+                {
+                    saveGrupos();
+
+                    depurarMemoria();
+
+                    lastSave = DateTime.Now;
+                }
+            }
+        }
+
+        private void depurarMemoria()
+        {
+            //depuro arboles viejos de memoria
+            lock (grupos)
+            {
+                int index = 0;
+                while (index < grupos.Count)
+                {
+                    if (DateTime.Now.Subtract(grupos[index].ts).TotalMinutes > cleanTime)
+                    {
+                        //este grupo se puede quitar de memoria
+                        //se asume que ya fue guardado
+                        //si es simulacion borro temporales
+                        Grupo g = grupos[index];
+                        Arbol a = g.arbol;
+                        if (a.simulacion)
+                            if (System.IO.Directory.Exists(g.path))
+                                System.IO.Directory.Delete(g.path, true);
+
+                        grupos.RemoveAt(index);
+                    }
+                    else
+                        index += 1;
+                }
+            }
         }
 
         public void saveGrupos()
@@ -62,7 +107,8 @@ namespace nabu
             if (System.IO.File.Exists(jsonpath))
             {
                 Grupo ret;
-                System.IO.StreamReader fs = System.IO.File.OpenText(jsonpath);
+                System.IO.StreamReader fs = new System.IO.StreamReader(jsonpath, System.Text.Encoding.UTF8);
+                //System.IO.StreamReader fs = System.IO.File.OpenText(jsonpath);
                 string s = fs.ReadToEnd();
                 fs.Close();
 
@@ -73,18 +119,24 @@ namespace nabu
                 tipos.Add(typeof(Comentario));
                 tipos.Add(typeof(Variable));
 
-                //modelos
-                foreach (Modelo m in Modelo.getModelos())
+                //tipos
+                foreach (Organizacion org in Organizacion.getOrganizaciones())
                 {
-                    tipos.Add(m.GetType());
+                    tipos.Add(org.GetType());
+                    foreach (Modelo mod in org.getModelos())
+                        tipos.Add(mod.GetType());
                 }
-
                 ret = Tools.fromJson<Grupo>(s, tipos);
                 ret.path = server.MapPath("grupos/" + nombre);
                 ret.URL = request.UrlReferrer.AbsoluteUri.Substring(0, request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
 
+                //modelos viejos
+                if (ret.arbol == null)
+                {
+                    ret.arbol = new Arbol();
+                }
+
                 //actualizo modelos
-                ret.arbol.modelos = Modelo.getModelos();
                 ret.arbol.grupo = ret;  //padre del arbol, referencia ciclica, no se puede serializar
                 return ret;
             }

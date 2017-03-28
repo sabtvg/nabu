@@ -24,6 +24,14 @@ namespace nabu
         public List<Propuesta> propuestas = new List<Propuesta>();
         public List<Log> logs = new List<Log>();
 
+        //anulacion
+        public DateTime anuladoTs = Tools.minValue; //no anulado
+        public string anuladoNombre = "";
+        public string anuladoTitulo = "";
+        public string anuladoFname = "";
+        public string anuladoPath = "";
+        public string anuladoURLPath = "";
+
         public static Documento load(string path)
         {
             System.IO.StreamReader fs = System.IO.File.OpenText(path);
@@ -32,6 +40,14 @@ namespace nabu
 
             Documento ret = Tools.fromJson<Documento>(json);
             return ret;
+        }
+
+        public Object getValor(string id)
+        {
+            foreach(Propuesta p in propuestas)
+                if (p.bag.ContainsKey(id))
+                        return p.bag[id];
+            throw new Exception("Variable [" + id + "] no existe");
         }
 
         public void addLog(string msg)
@@ -45,7 +61,7 @@ namespace nabu
         {
             try
             {
-                Modelo m = Modelo.getModelo(modeloID);
+                Modelo m = grupo.organizacion.getModelo(modeloID);
                 m.ejecutarConsenso(this);
                 addLog("Consenso procesado");
             }
@@ -73,7 +89,7 @@ namespace nabu
             }
             ret += "</table>";
 
-            Modelo m = Modelo.getModelo(modeloID);
+            Modelo m = grupo.organizacion.getModelo(modeloID);
             ret += "<br><br><input type='button' class='btn' value='" + m.tr("Cerrar") + "' onclick='doCerrarDocumento();' />";
             return ret;
         }
@@ -83,11 +99,11 @@ namespace nabu
             //guardo
             Grupo g = grupo;
             grupo = null; //referencia ciclica
-            System.IO.StreamWriter fs = System.IO.File.CreateText(path);
+            System.IO.StreamWriter fs = new System.IO.StreamWriter(path, false, System.Text.Encoding.UTF8);
+            //System.IO.StreamWriter fs = System.IO.File.CreateText(path);
             fs.Write(Tools.toJson(this));
             fs.Close();
 
-            System.IO.File.WriteAllText(path, Tools.toJson(this));
             grupo = g;
         }
     }

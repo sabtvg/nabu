@@ -32,6 +32,9 @@ namespace nabu
 
             try
             {
+                //guardo lista de arboles periodicamente
+                app.verifySave();
+                
                 //limpio flores caducadas periodicamente
                 verifyFloresCaducadas();
 
@@ -47,31 +50,25 @@ namespace nabu
                     {
                         case "docomentar":
                             //devuelvo las propuestas de toda la rama
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doComentar(int.Parse(Request["id"]), Request["grupo"], Request["email"], Request["comentario"]));
                             app.addLog("doComentar", Request.UserHostAddress, Request["grupo"], "", Request["comentario"]);
                             break;
 
-                        //case "getpropuestasresaltadas":
-                        //    //devuelvo las propuestas de toda la rama
-                        //    Response.Write(getPropuestasResaltadas(int.Parse(Request["id"]), Request["grupo"]));
-                        //    break;
-
-                        //case "getpropuestas":
-                        //    //devuelvo las propuestas de toda la rama
-                        //    Response.Write(getPropuestas(int.Parse(Request["id"]), Request["grupo"]));
-                        //    break;
-
                         case "htmldocumento":
                             //devuelvo las propuestas de toda la rama
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(HTMLDocumento(int.Parse(Request["id"]), Request["modelo"], Request["grupo"], Request["email"], int.Parse(Request["width"])));
                             break;
 
                         case "htmlpropuesta":
                             //devuelvo las propuestas de toda la rama
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(HTMLPropuesta(int.Parse(Request["id"]), Request["grupo"], Request["email"], int.Parse(Request["width"])));
                             break;
 
                         case "getarbolpersonal":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             grupo = app.getGrupo(Request["grupo"]);
                             lock (grupo)
                             {
@@ -83,33 +80,40 @@ namespace nabu
                             break;
 
                         case "variante":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doVariante(int.Parse(Request["id"]), Request["grupo"], Request["email"], int.Parse(Request["width"])));
                             break;
 
                         case "prevista":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doPrevista(int.Parse(Request["id"]), Request["modelo"], Request["grupo"], Request["email"], int.Parse(Request["width"]), Request));
                             break;
 
                         case "revisar":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doRevisar(int.Parse(Request["id"]), Request["modelo"], Request["grupo"], Request["email"], int.Parse(Request["width"])));
                             break;
 
                         case "proponer":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doProponer(int.Parse(Request["id"]), Request["modelo"], Request["grupo"], Request["email"]));
                             app.addLog("proponer", Request.UserHostAddress, Request["grupo"], Request["email"], "Nueva propuesta recibida");
                             break;
 
                         case "seguimiento":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doSeguimiento(int.Parse(Request["docID"]), Request["grupo"], int.Parse(Request["width"])));
                             break;
 
                         case "toggleflor":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doToggleFlor(Request["email"], int.Parse(Request["id"]), float.Parse(Request["x"]), Request["grupo"]));
                             app.addLog("toggleFlor", Request.UserHostAddress, Request["grupo"], Request["email"], "Cambio de voto");
                             break;
 
                         case "updatearbol":
-                            a = updateArbol(Request["grupo"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]));
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            a = updateArbol(Request["grupo"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]),Request["padreURL"], Request["padreNombre"]);
                             Response.Write("Arbol actualizado");
                             break;
 
@@ -164,6 +168,10 @@ namespace nabu
                             g.URL = Request.UrlReferrer.AbsoluteUri.Substring(0, Request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
                             g.objetivo = "simulacion";
 
+                            //organizacion
+                            g.organizacion = new nabu.organizaciones.Plataforma();
+
+                            //arbol
                             a = new Arbol();
                             a.nombre = g.nombre;
                             a.simulacion = true;
@@ -188,12 +196,17 @@ namespace nabu
 
                             //escribo respuesta
                             List<Type> tipos = new List<Type>();
-                            foreach (Modelo m in Modelo.getModelos())
+                            foreach (Modelo m in g.organizacion.getModelos())
                             {
                                 tipos.Add(m.GetType());
                             }
-                            Response.Write("{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("Prueba")) + ",\"modelos\":" + Tools.toJson(a.modelos, tipos) + "}");
+                            Response.Write("{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("Prueba")) + ",\"modelos\":" + Tools.toJson(a.getModelos(), tipos) + "}");
                             app.addLog("crearSimulacion", Request.UserHostAddress, "", "", "Simulacion creada");
+                            break;
+
+                        case "documentsubmit":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            Response.Write(doDocumentSubmit(Request["accion"], Request["parametro"], Request["grupo"], Request["email"], Request["modelo"], int.Parse(Request["id"]), int.Parse(Request["width"]), Request));
                             break;
 
                         default:
@@ -220,6 +233,114 @@ namespace nabu
                 app.addLog("server exception", "", "", "", s);
             }
             Response.End();
+        }
+
+        string doPrevista(int id, string modeloID, string grupo, string email, int width, HttpRequest req)
+        {
+            string ret = "";
+            Grupo g = app.getGrupo(grupo);
+            Modelo m = g.organizacion.getModelo(modeloID);
+            lock (g)
+            {
+                List<Propuesta> props = prepararDocumento(g, email, modeloID, id, req);
+
+                //genro prevista
+                ret = m.toHTML(props, g, email, width, Modelo.eModo.prevista); //las propuesta debe ir en orden de nivel
+            }
+            return ret;
+        }
+
+        public string doDocumentSubmit(string accion, string parametro, string grupo, string email, string modeloID, int id, int width, HttpRequest req)
+        {
+            string ret = "";
+            Grupo g = app.getGrupo(grupo);
+            Modelo m = g.organizacion.getModelo(modeloID);
+
+            lock (g)
+            {
+                List<Propuesta> props = prepararDocumento(g, email, modeloID, id, req);
+
+                //genro respuesta
+                ret = m.documentSubmit(accion, parametro, props, g, email, width, Modelo.eModo.editar); //las propuesta debe ir en orden de nivel
+            }
+            return ret;
+        }
+
+        private List<Propuesta> prepararDocumento(Grupo g, string email, string modeloID, int id, HttpRequest req)
+        {
+            //preparo propuestas de nodos ancestros
+            List<Propuesta> props = new List<Propuesta>();
+            Arbol a = g.arbol;
+            List<Nodo> path = a.getPath(id);
+            Modelo m = g.organizacion.getModelo(modeloID);
+
+            g.ts = DateTime.Now;
+            foreach (Nodo n in path)
+            {
+                Propuesta op = a.getPropuesta(n); //comparo textox con hermanos y resalto palarbas nuevas
+                if (n.nivel > 0 && op != null)
+                {
+                    props.Add(op);
+                }
+            }
+
+            //agrego las propuestas de prevista
+            List<Propuesta> previstaProps = new List<Propuesta>();
+            foreach (string reqID in req.Form.AllKeys)
+            {
+                if (reqID != null && m.isVariable(reqID) && req[reqID] != "")
+                {
+                    //este valor me lo guardo en la prpuesta para ese nivel
+                    Variable v = m.getVariable(reqID);
+                    bool found = false;
+                    foreach (Propuesta p in previstaProps)
+                    {
+                        if (v.nivel == p.nivel)
+                        {
+                            p.bag.Add(reqID, m.parse(reqID, req[reqID]));
+                            found = true;
+                        }
+                    }
+                    if (!found)
+                    {
+                        Propuesta p = new Propuesta();
+                        p.email = email;
+                        p.modeloID = m.id;
+                        p.nivel = v.nivel;
+                        //p.niveles = m.niveles; los niveles se completan luego desde el modelo de documeto por si cambia con alguna condicion propia
+                        //p.nodoID = id; nodoID=0 determina propuesta prevista, porque esta propuesta aun no tiene nodo
+                        p.bag.Add(reqID, m.parse(reqID, Server.HtmlEncode(req[reqID])));
+
+                        previstaProps.Add(p);
+                        props.Add(p);
+                    }
+                }
+            }
+
+            //guarpo prevista para poder crearla luego
+            if (props.Count > 0)
+            {
+                Usuario u = g.getUsuario(email);
+                Prevista prev = new Prevista();
+                prev.etiqueta = m.etiqueta;
+                prev.titulo = m.titulo;
+                prev.propuestas = previstaProps;
+                u.prevista = prev;
+            } //else no ha escrito nada nuevo
+
+            return props;
+        }
+
+        public void VerificarUsuario(string grupo, string email, string clave)
+        {
+            Grupo g = app.getGrupo(grupo);
+            lock (g)
+            {
+                Usuario u = g.getUsuario(email);
+                if (u.clave == clave)
+                    return;
+            }
+            throw new Exception("Usuario inválido, operacion registrada!");
         }
 
         private string getSimName()
@@ -356,12 +477,13 @@ namespace nabu
                     {
                         //agrego nodo
                         //creo texto segun nivel y modelo de documento
-                        Modelo m = Modelo.getModelo("nabu.modelos.Accion");  //modelo de simulacion (Accion)
+                        Modelo m = g.organizacion.getModelo("nabu.plataforma.modelos.Accion");  //modelo de simulacion (Accion)
                         Propuesta prop = new Propuesta();
                         prop.email = g.usuarios[0].email;
                         prop.modeloID = m.id;
                         prop.nivel = selected.nivel + 1;  //esta propuesta es para el hijo que voy a crear
                         prop.nodoID = selected.id;
+                        prop.niveles = 5;
                         prop.titulo = "Documento simulado";
 
                         //lleno datos de prueba
@@ -470,7 +592,7 @@ namespace nabu
                         l.Add(op);
                     }
                 }
-                Modelo m = Modelo.getModelo(modeloID);
+                Modelo m = g.organizacion.getModelo(modeloID);
                 ret = m.toHTML(l, g, email, width, Modelo.eModo.editar); //las propuesta debe ir en orden de nivel
             }
             return ret;
@@ -486,8 +608,11 @@ namespace nabu
                 Arbol a = g.arbol;
                 g.ts = DateTime.Now;
                 Propuesta p = a.getPropuesta(id);
-                Modelo m = Modelo.getModelo(p.modeloID);
-                ret = m.toHTML(p, g, email, width, Modelo.eModo.ver);
+                if (p != null)
+                {
+                    Modelo m = g.organizacion.getModelo(p.modeloID);
+                    ret = m.toHTML(p, g, email, width, Modelo.eModo.ver);
+                }
             }
             return ret;
         }
@@ -509,7 +634,7 @@ namespace nabu
                     p.comentarios.Add(c);
                 }
                 //retorno el nuevo html de todos los comentarios de ese nodo
-                Modelo m = Modelo.getModelo(p.modeloID);
+                Modelo m = g.organizacion.getModelo(p.modeloID);
                 ret = m.toHTMLComentarios(p.nivel, p, g, email, 250, true);
             }
             
@@ -536,11 +661,11 @@ namespace nabu
 
                     if (f == null)
                     {
+                        n.x = x;
+
                         //no tiene flor en el nodo, la agrego
                         a.asignarflor(u, n);
-
-                        n.x = x;
-                        
+                                               
                         //devuelvo el arbolPersonal
                         ret = Tools.toJson(a.getArbolPersonal(email));
                     }
@@ -567,7 +692,7 @@ namespace nabu
                 //preparo propuestas de nodos ancestros
                 Arbol a = g.arbol;
                 List<Nodo> path = a.getPath(id);
-                Modelo m = Modelo.getModelo(path[0].modeloID);
+                Modelo m = g.organizacion.getModelo(path[0].modeloID);
                 g.ts = DateTime.Now;
                 foreach (Nodo n in path)
                 {
@@ -596,78 +721,9 @@ namespace nabu
             lock (g)
             {
                 LogDocumento ld = g.arbol.getLogDocumento(docID);
-                Documento doc = Documento.load(g.path + "\\documentos\\" + ld.fname + ".json");
-                ret = doc.toHTMLSeguimiento();
-            }
-            return ret;
-        }
-
-        string doPrevista(int id, string modeloID, string grupo, string email, int width, HttpRequest req)
-        {
-            string ret = "";
-            List<Propuesta> props = new List<Propuesta>();
-            Modelo m = Modelo.getModelo(modeloID);
-            Grupo g = app.getGrupo(grupo);
-            lock (g)
-            {
-                //preparo propuestas de nodos ancestros
-                Arbol a = g.arbol;
-                List<Nodo> path = a.getPath(id);
-                g.ts = DateTime.Now;
-                foreach (Nodo n in path)
-                {
-                    Propuesta op = a.getPropuesta(n); //comparo textox con hermanos y resalto palarbas nuevas
-                    if (n.nivel > 0 && op != null)
-                    {
-                        props.Add(op);
-                    }
-                }
-
-                //agrego las propuestas de prevista
-                List<Propuesta> previstaProps = new List<Propuesta>();
-                foreach (string reqID in req.Form.AllKeys)
-                {
-                    if (reqID != null && m.isVariable(reqID) && req[reqID] != "")
-                    {
-                        //este valor me lo guardo en la prpuesta para ese nivel
-                        Variable v = m.getVariable(reqID);
-                        bool found = false;
-                        foreach (Propuesta p in previstaProps)
-                        {
-                            if (v.nivel == p.nivel)
-                            {
-                                p.bag.Add(reqID, m.parse(reqID, req[reqID]));
-                                found = true;
-                            }
-                        }
-                        if (!found)
-                        {
-                            Propuesta p = new Propuesta();
-                            p.email = email;
-                            p.modeloID = m.id;
-                            p.nivel = v.nivel;
-                            //p.nodoID = id; nodoID=0 determina propuesta prevista, porque esta propuesta aun no tiene nodo
-                            p.bag.Add(reqID, m.parse(reqID, Server.HtmlEncode(req[reqID])));
-
-                            previstaProps.Add(p);
-                            props.Add(p);
-                        }
-                    }
-                }
-
-                //genro prevista
-                ret = m.toHTML(props, g, email, width, Modelo.eModo.prevista ); //las propuesta debe ir en orden de nivel
-
-                //guarpo prevista para poder crearla luego
-                if (props.Count > 0)
-                {
-                    Usuario u = g.getUsuario(email);
-                    Prevista prev = new Prevista();
-                    prev.etiqueta = m.etiqueta;
-                    prev.titulo = m.titulo;
-                    prev.propuestas = previstaProps;
-                    u.prevista = prev;
-                } //else no ha escrito nada nuevo
+                Documento doc = Documento.load(g.path + "\\documentos\\" + ld.carpeta + "\\" + ld.docID.ToString("0000") + "\\" + ld.fname + ".json");
+                doc.grupo = g;
+                ret = doc.toHTMLSeguimiento(); 
             }
             return ret;
         }
@@ -676,8 +732,9 @@ namespace nabu
         {
             string ret = "";
             List<Propuesta> props = new List<Propuesta>();
-            Modelo m = Modelo.getModelo(modeloID);
             Grupo g = app.getGrupo(grupo);
+            Modelo m = g.organizacion.getModelo(modeloID);
+
             lock (g)
             {
                 //preparo propuestas de nodos ancestros
@@ -773,7 +830,7 @@ namespace nabu
             }
         }
 
-        Arbol updateArbol(string grupo, int cantidadFlores, float minSiPc, float maxNoPc)
+        Arbol updateArbol(string grupo, int cantidadFlores, float minSiPc, float maxNoPc, string padreURL, string padreNombre)
         {
             if (minSiPc > 100)
                 throw new appException("Mínimos usuarios implicados debe estar entre 50 y 100");
@@ -788,6 +845,8 @@ namespace nabu
 
             lock (g)
             {
+                g.padreURL = padreURL;
+                g.padreNombre = padreNombre;
                 a = g.arbol;
                 g.ts = DateTime.Now;
                 a.cantidadFlores = cantidadFlores;
