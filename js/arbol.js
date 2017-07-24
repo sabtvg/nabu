@@ -10,6 +10,7 @@ var translatex = 0;
 var translatey = 0;
 var rotFlores = 0;
 
+
 function crearArbol() {
     var diameter = window.innerHeight / 2;
     d3Arbol = d3.layout.tree()
@@ -63,6 +64,12 @@ function zoom(delta){
 }
 
 function doMousedown() {
+    //prueba para firefox
+    //var ev = document.createEvent('MouseEvents');
+    //event.initMouseEvent('mousedown', true, true, window);
+    //ev.initMouseEvent('mousedown', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    //element.dispatchEvent(event);
+
     var e = window.event || Event || e; // old IE support
     downEvent = { "x": e.clientX, "y": e.clientY, "translatex": translatex, "translatey": translatey };
     if (e.toElement.nodeName == 'svg') {
@@ -328,8 +335,17 @@ function dibujarArbol(referencia) {
         .remove();
 
     //documentos ------------------------------------------------------------------------------------------------------------------
+    //filtro documentos viejos
+    var logNew = [];
+    var limit = new Date();
+    limit.setDate(limit.getDate() - 30);
+    for (var i in arbolPersonal.logDecisiones) {
+        var doc = arbolPersonal.logDecisiones[i];
+        if (jsonToDate(doc.fecha) >= limit)
+            logNew.push(doc);
+    }
     var doc = svgArbol.selectAll("g.doc")
-        .data(arbolPersonal.logDocumentos, function (d) { return 'd' + d.docID; });
+        .data(logNew, function (d) { return 'd' + d.docID; });
 
     var docEnter = doc.enter().append("g")
         .attr("class", "doc")
@@ -363,7 +379,7 @@ function dibujarArbol(referencia) {
         .style("font-size", function (d) { return '12px'; })
         .style("cursor", "pointer")
         .attr("text-anchor", "middle ")
-        .text(function (d) { return d.titulo; });
+        .text(function (d) { return txtCut(d.titulo); });
 
     docEnter.append("text")
         .attr("x", function (d) {
@@ -522,13 +538,13 @@ function updateFloresTotales(node) {
     if (modelo && node.nivel == node.niveles) {
         //es una hoja de un debate completo, mido condicion de consenso
 
-        node.si = 'Si:' + node.flores; // + "≥" + ap.minSiValue;
+        node.si = tr('Si') + ':' + node.flores; // + "≥" + ap.minSiValue;
         if (node.flores >= ap.minSiValue)
             node.siColor = 'green';
         else
             node.siColor = 'red';
 
-        node.no = 'No:' + node.negados; // + "≤" + ap.maxNoValue;
+        node.no = tr('No') + ':' + node.negados; // + "≤" + ap.maxNoValue;
         if (node.negados <= ap.maxNoValue)
             node.noColor = 'green';
         else

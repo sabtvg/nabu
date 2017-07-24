@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
@@ -13,66 +14,80 @@
         var arbolPersonal;
         var usuario;
         var hijos;
+        var grupoParam;
 
         function doLoad() {
-            //leo cookie
-            var cookie = getCookie("nabu");
-            if (cookie == "")
-                //login normal
-                document.location = 'default.html';
-            else {
-                var scalex = window.innerWidth / 1920;
-                var scaley = window.innerHeight / 1080;
-                document.getElementById("todo").style.top = '15px';
-                document.getElementById("todo").style.left = (window.innerWidth / 2 - 628 / 2).toFixed(0) + 'px';
-                //atras
-                document.getElementById("atras").style.width = (100 * scalex) + 'px';
-                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-                //background
-                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-
-                //cargo datos iniciales
-                var vals = cookie.split("|");
-                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
-
-                if (!usuario.isAdmin) {
-                    alert("Solo disponible para el jardinero");
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam);
+                if (cookie == "")
                     //login normal
-                    document.location = 'default.html';
+                    document.location = 'default.html?grupo=' + grupoParam;
+                else {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
+                    document.getElementById("todo").style.top = '15px';
+                    document.getElementById("todo").style.left = (window.innerWidth / 2 - 628 / 2).toFixed(0) + 'px';
+                    //atras
+                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                    //background
+                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                    idioma = vals[5]; //para el tradcutor
+
+                    if (!usuario.isAdmin) {
+                        alert(tr("Solo disponible para el coordinador"));
+                        //login normal
+                        document.location = 'default.html';
+                    }
+                    else
+                        getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + usuario.email
+                            + "&grupo=" + usuario.grupo
+                            + "&clave=" + usuario.clave,
+                             function (data) {
+                                //atrapo el error si es que hay
+                                if (data.substring(0, 6) == "Error=") {
+                                    //ha habido un error
+                                    document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                                }
+                                else {
+                                    //login ok, he recibido el arbol
+                                    arbolPersonal = JSON.parse(data);
+                                    document.getElementById("nombreArbol").value = arbolPersonal.nombre;
+                                    document.getElementById("idioma").value = arbolPersonal.idioma;
+                                    document.getElementById("organizacion").value = arbolPersonal.organizacion;
+
+                                    document.getElementById("nombreAdmin").value = arbolPersonal.usuario.nombre;
+                                    document.getElementById("email").value = arbolPersonal.usuario.email;
+
+                                    document.getElementById("padreURL").value = arbolPersonal.padreURL;
+                                    document.getElementById("padreNombre").value = arbolPersonal.padreNombre;
+
+                                    document.getElementById("cantidadFlores").value = arbolPersonal.cantidadFlores;
+
+                                    document.getElementById("minSiPc").value = arbolPersonal.minSiPc;
+                                    document.getElementById("maxNoPc").value = arbolPersonal.maxNoPc;
+
+                                    document.getElementById("idioma").value = idioma.toLocaleLowerCase();
+
+                                    traducir();
+
+                                    hijos = arbolPersonal.hijos;
+                                    showHijos();
+                                }
+                            });
                 }
-                else
-                    getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + usuario.email
-                        + "&grupo=" + usuario.grupo
-                        + "&clave=" + usuario.clave,
-                         function (data) {
-                            //atrapo el error si es que hay
-                            if (data.substring(0, 6) == "Error=") {
-                                //ha habido un error
-                                document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
-                            }
-                            else {
-                                //login ok, he recibido el arbol
-                                arbolPersonal = JSON.parse(data);
-                                document.getElementById("nombreArbol").value = arbolPersonal.nombre;
-                                document.getElementById("idioma").value = arbolPersonal.idioma;
-                                document.getElementById("organizacion").value = arbolPersonal.organizacion;
-
-                                document.getElementById("nombreAdmin").value = arbolPersonal.usuario.nombre;
-                                document.getElementById("email").value = arbolPersonal.usuario.email;
-
-                                document.getElementById("padreURL").value = arbolPersonal.padreURL;
-                                document.getElementById("padreNombre").value = arbolPersonal.padreNombre;
-
-                                document.getElementById("cantidadFlores").value = arbolPersonal.cantidadFlores;
-
-                                document.getElementById("minSiPc").value = arbolPersonal.minSiPc;
-                                document.getElementById("maxNoPc").value = arbolPersonal.maxNoPc;
-
-                                hijos = arbolPersonal.hijos;
-                                showHijos();
-                            }
-                        });
             }
+            else
+                //login normal
+                document.location = 'default.html?grupo=' + grupoParam;
         }
 
         function doModificarArbol() {
@@ -82,9 +97,11 @@
             var maxNoPc = document.getElementById("maxNoPc").value;
             var padreURL = document.getElementById("padreURL").value;
             var padreNombre = document.getElementById("padreNombre").value;
+            var idioma = document.getElementById("idioma").value;
 
             getHttp("doDecidimos.aspx?actn=updatearbol&grupo=" + nombreArbol
                 + "&cantidadFlores=" + cantidadFlores
+                + "&idioma=" + idioma
                 + "&minSiPc=" + minSiPc
                 + "&maxNoPc=" + maxNoPc
                 + "&padreURL=" + padreURL
@@ -95,7 +112,12 @@
                     if (data.substring(0, 6) == "Error=")
                         document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
                     else {
-                        document.location="default.html";
+                        //actualizo idioma en cookie
+                        usuario.idioma = idioma;
+                        setCookie("nabu-" + nombreArbol
+                            , usuario.nombre + "|" + usuario.email + "|" + usuario.clave + "|" + nombreArbol + "|" + usuario.isAdmin + "|" + idioma, 7);
+
+                        doAtras();
                     }
                 });
         }
@@ -177,9 +199,9 @@
         function showHijos() {
             var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
             s += "<tr>"
-            s += "<td style='width:200px;'><b>URL</b></td>";
-            s += "<td style='width:220px;'><b>Nombre</b></td>";
-            s += "<td style='width:70px;text-align:center;'><b>Borrar</b></td>";
+            s += "<td style='width:200px;'><b>" + tr("URL") + "</b></td>";
+            s += "<td style='width:220px;'><b>" + tr("Nombre") + "</b></td>";
+            s += "<td style='width:70px;text-align:center;'><b>" + tr("Borrar") + "</b></td>";
             s += "</tr>"
             for (var i in hijos) {
                 var hijo = hijos[i];
@@ -211,9 +233,58 @@
                 });
         }
 
+        function doAtras() {
+            document.location = "default.html?grupo=" + grupoParam;
+        }
+
+        function traducir() {
+            document.getElementById("datArb").innerHTML = tr("Datos del arbol");
+            document.getElementById("nom").innerHTML = tr("Nombre");
+            document.getElementById("idi").innerHTML = tr("Idioma");
+            document.getElementById("org").innerHTML = tr("Organizacion");
+            document.getElementById("nombreArbol").placeholder = tr("Nombre de arbol");
+            document.getElementById("idioma").placeholder = tr("Idioma");
+            document.getElementById("organizacion").placeholder = tr("Organizacion");
+            document.getElementById("nombreAdmin").placeholder = tr("Nombre");
+            document.getElementById("email").placeholder = tr("Email");
+            document.getElementById("padreURL").placeholder = tr("Direccion web del grupo padre");
+            document.getElementById("padreNombre").placeholder = tr("Nombre del grupo padre");
+            document.getElementById("btnCrearPadre").value = tr("Crear usuarios en grupo padre");
+            document.getElementById("pad").innerHTML = tr("Grupo padre");
+            document.getElementById("hij").innerHTML = tr("Grupos hijos");
+            document.getElementById("hijoURL").placeholder = tr("Direccion web del grupo hijo");
+            document.getElementById("hijoNombre").placeholder = tr("Nombre del grupo hijo");
+            document.getElementById("btnCrearHijo").value = tr("Crear");
+            document.getElementById("btnMod").value = tr("Modificar");
+            document.getElementById("flo").innerHTML = tr("Flores disponibles para todos los usuarios");
+            document.getElementById("cantidadFlores").placeholder = tr("Cantidad de flores");
+            document.getElementById("concon").innerHTML = tr("Condicion de consenso");
+            document.getElementById("conminSiPc").innerHTML = tr("conminSiPc");
+            document.getElementById("conmaxNoPc").innerHTML = tr("conmaxNoPc");
+            document.getElementById("jarDat").innerHTML = tr("Datos del coordinador");
+        }
+
+        function doBorrarArbol() {
+            var r = confirm("El grupo [" + usuario.grupo + "] sera borrado con todos sus datos");
+            if (r == true) {
+                getHttp("doMain.aspx?actn=borrarGrupo&grupo=" + usuario.grupo
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
+                function (data) {
+                    //atrapo el error si es que hay
+                    if (data.substring(0, 6) == "Error=") {
+                        //ha habido un error
+                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    }
+                    else {
+                        document.location = "default.html";
+                    }
+                });
+            }
+        }
     </script>
 </head>
-<body onload="doLoad();" style="overflow:hidden">
+<body onload="doLoad();" style="overflow:hidden;">
         <div id="todo" class="ventana" style="text-align: left;width:628px;top: 30px;position: absolute;">
             <table style="width: 100%;">
                 <tr>
@@ -221,60 +292,63 @@
                     <td style="width: 60px;"><img src="res/icono2.png" /></td>
                     <td><div id="response" style="text-align:center; font-size:14px;"></div></td>
                 </tr>          
-                <tr>
-                    <td colspan="3"><span class="titulo2">Modificar &aacute;rbol</span></td>
-                </tr>          
             </table>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
-                <span class="titulo3">Datos del &aacute;rbol</span><br />
+                <span id="datArb" class="titulo3">Datos del &aacute;rbol</span><br />
                 <nobr>
-                Nombre:<input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
-                Idioma:<input id="idioma" type="text" class="txt" size="1" placeholder="Idioma" disabled/>
-                Organizaci&oacute;n:<input id="organizacion" type="text" class="txt" size="15" placeholder="Organizacion" disabled/>
+                <span id="nom" class="titulo3">Nombre</span>:<input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
+                <span id="idi">Idioma</span>:
+                    <select id="idioma" class="txt" style="width: 90px">
+                        <option value="es">Espa&ntilde;ol</option>
+                        <option value="ct">Catal&aacute;n</option>
+                        <option value="en">English</option>
+                    </select>
+                <span id="org">Organizaci&oacute;n</span>:<input id="organizacion" type="text" class="txt" size="10" placeholder="Organizacion" disabled/>
                 </nobr>
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
-                <span class="titulo3">Datos del jardinero</span><br />
+                <span id="jarDat" class="titulo3">Datos del coordinador</span>
                 <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/>
                 <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
-                <span class="titulo3">Grupo padre</span><br />
+                <span id="pad" class="titulo3">Grupo padre</span><br />
                 <input id="padreURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo padre"/>
                 <input id="padreNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo padre"/><br />
-                <input type="button" class="btn" value="Crear usuarios en grupo padre" onclick="doCrearUsuariosArbolPadre();" /> 
+                <input id="btnCrearPadre" type="button" class="btn" value="Crear usuarios en grupo padre" onclick="doCrearUsuariosArbolPadre();" /> 
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
-                <span class="titulo3">Grupos hijos</span><br />
+                <span id="hij" class="titulo3">Grupos hijos</span><br />
                 <input id="hijoURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo hijo"/>
                 <input id="hijoNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo hijo"/>
-                <input type="button" class="btn" value="Crear" onclick="doCrearHijo();" /> 
+                <input id="btnCrearHijo" type="button" class="btn" value="Crear" onclick="doCrearHijo();" /> 
                 <div id="hijos"></div>
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
-                <span class="titulo3">Flores disponibles para todos los usuarios</span><br />
+                <span id="flo" class="titulo3">Flores disponibles para todos los usuarios</span>
                 <input id="cantidadFlores" type="text" class="txt" size="8" placeholder="Cantidad de flores"/><br />
             </div>
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;margin:5px 0px 5px 0px;">
-                <span class="titulo3">Condici&oacute;n de consenso</span><br />
+                <span id="concon" class="titulo3">Condici&oacute;n de consenso</span><br />
 
-                <div class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
+                <div id="conminSiPc" class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
                 <input id="minSiPc" type="text" class="txt" size="8" />%<br />
 
-                <div class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
+                <div id="conmaxNoPc" class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
                 <input id="maxNoPc" type="text" class="txt" size="8" />%<br />
             </div>
 
-            <input type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> 
+            <input id="btnMod" type="button" class="btn" value="Modificar" onclick="doModificarArbol();" /> 
+            <input id="btnBorrar" type="button" class="btn" value="Borrar grupo y todos sus datos" onclick="doBorrarArbol();" style="float:right;background-color:lightcoral" /> 
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     </body>
 </html>

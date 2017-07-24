@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+        var offsetDays = 0;
+        var stepY = 70;
+        var viewDaysInit = 60;
+        var viewDays = viewDaysInit;
+        var arbolPersonal;
+        var scale = window.innerWidth / 1920;
+        var inicio;
+        var final;
+        var viewWidth;
+        var viewLeft = 180;
+        var viewRight = 40;
+        var grupoParam;
+        var monthNames;
+        var lastMouse = null;
+
+        $(document).mousemove(function (event) {
+            if (event.which == 1 && !event.ctrlKey) {
+                //scroll
+                if (lastMouse) {
+                    var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
+                    offsetDays -= ((event.clientX - lastMouse.clientX) / diaPixels);
+                    if (offsetDays < 0) offsetDays = 0;
+                    //document.body.style.cursor = "all-scroll";
+                    event.preventDefault();
+                    dibujarTodo();
+                    saveSettings();
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else if (event.which == 1 && event.ctrlKey) {
+                //zoom
+                if (lastMouse) {
+                    var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
+                    viewDays += (lastMouse.clientX - event.clientX) / diaPixels;
+                    if (viewDays > 500) viewDays = 500;
+                    if (viewDays < 0.5) viewDays = 0.5;
+                    //document.body.style.cursor = "w-resize";
+                    event.preventDefault();
+                    dibujarTodo();
+                    saveSettings();
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else {
+                if (lastMouse)
+                    event.preventDefault(); //fin
+                lastMouse = null;
+                //document.getElementById("todo").style.cursor = "default";
+            }
+            //$("div").text(diaPixels);
+        });
+
+        function doLoad() {
+            //wait
+            document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
+            document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
+            document.getElementById("florWait").style.visibility = "visible";
+
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam.replace(' ',''));
+                if (cookie == "")
+                    //login normal
+                    document.location = 'default.html?grupo=' + grupoParam;
+                else {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
+                    document.getElementById("todo").style.top = '0px';
+                    document.getElementById("todo").style.left = '0px';
+                    document.getElementById("todo").style.width = window.innerWidth + 'px';
+                    document.getElementById("todo").style.height = window.innerHeight + 'px';
+                    document.getElementById("joystick").style.top = (window.innerHeight - 150 * scaley) + 'px';
+
+                    //atras
+                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                    //background
+                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                    //idioma
+                    idioma = vals[5]; //para el tradcutor
+
+                    //resize
+                    calcularResize();
+
+                    //loadsettings
+                    var cookie = getCookie("nabu-" + grupoParam.replace(' ', '') + "-Decisiones");
+                    if (cookie != "") {
+                        var vals = cookie.split("|");
+                        offsetDays = parseFloat(vals[0]);
+                        viewDays = parseFloat(vals[1]);
+                    }
+                    
+                    if (!usuario) {
+                        //login normal
+                        document.location = 'default.html';
+                    }
+                    else
+                        getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + usuario.email
+                            + "&clave=" + usuario.clave
+                            + "&grupo=" + usuario.grupo,
+                             function (data) {
+                                 //atrapo el error si es que hay
+                                 if (data.substring(0, 6) == "Error=") {
+                                     //ha habido un error
+                                     document.getElementById("todo").innerHTML = '<font color=red>' + data + '</font>';
+                                 }
+                                 else {
+                                     //tengo el bosque
+                                     //document.getElementById("todo").innerHTML = data;
+                                     arbolPersonal = JSON.parse(data);
+                                     document.getElementById("florWait").style.visibility = "hidden";
+
+                                     monthNames = [
+                                          tr("ene"), tr("feb"), tr("mar"),
+                                          tr("abr"), tr("may"), tr("jun"), tr("jul"),
+                                          tr("ago"), tr("set"), tr("oct"),
+                                          tr("nov"), tr("dec")
+                                     ];
+
+                                     dibujarTodo();
+                                 }
+                             });
+                }
+            }
+            else
+                //login normal
+                document.location = 'default.html?grupo=' + grupoParam;
+        }
+
+        function calcularResize() {
+            scalex = window.innerWidth / 1920;
+            scaley = window.innerHeight / 955; //1080-bordes de pantalla
+
+            document.getElementById("jl").style.width = 37 * scalex + 'px';
+            document.getElementById("jl").style.height = 37 * scalex + 'px';
+            document.getElementById("j00").style.width = 37 * scalex + 'px';
+            document.getElementById("j00").style.height = 37 * scalex + 'px';
+            document.getElementById("jr").style.width = 37 * scalex + 'px';
+            document.getElementById("jr").style.height = 37 * scalex + 'px';
+            document.getElementById("jzm").style.width = 37 * scalex + 'px';
+            document.getElementById("jzm").style.height = 37 * scalex + 'px';
+            document.getElementById("jzl").style.width = 37 * scalex + 'px';
+            document.getElementById("jzl").style.height = 37 * scalex + 'px';
+        }
+
+        function saveSettings() {
+            var cname = "nabu-" + grupoParam.replace(' ', '') + "-Decisiones";
+            setCookie(cname, offsetDays + "|" + viewDays);
+        }
+
+         Date.prototype.addDays = function (days) {
+             var dat = new Date(this.valueOf());
+             dat.setDate(dat.getDate() + days);
+             return dat;
+         }
+
+        function dibujarTodo() {
+            var s = "";
+            s += "<text x='" + (40 + 90 * scale) + "' y='" + (20 + 50 * scale) + "' fill='black' style='font-size:" + (10 + 30 * scale) + "px'>"
+                + usuario.grupo + " - " + tr("Decisiones") + "</text>";
+
+            s += dibujarFrutos(arbolPersonal.logDecisiones);
+            document.getElementById("todo").innerHTML = s;
+        }
+
+        function dibujarFrutos(lds) {
+            var s = "";
+            var top = 200;
+            var modelos = getModelos(lds);
+            try
+            {
+                inicio = toDate(lds[lds.length - 1].fecha).addDays(-viewDays)
+                final = toDate(lds[lds.length - 1].fecha);
+            }
+            catch (e) {
+                final = new Date();
+                inicio = final.addDays(-viewDays);
+            }
+            viewWidth = window.innerWidth - viewLeft - 10;
+
+            //modelos
+            for (var h in modelos) {
+                var y = top + h * stepY + 25;
+                s += "<text x='50' y='" + y + "' fill='black' style='font-size:18px'>" + modelos[h] + "</text>";
+            }
+
+            //marcas
+            var y = top + modelos.length * stepY + 50;
+            for (var i = 0; i < viewDays; i++) {
+                var x = viewLeft + i / viewDays * viewWidth;
+                var fecha = final.addDays(-i - offsetDays);
+                if (fecha.getDate() == 1) {
+                    //1 del mes
+                    s += "<line x1='" + x + "' y1='" + top + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:blue;stroke-width:1' />";
+                    if (i > 4 && i < viewDays - 4) {
+                        sdt = formatDate(fecha);
+                        s += "<text x='" + x + "' y='" + (y + 15) + "' fill='blue' style='font-size:12px' text-anchor='middle'>" + sdt + "</text>";
+                    }
+                }
+                else if (fecha.getDay() == 1) {
+                    //lunes
+                    s += "<line x1='" + x + "' y1='" + top + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:green;stroke-width:1' />";
+                    var labelX = i / viewDays * viewWidth;
+                    if (labelX > viewLeft + 30 && labelX < viewLeft + viewWidth - viewRight) {
+                        s += "<text x='" + x + "' y='" + (y + 30) + "' fill='green' style='font-size:12px' text-anchor='middle'>" + tr("Lunes") + "</text>";
+                    }
+                } else
+                    //dias
+                    s += "<line x1='" + x + "' y1='" + (y - 5) + "' x2='" + x + "' y2='" + (y + 5) + "' style='stroke:gray;stroke-width:1' />";
+            }
+
+            //documentos
+            for (var h in lds) {
+                var ld = lds[h];
+                //var x = 180 + ld.dias * 10 * zoom - offsetDays;
+                var fecha = toDate(ld.fecha);
+                var x = viewLeft + (days(final) - days(fecha) - offsetDays) / viewDays * viewWidth;
+                var y = top + indexOf(ld.modeloNombre, modelos) * stepY;
+                if (x >= viewLeft) {
+                    s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + x + "' y='" + y + "' ";
+                    s += "height='" + (79 * 0.5) + "px' width='" + (64 * 0.5) + "px' ";
+                    s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
+
+                    //seguimiento
+                    var sdt = formatShortDate(toDate(ld.fecha));
+                    s += "<text x='" + (x + 12) + "' y='" + (y + 50) + "' fill='blue' style='font-size:10px;cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                }
+            }
+
+            //recta
+            y = top + modelos.length * stepY + 50;
+            var x1 = viewLeft;
+            var x2 = window.innerWidth - viewRight;
+            s += "<line x1='" + x1 + "' y1='" + y + "' x2='" + x2 + "' y2='" + y + "' style='stroke:gray;stroke-width:2' />";
+
+            //inicio (derecha)
+            var sdt = formatDate(inicio.addDays(-offsetDays));
+            s += "<text x='" + x2 + "' y='" + (y + 45) + "' fill='gray' style='font-size:12px' text-anchor='end'>" + sdt + "</text>";
+
+            //fin (izquierda)
+            sdt = formatDate(final.addDays(-offsetDays));
+            s += "<text x='" + x1 + "' y='" + (y + 45) + "' fill='gray' style='font-size:12px' text-anchor='start'>" + sdt + "</text>";
+
+
+            return s;
+        }
+
+        function toDate(d) {
+            return new Date(d.match(/\d+/)[0] * 1);
+        }
+
+        function days(d) {
+            return d.getTime() / 1000 / 60 / 60 / 24;
+        }
+
+        function indexOf(s, l) {
+            for (var i in l)
+                if (l[i] == s)
+                    return i;
+        }
+
+        function getModelos(lds) {
+            //modelos sin duplicar
+            var ret = [];
+            for(var i in lds){
+                var ld = lds[i];
+                var found = false;
+                for(var j in ret)
+                    if (ld.modeloNombre == ret[j])
+                        found = true;
+
+                if (!found) {
+                    ret.push(ld.modeloNombre);
+                }
+            }
+            return ret;
+        } 
+
+        function cut(s, len) {
+            if (s.length <= len)
+                return s;
+            else
+                return s.substring(0, 25) + "...";
+        }
+
+        function getLogDocumento(docID) {
+            for (var i in arbolPersonal.logDecisiones) {
+                var ld = arbolPersonal.logDecisiones[i];
+                if (ld.docID == docID)
+                    return ld;
+            }
+        }
+
+        function openDoc(docID) {
+            var ld = getLogDocumento(docID);
+            window.open(ld.URL);
+        }
+
+        function formatShortDate(date) {
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            return day + '/' + monthNames[monthIndex];
+        }
+
+        function formatDate(date) {
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+
+            return day + '/' + monthNames[monthIndex] + '/' + year % 100;
+        }
+
+        function doSeguimiento(docID) {
+            //envio
+            getHttp("doDecidimos.aspx?actn=seguimiento&docID=" + docID
+                + "&grupo=" + arbolPersonal.nombre
+                + "&width=" + (window.innerWidth - 80)
+                + "&email=" + arbolPersonal.usuario.email
+                + "&clave=" + arbolPersonal.usuario.clave,
+                function (data) {
+                    //muestro
+                    document.getElementById("documento").innerHTML = data;
+
+                    document.getElementById("documento").style.visibility = 'visible';
+                    document.getElementById("documento").style.left = (10) + 'px';
+                    document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
+                    document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
+                });
+        }
+
+        function doCerrarDocumento() {
+            document.getElementById("documento").style.visibility = 'hidden';
+        }
+
+        function doAtras() {
+            document.location = "default.html?grupo=" + grupoParam;
+        }
+    </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+        <!--florwait--------------------------------------------------------------------------------------------------->
+        <img id="florWait" src="res/florWait.gif" style="visibility: hidden;position:absolute;" />
+
+        <svg id="todo"  style="position: absolute;">
+        </svg>
+
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
+    
+        <!--joystick--------------------------------------------------------------------------------------------------->
+        <div id="joystick" style="padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
+            <table>
+                <tr>
+                    <td><img id="jzm" src="res/jzm.png" style='cursor:pointer;' onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();"  /></td>
+                </tr>
+                <tr>
+                    <td><img id="jl" src="res/jl.png" style='cursor:pointer;' onclick="if (offsetDays > 0) {offsetDays -= 1; dibujarTodo(); saveSettings();}" /></td>
+                    <td><img id="j00" src="res/j00.png" style='cursor:pointer;' onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" /></td>
+                    <td><img id="jr" src="res/jr.png" style='cursor:pointer;' onclick="offsetDays += 1; dibujarTodo(); saveSettings();" /></td>
+                </tr>
+                <tr>
+                    <td><img id="jzl" src="res/jzl.png" style='cursor:pointer;' onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" /></td>
+                </tr>
+            </table>
+        </div>
+
+        <!--documento--------------------------------------------------------------------------------------------------->
+        <div id="documento" class="documento" style="position: absolute;">
+        </div>
+    </body>
+</html>

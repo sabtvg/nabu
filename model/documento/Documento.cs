@@ -42,6 +42,20 @@ namespace nabu
             return ret;
         }
 
+        public string getText(string id)
+        {
+            string ret = "";
+            try
+            {
+                ret = (string)getValor(id);
+            }
+            catch (Exception ex)
+            {
+                ret = "";
+            }
+            return ret;
+        }
+
         public Object getValor(string id)
         {
             foreach(Propuesta p in propuestas)
@@ -90,7 +104,7 @@ namespace nabu
             ret += "</table>";
 
             Modelo m = grupo.organizacion.getModelo(modeloID);
-            ret += "<br><br><input type='button' class='btn' value='" + m.tr("Cerrar") + "' onclick='doCerrarDocumento();' />";
+            ret += "<br><br><input type='button' class='btn' value='" + Tools.tr("Cerrar", grupo.idioma) + "' onclick='doCerrarDocumento();' />";
             return ret;
         }
 

@@ -84,7 +84,7 @@ namespace nabu
             {
                 foreach (Grupo g in grupos)
                 {
-                    if (g.nombre == nombre)
+                    if (g.nombre.ToLower() == nombre.ToLower())
                     {
                         ret = g;
                     }

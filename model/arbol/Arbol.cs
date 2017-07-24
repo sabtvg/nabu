@@ -20,9 +20,6 @@ namespace nabu
         public bool simulacion = false;
         public Usuario lastSimUsuario;
 
-        //log de consensos alcanzados
-        public List<LogDocumento> logDocumentos = new List<LogDocumento>();
-
         //condicion de consenso
         public float minSiPc = 60; //porcentaje minimo de usuarios implicados en el debate (en una rama) para alcanzar consenso
         public float maxNoPc = 15; //porcentaje maximo de usuarios en otras ramas del mismo debate (en una rama) para alcanzar consenso
@@ -38,6 +35,21 @@ namespace nabu
         public List<Modelo> getModelos()
         {
             return grupo.organizacion.getModelos();
+        }
+
+        public void caerFlores(Usuario u){
+            //verifico caducadas
+            foreach (Flor f in u.flores)
+            {
+                if (f.id != 0)
+                {
+                    Nodo n = getNodo(f.id);
+                    if (n != null)
+                    {
+                        quitarFlor(n, u);
+                    }                                    
+                }
+            }
         }
 
         public Nodo getMayorAgregar(int notLikeId) {
@@ -295,7 +307,7 @@ namespace nabu
 
         public LogDocumento getLogDocumento(int docID)
         {
-            foreach (LogDocumento ld in logDocumentos)
+            foreach (LogDocumento ld in grupo.logDecisiones)
             {
                 if (ld.docID == docID)
                     return ld;
@@ -325,6 +337,7 @@ namespace nabu
                     int docID = lastDocID++;
                     string fname = m.nombre + "_" + docID.ToString("0000");
                     string docPath = "documentos\\" + m.carpeta() + "\\" + docID.ToString("0000");
+                    string URL = grupo.URL + "/grupos/" + nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
 
                     //creo carpeta se salida
                     //crearCarpeta(docPath);
@@ -341,10 +354,10 @@ namespace nabu
                     }
 
                     //guardo HTML
-                    generarDocumentoHTML(n, fdate, fname, docPath);
+                    generarDocumentoHTML(n, fdate, fname, docPath, URL);
 
                     //guardo documento
-                    Documento doc = crearDocumento(n, fdate, fname, docPath);
+                    Documento doc = crearDocumento(n, fdate, fname, docPath, URL);
 
                     //ejecuto proceso de consenso alcanzado
                     try
@@ -360,13 +373,11 @@ namespace nabu
                     //guardo el documento
                     doc.save();
 
-                    grupo.save(grupo.path + "\\" + docPath ); //guardo copia del arbol
-
                     //notifico via email a todos los socios
                     if (!simulacion)
                     {
                         foreach (Usuario u in grupo.usuarios)
-                            Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, grupo.path + "\\" + docPath + "\\" + nombre + ".json");
+                            Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, URL);
                     }
 
                     //guardo el log historico en el arbol
@@ -386,8 +397,8 @@ namespace nabu
                     ld.flores = n.flores;
                     ld.negados = n.negados;
                     ld.carpeta = m.carpeta();
-                    ld.URL = grupo.URL + "/grupos/" + nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
-                    logDocumentos.Add(ld);
+                    ld.URL = URL;
+                    grupo.logDecisiones.Add(ld);
 
                     //marco a todos los nodos del debate y sus propuestas
                     for (int i = 0; i < pathn.Count - 1; i++) //menos la raiz
@@ -397,6 +408,8 @@ namespace nabu
                         foreach (Nodo n2 in pathn[i].children)
                             marcarConsenso(n2);
                     }
+
+                    grupo.save(grupo.path + "\\" + docPath); //guardo copia del arbol
 
                     ret = true;
                 }
@@ -417,7 +430,7 @@ namespace nabu
             }
         }
 
-        private Documento crearDocumento(Nodo n, DateTime now, string fname, string docPath)
+        private Documento crearDocumento(Nodo n, DateTime now, string fname, string docPath, string URL)
         {
             Modelo m = getModelo(n.modeloID);
             Documento doc = new Documento();
@@ -426,8 +439,7 @@ namespace nabu
             doc.fname = fname;
             doc.modeloID = n.modeloID;
             doc.path = grupo.path + "\\" + docPath + "\\" + fname + ".json";
-            doc.URLPath = grupo.URL + "/grupos/" + grupo.nombre + "/" + docPath.Replace('\\','/') + "/" + fname + ".html";
-
+            doc.URLPath = URL;
             //obtengo el titulo
             //debo dibujar el documento
             //junto propuestas
@@ -450,7 +462,7 @@ namespace nabu
             return doc;
         }
 
-        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath)
+        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL)
         {
             List<Nodo> pathn = getPath(n.id);
             Modelo m = getModelo(n.modeloID);
@@ -465,7 +477,6 @@ namespace nabu
             }
            
             //firma consenso
-            string URL = grupo.URL + "/grupos/" + nombre + "/" + docPath.Replace("\\","/") + "/" + fname + ".html";
             string ret = "";
             ret += "Documento escrito de forma cooperativa.<br>";
             ret += "Grupo: " + this.nombre + "<br>";
@@ -589,7 +600,7 @@ namespace nabu
 
         public ArbolPersonal getArbolPersonal(string email, int nuevoNodoID)
         {
-            Usuario u = grupo.getUsuario(email);
+            Usuario u = grupo.getUsuarioHabilitado(email);
             if (u != null)
             {
                 ArbolPersonal ap = new ArbolPersonal();
@@ -603,8 +614,8 @@ namespace nabu
                 ap.simulacion = simulacion;
                 ap.nuevoNodoID = nuevoNodoID;
                 ap.born = born;
-                ap.documentos = logDocumentos.Count;
-                ap.idioma = grupo.idioma;
+                ap.documentos = grupo.logDecisiones.Count;
+                ap.idioma = grupo.idioma.ToLower();
                 ap.organizacion = grupo.organizacion.GetType().Name;
                 ap.padreNombre = grupo.padreNombre;
                 ap.padreURL = grupo.padreURL;
@@ -621,23 +632,24 @@ namespace nabu
                 ap.minSiValue = minSiValue;
                 ap.maxNoValue = maxNoValue;
 
-                ap.logDocumentos = logDocumentos;
+                ap.logDecisiones = grupo.logDecisiones;
+                ap.logResultados = grupo.logResultados;
 
                 return ap;
             }
             else
-                throw new appException("El usuario no existe");
+                throw new appException("El usuario no existe o no esta habilitado");
         }
 
         public Nodo addNodo(Nodo padre, Propuesta prop){
             //verifico que el usuario tiene al menos una flor disponible
-            Usuario u = grupo.getUsuario(prop.email);
-            if (nombre == null)
-                throw new appException("Nombre de nodo no puede ser vacio");
+            Usuario u = grupo.getUsuarioHabilitado(prop.email);
+            if (prop.etiqueta == "")
+                throw new appException(Tools.tr("Nombre de nodo no puede ser vacio", grupo.idioma));
             else if (u == null)
-                throw new appException("El usuario no existe");
+                throw new appException(Tools.tr("El usuario no existe o no esta habilitado", grupo.idioma));
             else if (padre == null)
-                throw new appException("El nodo no existe");
+                throw new appException(Tools.tr("El nodo no existe", grupo.idioma));
             else
             {
                 //agrego nuevo nodo

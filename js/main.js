@@ -1,20 +1,4 @@
-var frasesDelDia = [
-    "Estamos tod@s juntos en esto",
-    "Tod@s somos distint@s, pero tod@s tenemos algo en com&uacute;n.<br>Aceptamos la diversidad como parte de la vida, no la juzgamos.<br>Buscamos el lado com&uacute;n<br>y construimos sobre &eacute;l.<br>No competimos, cooperamos.",
-    "No competimos, cooperamos.",
-    "No se puede resolver los problemas<br>con la misma mentalidad con que fueron creados<br>hay que cambiar la manera de pensar primero",
-    "Construyamos un bonito &aacute;rbol, <br>un &aacute;rbol colectivo.",
-    "Tod@s triunfamos o tod@s fracasamos,<br>tod@s damos y tod@s recibimos.",
-    "La meta es la unidad, <br>no la unanimidad.",
-    "Agr&uacute;pate y conquistar&aacute;s.",
-    "Sincronizamos intereses, <br>tomamos decisiones, <br>generamos acciones.",
-    "Buscamos eficiencia, <br>no beneficio.",
-    "No necesitamos representantes.",
-    "No te preguntes qu&eacute; puede hacer la cooperativa por ti, <br>preg&uacute;ntate qu&eacute; puedes hacer t&uacute; por ella.",
-    "Bienvenid@ al juego de la cooperaci&oacute;n.",
-    "Un consenso no se elige, se construye.",
-    "Si educaramos para la diversidad,<br>toda rareza ser&iacute;a bienvenida,<br>no habr&iacute;a nadie a quien juzgar,<br>y serias tan libre como puedas so&ntilde;ar.",
-    "El consenso es un proceso cooperativo"];
+var frasesDelDia = 16;
 var frasesVistas = [];
 
 var selectedNode;
@@ -33,6 +17,8 @@ var scalex = window.innerWidth / 1920;
 var scaley = window.innerHeight / 955; //1080-bordes de pantalla
 var docsTimeScale = 15;
 var usuario;
+var grupoParam;
+var emailParam;
 
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
@@ -51,6 +37,37 @@ var arbolPersonal;
 
 //modelos de documentos
 var modelos;
+
+$(document).mousemove(function (event) {
+    if (!preguntarAlSalir) {
+        if (event.which == 1 && !event.ctrlKey) {
+            //scroll
+            if (lastMouse) {
+                translatex -= lastMouse.clientX - event.clientX;
+                translatey -= lastMouse.clientY - event.clientY;
+                //document.body.style.cursor = "all-scroll";
+                event.preventDefault();
+                translateArbol(translatex, translatey);
+            }
+            lastMouse = { clientX: event.clientX, clientY: event.clientY };
+        }
+        else if (event.which == 1 && event.ctrlKey) {
+            //zoom
+            if (lastMouse) {
+                treeScale += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                //document.body.style.cursor = "w-resize";
+                event.preventDefault();
+                dibujarArbol(arbolPersonal.raiz);
+            }
+            lastMouse = { clientX: event.clientX, clientY: event.clientY };
+        }
+        else {
+            lastMouse = null;
+            //document.getElementById("todo").style.cursor = "default";
+        }
+        //$("div").text(event.which + ", " + event.ctrlKey);
+    }
+});
 
 function doLoad() {
     //settings
@@ -100,43 +117,114 @@ function doLoad2() {
 
         treeScale = scale; //valor default
 
+        //obtengo datos de los parametros
+        grupoParam = getParameterByName('grupo');
+        emailParam = getParameterByName('email');
+        idioma = getParameterByName('idioma');
+        if (idioma == null) idioma = "es";
+
         //si hay cookie, login automatico si no login normal
-        var cookie = getCookie("nabu");
-        if (cookie == "") {
-            //login normal
-            loginEffectIn();
-            calcularResize();
-        }
-        else {
-            //login automatico to server
-            //obtengo datos de cookie
-            var vals = cookie.split("|");
-            var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
-
-            //obtengo datos de los parametros
-            var grupoParam = getParameterByName('grupo');
-            var emailParam = getParameterByName('email');
-            var claveParam = getParameterByName('clave');
-
-            if (grupoParam && emailParam && claveParam) {
-                //intento ligin Automatico
-                loginAutomatico(emailParam, claveParam, grupoParam);
-            }
-            else if (grupoParam && grupoParam != usuario.grupo) {
-                //esta entrando a otro arbol, envio a login
-                //login normal
+        var cookie = "";
+        if (grupoParam && grupoParam != "" && grupoParam != "null") {
+            cookie = getCookie("nabu-" + grupoParam.replace(' ', ''));
+            if (cookie == "") {
+                //login normal con el grupo parametro
                 loginEffectIn();
                 calcularResize();
             }
             else {
-                loginAutomatico(usuario.email, usuario.clave, usuario.grupo);
+                //login automatico to server
+                //obtengo datos de cookie
+                var vals = cookie.split("|");
+                var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                idioma = vals[5]; //para el tradcutor
+                traducir();
+
+                if (emailParam && emailParam == usuario.email) {
+                    //la cookie es de este usuario
+                    //intento login Automatico
+                    loginAutomatico(emailParam, usuario.clave, grupoParam);
+                }
+                else if (emailParam && emailParam != usuario.email) {
+                    //no tengo la clave de este usuario
+                    //login normal con el grupo parametro
+                    loginEffectIn();
+                    calcularResize();
+                }
+                else {
+                    //login con los datos de la cookie
+                    loginAutomatico(usuario.email, usuario.clave, usuario.grupo);
+                }
             }
+        }
+        else {
+            //no hay parametro de grupo, enseño lista de grupos
+            gruposEffectIn();
+            calcularResize();
         }
     }
     catch (ex) {
         //envio al server
         sendException(ex, "doLoad2");
     }
+}
+
+function traducir() {
+    document.getElementById("loginAltaUsuario").innerHTML = tr("Alta de usuario");
+    document.getElementById("btnEntrar").value = tr("Entrar");
+    document.getElementById("email").placeholder = tr("email");
+    document.getElementById("clave").placeholder = tr("clave");
+    document.getElementById("tit1").innerHTML = tr("Democracia interactiva");
+    document.getElementById("btnCancelar").value = tr("Cancelar");
+    document.getElementById("lnkSim").innerHTML = tr("simulacion");
+    document.getElementById("mejorVisto").innerHTML = tr("Mejor visto en");
+    document.getElementById("version").innerHTML = tr("version beta");
+    document.getElementById("lnkAyuda").innerHTML = tr("Ayuda");
+    document.getElementById("titulo1").innerHTML = tr("Cooperativa 2.0");
+    document.getElementById("titulo2").innerHTML = tr("Democracia interactiva");
+    document.getElementById("mnuOption1").innerHTML = tr("El bosque");
+    document.getElementById("mnuOption2").innerHTML = tr("El arbol");
+    document.getElementById("mnuOption3").innerHTML = tr("Usuarios");
+    document.getElementById("mnuOption4").innerHTML = tr("Mailer");
+    document.getElementById("mnuOption5").innerHTML = tr("Acta");
+    document.getElementById("oldPass").placeholder = tr("Clave actual");
+    document.getElementById("newPass").placeholder = tr("Nueva clave");
+    document.getElementById("repeat").placeholder = tr("Repitela");
+    document.getElementById("btnCCCambiar").value = tr("Cambiar");
+    document.getElementById("btnCCCancelar").value = tr("Cancelar");
+    document.getElementById("auTit1").innerHTML = tr("Alta de usuario");
+    document.getElementById("auTit2").innerHTML = tr("auTit2");
+    document.getElementById("altaUsuarioNombre").placeholder = tr("Nombre completo");
+    document.getElementById("altaUsuarioEmail").placeholder = tr("Email");
+    document.getElementById("auEnviar").value = tr("Enviar solicitud");
+    document.getElementById("auCerrar").innerHTML = tr("Cerrar");
+    document.getElementById("ufTit1").innerHTML = tr("ufTit1");
+    document.getElementById("ufAceptar").value = tr("Aceptar");
+    document.getElementById("ufCancelar").value = tr("Cancelar");
+}
+
+function gruposEffectIn() {
+    var s = "<h1>" + tr("Grupos") + "</h1>"; 
+    for (i in config.grupos) {
+        var grupo = config.grupos[i];
+        if (i > 0)
+            s += "  -  ";
+        s += "<a href='default.html?grupo=" + grupo;
+        if (idioma)
+            s += "&idioma=" + idioma;
+        s += "' style='font-size:24px'>" + grupo + "</a>"
+    }
+    s += "<br><br><a href='creararbol.html?idioma=" + idioma + "' style='font-size:24px'>" + tr("Crear nuevo grupo") + "</a>"
+
+    document.getElementById("grupos").style.visibility = "visible";
+    document.getElementById("grupos").style.top = window.innerHeight / 2 - 250 + 'px';
+    document.getElementById("grupos").style.left = (window.innerWidth / 2 - 400) + 'px';
+    document.getElementById("grupos").innerHTML = s;
+    //wait
+    document.getElementById("florWait").style.visibility = "hidden";
+
+    estado = 'grupos';
 }
 
 function loginAutomatico(email, clave, grupo) {
@@ -162,11 +250,16 @@ function loginAutomatico(email, clave, grupo) {
                     //guardo el arbol
                     arbolPersonal = loginData.arbolPersonal;
 
+                    //para el traductor
+                    idioma = arbolPersonal.idioma;
+
                     //guardo los modelos
                     modelos = loginData.modelos;
 
                     //guardo cookie
-                    setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre + "|" + arbolPersonal.usuario.isAdmin, 7);
+                    setCookie("nabu-" + arbolPersonal.nombre,
+                        arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + arbolPersonal.nombre + "|" + arbolPersonal.usuario.isAdmin + "|" + grupo.idioma,
+                        7);
 
                     //activo menuppal
                     doMenuppal();
@@ -183,7 +276,7 @@ function loginAutomatico(email, clave, grupo) {
 
 function preguntar() {
     if (preguntarAlSalir)
-        return "Se perderan los datos no guardados";
+        return tr("Se perderan los datos no guardados");
 }
 
 function calcularResize() {
@@ -212,18 +305,19 @@ function calcularResize() {
     document.getElementById("pie").style.top = (window.innerHeight - 25).toFixed(0) + 'px';
     document.getElementById("pie").style.left = (window.innerWidth / 2 - 300).toFixed(0) + 'px';
     document.getElementById("pie").style.visibility = 'visible';
+    document.getElementById("lnkSim").href = 'simulacion.html?grupo=' + grupoParam;
 
     //frase del dia
     //busco una no vista
     var cant = 0;
-    var index = Math.round(Math.random() * (frasesDelDia.length - 1));
-    while (frasesVistas.indexOf(index) >= 0 && cant < frasesDelDia.length) {
+    var index = Math.round(Math.random() * (frasesDelDia - 1));
+    while (frasesVistas.indexOf(index) >= 0 && cant < frasesDelDia) {
         cant++;
-        index = Math.round(Math.random() * (frasesDelDia.length - 1));
+        index = Math.round(Math.random() * (frasesDelDia - 1));
     }
-    if (cant >= frasesDelDia.length)
+    if (cant >= frasesDelDia)
         frasesVistas = [];
-    document.getElementById("tip").innerHTML = frasesDelDia[index];
+    document.getElementById("tip").innerHTML = tr("Frase" + index);
     frasesVistas.push(index);
 
     //background
@@ -233,8 +327,6 @@ function calcularResize() {
     document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
 
     //resize del menuppal segun pantalla
-    var idioma = grupo ? grupo.idioma : "ES"; //por si aun no se ha cargado el grupo
-
     var menuscale = scaley * 1.1;
     document.getElementById("padrenombre").style.width = 800 * menuscale + 'px';
     document.getElementById("padrenombre").fontSize = (45 * scale).toFixed(0) + 'px';
@@ -267,25 +359,30 @@ function calcularResize() {
     document.getElementById("ppal2").src = "res/" + idioma + "/noticias.png";
     document.getElementById("ppal2").onmouseover = "this.src='res/" + idioma + "/noticias2.png';";
     document.getElementById("ppal2").onmouseout = "this.src='res/" + idioma + "/noticias.png';";
-    document.getElementById("ppal2").title = tr("Publicación de argumentos");
+    document.getElementById("ppal2").title = tr("Publicacion de argumentos");
     document.getElementById("ppal2").style.width = 269 * menuscale + 'px';
     document.getElementById("ppal2").style.height = 199 * menuscale + 'px';
     document.getElementById("ppal2").style.left = 35 * menuscale + 'px';
     document.getElementById("ppal2").style.top = 282 * menuscale + 'px';
 
-    document.getElementById("ppal3").src = "res/" + idioma + "/vert.png";
-    document.getElementById("ppal3").onmouseover = "this.src='res/" + idioma + "/vert2.png';";
-    document.getElementById("ppal3").onmouseout = "this.src='res/" + idioma + "/vert.png';";
-    document.getElementById("ppal3").title = tr("Ambito operativo");
-    document.getElementById("ppal3").style.width = 336 * menuscale + 'px';
-    document.getElementById("ppal3").style.height = 213 * menuscale + 'px';
-    document.getElementById("ppal3").style.left = 488 * menuscale + 'px';
-    document.getElementById("ppal3").style.top = 179 * menuscale + 'px';
+    document.getElementById("ppal3").src = "res/" + idioma + "/estructuras.png";
+    document.getElementById("ppal3").title = tr("Estructuras");
+    document.getElementById("ppal3").style.width = 240 * menuscale + 'px';
+    document.getElementById("ppal3").style.height = 90 * menuscale + 'px';
+    document.getElementById("ppal3").style.left = 530 * menuscale + 'px';
+    document.getElementById("ppal3").style.top = 200 * menuscale + 'px';
+
+    document.getElementById("ppal4").src = "res/" + idioma + "/seguimiento.png";
+    document.getElementById("ppal4").title = tr("Seguimiento");  
+    document.getElementById("ppal4").style.width = 240 * menuscale + 'px';
+    document.getElementById("ppal4").style.height = 84 * menuscale + 'px';
+    document.getElementById("ppal4").style.left = 530 * menuscale + 'px';
+    document.getElementById("ppal4").style.top = 287 * menuscale + 'px';
 
     document.getElementById("ppal5").src = "res/" + idioma + "/docConsensos.png";
     document.getElementById("ppal5").onmouseover = "this.src='res/" + idioma + "/docConsensos2.png';";
     document.getElementById("ppal5").onmouseout = "this.src='res/" + idioma + "/docConsensos.png';";
-    document.getElementById("ppal5").title = tr("Documento de consenso alcanzados");
+    document.getElementById("ppal5").title = tr("Documento de decision alcanzados");
     document.getElementById("ppal5").style.width = 124 * menuscale + 'px';
     document.getElementById("ppal5").style.height = 143 * menuscale + 'px';
     document.getElementById("ppal5").style.left = 338 * menuscale + 'px';
@@ -328,11 +425,13 @@ function calcularResize() {
     document.getElementById("ppal9").style.left = 140 * menuscale + 'px';
     document.getElementById("ppal9").style.top = 258 * menuscale + 'px';
 
+    document.getElementById("ppal10").src = "res/" + idioma + "/politico.png";
     document.getElementById("ppal10").style.width = 35 * menuscale + 'px';
     document.getElementById("ppal10").style.height = 230 * menuscale + 'px';
     document.getElementById("ppal10").style.left = 0 * menuscale + 'px';
     document.getElementById("ppal10").style.top = 170 * menuscale + 'px';
 
+    document.getElementById("ppal11").src = "res/" + idioma + "/operativo.png";
     document.getElementById("ppal11").style.width = 35 * menuscale + 'px';
     document.getElementById("ppal11").style.height = 230 * menuscale + 'px';
     document.getElementById("ppal11").style.left = 839 * menuscale + 'px';
@@ -389,8 +488,19 @@ function loginEffectIn(){
             }, 100);
         }
 
+        //atras
+        document.getElementById("atras").style.visibility = "visible";
+
+        //nombre de grupo
+        document.getElementById("loginGrupo").style.left = (window.innerWidth / 2 - 200) + 'px';
+        document.getElementById("loginGrupo").style.top = '50px';
+        document.getElementById("loginGrupo").style.visibility = "visible";
+        document.getElementById("loginGrupo").innerHTML = grupoParam;
+
         //wait
         document.getElementById("florWait").style.visibility = "hidden";
+
+        estado = 'login';
     }
     catch (ex) {
         //envio al server
@@ -415,6 +525,7 @@ function loginEffectOut() {
         document.getElementById("loginFlor").style.visibility = "hidden";
         document.getElementById("tip").style.visibility = "hidden";
     }, 1000);
+    document.getElementById("loginGrupo").style.visibility = "hidden";
 }
 
 function animate(time) {
@@ -424,27 +535,6 @@ function animate(time) {
 
 function getConfig(data) {
     config = JSON.parse(data);
-
-    //fijo arbol segun querystring
-    var grupo = getParameterByName('grupo') + "";
-    var selected = false;
-
-    //cargo la lista de arboles
-    var list = config.grupos;
-    var grupos = document.getElementById("grupos");
-    for (var q in list) {
-        var option = document.createElement("option");
-        option.text = list[q];
-        if (list[q].toLowerCase() == grupo.toLowerCase()) {
-            option.selected = true;
-            selected = true;
-        }
-        grupos.add(option);
-    }
-
-    if (selected)
-        grupos.disabled = true;
-
     visual = getVisualizacion(config);
 }
 
@@ -452,13 +542,12 @@ function doLogin() {
     email = document.getElementById("email").value;
     var clave = document.getElementById("clave").value;
     var loginResponse = document.getElementById("loginResponse");
-    var grupos = document.getElementById("grupos");
     loginResponse.innerHTML = '';
 
     //login to server
     getHttp("doMain.aspx?actn=login&email=" + email
         + "&clave=" + clave
-        + "&grupo=" + grupos.value,
+        + "&grupo=" + grupoParam,
         function (data) {
             if (data.substring(0, 6) == "Error=") {
                 //ha habido un error
@@ -480,7 +569,8 @@ function doLogin() {
                 modelos = loginData.modelos;
 
                 //guardo cookie
-                setCookie("nabu", arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + grupo.nombre + "|" + arbolPersonal.usuario.isAdmin, 7);
+                setCookie("nabu-" + grupo.nombre
+                    , arbolPersonal.usuario.nombre + "|" + arbolPersonal.usuario.email + "|" + arbolPersonal.usuario.clave + "|" + grupo.nombre + "|" + arbolPersonal.usuario.isAdmin + "|" + grupo.idioma, 7);
 
                 //efecto login out
                 loginEffectOut();
@@ -497,7 +587,7 @@ function doMenuppal() {
     //menu ppal
     setTimeout(function () {
         //link al padre
-        var padreURL = arbolPersonal.padreURL + "/default.html?grupo=" + arbolPersonal.padreNombre + "&email=" + arbolPersonal.usuario.email + "&clave=" + arbolPersonal.usuario.clave;
+        var padreURL = arbolPersonal.padreURL + "/default.html?grupo=" + arbolPersonal.padreNombre + "&email=" + arbolPersonal.usuario.email;
         document.getElementById("padrenombre").innerHTML = "<a href='" + padreURL + "'>" + arbolPersonal.padreNombre + "</a>";
 
         //nombre del arbol
@@ -508,7 +598,7 @@ function doMenuppal() {
         var hijos = "<nobr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         for (q in arbolPersonal.hijos) {
             var thijo = arbolPersonal.hijos[q];
-            var hijoURL = thijo.m_Item1 + "/default.html?grupo=" + thijo.m_Item2 + "&email=" + arbolPersonal.usuario.email + "&clave=" + arbolPersonal.usuario.clave;
+            var hijoURL = thijo.m_Item1 + "/default.html?grupo=" + thijo.m_Item2 + "&email=" + arbolPersonal.usuario.email;
             hijos += "<td><a href='" + hijoURL + "'>" + thijo.m_Item2 + "</a></td>";
             hijos += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         }
@@ -532,12 +622,31 @@ function doMenuppal() {
         //panel usuario        
         document.getElementById("panelUsuario").style.visibility = 'visible';
 
-        //adminOptions
-        document.getElementById("adminOptions").style.visibility = arbolPersonal.usuario.isAdmin ? "visible" : "hidden";
+        //opciiones de menu
+        if (arbolPersonal.usuario.isAdmin) {
+            //adminOptions
+            document.getElementById("mnuOption1").style.visibility = "visible";
+            document.getElementById("mnuOption1").href = "bosque.html?grupo=" + grupoParam;
+            document.getElementById("mnuOption2").style.visibility = "visible";
+            document.getElementById("mnuOption2").href = "modificararbol.html?grupo=" + grupoParam;
+            document.getElementById("mnuOption3").style.visibility = "visible";
+            document.getElementById("mnuOption3").href = "usuarios.html?grupo=" + grupoParam;
+            document.getElementById("mnuOption4").style.visibility = "visible";
+            document.getElementById("mnuOption4").href = "mailer.html?grupo=" + grupoParam;
+        }
+        else {
+            //user options
+            document.getElementById("mnuOption1").style.visibility = "visible";
+            document.getElementById("mnuOption1").href = "bosque.html?grupo=" + grupoParam;
+            document.getElementById("mnuOption3").style.visibility = "visible";
+            document.getElementById("mnuOption3").href = "verusuarios.html?grupo=" + grupoParam;
+        }
+        if (arbolPersonal.usuario.isSecretaria) {
+            //adminOptions
+            document.getElementById("mnuOption5").style.visibility = "visible";
+            document.getElementById("mnuOption5").href = "actas.html?grupo=" + grupoParam;
+        }
     
-        //user options
-        document.getElementById("userOptions").style.visibility = arbolPersonal.usuario.isAdmin ? "hidden" : "visible";
-
         //menuppal
         //var menuscale = scale * 1.1;
         //document.getElementById("menuppal").style.top = (window.innerHeight / 2 - 300 * menuscale).toFixed(0) + 'px';
@@ -600,9 +709,9 @@ function doAltaUsuarioEnviar() {
     var msg = document.getElementById("altaUsuarioMsg");
 
     if (nombre == "")
-        msg.innerHTML = "<font color=green>Nombre no puede ser vac&iacute;o</font>";
+        msg.innerHTML = "<font color=green>" + tr("Nombre no puede ser vacio") + "</font>";
     else if (email == "")
-        msg.innerHTML = "<font color=green>Email no puede ser vac&iacute;o</font>";
+        msg.innerHTML = "<font color=green>" + tr("Email no puede ser vacio") + "</font>";
     else {
         getHttp("doMain.aspx?actn=sendMailAlta&grupo=" + grupos.value
             + "&nombre=" + nombre.value
@@ -618,7 +727,7 @@ function doAltaUsuarioEnviar() {
                 else {
                     nombre.value = "";
                     email.value = "";
-                    msg.innerHTML = "<font color=green>Mensaje enviado al jardinero</font>";
+                    msg.innerHTML = "<font color=green>" + tr("Mensaje enviado al coordinador") + "</font>";
                 }
             });
     }
@@ -630,7 +739,7 @@ function doCambiarClave() {
     var repeat = document.getElementById("repeat").value;
 
     if (newPass != repeat)
-        document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>Las nuevas claves no coinciden</font>";
+        document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + tr("Las nuevas claves no coinciden") + "</font>";
     else {
         getHttp("doMain.aspx?actn=cambiarClave&grupo=" + arbolPersonal.nombre
             + "&email=" + arbolPersonal.usuario.email
@@ -654,22 +763,14 @@ function doHideCambiarClave() {
 }
 
 function doAtras() {
-    if (estado == 'listaConsensos') {
-        //listaConsensos voy a menuppal
+    document.getElementById("cambiarClave").style.visibility = 'hidden';
 
-        document.getElementById("panelListaConsensos").style.visibility = "hidden";
-
-        estado = 'menuppal';
-        actualizarDatosGrupo();
-
-        //activo el menuppal
-        if (visual.level == 1) {
-            document.getElementById("menuppal").style.visibility = "visible";
-        }
-        else {
-            //menu ppal
-            efectoOpacity(document.getElementById("menuppal"), 0, 0, 1, TWEEN.Easing.Cubic.Out);
-        }
+    if (estado == 'login') {
+        //login voy a grupos
+        loginEffectOut();
+        setTimeout(gruposEffectIn, 600); //doy tiempo al login a irse
+        calcularResize();
+        document.getElementById("atras").style.visibility = "hidden";
     }
     else if (estado == 'aprendemos') {
         //aprendemos voy a menuppal
@@ -700,7 +801,7 @@ function doAtras() {
 
         arbolPersonal = null;
         propuestas = [];
-        setCookie("nabu", "", 1);
+        setCookie("nabu-" + grupoParam, "", 1);
 
         document.getElementById("panelUsuario").style.visibility = 'hidden';
         document.getElementById("titulo").style.visibility = "hidden";
@@ -708,15 +809,18 @@ function doAtras() {
         document.getElementById("clave").value = '';
         setTimeout(loginEffectIn, 600); //doy tiempo al menu a irse
 
-        document.getElementById("adminOptions").style.visibility = "hidden";
-        document.getElementById("userOptions").style.visibility = "hidden";
+        document.getElementById("mnuOption1").style.visibility = "hidden";
+        document.getElementById("mnuOption2").style.visibility = "hidden";
+        document.getElementById("mnuOption3").style.visibility = "hidden";
+        document.getElementById("mnuOption4").style.visibility = "hidden";
+        document.getElementById("mnuOption5").style.visibility = "hidden";
         document.getElementById("panelUsuario").style.visibility = 'hidden';
 
         document.getElementById("atras").style.visibility = "hidden";
         root = { "name": "?" };
         clearInterval(timerFlores);
 
-        estado = '';
+        estado = 'login';
     }
     else if (estado == 'decidimos') {
         //decidimos voy a menuppal
@@ -728,12 +832,12 @@ function doAtras() {
 
         //efecto de salida: podo el arbol
         var children = arbolPersonal.raiz.children;
-        var logDocumentos = arbolPersonal.logDocumentos;
+        var logDecisiones = arbolPersonal.logDecisiones;
         arbolPersonal.raiz.children = [];
-        arbolPersonal.logDocumentos = [];
+        arbolPersonal.logDecisiones = [];
         dibujarArbol(arbolPersonal.raiz);
         arbolPersonal.raiz.children = children;
-        arbolPersonal.logDocumentos = logDocumentos;
+        arbolPersonal.logDecisiones = logDecisiones;
 
 
         document.getElementById("joystick").style.visibility = 'hidden';
@@ -742,6 +846,7 @@ function doAtras() {
         document.getElementById("documento").style.visibility = 'hidden';
         if (menu) menu.style.visibility = "hidden";
         clearInterval(timerFlores);
+        clearInterval(timerArbol);
         hidePanelDer();
         hidePanelIzq();
 
@@ -773,118 +878,18 @@ function resize() {
     calcularResize();
 }
 
-function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    url = url.toLowerCase();
-    name = name.toLowerCase();
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+function doDecisiones() {
+    document.location = "decisiones.html?grupo=" + grupoParam;
 }
 
-function doListaConsensos() {
-    //desde menu ppal
-    if (visual.level == 1)
-        document.getElementById("menuppal").style.visibility = "hidden";
-    else
-        efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Cubic.Out, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
-
-    document.getElementById("menuppal").style.visibility = "hidden";
-    document.getElementById("panelGrupo").style.visibility = 'hidden';
-
-    //panel lista consensos
-    document.getElementById("panelListaConsensos").style.height = (850 * scaley).toFixed(0) + 'px';
-    document.getElementById("panelListaConsensos").style.width = (1550 * scalex).toFixed(0) + 'px';
-    document.getElementById("panelListaConsensos").style.top = '10px';
-    document.getElementById("panelListaConsensos").style.left = '90px';
-    showListaConsensos();
-
-    if (visual.level == 1)
-        document.getElementById("panelListaConsensos").style.visibility = 'visible';
-    else 
-        efectoOpacity(document.getElementById("panelListaConsensos"), 0, 0, 1, TWEEN.Easing.Linear.None);
-    
-    estado = 'listaConsensos';
+function doResultados() {
+    document.location = "resultados.html?grupo=" + grupoParam;
 }
 
-function showListaConsensos() {
-    //obtengo ancho total
-    var ret = "";
-    var width = 0;
-    for (var i in arbolPersonal.logDocumentos) {
-        var ld = arbolPersonal.logDocumentos[i];
-        if (150 + docsTimeScale * ld.dias > width) width = 150 + docsTimeScale * ld.dias;
-    }
-    width += 100;
-
-    //creo listado
-    var ret = "";
-    ret += "<div style='height:" + (modelos.length * 60 + 140) + "px;width=" + width.toFixed(0) + "px'>";
-    ret += "<span style='position:absolute;left:15px;top:25px;vertical-align:middle' class='titulo0'>" + tr("Consensos");
-    ret += "&nbsp;&nbsp;&nbsp;<img src='res/jzm.png' style='cursor:pointer;' onclick='docsTimeScale+=5;showListaConsensos();' />";
-    ret += "<img src='res/jzl.png' style='cursor:pointer;' onclick='if (docsTimeScale > 10) {docsTimeScale-=5;showListaConsensos();}' />";
-    ret += "</span>";
-    for (var i in modelos) {
-        var m = modelos[i];
-        var top = 80 + (i * 75);
-        ret += "<div style='position:absolute;text-align:right;left:0px;top:" + (top + 20) + "px;width:150px;'>" + m.nombre + "</div>";
-        ret += doListaConsensosModelo(top, m.id);
-    }
-    ret += "</div>"
-    document.getElementById("panelListaConsensos").innerHTML = ret;
-    return ret;
+function doEstructuras() {
+    document.location = "estructuras.html?grupo=" + grupoParam;
 }
 
-function doListaConsensosModelo(top, modeloID) {
-    var ret = "";
-    for (var i in arbolPersonal.logDocumentos) {
-        var ld = arbolPersonal.logDocumentos[i];
-        if (ld.modeloID == modeloID) {
-            var x = (150 + docsTimeScale * ld.dias).toFixed(0);
-            var tit = ld.titulo;
-            if (tit.length > 20) tit = tit.substring(0, 20) + '...';
-            ret += "<div style='position:absolute;left:" + x + "px;top:" + top + "px;width:162px;height:80px;'>";
-            ret += "<table>";
-            ret += "<tr>";
-            ret += "<td><img src='" + ld.icono + "' style='height: 40px; width:32px;'></td>";                      
-            ret += "<td style='font-size:12px;cursor:pointer;'><a href='" + ld.URL + "' target='_blank'>" + tit + "<br>" + ld.fname + "<br>" + formatDate(jsonToDate(ld.fecha)) + "</a></td>";
-            ret += "</tr>";
-            ret += "<tr>";
-            ret += "<td colspan=2 style='font-size:12px;cursor:pointer;'><font color='blue' onclick='doSeguimiento(" + ld.docID + ");'><u>(ver seguimiento)</u></font></td>";
-            ret += "</tr>";
-            ret += "</table>";
-            ret += "</div>";
-        }
-    }
-    return ret;
-}
-
-function getLogDocumento(docID) {
-    for (var i in arbolPersonal.logDocumentos) {
-        var ld = arbolPersonal.logDocumentos[i];
-        if (ld.docID == docID)
-            return ld;
-    }
-}
-
-function doSeguimiento(docID) {
-    //envio
-    getHttp("doDecidimos.aspx?actn=seguimiento&docID=" + docID
-        + "&grupo=" + arbolPersonal.nombre
-        + "&width=" + (window.innerWidth - 80)
-        + "&email=" + arbolPersonal.usuario.email
-        + "&clave=" + arbolPersonal.usuario.clave,
-        function (data) {
-            //muestro
-            document.getElementById("documento").innerHTML = data;
-
-            document.getElementById("documento").style.visibility = 'visible';
-            document.getElementById("documento").style.left = (10) + 'px';
-            document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
-            document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
-            efectoTop(document.getElementById("documento"), 0, -window.innerHeight, 20, TWEEN.Easing.Cubic.Out);
-        });
+function doSeguimiento() {
+    document.location = "seguimiento.html?grupo=" + grupoParam;
 }

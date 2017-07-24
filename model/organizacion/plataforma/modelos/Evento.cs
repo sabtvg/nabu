@@ -112,7 +112,7 @@ namespace nabu.plataforma.modelos
         override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width)
         {
             string ret = "";
-            Usuario u = g.getUsuario(email);
+            Usuario u = g.getUsuarioHabilitado(email);
             bool tieneFlores = false;
             if (u != null) tieneFlores = u.floresDisponibles().Count > 0;
 
@@ -131,120 +131,124 @@ namespace nabu.plataforma.modelos
 
                 //fecha
                 if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + tr("Fecha") + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
                 //tema
-                ret += "<div class='tema'>" + tr("Introducci&oacute;n") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("¿Cual es la situación que requiere de esta propuesta de evento? ¿porqu&eacute; se debe hacer? ¿cual es la motivaci&oacute;n? Ten en cuenta que la situati&oacute;n que describes represente al grupo") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.introduccion", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
+
+                //variante
+                if (puedeVariante)
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 2)
             {
                 //Objetivo a lograr
-                ret += "<div class='tema'>" + tr("Objetivo a lograr") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("Describe que pretendes que logremos realizando este evento. Motiva al grupo con este objetivo. ¿es un deseo del grupo lograrlo?") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.objetivo", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
 
                 //Descripcion
-                ret += "<div class='tema'>" + tr("Descripci&oacute;n") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("Describe como ser&aacute; el evento. ¿show? ¿presentaciones? ¿ponentes? ¿musica? ¿actividades? ¿payasos? ¿catering?") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.descripcion", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
 
                 //A quien va dirigido
-                ret += "<div class='tema'>" + tr("A quien va dirigido") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("A quienes va dirigido el evento y quienes se beneficiaran con los resultados") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("event.aquien", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante) 
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
 
             }
             else if (nivel == 3)
             {
                 //Materiales
-                ret += "<div class='tema'>" + tr("Lugar") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Lugar", g.idioma) + "</div>";
                 if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("Describe los recursos que seran necesarios sin olvidar un presupuesto estimado") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.lugar", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.lugar", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.lugar", prop, width, 120, tieneFlores, g.idioma);
 
                 //RRHH
-                ret += "<div class='tema'>" + tr("Materiales") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Materiales", g.idioma) + "</div>";
                 if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("Describe los recursos que seran necesarios sin olvidar un presupuesto estimado") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.materiales", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.materiales", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.materiales", prop, width, 120, tieneFlores, g.idioma);
 
                 //Otros
-                ret += "<div class='tema'>" + tr("Transportes") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Transportes", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("Describe los recursos que seran necesarios sin olvidar un presupuesto estimado. Software, desplazamientos, servicios, etc.") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.transportes", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.transporte", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.transporte", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + tr("Organizaci&oacute;n") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Organizacion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("Describe como se debe organizar este evento, pasos a seguir, tiempos, desplazamientos, contrataciones, etc.") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.organizacion", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.organizacion", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.organizacion", prop, width, 120, tieneFlores, g.idioma);
 
                 ret += "<div class='tema'>";
-                ret += tr("Fecha");
-                ret += HTMLDate("d.fecha", prop, tieneFlores);
+                ret += Tools.tr("Fecha", g.idioma);
+                ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
                 if (editar)
                     ret += "<span class='smalltip' style='margin:5px'>"
-                        + tr("Haz una propuesta de fecha para el evento")
+                        + Tools.tr("evento.fecha", g.idioma)
                         + "</span>";
                 ret += "</div>";
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + tr("Valoraci&oacute;n del resultado") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Valoraci&oacute;n del resultado", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("¿Como se medir&aacute; el resultado de este evento? ¿entradas vendidas? ¿cantidad de personas presentes? ¿reconocimiento alcanzado? ¿efectos sociales? ¿publicdad?. <br>La valoraci&oacute;n del evento debe ser cuantificable y facil de comprender. Debe quedar claro si ha ido bien o no.") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.valoracion", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else
             {

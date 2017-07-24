@@ -25,7 +25,10 @@ namespace nabu
 
 
         //log de consensos alcanzados
-        public List<LogDocumento> logDocumentos = new List<LogDocumento>();
+        public List<LogDocumento> logDecisiones = new List<LogDocumento>();
+
+        //log de resultados alcanzados
+        public List<LogDocumento> logResultados = new List<LogDocumento>();
 
         //condicion de consenso
         public int usuarios = 0; //cantidad de usuarios

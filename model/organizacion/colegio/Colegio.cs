@@ -15,7 +15,12 @@ namespace nabu.organizaciones
             return ret;
         }
 
-        public override string getEstructura(Grupo grupo)
+        public override string doAccion(Grupo g, string email, string accion, HttpRequest req)
+        {
+            return "no implementado";
+        }
+
+        public override string getOperativo(Grupo grupo)
         {
             return "no implementado";
         }

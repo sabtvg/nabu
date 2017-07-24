@@ -11,6 +11,7 @@
     <script src="js/util.js"></script>
     <script src="js/common.js"></script>
     <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
@@ -52,8 +53,18 @@
 
             treeScale = window.innerWidth / 1920; //valor default
 
+            //cargo idioma
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam) {
+                var cookie = getCookie("nabu-" + grupoParam);
+                if (cookie != "") {
+                    var vals = cookie.split("|");
+                    idioma = vals[5]; //para el tradcutor
+                }
+            }
+
             setInterval(function () {
-                var sim = document.getElementById("sim");
+                var sim = document.getElementById("tit4");
                 sim.style.visibility = sim.style.visibility == "hidden" ? "visible" : "hidden";
             }, 1000);
 
@@ -62,6 +73,8 @@
 
             //flores
             timerFlores = setInterval(rotarFlores, 200);
+
+            traducir();
 
             iniciar();
         }
@@ -76,7 +89,7 @@
                     if (svgArbol == null)
                         crearArbol(arbolPersonal.raiz);
 
-                    document.getElementById("startStop").value = "Pausa";
+                    document.getElementById("startStop").value = tr("Pausa");
 
                     playing = false;
                     startStop();
@@ -87,7 +100,7 @@
             if (playing) {
                 stopSim = true;
                 playing = false;
-                document.getElementById("startStop").value = "Play";
+                document.getElementById("startStop").value = tr("Play");
                 document.getElementById("startStop").className = "btnStop";
                 document.getElementById("sim").style.visibility = sim.style.visibility == "hidden";
             }
@@ -96,7 +109,7 @@
                 stopSim = false;
                 live();
                 playing = true;
-                document.getElementById("startStop").value = "Pausa";
+                document.getElementById("startStop").value = tr("Pausa");
                 document.getElementById("startStop").className = "btnPlay";
             }
         }
@@ -156,6 +169,19 @@
         function doCloseHelp() {
             document.getElementById("help").style.visibility = "hidden";
         }
+
+        function traducir() {
+            document.getElementById("s1").innerHTML = tr("Diverger");
+            document.getElementById("s2").placeholder = tr("Converger");
+            document.getElementById("btnIni").value = tr("Reiniciar");
+            document.getElementById("btnPaso").value = tr("Paso");
+            document.getElementById("tit2").innerHTML = tr("Cooperativa 2.0");
+            document.getElementById("tit3").innerHTML = tr("Democracia interactiva");
+            document.getElementById("tit4").innerHTML = tr("Simulacion");
+            document.getElementById("divCon").innerHTML = tr("Consenso");
+            document.getElementById("minSiPc").title = tr("conminSiPc");
+            document.getElementById("maxNoPc").title = tr("conmaxNoPc");
+        }
     </script>
 </head>
 <body onload="doLoad();">
@@ -187,13 +213,13 @@
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="Div1" style="padding: 10px; position: absolute; left:110px; top:10px;">
         <nobr>
-            <input id="tipo1" type="radio" style="width: 30px; height:30px;" value="Diverger" name="tipo" checked /><span style="font-size:24px">Diverger</span>
-            <input id="tipo2" type="radio" style="width: 30px; height:30px;" value="Converger" name="tipo" /><span style="font-size:24px">Converger</span>
+            <input id="tipo1" type="radio" style="width: 30px; height:30px;" value="Diverger" name="tipo" checked /><span id="s1" style="font-size:24px">Diverger</span>
+            <input id="tipo2" type="radio" style="width: 30px; height:30px;" value="Converger" name="tipo" /><span id="s2" style="font-size:24px">Converger</span>
         </nobr>
         <br />
         <nobr>
-        <input class="simtxt" type="button" value="Reiniciar" onclick="iniciar();" />
-        <input class="simtxt" type="button" value="Paso" onclick="live();" />
+        <input id="btnIni" class="simtxt" type="button" value="Reiniciar" onclick="iniciar();" />
+        <input id="btnPaso" class="simtxt" type="button" value="Paso" onclick="live();" />
         <input id="startStop" class="btnPlay" type="button" value="Pausa" onclick="startStop();" />
         </nobr>
         <div id="nodes" class="titulo1"></div>
@@ -202,14 +228,14 @@
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="titulo" style="padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
         <div class="titulo0"><nobr>Nab&uacute;</nobr></div>
-        <div class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
-        <div class="titulo2"><nobr>Democracia interactiva</nobr></div>
-        <div class="titulo1" id="sim" style="color:red;"><nobr>Simulacion</nobr></div>
+        <div id="tit2" class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
+        <div id="tit3" class="titulo2"><nobr>Democracia interactiva</nobr></div>
+        <div id="tit4" class="titulo1" style="color:red;"><nobr>Simulacion</nobr></div>
     </div>
 
     <!--panel consenso--------------------------------------------------------------------------------------------------->
     <div id="panelConsenso"  class="borde" style="padding: 10px; position: absolute; left:10px; top:280px; color: gray; border: 1px solid gray">
-        <div class="titulo2"><nobr><b>Consenso</b></nobr></div>
+        <div id="divCon" class="titulo2"><nobr><b>Consenso</b></nobr></div>
         <div id = "usuarios" class="titulo3"></div>
         <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
         <div id = "maxNoPc" class="titulo3" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>

@@ -26,7 +26,18 @@ namespace nabu
 
         public abstract List<Modelo> getModelos();
 
-        public abstract string getEstructura(Grupo g);
+        public abstract string getOperativo(Grupo g);
+        public abstract string doAccion(Grupo g, string email, string accion, HttpRequest req);
+
+        private int lastEID = 0;
+
+        public int getEID()
+        {
+            int ret = 0;
+            lock (this)
+                ret = ++lastEID;
+            return ret;
+        }
 
         public static List<Organizacion> getOrganizaciones()
         {

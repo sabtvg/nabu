@@ -39,7 +39,7 @@ namespace nabu.plataforma.modelos
             variables.Add(new Variable("s.servicios", 9000, 4));
         }
 
-        private void validar(Propuesta prop)
+        private void validar(Propuesta prop, string idioma)
         {
             if (prop != null)
             {
@@ -47,12 +47,12 @@ namespace nabu.plataforma.modelos
                 {
                     if (getText("s.titulo", prop) == "")
                     {
-                        addError(1, "El titulo del manifiesto no puede ser vacio");
+                        addError(1, Tools.tr("El titulo del manifiesto no puede ser vacio", idioma));
                         getVariable("s.titulo").className = "errorfino";
                     }
                     if (getText("s.vision", prop) == "")
                     {
-                        addError(1, "La vision no puede ser vacia");
+                        addError(1, Tools.tr("La vision no puede ser vacia", idioma));
                         getVariable("s.vision").className = "errorfino";
                     }
                 }
@@ -60,14 +60,14 @@ namespace nabu.plataforma.modelos
                 {
                     if (getText("s.mision", prop) == "")
                     {
-                        addError(2, "La mision no ser vacia");
+                        addError(2, Tools.tr("La mision no ser vacia", idioma));
                     }
                 }
                 else if (prop.nivel == 3)
                 {
                     if (getText("s.objetivo", prop) == "")
                     {
-                        addError(2, "El objetivo no puede ser vacio");
+                        addError(2, Tools.tr("El objetivo no puede ser vacio", idioma));
                     }
                 }
             }
@@ -76,7 +76,7 @@ namespace nabu.plataforma.modelos
         override protected string HTMLEncabezado(Propuesta prop, Grupo g, string email, int width)
         {
             string ret = "";
-            Usuario u = g.getUsuario(email);
+            Usuario u = g.getUsuarioHabilitado(email);
             bool tieneFlores = false;
             if (u != null) tieneFlores = u.floresDisponibles().Count > 0;
 
@@ -88,15 +88,16 @@ namespace nabu.plataforma.modelos
 
             //titulo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
-            ret += "<div class='titulo2'><nobr>" + tr("T&iacute;tulo") + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores);
+            ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
             if (prop == null)
-                ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + tr("(Aparece en el pi&eacute; del &aacute;rbol)");
+                ret += "<br><span style='color:gray;font-size:12px;'>" + Tools.tr("(Aparece en el pie del arbol)", g.idioma);
             ret += "</nobr></div>";
 
             //etiqueta
-            ret += "<div class='titulo2'><nobr>" + tr("Etiqueta") + ": Manifiesto";
+            ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Manifiesto", g.idioma);
+            etiqueta = Tools.tr("Manifiesto", g.idioma);
             if (prop == null)
-                ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + tr("(Etiqueta en el &aacute;rbol)") + "</span>";
+                ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el &aacute;rbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
             return ret;
         }
@@ -115,7 +116,7 @@ namespace nabu.plataforma.modelos
 
 
             //validaciones de este nivel
-            validar(prop);
+            validar(prop, g.idioma);
 
             if (nivel == 1)
             {
@@ -123,7 +124,7 @@ namespace nabu.plataforma.modelos
 
                 //enseño manifiesto anterior
                 LogDocumento anterior = null;
-                foreach (LogDocumento ld in g.arbol.logDocumentos)
+                foreach (LogDocumento ld in g.logDecisiones)
                 {
                     if (ld.modeloNombre == this.nombre && ((prop!=null && ld.fecha < prop.born) || prop == null))
                         anterior = ld; //me quedo con el ultimo
@@ -131,7 +132,7 @@ namespace nabu.plataforma.modelos
                 if (anterior != null)
                 {
                     ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;'><tr>";
-                    ret += "<td colspan=2 style='text-align:center;'><b>" + tr("Este manifiesto reemplaza al anterior") + "</b></td>";
+                    ret += "<td colspan=2 style='text-align:center;'><b>" + Tools.tr("Este manifiesto reemplaza al anterior", g.idioma) + "</b></td>";
                     ret += "<tr><td>";
                     ret += "<img src='" + anterior.icono + "' style='width:32px;height:40px'></td>";
                     ret += "<td style='text-align:left;'>";
@@ -143,57 +144,61 @@ namespace nabu.plataforma.modelos
 
                 //fecha
                 if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + tr("Fecha") + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
                 //tema
-                ret += "<div class='tema'>" + tr("Visi&oacute;n") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Vision", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + tr("La visi&oacute;n tiene un car&aacute;cter inspirador y motivador para el grupo. ¿Que visi&oacute;n tenemos del mundo?, ¿Como deber&iacute;an ser las cosas?") + "</div>";
+                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.vision", g.idioma) + "</div>";
 
-                ret += HTMLArea("s.vision", prop, width, 220, tieneFlores);
+                ret += HTMLArea("s.vision", prop, width, 220, tieneFlores, g.idioma);
+
+                //variante
+                if (puedeVariante)
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 2)
             {
                 //Mision
-                ret += "<div class='tema'>" + tr("Mision") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Mision", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + tr("La misi&oacute;n define cual es nuestra labor,  ¿qué hacemos?, ¿a qué nos dedicamos?, ¿en que sector social sucede?, ¿quiénes son nuestro p&uacute;blico objetivo?, ¿cuál es nuestro ámbito geogr&aacute;fico de acci&oacute;n?") + "</div>";
+                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.mision", g.idioma) + "</div>";
 
-                ret += HTMLArea("s.mision", prop, width, 220, tieneFlores);
+                ret += HTMLArea("s.mision", prop, width, 220, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante) 
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
 
             }
             else if (nivel == 3)
             {
                 //Objetivo
-                ret += "<div class='tema'>" + tr("Valores") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Objetivos", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + tr("Los valores son principios éticos del grupo, son la base de nuestras pautas de comportamiento. Definen la personalidad del grupo. ¿cómo somos?, ¿en qué creemos?") + "</div>";
+                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.objetivos", g.idioma) + "</div>";
 
-                ret += HTMLArea("s.objetivo", prop, width, 220, tieneFlores);
+                ret += HTMLArea("s.objetivo", prop, width, 220, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + tr("Servicios") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Servicios", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + tr("¿Que servicios prestamos para alcanzar nuestra misi&oacute;n?. Estos servicios son el punto partida para la creaci&oacute;n de procesos operativos y grupos de trabajo. Lista los servicios con nombre y una breve descripci&oacute;n") + "</div>";
+                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.servicios", g.idioma) + "</div>";
 
-                ret += HTMLArea("s.servicios", prop, width, 550, tieneFlores);
+                ret += HTMLArea("s.servicios", prop, width, 550, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else
             {
-                throw new Exception("Nivel [" + nivel + "] no existe en este modelo");
+                throw new Exception(Tools.tr("Nivel [%1] no existe en este modelo", nivel.ToString(), g.idioma));
             }
 
             if (prop != null) prop.niveles = niveles; //esto es importante si cambian los niveles para que se traspase luego al nodo
@@ -215,12 +220,12 @@ namespace nabu.plataforma.modelos
             doc.propuestas.Sort();
             doc.grupo.objetivo = getText("s.titulo", doc.propuestas[0]);
             doc.grupo.URLEstatuto = doc.URLPath;
-            doc.addLog(tr("Manifiesto actualizado en el grupo"));
+            doc.addLog(Tools.tr("Manifiesto actualizado en el grupo", doc.grupo.idioma));
 
             nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
             plataforma.URLEstatuto = doc.URLPath;
             plataforma.objetivo = doc.grupo.objetivo;
-            doc.addLog(tr("Estructura organizativa actualizada"));
+            doc.addLog(Tools.tr("Estructura organizativa actualizada", doc.grupo.idioma));
         }
 
 

@@ -4,6 +4,7 @@
 <head>
     <title>Nab&uacute</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
     <script src="js/main.js"></script>
@@ -12,6 +13,7 @@
     <script src="js/aprendemos.js"></script>
     <script src="js/common.js"></script>
     <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
@@ -21,20 +23,22 @@
 </head>
 <body onload="doLoad();" style="overflow:hidden"  onresize="resize()">
 
+    <!--grupos--------------------------------------------------------------------------------------------------->
+    <div id="grupos" style="visibility:hidden;position:absolute; width: 800px; height: 500px; text-align:center;overflow:auto"></div>
+
     <!--login--------------------------------------------------------------------------------------------------->
-    <img id="loginFlor" src="res/logo.png" style="visibility:hidden; position:absolute;"/>
-    <div id="loginIn" class="ventana" style="visibility:hidden;position:absolute; width: 400px; height: 260px; text-align:center;">
+    <div id="loginGrupo" class="titulo0" style="visibility:hidden;position:absolute; width: 400px; height: 200px; text-align:center;"></div>
+    <img id="loginFlor" src="res/logo.png" style="visibility:hidden; position:absolute;cursor:pointer" onclick="document.location='default.html';"/>
+    <div id="loginIn" class="ventana" style="visibility:hidden;position:absolute; width: 400px; height: 200px; text-align:center;">
         <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
             <span class="titulo1" style="cursor: pointer;"><font color="blue" size="2">[?]</font>Nab&uacute;</span>
         </a><br />
-        <span class="titulo3">Democracia interactiva</span><br />
+        <span id="tit1" class="titulo3">Democracia interactiva</span><br />
         <input id="email" type="text" class="txt" placeholder="email" value="" /><br />
         <input id="clave" type="password" class="txt" placeholder="clave" value=""/><br />
-        <select id="grupos" class="txt" style="width: 200px;"></select><br />
-        <input type="button" class="btn" value="Entrar" onclick="doLogin();" /><br />
+        <input id="btnEntrar" type="button" class="btn" value="Entrar" onclick="doLogin();" /><br />
         <div id="loginResponse">&nbsp;</div>
-        <div onclick="doAltaUsuario();" style="color:blue; cursor: pointer;">Alta de usuario</div>
-        <div onclick="document.location='creararbol.html';" style="color:blue; cursor: pointer;">Crear nuevo grupo</div>
+        <div id="loginAltaUsuario" onclick="doAltaUsuario();" style="color:blue; cursor: pointer;">Alta de usuario</div>
     </div>
     <div id="tip" class="tip" style="visibility:hidden;position:absolute; text-align:center; display: table-cell; vertical-align: middle"></div>
 
@@ -43,22 +47,22 @@
         <div class="ventana" style="text-align:center;">
             <span class="titulo1">Modelos de debate</span><br />
             <div id="modelosList"></div><br />
-            <input type="button" value="Cancelar" class="btn" onclick="document.getElementById('modelos').style.visibility = 'hidden';" style="margin: 0 auto;" />
+            <input id="btnCancelar" type="button" value="Cancelar" class="btn" onclick="document.getElementById('modelos').style.visibility = 'hidden';" style="margin: 0 auto;" />
         </div>             
     </div>
 
-    <!--objetivo--------------------------------------------------------------------------------------------------->
+    <!--objetivo--------------------------------------------------------cr------------------------------------------->
     <div id="objetivo" class="objetivo"></div>
 
     <!--pie--------------------------------------------------------------------------------------------------->
     <div id="pie" style="padding: 5px; position: absolute; font-size: 10px; visibility: hidden;">
-        <a href="simulacion.html">ver simulacion</a> - 
-        Desarrollo:<a href="http://cooperativa.cat" target="_blank">CIC</a> - 
+        <a id="lnkSim" href="simulacion.html">simulacion</a> - 
+        <a href="http://cooperativa.cat" target="_blank">CIC</a> - 
         01/11/2015 - 
         <a href="mailto:lania@cooperativa.cat">lania@cooperativa.cat</a> - 
-        Mejor visto en <a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a> -
-        <font color="red">versi&oacute;n beta</font> - 
-        <a href="javascript:doOpen('help.html');">Ayuda</a> -
+        <span id="mejorVisto">Mejor visto en</span>&nbsp;<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a> -
+        <span id="version" style="color:red">versi&oacute;n beta</span> - 
+        <a id="lnkAyuda" href="javascript:doOpen('help.html');">Ayuda</a> -
         <a href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
     </div>
 
@@ -118,16 +122,11 @@
         </a>
         <div id="titulo1" class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
         <div id="titulo2" class="titulo2"><nobr>Democracia interactiva</nobr></div>
-        <div id="userOptions">
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='bosque.html';"><nobr><font color="blue">El bosque</font></nobr></div>
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='verusuarios.html';"><nobr><font color="blue">Usuarios</font></nobr></div>
-        </div>
-        <div id="adminOptions">
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='bosque.html';"><nobr><font color="blue">El bosque</font></nobr></div>
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='modificararbol.html';"><nobr><font color="blue">El &aacute;rbol</font></nobr></div>
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='usuarios.html';"><nobr><font color="blue">Usuarios</font></nobr></div>
-            <div class="titulo3" style="cursor: pointer;" onclick="document.location='mailer.html';"><nobr><font color="blue">Mailer</font></nobr></div>
-        </div>
+        <a id="mnuOption1" class="titulo3" style="visibility:hidden" href="bosque.html"><nobr>El bosque</nobr></a><br />
+        <a id="mnuOption2" class="titulo3" style="visibility:hidden" href="modificararbol.html"><nobr>El &aacute;rbol</nobr></a><br />
+        <a id="mnuOption3" class="titulo3" style="visibility:hidden" href="usuarios.html"><nobr>Usuarios</nobr></a><br />
+        <a id="mnuOption4" class="titulo3" style="visibility:hidden" href="mailer.html"><nobr>Mailer</nobr></a><br />
+        <a id="mnuOption5" class="titulo3" style="visibility:hidden" href="actas.html"><nobr>Acta</nobr></a>
         <div id="msgDiv" class="msg"></div>
     </div>
 
@@ -141,18 +140,19 @@
 
     <!--menuppal--------------------------------------------------------------------------------------------------->
     <div id="menuppal" style="position: absolute; visibility:hidden; width: 800px; height: 600px;">
-        <div id="padrenombre" style="position: inherit; width:800px; left:0px; top:-120px;text-align: center;" class="titulo1"></div>
-        <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-90px;text-align: center;" class="titulo0"></div>
-        <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;" />
+        <div id="padrenombre" style="position: inherit; width:800px; left:0px; top:-100px;text-align: center;" class="titulo1"></div>
+        <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-70px;text-align: center;" class="titulo0"></div>
+        <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;;cursor:default" />
         <img id="ppal1" class="btnimg" src="res/es/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doDecidimos();"/>
         <img id="ppal2" class="btnimg" src="res/es/noticias.png" style="position: inherit; left:15px; top:192px;" onclick="doAprendemos();"/>
-        <img id="ppal3" class="btnimg" src="res/es/vert.png" style="position: inherit; left:488px; top:129px;" onclick="document.location='operativo.html';"/>
-        <img id="ppal5" class="btnimg" src="res/es/docConsensos.png" style="position: inherit; left:338px; top:31px;" onclick="doListaConsensos();"/>
-        <img id="ppal7" class="btnimg" src="res/es/docRealizacion.png" style="position: inherit; left:285px; top:439px;" onclick="msg('Aun no implementado');"/>
+        <img id="ppal3" class="btnimg" src="res/es/estructuras.png" style="position: inherit; left:600px; top:242px;" onclick="doEstructuras();"/>
+        <img id="ppal4" class="btnimg" src="res/es/seguimiento.png" style="position: inherit; left:600px; top:329px;" onclick="doSeguimiento();"/>
+        <img id="ppal5" class="btnimg" src="res/es/docConsensos.png" style="position: inherit; left:338px; top:31px;" onclick="doDecisiones();"/>
+        <img id="ppal7" class="btnimg" src="res/es/docRealizacion.png" style="position: inherit; left:285px; top:439px;" onclick="doResultados();"/>
         <img id="ppal8" class="btnimg" src="res/es/manifiesto.png" style="position: inherit; left:190px; top:278px;"/>
         <img id="ppal9" class="btnimg" src="res/doc.png" style="position: inherit; left:120px; top:258px;" onclick="doManifiesto();"/>
-        <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;"/>
-        <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;" />
+        <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;cursor:default;"/>
+        <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;cursor:default" />
         <div id="hijos" style="position: inherit; width:800px; left:0px; top:480px;text-align: center;" class="titulo1"></div>
     </div>
 
@@ -182,21 +182,25 @@
         <input id="oldPass" type="password" class="txt" placeholder="Clave actual" value="" /><br />
         <input id="newPass" type="password" class="txt" placeholder="Nueva clave" value=""/><br />
         <input id="repeat" type="password" class="txt" placeholder="Repitela" value=""/><br />
-        <input type="button" class="btn" value="Cambiar" onclick="doCambiarClave();" /><input type="button" class="btn" value="Cancelar" onclick="doHideCambiarClave();" /><br />
+        <input id="btnCCCambiar" type="button" class="btn" value="Cambiar" onclick="doCambiarClave();" />
+        <input id="btnCCCancelar" type="button" class="btn" value="Cancelar" onclick="doHideCambiarClave();" /><br />
         <div id="cambiarClaveMsg"></div>
     </div>
 
     <!--alta usuario--------------------------------------------------------------------------------------------------->
     <div id="altaUsuario" class="ventana" style="position: absolute; width: 330px; height: 330px; text-align:center; visibility: hidden; opacity: 1;">
-        <span class="titulo2">Alta de usuario</span><br /><br />
+        <span id="auTit1" class="titulo2">Alta de usuario</span>
+        <span id="auTit2">
+        <br /><br />
         El alta de usuarios es administrada manualmente.<br /><br />
         Selecciona el grupo<br /> y completa tus datos.<br />
         Recibiras un email con tus datos de acceso.<br /><br />
+        </span>
         <select id="altaUsuarioGrupos" class="txt" style="width: 200px;"></select><br />
         <input id="altaUsuarioNombre" type="text" class="txt" placeholder="Nombre completo" value="" /><br />
         <input id="altaUsuarioEmail" type="text" class="txt" placeholder="Email" value="" /><br />
-        <input type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
-        <input type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, window.innerHeight / 2 - 330 / 2, -380, TWEEN.Easing.Cubic.Out);" /><br />
+        <input id="auEnviar" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
+        <input id="auCerrar" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, window.innerHeight / 2 - 330 / 2, -380, TWEEN.Easing.Cubic.Out);" /><br />
         <div id="altaUsuarioMsg"></div>
     </div>
         
@@ -252,9 +256,9 @@
     <!--confirmar quitar ultima flor--------------------------------------------------------------------------------------------------->
     <div id="ultimaFlor" style="visibility: hidden;position:absolute;width:300px;" >
         <div class="ventana" style="text-align:center;">
-            <span id="Span1" class="titulo2">Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir</span><br /><br />
-            <input type="button" value="Aceptar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
-            <input type="button" value="Cancelar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
+            <span id="ufTit1" class="titulo2">Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir</span><br /><br />
+            <input id="ufAceptar" type="button" value="Aceptar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
+            <input id="ufCancelar" type="button" value="Cancelar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
         </div>             
     </div>
 

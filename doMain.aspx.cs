@@ -27,6 +27,7 @@ namespace nabu
             app = (Aplicacion)Application["aplicacion"];
 
             Tools.startupPath = Server.MapPath("");
+            Tools.server = Server;
 
             try
             {
@@ -48,17 +49,17 @@ namespace nabu
                             lock (grupo)
                             {
                                 grupo.ts = DateTime.Now;
-                                Usuario u = grupo.getUsuario(Request["email"]);
+                                Usuario u = grupo.getUsuarioHabilitado(Request["email"]);
                                 if (u == null)
-                                    throw new appException("El usuario no existe");
+                                    throw new appException(Tools.tr("El usuario no existe o no esta habilitado", grupo.idioma));
                                 else
                                 {
                                     if (u.clave != Request["claveActual"])
-                                        throw new appException("La clave actual no corresponde");
+                                        throw new appException(Tools.tr("La clave actual no corresponde", grupo.idioma));
                                     else
                                     {
                                         if (Request["nuevaClave"] == "")
-                                            throw new appException("La clave nueva no puede ser vacia");
+                                            throw new appException(Tools.tr("La clave nueva no puede ser vacia", grupo.idioma));
                                         else
                                             u.clave = Request["nuevaClave"]; //no devuelvo mensaje
                                     }
@@ -68,6 +69,31 @@ namespace nabu
 
                         case "resumen":
                             Response.Write(getResumen());
+                            break;
+
+                        case "borrargrupo":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            grupo = app.getGrupo(Request["grupo"]);
+                            lock (grupo)
+                            {
+                                Usuario u = grupo.getUsuario(Request["email"]);
+                                if (u != null && u.isAdmin)
+                                {
+                                    if (System.IO.Directory.Exists(Server.MapPath("grupos/" + grupo.nombre)))
+                                    {
+                                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(Server.MapPath("grupos/" + grupo.nombre));
+                                        foreach(System.IO.FileInfo fi in di.GetFiles())
+                                            System.IO.File.Delete(fi.FullName);
+                                        System.IO.Directory.Delete(Server.MapPath("grupos/" + grupo.nombre));
+                                    }
+                                }
+                                else
+                                    throw new Exception("Debe ser coordinador");
+                            }
+
+                            app.grupos.Remove(grupo);
+
+                            Response.Write("Grupo borrado");
                             break;
 
                         case "borrarhijo":
@@ -83,7 +109,7 @@ namespace nabu
                                         break;
                                     }
                                 }
-                                Response.Write("Grupo hijo borrado");
+                                Response.Write(Tools.tr("Grupo hijo borrado", grupo.idioma));
                             }
                             break;
 
@@ -92,8 +118,10 @@ namespace nabu
                             grupo = app.getGrupo(Request["grupo"]);
                             lock (grupo)
                             {
-                                grupo.hijos.Add(new Tuple<string, string>(Request["hijoURL"], Request["hijoNombre"]));
-                                Response.Write("Nuevo grupo hijo agregado");
+                                string hijoURL = Request["hijoURL"];
+                                if (hijoURL.EndsWith("/")) hijoURL = hijoURL.Substring(0, hijoURL.Length - 1);
+                                grupo.hijos.Add(new Tuple<string, string>(hijoURL, Request["hijoNombre"]));
+                                Response.Write(Tools.tr("Nuevo grupo hijo agregado", grupo.idioma));
                             }
                             break;
 
@@ -117,8 +145,8 @@ namespace nabu
                                 foreach(Usuario u in usuarios)
                                     if (grupo.getUsuario(u.email) == null)
                                         //este no existe, lo creo
-                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false);
-                                Response.Write("Usuarios creados en [" + Request["grupo"] + "] desahibilitados, contacte al jardinero para habilitarlos");
+                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false, false);
+                                Response.Write(Tools.tr("Usuarios creados desahibilitados", Request["grupo"], grupo.idioma));
                             }
                             break;
 
@@ -150,7 +178,7 @@ namespace nabu
                             break;
 
                         case "sendmailalta":
-                            //peticion de alta al jardinero
+                            //peticion de alta al coordinador
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             grupo = app.getGrupo(Request["grupo"]);
                             lock (grupo)
@@ -200,6 +228,7 @@ namespace nabu
 
                             if (grupo.padreNombre == "")
                                 //yo soy la cabeza del bosque, comienzo a bajar
+                                //devuelvo lo que tengo en el fichero cache
                                 ret = getBosque(Request["grupo"], Request["email"], "", "");
                             else
                                 //pido al padre
@@ -216,20 +245,31 @@ namespace nabu
                             Response.Write(ret);
                             break;
 
+                        case "organizacion":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            Response.Write(doOperativoAccion(Request["grupo"], Request["email"], Request["accion"], Request));
+                            break;
+
                         case "getoperativo":
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(getOperativo(Request["grupo"]));
                             break;
 
                         case "newgrupo":
-                            Grupo g = doNewGrupo(Request["grupo"], Request["organizacion"], Request["nombreAdmin"], Request["email"], Request["clave"], Request["idioma"]);
+                            Grupo g = Grupo.newGrupo(Request["grupo"], 
+                                Request["organizacion"], 
+                                Request["nombreAdmin"], 
+                                Request["email"], 
+                                Request["clave"], 
+                                Request["idioma"],
+                                Request.UrlReferrer.AbsoluteUri.Substring(0, Request.UrlReferrer.AbsoluteUri.LastIndexOf("/")));
                             lock (app.grupos)
                             {
                                 app.grupos.Add(g);
                                 //guardo a disco
                                 app.saveGrupos();
                             }
-                            Response.Write("Grupo creado");
+                            Response.Write(Tools.tr("Grupo creado",g.idioma));
                             app.addLog("newGrupo", Request.UserHostAddress, Request["grupo"], Request["email"], "");
                             break;
 
@@ -238,15 +278,18 @@ namespace nabu
                             Usuario u2 = actualizarUsuario(Server.HtmlEncode(Request["nuevonombre"]), Request["nuevoemail"], Request["nuevaclave"], Request["grupo"], 
                                 Request["readOnly"] == "true" ? true : false,
                                 Request["isAdmin"] == "true" ? true : false,
+                                Request["secretaria"] == "true" ? true : false,
                                 Request["habilitado"] == "true" ? true : false);
-                            Response.Write("Usuario [" + u2.email + "] actualizado");
+                            grupo = app.getGrupo(Request["grupo"]);
+                            Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
                             app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
                             break;
 
                         case "removeusuario":
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Usuario u3 = removeUsuario(Request["usuarioemail"], Request["grupo"]);
-                            Response.Write("Usuario [" + u3.email + "] borrado");
+                            grupo = app.getGrupo(Request["grupo"]);
+                            Response.Write(Tools.tr("Usuario [%1] borrado", u3.email, grupo.idioma));
                             break;
 
                         //case "getgrupos":
@@ -283,11 +326,19 @@ namespace nabu
             Response.End();
         }
 
+
+        public string doOperativoAccion(string grupo, string email, string accion, HttpRequest req)
+        {
+            //devuelvo el bosque de aqui hacia abajo
+            Grupo g = app.getGrupo(grupo);
+            return  g.organizacion.doAccion(g, email, accion, req);
+        }
+
         public string getOperativo(string grupo)
         {
             //devuelvo el bosque de aqui hacia abajo
             Grupo g = app.getGrupo(grupo);
-            return g.organizacion.getEstructura(g);
+            return g.organizacion.getOperativo(g);
         }
 
         public string getBosque(string grupo, string email, string padreURL, string padreNombre)
@@ -306,7 +357,8 @@ namespace nabu
             else
                 acceso = "si";
             
-            string ret = "{\"nombre\":\"" + g.nombre + "\"," 
+            string ret = "{\"nombre\":\"" + g.nombre + "\","
+                + "\"URL\":\"" + g.URL + "\","
                 + "\"usuarios\":" + g.usuarios.Count + ","
                 + "\"acceso\":\"" + acceso + "\","
                 + "\"objetivo\":\"" + g.objetivo + "\","
@@ -339,11 +391,11 @@ namespace nabu
             Grupo g = app.getGrupo(grupo);
             lock (g)
             {
-                Usuario u = g.getUsuario(email);
+                Usuario u = g.getUsuarioHabilitado(email);
                 if (u.clave == clave)
                     return;
             }
-            throw new Exception("Usuario inválido, operacion registrada!");                  
+            throw new Exception("Usuario no existe o no habilitado, operacion registrada!");                  
         }
 
         //Grupo doNewGrupoFromPadre(string grupo, string organizacion, string admins, string idioma, string padreURL, string padreNombre)
@@ -377,77 +429,6 @@ namespace nabu
         //    }
         //    return g;
         //}
-
-        Grupo doNewGrupo(string grupo, string organizacion, string nombreAdmin, string email, string clave, string idioma)
-        {
-            if (grupo == "")
-                throw new appException("Nombre de grupo no puede ser vacio");
-            if (email == "")
-                throw new appException("Email no puede ser vacio");
-            if (clave == "")
-                throw new appException("Clave no puede ser vacio");
-            if (Server.HtmlEncode(grupo) != grupo)
-                throw new appException("Nombre de grupo inv&aacute;lido. Evite acentos y caracteres especiales");
-            if (Server.HtmlEncode(email) != email)
-                throw new appException("Email inv&aacute;lido. Evite acentos y caracteres especiales");
-            if (Server.HtmlEncode(clave) != clave)
-                throw new appException("Clave inv&aacute;lida. Evite acentos y caracteres especiales");
-
-            //veo que no exista ya
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(Server.MapPath("grupos"));
-
-            foreach (System.IO.DirectoryInfo fi in di.GetDirectories())
-            {
-                if (fi.Name == grupo)
-                {
-                    //ya existe
-                    throw new appException("El grupo ya existe");
-                }
-            }
-
-            //creo
-            Grupo g = new Grupo();
-            g.nombre = grupo;
-            g.path = Server.MapPath("grupos/" + g.nombre);
-            g.URL = Request.UrlReferrer.AbsoluteUri.Substring(0, Request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
-            g.idioma = idioma;
-
-            //organizacion
-            switch (organizacion)
-            {
-                case "Plataforma":
-                    g.organizacion = new organizaciones.Plataforma();
-                    break;
-
-                case "Cooperativa":
-                    g.organizacion = new organizaciones.Cooperativa();
-                    break;
-
-                case "Colegio":
-                    g.organizacion = new organizaciones.Colegio();
-                    break;
-
-                default:
-                    throw new Exception("Modelo organizativo [" + organizacion + "] no existe");
-            }
-
-            Arbol a = new Arbol();
-            a.nombre = grupo;
-            a.raiz = new Nodo();
-            a.raiz.nombre = Server.HtmlEncode(a.nombre);
-            a.grupo = g; //referencia ciclica, no se pude serializar
-            g.arbol = a;            
-
-            //admin
-            Usuario u = new Usuario(a.cantidadFlores);
-            u.nombre = Server.HtmlEncode(nombreAdmin);
-            u.email = email;
-            u.clave = clave;
-            u.isAdmin = true;
-            g.usuarios.Add(u);
-
-            return g;
-        }
 
         private string getSimName()
         {
@@ -543,12 +524,12 @@ namespace nabu
                 else if (u != null && !u.habilitado)
                 {
                     app.addLog("login", Request.UserHostAddress, grupo, email, "fail!");
-                    throw new appException("usuario no habilitado para el grupo [" + grupo + "]");
+                    throw new appException(Tools.tr("Usuario no habilitado", grupo, g.idioma));
                 }
                 else
                 {
                     app.addLog("login", Request.UserHostAddress, grupo, email, "fail!");
-                    throw new appException("usuario o clave incorrectos para el grupo [" + grupo + "]");
+                    throw new appException(Tools.tr("Usuario o clave incorrectos", grupo, g.idioma));
                 }
 
                 //envio mails a usuarios inactivos
@@ -579,16 +560,25 @@ namespace nabu
             }
         }
 
-        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool readOnly, bool isAdmin, bool habilitado)
+        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool readOnly, bool isAdmin, bool isSecretaria, bool habilitado)
         {
-            if (grupo == "")
-                throw new appException("Nombre de arbol no puede ser vacio");
-            if (email == "")
-                throw new appException("Email no puede ser vacio");
-            if (clave == "")
-                throw new appException("Clave no puede ser vacio");
+            string idioma = "es";
+            Grupo g;
+            try
+            {
+                g = app.getGrupo(grupo);
+                idioma = g.idioma;
+            }
+            catch (Exception ex) {}
 
-            Grupo g = app.getGrupo(grupo);
+            if (grupo == "")
+                throw new appException(Tools.tr("Nombre de arbol no puede ser vacio",idioma));
+            if (email == "")
+                throw new appException(Tools.tr("Email no puede ser vacio",idioma));
+            if (clave == "")
+                throw new appException(Tools.tr("Clave no puede ser vacio", idioma));
+
+            g = app.getGrupo(grupo);
             Usuario u = g.getUsuario(email);
 
             lock (g)
@@ -600,6 +590,7 @@ namespace nabu
                     u.clave = clave;
                     u.readOnly = readOnly;
                     u.isAdmin = isAdmin;
+                    u.isSecretaria = isSecretaria;
                     u.habilitado = habilitado;
                 }
                 else
@@ -611,9 +602,14 @@ namespace nabu
                     u.clave = clave;
                     u.readOnly = readOnly;
                     u.isAdmin = isAdmin;
+                    u.isSecretaria = isSecretaria;
                     u.habilitado = habilitado;
                     g.usuarios.Add(u);
                 }
+
+                //caen flores?
+                if (!u.habilitado)
+                    g.arbol.caerFlores(u);
             }
             //guardo a disco
             app.saveGrupos();
@@ -642,7 +638,7 @@ namespace nabu
             ret += "<td style='text-align:center'><b>Dias</b></td>";
             ret += "<td style='text-align:center'><b>Usuarios</b></td>";
             ret += "<td style='text-align:center'><b>Activos</b></td>";
-            ret += "<td style='text-align:center'><b>Consensos</b></td>";
+            ret += "<td style='text-align:center'><b>Decisiones</b></td>";
             ret += "<td style='text-align:center'><b>Nodos</b></td>";
             ret += "<td style='text-align:center'><b>Last Login Dias</b></td>";
             foreach (string grupo in getGrupos())
@@ -656,7 +652,7 @@ namespace nabu
                     ret += tdSize((int)DateTime.Now.Subtract(g.born).TotalDays);
                     ret += tdSize(g.usuarios.Count);
                     ret += tdSize(g.activos);
-                    ret += tdSize(g.arbol.logDocumentos.Count);
+                    ret += tdSize(g.logDecisiones.Count);
                     ret += tdSize(g.arbol.toList().Count);
                     ret += tdSize((int)DateTime.Now.Subtract(g.lastLogin).TotalDays);
                     ret += "</tr>";
@@ -675,7 +671,7 @@ namespace nabu
         string tdSize(int i)
         {
             int size = 10 + i;
-            if (size > 45) size = 45;
+            if (size > 35) size = 45;
             return "<td style='text-align:center;font-size:" + size + "px'>" + i + "</td>";
         }
     }

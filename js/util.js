@@ -28,7 +28,7 @@
 //}
 
 //function JSON_decode(s) {
-//    //esta funcion esta reptida del lado del servidor para poder generar consensos
+//    //esta funcion esta reptida del lado del servidor para poder generar decisiones
 //    s = s.replace('[euro]', '€');
 //    s = s.replace('[pound]','£');
 //    s = s.replace('[mayor]','>');
@@ -66,6 +66,7 @@ function clone(obj) {
 }
 
 function setCookie(cname, cvalue, exdays) {
+    cname = cname.replace(' ', '').toLowerCase();
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
@@ -73,7 +74,7 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 function getCookie(cname) {
-    var name = cname + "=";
+    var name = cname.replace(' ', '').toLowerCase() + "=";
     var ca = document.cookie.split(';');
     for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
@@ -236,7 +237,8 @@ function getHttp(url, callback) {
     xmlhttp.open('get', url, true);
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == 4) {
-            callback(xmlhttp.responseText);
+            if (callback)
+                callback(xmlhttp.responseText);
         }
     }
     xmlhttp.send();
@@ -263,10 +265,10 @@ function actualizarDatosConsenso() {
     var ret = "";
     var ap = arbolPersonal;
 
-    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>Consenso</b></nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Usuarios: " + ap.usuarios + "<br>Activos: " + ap.activos + "</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Si&ge;" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>No&le;" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
+    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>" + tr("Decision") + "</b></nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "<br>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Si") + "&ge;" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("No") + "&le;" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
     panel.innerHTML = ret;
 }
 
@@ -276,11 +278,11 @@ function actualizarDatosGrupo() {
     var ap = arbolPersonal;
     var born = new Date(ap.born.match(/\d+/)[0] * 1);
     var dias = Math.abs(new Date() - born) / (24 * 60 * 60 * 1000);
-    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>Grupo</b></nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("D&iacute;as") + ":" + dias.toFixed(0) + "</nobr></div>";
+    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>" + tr("Grupo") + "</b></nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Dias") + ":" + dias.toFixed(0) + "</nobr></div>";
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "</nobr></div>";
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Consensos") + ":" + ap.documentos + "</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Decisiones") + ":" + ap.documentos + "</nobr></div>";
     //ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Comunes:0</nobr></div>";
     panel.innerHTML = ret;
     panel.style.visibility = 'visible';
@@ -297,12 +299,49 @@ function jsonToDate(jsondate) {
     return new Date(jsondate.match(/\d+/)[0] * 1);
 }
 
-function tr(mensaje) {
-    //aplico traduccion
-    if (grupo) {
-        if (grupo.idioma = "ES")
-            return mensaje;
-    }
-    else
-        return mensaje; //por ahora
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    url = url.toLowerCase();
+    name = name.toLowerCase();
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
+function URIEncode(s) {
+    while (s.indexOf("<") >= 0)
+        s = s.replace("<", "&lt;");
+
+    while (s.indexOf(">") >= 0)
+        s = s.replace(">", "&gt;");
+
+    s = encodeURIComponent(s);
+    return (s);
+}
+
+function getURLName(s) {
+    while (s.indexOf('/') >= 0)
+        s = s.substring(s.indexOf('/') + 1);
+    return s;
+}
+
+function HTMLDecode(value) {
+    // set the type of encoding to numerical entities e.g & instead of &
+    Encoder.EncodeType = "numerical";
+
+    // or to set it to encode to html entities e.g & instead of &
+    Encoder.EncodeType = "entity";
+
+    // HTML encode text from an input element
+    // This will prevent double encoding.
+    return Encoder.htmlEncode(value);
+
+    // To encode but to allow double encoding which means any existing entities such as
+    // &amp; will be converted to &amp;amp;
+    //var dblEncoded = Encoder.htmlEncode(document.getElementById('input'), true);
+
+}
+

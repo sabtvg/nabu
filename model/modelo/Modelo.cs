@@ -15,7 +15,6 @@ namespace nabu
         public bool activo = true;
         public string titulo = ""; //esto es parte del documento
         public string etiqueta = ""; //esto es parte del documento
-        public string idioma = "ES";
         public string firmaConsenso = ""; //solo se usa para generar el consenso
 
         protected int niveles = 0;
@@ -52,7 +51,7 @@ namespace nabu
         protected virtual string HTMLEncabezado(Propuesta prop, Grupo g, string email, int width)
         {
             string ret = "";
-            Usuario u = g.getUsuario(email);
+            Usuario u = g.getUsuarioHabilitado(email);
             bool tieneFlores = false;
             if (u != null) tieneFlores = u.floresDisponibles().Count > 0;
 
@@ -61,12 +60,12 @@ namespace nabu
 
             //titulo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
-            ret += "<div class='titulo2'><nobr>" + tr("T&iacute;tulo") + ":" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores) + "</nobr></div>";
+            ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores, g.idioma) + "</nobr></div>";
 
             //etiqueta
-            ret += "<div class='titulo2'><nobr>" + tr("Etiqueta") + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores);
+            ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
             if (prop == null)
-                ret += "<span style='color:gray;font-size:12px;'>" + tr("(Etiqueta en el arbol)") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
             return ret;
         }
@@ -81,7 +80,7 @@ namespace nabu
                 ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
             
             ret += toHTMLContenido(prop.nivel, prop, g, email, width);
-            ret += "<br>Comentarios:";
+            ret += "<br>" + Tools.tr("Comentarios", g.idioma) + ":";
             ret += toHTMLComentarios(prop.nivel, prop, g, email, width - 30, false);
             return ret;
         }
@@ -98,7 +97,7 @@ namespace nabu
             consensoAlcanzado = false;
 
             bool tieneFlores = false;
-            Usuario u = g.getUsuario(email);
+            Usuario u = g.getUsuarioHabilitado(email);
             if (u != null) tieneFlores = u.floresDisponibles().Count > 0;
 
             //ordeno las propuestas por nivel
@@ -138,7 +137,9 @@ namespace nabu
                 {
                     ret += "<tr>";
                     ret += "<td><hr></td>";
-                    ret += "<td><span style='color:gray;font-size:10px;'>" + tr("Nivel en el arbol:") + " " + q + "</span></td>";
+                    ret += "<td><span style='color:gray;font-size:10px;'>";
+                    ret += Tools.tr("Nivel en el arbol", g.idioma) + ": " + q;
+                    ret += "</span></td>";
                     ret += "</tr>";
                 }
 
@@ -148,7 +149,7 @@ namespace nabu
                 ret += "<td ";
                 ret += "style='width: " + contenidoWidth + "px;vertical-align:top;' ";
                 if (editar && !consensoAlcanzado)
-                    ret += "class='editar'";
+                    ret += "class='seccion'";
                 ret += ">";
                 ret += toHTMLContenido(q, prop, g, email, contenidoWidth);
                 ret += "    </td>";
@@ -186,29 +187,29 @@ namespace nabu
             {
                 //modo muestra
                 if (consensoAlcanzado)
-                    ret += "<div class='comentario'><b>" + tr("Consenso alcanzado") + "</b></div><br>";
+                    ret += "<div class='comentario'><b>" + Tools.tr("Consenso alcanzado", g.idioma) + "</b></div><br>";
 
-                ret += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
 
                 if (tieneFlores && !consensoAlcanzado)
-                    ret += "<input type='button' class='btn' value='" + tr("Prevista de propuesta") + "' title='" + tr("Enseña vista previa antes de proponer") + "' onclick='doPrevista();' />";
+                    ret += "<input type='button' class='btn' value='" + Tools.tr("Prevista de propuesta", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevista();' />";
 
             }
             else if (modo == eModo.prevista)
             {
-                ret += "<input type='button' class='btn' value='" + tr("Cancelar") + "' onclick='doCerrarDocumento();' />";
-                ret += "<input type='button' class='btn' value='" + tr("Revisar propuesta") + "' title='" + tr("Permite corregir errores") + "' onclick='doRevisar();' />";
-                if (!hayError() && props[props.Count - 1].esPrevista())
+                ret += "<input type='button' class='btn' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' value='" + Tools.tr("Revisar propuesta", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisar();' />";
+                if (!hayError() && props.Count > 0 && props[props.Count - 1].esPrevista())
                     //permito crear
                     //tiene que haber almenos una propuesa nueva para poder crear algo
-                    ret += "<input type='button' class='btn' value='" + tr("Crear propuesta") + "' title='" + tr("Crea la propuesta") + "' onclick='doProponer();' />";
+                    ret += "<input type='button' class='btn' value='" + Tools.tr("Crear propuesta", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doProponer();' />";
             }
             else if (modo == eModo.revisar)
             {
                 //permito prevista
-                ret += "<input type='button' class='btn' value='" + tr("Cancelar") + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
                 if (tieneFlores && !consensoAlcanzado)
-                    ret += "<input type='button' class='btn' value='" + tr("Prevista de propuesta") + "' title='" + tr("Enseña vista previa antes de proponer") + "' onclick='doPrevista();' />";
+                    ret += "<input type='button' class='btn' value='" + Tools.tr("Prevista de propuesta", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevista();' />";
             }
 
             //ret += "<a id='btnDownload' href='' target='_blank'><font size='1'>Descargar esta versi&oacute;n</font></a>";
@@ -236,7 +237,7 @@ namespace nabu
                 {
                     ret += "<textarea id='comentario" + prop.nodoID + "' maxlength='200' class='editar' style='width: " + (width - 15) + "px; height: 70px;'>";
                     ret += "</textarea><br>";
-                    ret += "<input type='button' class='btn2' value='" + tr("Enviar") + "' onclick='doComentar(" + prop.nodoID + ");'>";
+                    ret += "<input type='button' class='btn2' value='" + Tools.tr("Enviar", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ");'>";
                     ret += "&nbsp;<font size='1'>(max: 200)</font>";
                 }
             }
@@ -246,7 +247,6 @@ namespace nabu
 
         public string addError(int nivel, string s)
         {
-            s = tr(s);
             if (errores.ContainsKey(nivel))
                 errores[nivel] = errores[nivel] + "<br>" + s;
             else
@@ -305,7 +305,7 @@ namespace nabu
             return ret;
         }
 
-        public string HTMLLista(string id, string valores, Propuesta prop, int width, bool tieneFlores)
+        public string HTMLLista(string id, string valores, Propuesta prop, int width, bool tieneFlores, string idioma)
         {
             Variable v = getVariable(id);
             string ret = "";
@@ -348,12 +348,12 @@ namespace nabu
             }
             else
                 //sin flores
-                ret += "<span style='color:gray;font-size:12px;float:left;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;float:left;'>" + Tools.tr("[No tiene flores para crear una propuesta]", idioma) + "</span>";
 
             return ret;
         }
 
-        public string HTMLArea(string id, Propuesta prop, int width, int height, bool tieneFlores)
+        public string HTMLArea(string id, Propuesta prop, int width, int height, bool tieneFlores, string idioma)
         {
             Variable v = getVariable(id);
             string ret = "";
@@ -366,7 +366,7 @@ namespace nabu
                     ret += "maxlength='" + v.len + "' ";
                     ret += "style='width:" + width + "px;height:" + height + "px;'>";
                     ret += "</textarea>";
-                    ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + tr("max") + ": " + v.len + ")</div>";
+                    ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                     ret += "<br>";
                 }
             }
@@ -379,7 +379,7 @@ namespace nabu
                 ret += "style='width:" + width + "px;height:" + height + "px;'>";
                 ret += getValue(id, prop);
                 ret += "</textarea>";
-                ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + tr("max") + ": " + v.len + ")</div>";
+                ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                 ret += "<br>";
             }
             else if (prop != null)
@@ -397,7 +397,7 @@ namespace nabu
             }
             else
             {
-                ret += "<span style='color:gray;font-size:12px;padding:5px;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;padding:5px;'>" + Tools.tr("[No tiene flores para crear una propuesta]", idioma) + "</span>";
                 ret += "<br>";
             }
 
@@ -411,7 +411,7 @@ namespace nabu
             return toHTML(props, g, email, width, modo);
         }
        
-        public string HTMLListaSeleccion(string id, Propuesta prop, int width, int height, bool tieneFlores, string lista, string pertenece, string NoPertenece)
+        public string HTMLListaSeleccion(string id, Propuesta prop, int width, int height, bool tieneFlores, string lista, string pertenece, string NoPertenece, string idioma)
         {
             Variable v = getVariable(id);
             string value = getText(id, prop);
@@ -527,7 +527,7 @@ namespace nabu
             }
             else
             {
-                ret += "<span style='color:gray;font-size:12px;padding:5px;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;padding:5px;'>" + Tools.tr("[No tiene flores para crear una propuesta]", idioma) + "</span>";
                 ret += "<br>";
             }
 
@@ -535,7 +535,7 @@ namespace nabu
             return ret;
         }
 
-        public string HTMLDate(string id, Propuesta prop,  bool tieneFlores)
+        public string HTMLDate(string id, Propuesta prop,  bool tieneFlores, string idioma)
         {
             DateTime d = getDate(id, prop);
             string value = "";
@@ -551,15 +551,15 @@ namespace nabu
                 //ver
                 value = d.Day.ToString("00") + "/" + d.Month.ToString("00") + "/" + d.Year.ToString("0000");
              
-            return input(id, prop, 130, tieneFlores, "date", value);
+            return input(id, prop, 130, tieneFlores, "date", value, idioma);
         }
 
-        public string HTMLText(string id, Propuesta prop, int width, bool tieneFlores)
+        public string HTMLText(string id, Propuesta prop, int width, bool tieneFlores, string idioma)
         {
-            return input(id, prop, width, tieneFlores, "text", getText(id, prop));
+            return input(id, prop, width, tieneFlores, "text", getText(id, prop), idioma);
         }
 
-        public string HTMLRadio(string id, int index, Propuesta prop, bool tieneFlores, string value)
+        public string HTMLRadio(string id, int index, Propuesta prop, bool tieneFlores, string value, string idioma)
         {
             Variable v = getVariable(id);
             string ret = "";
@@ -593,12 +593,12 @@ namespace nabu
             }
             else
                 //sin flores
-                ret += "<span style='color:gray;font-size:12px;float:left;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;float:left;'>" + Tools.tr("[No tiene flores para crear una propuesta]", idioma) + "</span>";
 
             return ret;
         }
 
-        private string input(string id, Propuesta prop, int width, bool tieneFlores, string tipo, string value )
+        private string input(string id, Propuesta prop, int width, bool tieneFlores, string tipo, string value, string idioma)
         {
             Variable v = getVariable(id);
             string ret = "";
@@ -632,7 +632,7 @@ namespace nabu
             }
             else
                 //sin flores
-                ret += "<span style='color:gray;font-size:12px;float:left;'>" + tr("[No tiene flores para crear una propuesta]") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;float:left;'>" + Tools.tr("[No tiene flores para crear una propuesta]", idioma) + "</span>";
 
             return ret;
         }
@@ -780,10 +780,11 @@ namespace nabu
         public string HTMLFlores(Nodo n, bool showVariante, Usuario u) {
             string ret;
             ret = "<table style='width:100%;'><tr>";
-            ret += "<td class='votos'  style='vertical-align:center;'>";
-            ret += "<img src='res/icono.png'>";
+            ret += "<td class='votos' style='vertical-align:center;'><nobr>&nbsp;";
+            ret += n.born.ToShortDateString();
+            ret += "&nbsp;<img src='res/icono.png' style='vertical-align:middle'>";
             ret += "&nbsp;" + n.getFloresTotales();
-            ret += "</td><td style='text-align:right;'>";
+            ret += "&nbsp;</nobr></td><td style='text-align:right;'>";
             if (n.nivel > 0 && showVariante) {
                 if (u.floresDisponibles().Count == 0)
                     ret += "<input type='button' class='btnDis' value='Crear variante' title='No tienes flores disponibles' disabled>";

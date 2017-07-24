@@ -91,6 +91,18 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 3)
                 {
+                    if (getText("r.accion", prop) != "borrar" && getText("s.entradas", prop) == "")
+                    {
+                        addError(3, "Debes definir las entradas del proceso");
+                        getVariable("s.entradas").className = "errorfino";
+                    }
+
+                    if (getText("r.accion", prop) != "borrar" && getText("s.definicion", prop) == "")
+                    {
+                        addError(3, "Debes definir el proceso");
+                        getVariable("s.definicion").className = "errorfino";
+                    }
+
                     if (getText("s.entradas", prop) == ""
 						&& getText("s.definicion", prop) == ""
                         && getText("s.conclusiones", prop) == "")
@@ -100,14 +112,27 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 4)
                 {
-                    if (getText("s.implantacion", prop) == "")
+                    if (getText("r.accion", prop) == "nuevo" && getText("s.grupoTrabajo", prop) == "")
+                    {
+                        addError(4, "Debes seleccionar un grupo de trabajo");
+                        getVariable("s.grupoTrabajo").className = "errorfino";
+                    }
+
+                    if (getText("s.implantacion", prop) == "" 
+                        && getText("s.grupoTrabajo", prop) == "")
                     {
                         addError(4, "La propuesta no puede estar completamente vacia");
                     }
                 }
                 else if (prop.nivel == 5)
                 {
-                    if (getText("s.eficiencia", prop) == "")
+                    if (getText("s.revision", prop) == "")
+                    {
+                        addError(5, "Debes seleccionar un periodo de revisi&oacute;n");
+                        getVariable("s.revision").className = "errorfino";
+                    }
+
+                    if (getText("s.eficiencia", prop) == "" && getText("s.revision", prop) == "")
                     {
                         addError(5, "La propuesta no puede estar completamente vacia");
                     }
@@ -118,7 +143,7 @@ namespace nabu.plataforma.modelos
         override protected string HTMLEncabezado(Propuesta prop, Grupo g, string email, int width)
         {
             string ret = "";
-            Usuario u = g.getUsuario(email);
+            Usuario u = g.getUsuarioHabilitado(email);
             bool tieneFlores = false;
             if (u != null) tieneFlores = u.floresDisponibles().Count > 0;
 
@@ -135,18 +160,18 @@ namespace nabu.plataforma.modelos
             //nuevo
             ret += "<table>";
             ret += "<tr>";
-            ret += "<td colspan=2 class='titulo2'><nobr>" + tr("Acci&oacute;n") + "</nobr></td>";
-            ret += "<td colspan=2 class='titulo2'><nobr>" + tr("Nombre") + "</nobr></td>";
+            ret += "<td colspan=2 class='titulo2'><nobr>" + Tools.tr("accion", g.idioma) + "</nobr></td>";
+            ret += "<td colspan=2 class='titulo2'><nobr>" + Tools.tr("Nombre", g.idioma) + "</nobr></td>";
             ret += "</tr>";
 
             ret += "<tr>";
-            ret += "<td>" + HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo") + "</td>";
-            ret += "<td style='vertical-align:middle'>Crear nuevo proceso</td>";
+            ret += "<td>" + HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo", g.idioma) + "</td>";
+            ret += "<td style='vertical-align:middle'>" + Tools.tr("Crear nuevo proceso", g.idioma) + "</td>";
             ret += "<td class='titulo2'>";
             //nombre del grupo
             if (prop != null && accion == "nuevo")
             {
-                ret += HTMLText("s.nombreProceso", prop, 40 * 8, tieneFlores);
+                ret += HTMLText("s.nombreProceso", prop, 40 * 8, tieneFlores, g.idioma);
             }
             ret += "</td>";
             ret += "</tr>";
@@ -156,34 +181,34 @@ namespace nabu.plataforma.modelos
             if (listaPRs != "")
             {
                 ret += "<tr>";
-                ret += "<td>" + HTMLRadio("r.accion", 2, prop, tieneFlores, "existente") + "</td>";
-                ret += "<td style='vertical-align:middle'>Modificar proceso</td>";
+                ret += "<td>" + HTMLRadio("r.accion", 2, prop, tieneFlores, "existente", g.idioma) + "</td>";
+                ret += "<td style='vertical-align:middle'>" + Tools.tr("Modificar proceso", g.idioma) + "</td>";
                 ret += "<td class='titulo2'>";
                 //nombre del grupo
                 if (prop != null && accion == "existente")
                 {
-                    ret += HTMLLista("s.nombreProceso", listaPRs, prop, 80 * 8, tieneFlores);
+                    ret += HTMLLista("s.nombreProceso", listaPRs, prop, 80 * 8, tieneFlores, g.idioma);
                 }
                 ret += "</tr>";
 
                 //borrar
                 ret += "<tr>";
-                ret += "<td>" + HTMLRadio("r.accion", 3, prop, tieneFlores, "borrar") + "</td>";
-                ret += "<td style='vertical-align:middle'>Eliminar proceso</td>";
+                ret += "<td>" + HTMLRadio("r.accion", 3, prop, tieneFlores, "borrar", g.idioma) + "</td>";
+                ret += "<td style='vertical-align:middle'>" + Tools.tr("Eliminar proceso", g.idioma) + "</td>";
                 ret += "<td class='titulo2'>";
                 //nombre del grupo
                 if (prop != null && accion == "borrar")
                 {
-                    ret += HTMLLista("s.nombreProceso", listaPRs, prop, 80 * 8, tieneFlores);
+                    ret += HTMLLista("s.nombreProceso", listaPRs, prop, 80 * 8, tieneFlores, g.idioma);
                 }
                 ret += "</tr>";
             }
             ret += "</table><br>";
 
             //etiqueta
-            ret += "<div class='titulo2'><nobr>" + tr("Etiqueta") + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores);
+            ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
             if (prop == null)
-                ret += "<span style='color:gray;font-size:12px;'>" + tr("(Etiqueta en el arbol)") + "</span>";
+                ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
             return ret;
         }
@@ -201,120 +226,118 @@ namespace nabu.plataforma.modelos
             bool puedeVariante = prop != null && !prop.esPrevista() && modo == eModo.editar && tieneFlores && !consensoAlcanzado;
 
 
+            //accion
+            if (prop != null)
+            {
+                if (getText("r.accion", prop) != "")
+                    accion = getText("r.accion", prop);
+                else
+                    prop.bag["r.accion"] = accion;
+            }
+            if (accion == "borrar")
+                niveles = 3;
+            else
+                niveles = 5;
+
             //validaciones de este nivel
             if (modo == eModo.prevista) validar(prop);
 
             if (nivel == 1)
-            {
-                //me guardo el valor de r.accion para poder usarlo en otros nivels tambien
-                accion = getText("r.accion", prop);
-                if (accion == "borrar")
-                    niveles = 3;
-                else
-                    niveles = 5;
-
+            {              
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //fecha
                 if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + tr("Fecha") + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
                 //tema
-                ret += "<div class='tema'>" + tr("Introducci&oacute;n") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("¿Cual es la sicuaci&oacute;n actual?, ¿Por qu&eacute; necesitamos un nuevo proceso operativo?, ¿Que problemas resolver&aacute;? Ten en cuenta que la situati&oacute;n que describes represente un problema real del grupo") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("proceso.introduccion", g.idioma) 
                         + "</div>";
-                ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
+
+                //variante
+                if (puedeVariante)
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 2)
             {
-                //guardo la accion en cada nivel porque su representacion depende de este valor
-                if (prop != null && accion != "")
-                    prop.bag["r.accion"] = accion;
-                else if (prop != null && accion == "" && prop.bag.ContainsKey("r.accion"))
-                    accion = getText("r.accion", prop); 
-
                 if (accion == "borrar")
                 {
-                    ret += "<div class='tema'>" + tr("Consecuencias") + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("Consecuencias", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + tr("¿Cuales son los consecuencias de eliminar este grupo de trabajo que habr&aacute; que enfrentar?")
+                            + Tools.tr("proceso.consecuancias", g.idioma)
                             + "</div>";
-                    ret += HTMLArea("s.consecuencias", prop, width, 120, tieneFlores);
+                    ret += HTMLArea("s.consecuencias", prop, width, 120, tieneFlores, g.idioma);
                 }
                 else
                 {
                     //Objetivo a lograr
-                    ret += "<div class='tema'>" + tr("Objetivo a lograr") + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
                     if (editar) 
-                        ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                            + tr("¿Cuales son los objetivos del nuevo grupo de trabajo?") 
+                        ret += "<div class='smalltip' style='width:" + width + "px'>"
+                            + Tools.tr("proceso.objetivo", g.idioma) 
                             + "</div>";
-                    ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores);
+                    ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
 
                     //Descripcion
-                    ret += "<div class='tema'>" + tr("Descripcion") + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
                     if (editar) 
-                        ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                            + tr("Describe brevemente los pasos a realizar al ejecutar el proceso operativo. Menciona como se tratar&aacute;n los casos excepcionales. Un proceso operativo siempre debe generar un resultado, aunque sea un registro de fallo para su posterior analisis.") 
+                        ret += "<div class='smalltip' style='width:" + width + "px'>"
+                            + Tools.tr("proceso.descripcion", g.idioma) 
                             + "</div>";
-                    ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores);
+                    ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
 
                     //A quien va dirigido
-                    ret += "<div class='tema'>" + tr("A quien va dirigido") + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
                     if (editar) 
                         ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                            + tr("Quienes se beneficiaran con los resultados de utilizar este proceso operativo") 
+                            + Tools.tr("Quienes se beneficiaran con los resultados de utilizar este proceso operativo", g.idioma) 
                             + "</div>";
-                    ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores);
+                    ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
 
                     //variante
                     if (puedeVariante) 
-                        ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                        ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
                 }
             }
             else if (nivel == 3)
             {
-                //guardo la accion en cada nivel porque su representacion depende de este valor
-                if (prop != null && accion != "")
-                    prop.bag["r.accion"] = accion;
-                else if (prop != null && accion == "" && prop.bag.ContainsKey("r.accion"))
-                    accion = getText("r.accion", prop);
-
                 if (accion == "borrar")
                 {
-                    ret += "<div class='tema'>" + tr("Conclusiones") + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("Conclusiones", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + tr("¿Que hemos aprendido con esta experiencia?")
+                            + Tools.tr("proceso.conclusiones", g.idioma)
                             + "</div>";
-                    ret += HTMLArea("s.conclusiones", prop, width, 120, tieneFlores);
+                    ret += HTMLArea("s.conclusiones", prop, width, 120, tieneFlores, g.idioma);
                 }
                 else
                 {
                 //Entradas de proceso
-                ret += "<div class='tema'>" + tr("Entradas de proceso") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Entradas de proceso", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + tr("¿Como se provoca la ejecuci&oacute;n de este proceso? ¿Que necesita este proceso para poder ejecutarse? Un nuevo socio, un documento, una peticion personal, etc.")
+                        + Tools.tr("proceso.entradas", g.idioma)
                         + "</div>";
-                ret += HTMLArea("s.entradas", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.entradas", prop, width, 120, tieneFlores, g.idioma);
 
                 //definicion
-                ret += "<div class='tema'>" + tr("Definici&oacute;n del proceso operativo") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Definicion del proceso operativo", g.idioma) + "</div>";
                 if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("Define paso por paso las tareas a realizar cuando se ejecute este proceso. Define como se tratar&aacute;n las excepciones. Un proceso operativo es un flujo de condiciones y tareas que contempla todas las alternativas posibles de manera que su ejecusi&oacute;n no admita discusiones sobre sus resultados. Un proceso operativo bien definido es parte importante de la definici&oacute;n operativa del grupo. Todas las actividades habituales del grupo deben definirse como procesos operativos.") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("proceso.definicion", g.idioma) 
                         + "</div>";
-                ret += HTMLArea("s.definicion", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.definicion", prop, width, 120, tieneFlores, g.idioma);
 
                 }
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 4)
             {
@@ -327,45 +350,45 @@ namespace nabu.plataforma.modelos
                 if (accion == "nuevo")
                 {
                     //grupo de trabajo
-                    ret += "<div class='tema'>" + tr("Grupo de trabajo") + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("Grupo de trabajo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + tr("¿Que grupo de trabajo usa este proceso operativo?")
+                            + Tools.tr("proceso.grupo", g.idioma)
                             + "</div>";
-                    ret += HTMLLista("s.grupoTrabajo", getListaGTs(), prop, width, tieneFlores);
+                    ret += HTMLLista("s.grupoTrabajo", getListaGTs(), prop, width, tieneFlores, g.idioma);
                 }
 
                 //implantacion
-                ret += "<div class='tema'>" + tr("Implantaci&oacute;n") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Implantacion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                        + tr("¿Que se debe hacer para implantar este proceso? Recursos, sitio fis&iacute;co, conocimientos y capacidades de las personas, formularios/hojas de datos/folletos informativos, software, etc.") 
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("proceso.implantacion", g.idioma) 
                         + "</div>";
-                ret += HTMLArea("s.implantacion", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.implantacion", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + tr("Valoraci&oacute;n del resultado") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Valoracion del resultado", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + tr("¿Como se medir&aacute; el resultado de este proceso operativo? ¿cantidad de procesos ejecutados? ¿resultados obtenidos? ¿facilita la necesidad? ¿es facil de ejecutar?. <br>La valoraci&oacute;n de un proceso operativo debe ser cuantificable y facil de comprender. Debe quedar claro para todos si cumple con su objetivo o no.")
+                        + Tools.tr("proceso.valoracion", g.idioma)
                         + "</div>";
-                ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores);
+                ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
 
-                ret += "<div class='tema'>" + tr("Revisi&oacute;n de valoraci&oacute;n del resultado") + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Revision de valoracion del resultado", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + tr("¿Cuando se revisar&aacute; la definici&oacute;n de este proceso operativo?")
+                        + Tools.tr("proceso.revision", g.idioma)
                         + "</div>";
-                ret += HTMLLista("s.revision", ":Mensual:Trimestral:Semestral:Anual", prop, 250, tieneFlores);
+                ret += HTMLLista("s.revision", ":Mensual:Trimestral:Semestral:Anual", prop, 250, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + tr("Proponer variante") + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
             }
             else
             {
@@ -388,73 +411,74 @@ namespace nabu.plataforma.modelos
 
         public override void ejecutarConsenso(Documento doc)
         {
-            nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
-            if ((string)doc.getValor("r.accion") == "borrar")
-            {
-                //borro proceso
-                string grupoTrabajo = doc.titulo.Split('.')[0];
-                string proceso = doc.titulo.Split('.')[1];
-                foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-                    if (gt.nombre == grupoTrabajo)
-                        foreach (nabu.plataforma.Proceso pr in gt.procesos)
-                            if (pr.nombre == proceso)
-                            {
-                                gt.procesos.Remove(pr);
-                                doc.addLog(tr("Proceso eliminado del grupo de trabajo [" + grupoTrabajo + "] en la estructura organizativa"));
-                                break;
-                            }
-            }
-            else
-            {
-                //creo/actualizo grupoTrabajo actual
-                bool found = false;
-                string grupoTrabajo = doc.titulo.Split('.')[0];
-                string proceso = doc.titulo.Split('.')[1];
-                foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-                    if (gt.nombre == grupoTrabajo)
-                    {
-                        foreach (nabu.plataforma.Proceso pr in gt.procesos)
-                            if (pr.nombre == proceso)
-                            {
-                                found = true;
-                                //actualizo
-                                pr.docURL = doc.URLPath; //nuevo consenso
-                                pr.docTs = DateTime.Now;
-                                pr.revision = (string)doc.getValor("s.revision");
-                                pr.objetivo = (string)doc.getValor("s.objetivo");
-                                pr.entradas = (string)doc.getValor("s.entradas");
-                                pr.definicion = (string)doc.getValor("s.definicion");
+            //nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
+            //if ((string)doc.getValor("r.accion") == "borrar")
+            //{
+            //    //borro proceso
+            //    string grupoTrabajo = doc.titulo.Split('.')[0];
+            //    string proceso = doc.titulo.Split('.')[1];
+            //    foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
+            //        if (gt.nombre == grupoTrabajo)
+            //            foreach (nabu.plataforma.Estrategia pr in gt.estrategias)
+            //                if (pr.nombre == proceso)
+            //                {
+            //                    gt.estrategias.Remove(pr);
+            //                    doc.addLog(Tools.tr("proceso.eliminado", grupoTrabajo, doc.grupo.idioma));
+            //                    break;
+            //                }
+            //}
+            //else if ((string)doc.getValor("r.accion") == "existente")
+            //{
+            //    //creo/actualizo grupoTrabajo actual
+            //    string grupoTrabajo = doc.titulo.Split('.')[0];
+            //    string proceso = doc.titulo.Split('.')[1];
+            //    foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
+            //        if (gt.nombre == grupoTrabajo)
+            //        {
+            //            foreach (nabu.plataforma.Estrategia pr in gt.estrategias)
+            //                if (pr.nombre == proceso)
+            //                {
+            //                    //actualizo
+            //                    pr.docURL = doc.URLPath; //nuevo consenso
+            //                    pr.docTs = DateTime.Now;
+            //                    pr.revision = doc.getText("s.revision");
+            //                    pr.objetivo = doc.getText("s.objetivo");
+            //                    pr.entradas = doc.getText("s.entradas");
+            //                    pr.definicion = doc.getText("s.definicion");
 
-                                doc.addLog(tr("Proceso actualizado en el grupo de trabajo [" + grupoTrabajo + "] en la estructura organizativa"));
-                            }
+            //                    doc.addLog(Tools.tr("proceso.actualizado", grupoTrabajo, doc.grupo.idioma));
+            //                }
+            //        }
+            //}
+            //else
+            //{//nuevo
+            //    string grupoTrabajo = (string)doc.getValor("s.grupoTrabajo");
+            //    foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
+            //        if (gt.nombre == grupoTrabajo)
+            //        {
+            //            //creo
+            //            nabu.plataforma.Proceso pr = new plataforma.Proceso();
+            //            pr.nombre = doc.titulo;
+            //            pr.docURL = doc.URLPath;
+            //            pr.docTs = DateTime.Now;
+            //            pr.revision = doc.getText("s.revision");
+            //            pr.objetivo = doc.getText("s.objetivo");
+            //            pr.entradas = doc.getText("s.entradas");
+            //            pr.definicion = doc.getText("s.definicion");
 
-                        //creo
-                        if (!found)
-                        {
-                            grupoTrabajo = (string)doc.getValor("s.grupoTrabajo");
-                            nabu.plataforma.Proceso pr = new plataforma.Proceso();
-                            pr.nombre = doc.titulo;
-                            pr.docURL = doc.URLPath;
-                            pr.docTs = DateTime.Now;
-                            pr.revision = (string)doc.getValor("s.revision");
-                            pr.objetivo = (string)doc.getValor("s.objetivo");
-                            pr.entradas = (string)doc.getValor("s.entradas");
-                            pr.definicion = (string)doc.getValor("s.definicion");
+            //            gt.estrategias.Add(pr);
 
-                            gt.procesos.Add(pr);
-
-                            doc.addLog(tr("Proceso creado en el grupo de trabajo [" + grupoTrabajo + "] en la estructura organizativa"));
-                        }
-                    }
-            }
+            //            doc.addLog(Tools.tr("proceso.creado", grupoTrabajo, doc.grupo.idioma));
+            //        }
+            //}
         }
         
         private string getListaPRs()
         {
-            string ret = "";
+            string ret = ":";
             nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
             foreach (plataforma.GrupoTrabajo gt in pl.gruposTrabajo)
-                foreach (plataforma.Proceso pr in gt.procesos)
+                foreach (plataforma.Estrategia pr in gt.estrategias)
                     ret += gt.nombre + "." + pr.nombre + ":";
             if (ret.EndsWith(":")) ret = ret.Substring(0, ret.Length - 1);
             return ret;
@@ -462,7 +486,7 @@ namespace nabu.plataforma.modelos
 
         private string getListaGTs()
         {
-            string ret = "";
+            string ret = ":";
             nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
             foreach (plataforma.GrupoTrabajo gt in pl.gruposTrabajo)
             {

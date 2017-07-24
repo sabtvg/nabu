@@ -7,21 +7,43 @@
     <script src="js/util.js"></script>
     <script src="js/common.js"></script>
     <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script>
+        var nombreArbol;
+        var nombreAdmin;
+        var email;
+        var clave;
+        var idioma;
+        var organizacion;
+
+        function doLoad() {
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = navigator.language || navigator.userLanguage;
+
+            document.getElementById("tit2").innerHTML = tr("Crear grupo");
+            document.getElementById("datGrupo").innerHTML = tr("Datos del grupo");
+            document.getElementById("nombreArbol").placeholder = tr("Nombre");
+            document.getElementById("jarDat").innerHTML = tr("Datos del coordinador");
+            document.getElementById("nombreAdmin").placeholder = tr("Nombre");
+            document.getElementById("email").placeholder = tr("Email");
+            document.getElementById("clave").placeholder = tr("Clave");
+            document.getElementById("clave2").placeholder = tr("Repetir clave");
+        }
+
         function doCrearArbol() {
-            var nombreArbol = document.getElementById("nombreArbol").value;
-            var nombreAdmin = document.getElementById("nombreAdmin").value;
-            var email = document.getElementById("email").value;
-            var clave = document.getElementById("clave").value;
-            var clave2 = document.getElementById("clave2").value;
-            var idioma = getSelectedId(document.getElementById("idioma"));
-            var organizacion = getSelectedId(document.getElementById("organizacion"));
+            nombreArbol = document.getElementById("nombreArbol").value;
+            nombreAdmin = document.getElementById("nombreAdmin").value;
+            email = document.getElementById("email").value;
+            clave = document.getElementById("clave").value;
+            clave2 = document.getElementById("clave2").value;
+            idioma = getSelectedId(document.getElementById("idioma"));
+            organizacion = getSelectedId(document.getElementById("organizacion"));
 
             if (clave != clave2) {
-                document.getElementById("response").innerHTML = "<font color=red>Las claves no coinciden</font>";
+                document.getElementById("response").innerHTML = "<font color=red>" + tr("Las claves no coinciden") + "</font>";
             }
             else
                 getHttp("doMain.aspx?actn=newgrupo&grupo=" + nombreArbol
@@ -37,16 +59,16 @@
                             //document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
 
                             //guardo cookie
-                            setCookie("nabu", nombreAdmin + "|" + email + "|" + clave + "|" + nombreArbol, 7);
+                            setCookie("nabu-" + nombreArbol, nombreAdmin + "|" + email + "|" + clave + "|" + nombreArbol + "|true", 7);
 
                             //atras
-                            document.location = 'default.html';
+                            document.location = 'default.html?grupo=' + nombreArbol;
                         }
                     });
         }
     </script>
 </head>
-<body style="overflow:hidden">
+<body style="overflow:hidden" onload="doLoad();">
 
        <div id="login" class="center" >
         <table>
@@ -57,13 +79,15 @@
                 <td align=center>
                     <div class="ventana" style="text-align: left;">
                         <span class="titulo1">Nab&uacute;</span><br />
-                        <span class="titulo2">Crear grupo</span><br />
+                        <span id="tit2" class="titulo2">Crear grupo</span><br />
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Datos del grupo</span><br />
+                            <span id="datGrupo" class="titulo3">Datos del grupo</span><br />
                             <input id="nombreArbol" type="text" class="txt" size="25" maxlength="25" placeholder="Nombre" /><br />
                             <select id="idioma" class="txt" style="width: 100%">
-                                <option id="ES">Espa&ntilde;ol</option>
+                                <option id="es">Espa&ntilde;ol</option>
+                                <option id="ct">Catal&aacute;n</option>
+                                <option id="en">English</option>
                             </select>
                             <select id="organizacion" class="txt" style="width: 100%">
                                 <option id="Plataforma">Plataforma social</option>
@@ -72,7 +96,7 @@
                         <br />
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span class="titulo3">Datos del jardinero</span><br />
+                            <span id="jarDat" class="titulo3">Datos del coordinador</span><br />
                             <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  size="25"/><br />
                             <input id="email" type="text" class="txt" placeholder="Email"  size="25"/><br />
                             <input id="clave" type="password" class="txt" placeholder="Clave"  size="25"/><br />

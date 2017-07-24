@@ -6,46 +6,59 @@
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script>
         var usuarios;
         var usuario;
+        var grupoParam;
 
         function doLoad() {
-            //leo cookie
-            var cookie = getCookie("nabu");
-            if (cookie == "")
-                //login normal
-                document.location = 'default.html';
-            else {
-                var scalex = window.innerWidth / 1920;
-                var scaley = window.innerHeight / 1080;
-                //atras
-                document.getElementById("atras").style.width = (100 * scalex) + 'px';
-                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-                document.getElementById("todo").style.top = '30px';
-                document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
-                document.getElementById("usuarios").style.height = (window.innerHeight - 270) + 'px';
-                document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
-                document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
-
-                //background
-                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-
-                //cargo datos iniciales
-                var vals = cookie.split("|");
-                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4] };
-
-                if (!usuario.isAdmin) {
-                    alert("Solo disponible para el jardinero");
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam.replace(' ', ''));
+                if (cookie == "")
                     //login normal
-                    document.location = 'default.html';
+                    document.location = 'default.html?grupo=' + grupoParam;
+                else {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
+                    //atras
+                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                    document.getElementById("todo").style.top = '30px';
+                    document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
+                    document.getElementById("usuarios").style.height = (window.innerHeight - 270) + 'px';
+                    document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
+                    document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
+
+                    //background
+                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                    idioma = vals[5]; //para el tradcutor
+
+                    if (!usuario.isAdmin) {
+                        alert(tr("Solo disponible para el coordinador"));
+                        //login normal
+                        document.location = 'default.html';
+                    }
+                    else {
+                        traducir();
+                        getListaUsuarios();
+                    }
                 }
-                else
-                    getListaUsuarios();
             }
+            else
+                //login normal
+                document.location = 'default.html?grupo=' + grupoParam;
         }
 
         function doActualizarUsuario() {
@@ -54,6 +67,7 @@
             var clave = document.getElementById("clave").value;
             var readOnly = document.getElementById("readOnly").checked;
             var isAdmin = document.getElementById("isAdmin").checked;
+            var isSecretaria = document.getElementById("isSecretaria").checked;
             var habilitado = document.getElementById("habilitado").checked;
 
             getHttp("doMain.aspx?actn=actualizarUsuario&nuevonombre=" + nombre
@@ -64,6 +78,7 @@
                 + "&isAdmin=" + isAdmin
                 + "&habilitado=" + habilitado
                 + "&email=" + usuario.email
+                + "&secretaria=" + isSecretaria
                 + "&clave=" + usuario.clave,
                 function (data) {
                     if (data.substring(0, 6) == "Error=")
@@ -77,6 +92,7 @@
                         document.getElementById("clave").value = "";
                         document.getElementById("readOnly").checked = false;
                         document.getElementById("isAdmin").checked = false;
+                        document.getElementById("isSecretaria").checked = false;
                         document.getElementById("habilitado").checked = false;
 
                         //actualizo lista
@@ -94,6 +110,7 @@
                     document.getElementById("clave").value = u.clave;
                     document.getElementById("readOnly").checked = u.readOnly;
                     document.getElementById("isAdmin").checked = u.isAdmin;
+                    document.getElementById("isSecretaria").checked = u.isSecretaria;
                     document.getElementById("habilitado").checked = u.habilitado;
                 }
             }
@@ -115,16 +132,17 @@
                         var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
                         s += "<tr>"
                         s += "<td style='width:20px;'></td>";
-                        s += "<td style='width:200px;'><b>Nombre</b></td>";
-                        s += "<td style='width:220px;'><b>Email</b></td>";
-                        s += "<td style='width:80px;text-align:center;'><b>Apoyos</b></td>";
-                        s += "<td style='width:80px;text-align:center;'><b>Ultimo</b></td>";
-                        s += "<td style='width:70px;text-align:center;'><b>Activo</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>Solo Lectura</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>Habilitado</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>Admin</b></td>";
-                        s += "<td style='width:70px;text-align:center;'><b>Email</b></td>";
-                        s += "<td style='width:70px;text-align:center;'><b>Borrar</b></td>";
+                        s += "<td style='width:200px;'><b>" + tr("Nombre") + "</b></td>";
+                        s += "<td style='width:220px;'><b>" + tr("Email") + "</b></td>";
+                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
+                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
+                        s += "<td style='width:70px;text-align:center;'><b>" + tr("Activo") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("Solo Lectura") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("Habilitado") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("Coordinador") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("Secretaria") + "</b></td>";
+                        s += "<td style='width:70px;text-align:center;'><b>" + tr("Email") + "</b></td>";
+                        s += "<td style='width:70px;text-align:center;'><b>" + tr("Borrar") + "</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
@@ -134,10 +152,11 @@
                             s += "<td>" + usu.email + "</td>";
                             s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
                             s += "<td>" + usu.sLastLogin + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "") + "</td>";
                             s += "<td style='text-align:center;'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
                             s += "<td style='text-align:center;'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
                             s += "<td style='text-align:center;'>" + (usu.isAdmin ? "<img src='res/luzverde.gif'>" : "") + "</td>";
+                            s += "<td style='text-align:center;'>" + (usu.isSecretaria ? "<img src='res/luzverde.gif'>" : "") + "</td>";
                             s += "<td style='text-align:center;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
                             if (!usu.isAdmin)
                                 s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
@@ -172,7 +191,7 @@
 
         function doBorrarUsuario(email) {
             if (email == usuario.email)
-                document.getElementById("response").innerHTML = '<font color=red>No se puede borrar el usuario actual</font>';
+                document.getElementById("response").innerHTML = '<font color=red>' + tr("No se puede borrar el usuario actual") + '</font>';
             else {
                 getHttp("doMain.aspx?actn=removeusuario&grupo=" + usuario.grupo
                     + "&usuarioemail=" + email
@@ -193,6 +212,22 @@
                     });
             }
         }
+
+        function doAtras() {
+            document.location = "default.html?grupo=" + grupoParam;
+        }
+
+        function traducir() {
+            document.getElementById("tit1").innerHTML = tr("Modificar usuarios");
+            document.getElementById("nombre").placeholder = tr("Nombre");
+            document.getElementById("email").placeholder = tr("Email");
+            document.getElementById("clave").placeholder = tr("Clave");
+            document.getElementById("lsoloLec").innerHTML = "Solo lectura";
+            document.getElementById("ladmin").innerHTML = "Coordinador";
+            document.getElementById("lsecre").innerHTML = "Secretaria";
+            document.getElementById("lHab").innerHTML = "Habilitado";
+            document.getElementById("btnActualizar").value = tr("Actualizar");
+        }
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
@@ -206,17 +241,26 @@
             </tr>          
         </table>
             <br />
-            <span class="titulo2">Modificar usuarios</span><br />
+            <span id="tit1" class="titulo2">Modificar usuarios</span><br />
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                <span class="titulo3">Crear</span><br />
-                <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
-                <input id="email" type="text" class="txt" size="20" placeholder="Email" />
-                <input id="clave" type="password" class="txt" size="15" placeholder="Clave" />
-                Solo lectura<input id="readOnly" type="checkbox" class="txt" />
-                Admin<input id="isAdmin" type="checkbox" class="txt" />
-                Habilitado<input id="habilitado" type="checkbox" class="txt" />
-                <input type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' />
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
+                            <input id="email" type="text" class="txt" size="20" placeholder="Email" />
+                            <input id="clave" type="password" class="txt" size="15" placeholder="Clave" />
+                            <br />
+                            <span id="lsoloLec">Solo lectura</span><input id="readOnly" type="checkbox" class="txt" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span id="ladmin">Admin</span><input id="isAdmin" type="checkbox" class="txt" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span id="lsecre">Secretaria</span><input id="isSecretaria" type="checkbox" class="txt" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span id="lHab">Habilitado</span><input id="habilitado" type="checkbox" class="txt" />
+                        </td>
+                        <td style="vertical-align:top">
+                            <input id="btnActualizar" type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' />
+                        </td>
+                    </tr>
+                </table>
             </div>
             <br />
 
@@ -225,6 +269,6 @@
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     </body>
 </html>

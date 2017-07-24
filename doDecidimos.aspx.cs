@@ -29,13 +29,14 @@ namespace nabu
             app = (Aplicacion)Application["aplicacion"];
 
             Tools.startupPath = Server.MapPath("");
+            Tools.server = Server;
 
             try
             {
                 //guardo lista de arboles periodicamente
                 app.verifySave();
                 
-                //limpio flores caducadas periodicamente
+                //limpio flores caducadas periodicamente de todos los usuarios 
                 verifyFloresCaducadas();
 
                 //proceso peticiones
@@ -81,7 +82,7 @@ namespace nabu
 
                         case "variante":
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            Response.Write(doVariante(int.Parse(Request["id"]), Request["grupo"], Request["email"], int.Parse(Request["width"])));
+                            Response.Write(doVariante(int.Parse(Request["id"]), Request["modeloID"], Request["grupo"], Request["email"], int.Parse(Request["width"])));
                             break;
 
                         case "prevista":
@@ -113,7 +114,7 @@ namespace nabu
 
                         case "updatearbol":
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            a = updateArbol(Request["grupo"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]),Request["padreURL"], Request["padreNombre"]);
+                            a = updateArbol(Request["grupo"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]), Request["padreURL"], Request["padreNombre"], Request["idioma"]);
                             Response.Write("Arbol actualizado");
                             break;
 
@@ -244,8 +245,22 @@ namespace nabu
             {
                 List<Propuesta> props = prepararDocumento(g, email, modeloID, id, req);
 
-                //genro prevista
+                //genro prevista para segurarme que defina etiqueta y titulo
                 ret = m.toHTML(props, g, email, width, Modelo.eModo.prevista); //las propuesta debe ir en orden de nivel
+
+                //guarpo prevista para poder crearla luego
+                if (props.Count > 0)
+                {
+                    Usuario u = g.getUsuarioHabilitado(email);
+                    Prevista prev = new Prevista();
+                    prev.etiqueta = m.etiqueta;
+                    prev.titulo = m.titulo;
+                    prev.propuestas.Clear();
+                    foreach(Propuesta p in props)
+                        if (p.esPrevista())
+                            prev.propuestas.Add(p);
+                    u.prevista = prev;
+                } //else no ha escrito nada nuevo
             }
             return ret;
         }
@@ -259,9 +274,23 @@ namespace nabu
             lock (g)
             {
                 List<Propuesta> props = prepararDocumento(g, email, modeloID, id, req);
-
+                
                 //genro respuesta
                 ret = m.documentSubmit(accion, parametro, props, g, email, width, Modelo.eModo.editar); //las propuesta debe ir en orden de nivel
+
+                //guarpo prevista para poder crearla luego
+                if (props.Count > 0)
+                {
+                    Usuario u = g.getUsuarioHabilitado(email);
+                    Prevista prev = new Prevista();
+                    prev.etiqueta = m.etiqueta;
+                    prev.titulo = m.titulo;
+                    prev.propuestas.Clear();
+                    foreach (Propuesta p in props)
+                        if (p.esPrevista())
+                            prev.propuestas.Add(p);
+                    u.prevista = prev;
+                } //else no ha escrito nada nuevo
             }
             return ret;
         }
@@ -317,17 +346,6 @@ namespace nabu
                 }
             }
 
-            //guarpo prevista para poder crearla luego
-            if (props.Count > 0)
-            {
-                Usuario u = g.getUsuario(email);
-                Prevista prev = new Prevista();
-                prev.etiqueta = m.etiqueta;
-                prev.titulo = m.titulo;
-                prev.propuestas = previstaProps;
-                u.prevista = prev;
-            } //else no ha escrito nada nuevo
-
             return props;
         }
 
@@ -336,11 +354,11 @@ namespace nabu
             Grupo g = app.getGrupo(grupo);
             lock (g)
             {
-                Usuario u = g.getUsuario(email);
+                Usuario u = g.getUsuarioHabilitado(email);
                 if (u.clave == clave)
                     return;
             }
-            throw new Exception("Usuario inválido, operacion registrada!");
+            throw new Exception(Tools.tr("Usuario invalido o no habilitado",g.idioma));
         }
 
         private string getSimName()
@@ -401,7 +419,7 @@ namespace nabu
         //                    ret += "Arbol: " + a.nombre + "\r\n";
         //                    ret += "Creado: " + a.born.ToShortDateString() + " " + a.born.ToShortTimeString() + "\r\n";
         //                    ret += "Objetivo: " + a.objetivo + "\r\n";
-        //                    ret += "Consensos alcanzados: " + a.logDocumentos.Count + "\r\n";
+        //                    ret += "Consensos alcanzados: " + a.logDecisiones.Count + "\r\n";
         //                    ret += "Usuarios: " + a.usuarios.Count + "\r\n";
         //                    ret += "Admin: " + a.getAdmin().nombre + " (" + a.getAdmin().email + ")\r\n\r\n";
 
@@ -484,7 +502,8 @@ namespace nabu
                         prop.nivel = selected.nivel + 1;  //esta propuesta es para el hijo que voy a crear
                         prop.nodoID = selected.id;
                         prop.niveles = 5;
-                        prop.titulo = "Documento simulado";
+                        prop.titulo = Tools.tr("Documento simulado",g.idioma);
+                        prop.etiqueta = ".";
 
                         //lleno datos de prueba
                         foreach (Variable v in m.getVariables())
@@ -492,9 +511,9 @@ namespace nabu
                             if (v.id == "s.etiqueta")
                                 prop.bag.Add("s.etiqueta", "Sim");
                             else if (v.id == "s.titulo")
-                                prop.bag.Add("s.titulo", "Documento simulado");
+                                prop.bag.Add("s.titulo", Tools.tr("Documento simulado", g.idioma));
                             else
-                                prop.bag.Add(v.id, "Simulacion!!!");
+                                prop.bag.Add(v.id, Tools.tr("Simulacion",g.idioma));
                         }
 
                         //me aseguro que el usuario tenga flores o agrego otro
@@ -539,11 +558,9 @@ namespace nabu
             Application["lastVerifyFloresCaducadas"] = lastVerifyFloresCaducadas;
             Application.UnLock();
 
-
+            bool caido = false;
             if (DateTime.Now.Subtract(lastVerifyFloresCaducadas).TotalHours > 24)
             {
-                app.addLog("verifyFloresCaducadas", Request.UserHostAddress, "", "", "verifyFloresCaducadas");
-
                 lock (app.grupos)
                 {
                     foreach (Grupo g in app.grupos)
@@ -552,17 +569,27 @@ namespace nabu
                         foreach (Usuario u in g.usuarios)
                         {                           
                             //verifico caducadas
+                            caido = false;
                             foreach (Flor f in u.flores)
                             {
-                                if (f.id != 0 && DateTime.Now.Subtract(f.born).TotalDays > 60)
+                                //if (f.id != 0 && DateTime.Now.Subtract(f.born).TotalDays > 60)
+                                if (f.id != 0 && DateTime.Now.Subtract(u.lastLogin).TotalDays > 15) //13/04/2017
                                 {
                                     Nodo n = a.getNodo(f.id);
                                     if (n != null)
                                     {
                                         a.quitarFlor(n, u);
-                                        app.addLog("verifyFloresCaducadas", Request.UserHostAddress, g.nombre, u.email, "Flor caducada. Nacida en: " + f.born);
+                                        caido = true;
+                                        app.addLog("verifyFloresCaducadas", Request.UserHostAddress, g.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
                                     }                                    
                                 }
+                            }
+
+                            if (caido)
+                            {
+                                //notifico por mail al usuario
+                                Usuario admin = g.getAdmin();
+                                Tools.encolarMailCaido(g.nombre, u.email, admin.email, Server.MapPath("mails/modelos/" + g.idioma));
                             }
                         }
                     }
@@ -650,11 +677,11 @@ namespace nabu
                 //verifico que el usuario tiene una flor en ese nodo
                 Arbol a = g.arbol;
                 g.ts = DateTime.Now;
-                Usuario u = g.getUsuario(email);
+                Usuario u = g.getUsuarioHabilitado(email);
                 Flor f = u.getFlor(id);
                 List<Nodo> pathn = a.getPath(id);
                 if (pathn == null)
-                    throw new appException("Seleccione un nodo");
+                    throw new appException(Tools.tr("Seleccione un nodo",g.idioma));
                 else
                 {
                     Nodo n = pathn[0];
@@ -682,7 +709,7 @@ namespace nabu
             return ret;
         }
 
-        string doVariante(int id, string grupo, string email, int width)
+        string doVariante(int id, string modeloID, string grupo, string email, int width)
         {
             string ret = "";
             List<Propuesta> props = new List<Propuesta>();
@@ -692,7 +719,7 @@ namespace nabu
                 //preparo propuestas de nodos ancestros
                 Arbol a = g.arbol;
                 List<Nodo> path = a.getPath(id);
-                Modelo m = g.organizacion.getModelo(path[0].modeloID);
+                Modelo m = g.organizacion.getModelo(modeloID);
                 g.ts = DateTime.Now;
                 foreach (Nodo n in path)
                 {
@@ -752,10 +779,9 @@ namespace nabu
 
                 //agrego las propuestas de prevista
                 Usuario u = g.getUsuario(email);
-                foreach (Propuesta p in u.prevista.propuestas)
-                {
-                    props.Add(p);
-                }
+                if (u.prevista != null)
+                    foreach (Propuesta p in u.prevista.propuestas)
+                        props.Add(p);
 
                 //genro revision
                 ret = m.toHTML(props, g, email, width, Modelo.eModo.revisar); //las propuesta debe ir en orden de nivel
@@ -772,7 +798,7 @@ namespace nabu
                 Arbol a = g.arbol;
                 Nodo padre = a.getNodo(id);
                 if (padre.consensoAlcanzado)
-                    throw new appException("Este debate ya ha alcanzado el consenso");
+                    throw new appException(Tools.tr("Este debate ya ha alcanzado el acuerdo",g.idioma));
                 else
                 {
                     //agrego propuestas de la prevista guardada
@@ -830,23 +856,24 @@ namespace nabu
             }
         }
 
-        Arbol updateArbol(string grupo, int cantidadFlores, float minSiPc, float maxNoPc, string padreURL, string padreNombre)
+        Arbol updateArbol(string grupo, int cantidadFlores, float minSiPc, float maxNoPc, string padreURL, string padreNombre, string idioma)
         {
-            if (minSiPc > 100)
-                throw new appException("Mínimos usuarios implicados debe estar entre 50 y 100");
-            if (maxNoPc > 50)
-                throw new appException("Máximos usuarios negados debe estar entre 0 y 50");
-            if (cantidadFlores > 20 || cantidadFlores < 1)
-                throw new appException("cantidad de flores debe estar entre 1 y 20");
-
-
             Grupo g = app.getGrupo(grupo);
+
+            if (minSiPc > 100)
+                throw new appException(Tools.tr("Minimos usuarios implicados debe estar entre 50 y 100", g.idioma));
+            if (maxNoPc > 50)
+                throw new appException(Tools.tr("Máximos usuarios negados debe estar entre 0 y 50", g.idioma));
+            if (cantidadFlores > 20 || cantidadFlores < 1)
+                throw new appException(Tools.tr("Cantidad de flores", g.idioma));
             Arbol a;
 
             lock (g)
             {
+                if (padreURL.EndsWith("/")) padreURL = padreURL.Substring(0, padreURL.Length - 1);
                 g.padreURL = padreURL;
                 g.padreNombre = padreNombre;
+                g.idioma = idioma;
                 a = g.arbol;
                 g.ts = DateTime.Now;
                 a.cantidadFlores = cantidadFlores;

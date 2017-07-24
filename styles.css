@@ -156,11 +156,16 @@
     padding-left: 7px;
     margin: 2px;
     border: 2px solid #C0C0C0;
-    border-radius: 15px;
-    background-color: #FFFFCC;
-    font-size: 14px;    
+    border-radius: 5px;
+    background-color: #FFFFDD;
+    font-size: 14px;
 }
-
+.seccion {
+    padding: 2px;
+    padding-left: 7px;
+    margin: 2px;
+    font-size: 14px;
+}
 .error {
     border: 4px solid #FF5050;
     padding: 5px;
@@ -209,7 +214,7 @@
 
 .comentarios {
     border: 2px solid #009933;
-    border-radius: 15px;
+    border-radius: 5px;
 }
 
 .tip {
@@ -223,22 +228,10 @@
     text-align: center;
 }
 
-.smalltip2 {
-    border: 1px solid #FF0000;
-    padding: 5px;
-    border-radius: 10px;
-    background-color: #CCCCCC;
-    color: #CC0000;
-    font-size: 12px;
-    text-align: center;
-    margin: 5px;
-}
-
 .smalltip {
     border: 1px solid #FF0000;
     padding: 5px;
     border-radius: 10px;
-    background-color: #FFFFCC;
     color: #CC0000;
     font-size: 12px;
     text-align: center;
@@ -299,7 +292,7 @@
 .titulo3 {
     padding: 1px;
     font-size: 15px;
-    font-family: 'Times New Roman' , Times, serif;
+    font-family: 'Verdana' , Times, serif;
 }
 
 .msg {

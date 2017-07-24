@@ -22,6 +22,79 @@ namespace nabu
         public string padreURL = "";
         public string padreNombre = "";
         public List<Tuple<string, string>> hijos = new List<Tuple<string, string>>();
+        public List<LogDocumento> logDecisiones = new List<LogDocumento>();
+        public List<LogDocumento> logResultados = new List<LogDocumento>();
+
+        public static Grupo newGrupo(string grupo, string organizacion, string nombreAdmin, string email, string clave, string idioma, string URL)
+        {
+            if (grupo == "")
+                throw new appException("Nombre de grupo no puede ser vacio");
+            if (email == "")
+                throw new appException("Email no puede ser vacio");
+            if (clave == "")
+                throw new appException("Clave no puede ser vacio");
+            if (Tools.HtmlEncode(grupo) != grupo)
+                throw new appException("Nombre de grupo inv&aacute;lido. Evite acentos y caracteres especiales");
+            if (Tools.HtmlEncode(email) != email)
+                throw new appException("Email inv&aacute;lido. Evite acentos y caracteres especiales");
+            if (Tools.HtmlEncode(clave) != clave)
+                throw new appException("Clave inv&aacute;lida. Evite acentos y caracteres especiales");
+
+            //veo que no exista ya
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(Tools.MapPath("grupos"));
+
+            foreach (System.IO.DirectoryInfo fi in di.GetDirectories())
+            {
+                if (fi.Name == grupo)
+                {
+                    //ya existe
+                    throw new appException("El grupo ya existe");
+                }
+            }
+
+            //creo
+            Grupo g = new Grupo();
+            g.nombre = grupo;
+            g.path = Tools.MapPath("grupos/" + g.nombre);
+            g.URL = URL;
+            g.idioma = idioma;
+
+            //organizacion
+            switch (organizacion)
+            {
+                case "Plataforma":
+                    g.organizacion = new organizaciones.Plataforma();
+                    break;
+
+                case "Cooperativa":
+                    g.organizacion = new organizaciones.Cooperativa();
+                    break;
+
+                case "Colegio":
+                    g.organizacion = new organizaciones.Colegio();
+                    break;
+
+                default:
+                    throw new Exception("Modelo organizativo [" + organizacion + "] no existe");
+            }
+
+            Arbol a = new Arbol();
+            a.nombre = grupo;
+            a.raiz = new Nodo();
+            a.raiz.nombre = Tools.HtmlEncode(a.nombre);
+            a.grupo = g; //referencia ciclica, no se pude serializar
+            g.arbol = a;
+
+            //admin
+            Usuario u = new Usuario(a.cantidadFlores);
+            u.nombre = Tools.HtmlEncode(nombreAdmin);
+            u.email = email;
+            u.clave = clave;
+            u.isAdmin = true;
+            g.usuarios.Add(u);
+
+            return g;
+        }
 
         public DateTime lastLogin
         {
@@ -41,7 +114,7 @@ namespace nabu
             {
                 int ret = 0;
                 foreach (Usuario u2 in usuarios)
-                    if (u2.isActive)
+                    if (u2.habilitado && u2.isActive)
                         ret += 1;
                 return ret;
             }
@@ -134,6 +207,35 @@ namespace nabu
             return ret;
         }
 
+        public Usuario getUsuarioHabilitado(string email, string clave)
+        {
+            //comparo en minusculas por los moviles y iPad y tablets que ponen la 1ra en mayuscula y confunde
+            Usuario ret = getUsuarioHabilitado(email);
+
+            if (ret != null && ret.clave.ToLower() == clave.ToLower())
+                return ret;
+            else
+                return null;
+        }
+
+        public Usuario getUsuarioHabilitado(string email)
+        {
+            Usuario ret = null;
+
+            foreach (Usuario u in usuarios)
+            {
+                if (u.habilitado && u.email.ToLower() == email.ToLower())
+                {
+                    ret = u;
+                    //muevo al inicio, cola lifo
+                    usuarios.Remove(u);
+                    usuarios.Insert(0, u);
+                    break;
+                }
+            }
+            return ret;
+        }
+
         public Usuario getUsuario(string email, string clave)
         {
             //comparo en minusculas por los moviles y iPad y tablets que ponen la 1ra en mayuscula y confunde
@@ -151,7 +253,7 @@ namespace nabu
 
             foreach (Usuario u in usuarios)
             {
-                if (u.habilitado && u.email.ToLower() == email.ToLower())
+                if (u.email.ToLower() == email.ToLower())
                 {
                     ret = u;
                     //muevo al inicio, cola lifo

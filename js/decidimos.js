@@ -1,4 +1,5 @@
 ﻿
+
 function doDecidimos() {
     //menu ppal
     if (visual.level == 1)
@@ -215,7 +216,13 @@ function doProponer() {
     var node = selectedNode;
 
     //quito seleccionado y apago menu
-    doMousedown();
+    //ha picado en el fondo
+    if (menu)
+        menu.style.visibility = "hidden";
+    selectedNode = null;
+    dibujarArbol(selectedNode);
+    hidePanelDer();
+    hidePanelIzq();
 
     //envio
     getHttp("doDecidimos.aspx?actn=proponer&modelo=" + node.modeloID
@@ -262,7 +269,7 @@ function doVerDocumento() {
 }
 
 function doComentar(id) {
-    var comentario = HTMLEncode(document.getElementById("comentario" + id).value);
+    var comentario = URIEncode(document.getElementById("comentario" + id).value);
     postHttp("doDecidimos.aspx?actn=doComentar&id=" + id
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
@@ -278,9 +285,11 @@ function doComentar(id) {
 function doVariante(id) {
     var n = getNodo(id);
     selectedNode = n.parent;
+    selectedNode.modeloID = n.modeloID; //se lo pongo temporalmente al padre (por si es la raiz)
 
     //pido propuestas al servidor sin resaltar
     getHttp("doDecidimos.aspx?actn=variante&id=" + id
+        + "&modeloID=" + n.modeloID
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave

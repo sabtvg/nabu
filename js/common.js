@@ -131,16 +131,16 @@ function getPost(n) {
         else if (n.type == 'radio' && n.checked) 
             sToSend += '&' + n.name + '=' + n.value;
         else
-            sToSend += '&' + n.id + '=' + HTMLEncode(n.value);
+            sToSend += '&' + n.id + '=' + URIEncode(n.value);
     } else {
         if (n.nodeName == 'SELECT' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
             //sToSend += '&' + n.id + '.selectedIndex=' + getSelectedIndex(n); // n.selectedIndex;
             //sToSend += '&' + n.id + '.id=' + getSelectedId(n); //n.options[n.selectedIndex].id;
-            //sToSend += '&' + n.id + '.text=' + HTMLEncode(getSelectedText(n)); //n.options[n.selectedIndex].text;
+            //sToSend += '&' + n.id + '.text=' + URIEncode(getSelectedText(n)); //n.options[n.selectedIndex].text;
             sToSend += '&' + n.id + '=' + getSelectedId(n); //n.options[n.selectedIndex].id;
         }
         if (n.nodeName == 'TEXTAREA' && n.nodeType == 1 && n.id != '' && n.id.indexOf(".") >= 0) {
-            sToSend += '&' + n.id + '=' + HTMLEncode(n.value);
+            sToSend += '&' + n.id + '=' + URIEncode(n.value);
         }
     }
 
@@ -180,17 +180,6 @@ function getSelectedText(n) {
     return (ret);
 }
 
-function HTMLEncode(s) {
-    while(s.indexOf("<")>=0)
-        s = s.replace("<", "&lt;");
-
-    while (s.indexOf(">") >= 0)
-        s = s.replace(">", "&gt;");
-
-    s = encodeURIComponent(s);
-    return (s);
-}
-
 function getSelectedIndex(n) {
     var ret = '';
     for (var i = 0; i < n.options.length; i++) {
@@ -198,15 +187,6 @@ function getSelectedIndex(n) {
     }
     if (ret != '') ret = ret.substr(0, ret.length - 1);
     return ret;
-}
-
-function getSelectedId(n) {
-    var i;
-    var ret = '';
-    for (i = 0; i < n.options.length; i++)
-        if (n.options[i].selected) ret = ret + n.options[i].id + ';';
-    if (ret != '') ret = ret.substr(0, ret.length - 1);
-    return (ret);
 }
 
 function getSelectedText(n) {
@@ -217,3 +197,4 @@ function getSelectedText(n) {
     if (ret != '') ret = ret.substr(0, ret.length - 1);
     return (ret);
 }
+

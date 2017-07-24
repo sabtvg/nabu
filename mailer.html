@@ -13,48 +13,58 @@
         var usuario;
         var usuarios;
         var errores;
+        var grupoParam;
 
         function doLoad() {
-            //leo cookie
-            var cookie = getCookie("nabu");
-            if (cookie == "")
-                //login normal
-                document.location = 'default.html';
-            else {
-                try
-                {
-                    var scalex = window.innerWidth / 1920;
-                    var scaley = window.innerHeight / 1080;
-                    //atras
-                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
-                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-                    document.getElementById("todo").style.top = '30px';
-                    document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
-                    document.getElementById("body").style.height = (window.innerHeight - 270 ).toFixed(0) + 'px';
-                    document.getElementById("body").style.width = window.innerWidth - 80 - (130 * scaley).toFixed(0) + 'px';
-                    document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
-                    document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam);
+                if (cookie == "")
+                    //login normal
+                    document.location = 'default.html?grupo=' + grupoParam;
+                else {
+                    try
+                    {
+                        var scalex = window.innerWidth / 1920;
+                        var scaley = window.innerHeight / 1080;
+                        //atras
+                        document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                        document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                        document.getElementById("todo").style.top = '30px';
+                        document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
+                        document.getElementById("body").style.height = (window.innerHeight - 270 ).toFixed(0) + 'px';
+                        document.getElementById("body").style.width = window.innerWidth - 80 - (130 * scaley).toFixed(0) + 'px';
+                        document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
+                        document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
 
-                    //background
-                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+                        //background
+                        document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
-                    //cargo datos iniciales
-                    var vals = cookie.split("|");
-                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4] };
+                        //cargo datos iniciales
+                        var vals = cookie.split("|");
+                        usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                    if (!usuario.isAdmin) {
-                        alert("Solo disponible para el jardinero");
+                        idioma = vals[5]; //para el tradcutor
+
+                        if (!usuario.isAdmin) {
+                            alert("Solo disponible para el coordinador");
+                            //login normal
+                            document.location = 'default.html';
+                        }
+                        else
+                            getListaUsuarios();
+                    }
+                    catch (e) {
                         //login normal
                         document.location = 'default.html';
                     }
-                    else
-                        getListaUsuarios();
-                }
-                catch (e) {
-                    //login normal
-                    document.location = 'default.html';
                 }
             }
+            else
+            //login normal
+                    document.location = 'default.html?grupo=' + grupoParam;
         }
 
         function getListaUsuarios() {
@@ -120,6 +130,9 @@
 
         }
 
+        function doAtras() {
+            document.location = "default.html?grupo=" + grupoParam;
+        }
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
@@ -147,6 +160,6 @@
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     </body>
 </html>

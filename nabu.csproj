@@ -58,8 +58,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="actas.html" />
     <Content Include="bosque.html" />
-    <Content Include="operativo.html" />
+    <Content Include="decisiones.html" />
+    <Content Include="resultados.html" />
+    <Content Include="seguimiento.html" />
+    <Content Include="js\dictionary.js" />
+    <Content Include="estructuras.html" />
     <Content Include="resumen.html" />
     <Content Include="doMain.aspx" />
     <Content Include="grupos\test\documentos\Accion_0001.html" />
@@ -158,6 +163,9 @@
     <Compile Include="model\documento\Documento.cs" />
     <Compile Include="model\documento\LogDocumento.cs" />
     <Compile Include="model\documento\Comparador.cs" />
+    <Compile Include="model\organizacion\plataforma\Accion.cs" />
+    <Compile Include="model\organizacion\plataforma\Estrategia.cs" />
+    <Compile Include="model\organizacion\plataforma\modelos\Estrategia.cs" />
     <Compile Include="model\organizacion\plataforma\Proceso.cs" />
     <Compile Include="model\organizacion\plataforma\GrupoTrabajo.cs" />
     <Compile Include="model\organizacion\plataforma\modelos\Accion.cs" />

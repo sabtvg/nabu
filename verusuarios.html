@@ -6,38 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script>
         var usuario;
+        var grupoParam;
 
         function doLoad() {
-            //leo cookie
-            var cookie = getCookie("nabu");
-            if (cookie == "")
-                //login normal
-                document.location = 'default.html';
-            else {
-                var scalex = window.innerWidth / 1920;
-                var scaley = window.innerHeight / 1080;
-                //atras
-                document.getElementById("atras").style.width = (100 * scalex) + 'px';
-                document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-                document.getElementById("todo").style.top = '30px';
-                document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
-                document.getElementById("todo").style.height = (window.innerHeight - 100).toFixed(0) + 'px';
-                document.getElementById("usuarios").style.height = (window.innerHeight - 200).toFixed(0) + 'px';
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam);
+                if (cookie == "")
+                    //login normal
+                    document.location = 'default.html?grupo=' + grupoParam;
+                else {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
+                    //atras
+                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                    document.getElementById("todo").style.top = '30px';
+                    document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
+                    document.getElementById("todo").style.height = (window.innerHeight - 100).toFixed(0) + 'px';
+                    document.getElementById("usuarios").style.height = (window.innerHeight - 200).toFixed(0) + 'px';
 
-                //background
-                document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+                    //background
+                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
-                //cargo datos iniciales
-                var vals = cookie.split("|");
-                usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3] };
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                getListaUsuarios();
+                    idioma = vals[5]; //para el tradcutor
+
+                    traducir();
+
+                    getListaUsuarios();
+                }
             }
+            else
+                //login normal
+                document.location = 'default.html?grupo=' + grupoParam;
         }
 
         function getListaUsuarios() {
@@ -55,13 +68,13 @@
                         var usuarios = JSON.parse(data);
                         var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
                         s += "<tr>"
-                        s += "<td style='width:370px;'><b>Nombre</b></td>";
-                        s += "<td style='width:370px;'><b>Email</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>Solo Lectura</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>Habilitado</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>Admin</b></td>";
-                        s += "<td style='width:60px;'><b>Apoyos</b></td>";
-                        s += "<td style='width:70px;'><b>Activo</b></td>";
+                        s += "<td style='width:370px;'><b>" + tr("Nombre") + "</b></td>";
+                        s += "<td style='width:370px;'><b>" + tr("Email") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("Solo Lectura") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("Habilitado") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("Coordinador") + "</b></td>";
+                        s += "<td style='width:60px;'><b>" + tr("Apoyos") + "</b></td>";
+                        s += "<td style='width:70px;'><b>" + tr("Activo") + "</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
@@ -81,6 +94,14 @@
                     }
                 });
         }
+
+        function doAtras() {
+            document.location = "default.html?grupo=" + grupoParam;
+        }
+
+        function traducir() {
+            document.getElementById("usu").innerHTML = tr("Usuarios");
+        }
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
@@ -90,7 +111,7 @@
                 <span class="titulo1">Nab&uacute;</span>
                 <img src="res/icono2.png" />
             </nobr><br />
-            <span class="titulo2">Usuarios</span><br />
+            <span id="usu" class="titulo2">Usuarios</span><br />
 
             <br />
 
@@ -100,6 +121,6 @@
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     </body>
 </html>
