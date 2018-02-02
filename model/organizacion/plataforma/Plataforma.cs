@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -21,13 +40,44 @@ namespace nabu.organizaciones
                 {
                     int EID = int.Parse(req["EID"]);
                     string estado = req["estado"];
+                    string avance = req["avance"];
+                    string luz = req["luz"];
+                    string inicio = req["inicio"];
+                    string fin = req["fin"];
                     string descrip = req.Form["descrip"];
+                    int favance = 0;
+                    DateTime finicio;
+                    DateTime ffin;
+
+                    try {favance = int.Parse(avance);} catch(Exception) {throw new appException("Valor inválido para avance");}
+                    if (favance < 0 || favance > 100) throw new appException("Valor inválido para avance");
+                    try {
+                        string[] p = inicio.Split('/');
+                        finicio = new DateTime(Convert.ToInt32(p[2]),
+                            Convert.ToInt32(p[1]),
+                            Convert.ToInt32(p[0])); 
+                    }
+                    catch (Exception) { throw new appException("Valor inválido para inicio"); } 
+                    try {
+                        string[] p = fin.Split('/');
+                        ffin = new DateTime(Convert.ToInt32(p[2]),
+                            Convert.ToInt32(p[1]),
+                            Convert.ToInt32(p[0])); 
+
+                    } 
+                    catch (Exception) { throw new appException("Valor inválido para fin"); }
+                    if (finicio > ffin) throw new appException("Plazo inválido");
+
                     foreach (nabu.plataforma.Accion a in acciones)
                         if (a.EID == EID)
                         {
                             nabu.plataforma.Accion.Estado e = new plataforma.Accion.Estado();
                             e.EID = getEID();
                             e.estado = Tools.HtmlEncode(estado);
+                            e.avance = favance;
+                            e.luz = Tools.HtmlEncode(luz);
+                            e.inicio = finicio;
+                            e.fin = ffin;
                             e.descrip = Tools.HtmlEncode(descrip).Replace("\n", "<br>");
                             e.email = email;
                             a.estados.Add(e);
@@ -75,7 +125,10 @@ namespace nabu.organizaciones
                             //padre
                             newg.padreURL = g.URL;
                             newg.padreNombre = g.nombre;
-                            g.hijos.Add(new Tuple<string,string>(newg.URL, newg.nombre));
+                            Hijo h = new Hijo();
+                            h.URL = newg.URL;
+                            h.nombre = newg.nombre;
+                            g.hijos.Add(h);
 
                             //apunto datos
                             gt.grupoNombre = newg.nombre;
@@ -142,7 +195,44 @@ namespace nabu.organizaciones
             string docPath = "resultados\\" + docID.ToString("0000");
             string URL = gr.URL + "/grupos/" + gr.nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
 
-            //documento
+            //creo carpeta
+            if (!System.IO.Directory.Exists(gr.path + "\\" + docPath))
+                System.IO.Directory.CreateDirectory(gr.path + "\\" + docPath);
+
+            //creo documento json
+            Documento doc = new Documento();
+            doc.fecha = DateTime.Now;
+            doc.nombre = "Resultado de Accion";
+            doc.fname = fname;
+            doc.modeloID = "";
+            doc.path = gr.path + "\\" + docPath + "\\" + fname + ".json";
+            doc.URLPath = URL;
+            doc.titulo = "Resultado de Accion: " + ac.nombre;
+
+            Propuesta prop = new Propuesta();
+            prop.bag["fecha"] = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString();
+            prop.bag["Accion"] = ac.nombre;
+            prop.bag["Nacido"] = ac.born;
+            prop.bag["Decision"] = ac.docURL;
+            prop.bag["Objetivo"] = ac.objetivo;
+            prop.bag["Estado final"] = ac.estado.estado;
+            prop.bag["Estado final fecha"] = ac.estado.estadoTs;
+            prop.bag["Autor"] = email;
+
+            int q = 1;
+            for (int i = ac.estados.Count - 1; i >= 0; i--)
+            {
+                nabu.plataforma.Accion.Estado es = ac.estados[i];
+                prop.bag["Estado" + i] = es.estado;
+                prop.bag["Email" + i] = es.email;
+                prop.bag["EstadoTs" + i] = es.estadoTs.ToShortDateString() + " " + es.estadoTs.ToShortTimeString();
+            }
+            List<Propuesta> props = new List<Propuesta>();
+            props.Add(prop);
+            doc.propuestas = props;
+            doc.save();
+
+            //HTML
             string html = "<html><head></head>";
             //firma Decision
             html = "<body>";
@@ -152,12 +242,14 @@ namespace nabu.organizaciones
             html += "<b>" + Tools.tr("Nacido", gr.idioma) + ":</b> " + ac.born + "<br>";
             html += "<b>" + Tools.tr("Decision", gr.idioma) + ":</b> <a href='" + ac.docURL + "' target='_blank'>" + Tools.getURLName(ac.docURL) + "</a><br>";
             html += "<b>" + Tools.tr("Objetivo", gr.idioma) + ":</b><br> " + ac.objetivo + "<br>";
-            html += "<b>" + Tools.tr("Estado final", gr.idioma) + ":</b> " + ac.estado + "<br>";
-            html += "<b>" + Tools.tr("Estado final fecha", gr.idioma) + ":</b> " + ac.estadoTs + "<br><br>";
+            html += "<b>" + Tools.tr("Estado final", gr.idioma) + ":</b> " + ac.estado.estado + "<br>";
+            html += "<b>" + Tools.tr("Estado final fecha", gr.idioma) + ":</b> " + ac.estado.estadoTs + "<br><br>";
+            html += "<b>" + Tools.tr("Autor", gr.idioma) + ":</b> " + email + "<br><br>";
                         
             html += "<b>Estados:</b><br>";
-            foreach (nabu.plataforma.Accion.Estado es in ac.estados)
+            for (int i = ac.estados.Count - 1; i >=0; i--) 
             {
+                nabu.plataforma.Accion.Estado es = ac.estados[i];
                 html += "<hr>";
                 html += "Estado: " + es.estado + " " + es.email + " " +  es.estadoTs.ToShortDateString() + " " + es.estadoTs.ToShortTimeString() + "<br>";
                 html += es.descrip;
@@ -172,16 +264,15 @@ namespace nabu.organizaciones
             html += "Usuarios: " + gr.getUsuariosHabilitados().Count + "<br>";
             html += "Activos: " + gr.activos + "<br>";         
             //escribo
-            if (!System.IO.Directory.Exists(gr.path + "\\" + docPath))
-                System.IO.Directory.CreateDirectory(gr.path + "\\" + docPath);
             System.IO.File.WriteAllText(gr.path + "\\" + docPath + "\\" + fname + ".html", html, System.Text.Encoding.UTF8);
 
             //retorno meta data
             LogDocumento ld = new LogDocumento();
             ld.fecha = DateTime.Now;
             ld.titulo = "Resultado de Accion: " + ac.nombre;
+            ld.documentoNombre = ac.nombre;
             ld.icono = "res/documentos/accion.png";
-            if (ld.titulo.Length > 50) ld.titulo = ld.titulo.Substring(0, 50);
+            if (ld.titulo.Length > 70) ld.titulo = ld.titulo.Substring(0, 70);
             ld.modeloNombre = "Accion";
             ld.modeloID = "Accion";
             ld.x = 0;
@@ -193,20 +284,39 @@ namespace nabu.organizaciones
             ld.negados = 0;
             ld.carpeta = "resultados";
             ld.URL = URL;
+            ld.autor = email;
 
             return ld;
         }
 
         public override string getOperativo(Grupo grupo)
         {
-            string ret = "{\"objetivo\":\"" + objetivo + "\",";
+            string ret = "{\"objetivo\":" + Tools.toJson(objetivo) + ",";
             ret += "\"URLEstatuto\":\"" + URLEstatuto + "\",";
 
             Usuario admin = grupo.getAdmin();
             if (admin != null)
-                ret += "\"admin\":\"" + admin.email + "\",";
+                ret += "\"admin\":{\"nombre\":\"" + admin.nombre + "\",\"email\":\"" + admin.email + "\"},";
             else
-                ret += "\"admin\":\"\",";
+                ret += "\"admin\":null,";
+
+            Usuario secretaria = grupo.getSecretaria();
+            if (secretaria != null)
+                ret += "\"secretaria\":{\"nombre\":\"" + secretaria.nombre + "\",\"email\":\"" + secretaria.email + "\"},";
+            else
+                ret += "\"secretaria\":null,";
+
+            Usuario facilitador = grupo.getFacilitador();
+            if (facilitador != null)
+                ret += "\"facilitador\":{\"nombre\":\"" + facilitador.nombre + "\",\"email\":\"" + facilitador.email + "\"},";
+            else
+                ret += "\"facilitador\":null,";
+
+            Usuario representante = grupo.getRepresentante();
+            if (representante != null)
+                ret += "\"representante\":{\"nombre\":\"" + representante.nombre + "\",\"email\":\"" + representante.email + "\"},";
+            else
+                ret += "\"representante\":null,";
 
             ret += "\"URLEstatuto\":\"" + URLEstatuto + "\",";
             ret += "\"gruposTrabajo\":[";
@@ -223,7 +333,7 @@ namespace nabu.organizaciones
                 ret += "\"grupoIdioma\":\"" + gt.grupoIdioma + "\",";
                 ret += "\"grupoOrganizacion\":\"" + gt.grupoOrganizacion + "\",";
                 ret += "\"revision\":\"" + gt.revision + "\",";
-                ret += "\"objetivo\":\"" + gt.objetivo + "\",";
+                ret += "\"objetivo\":" + Tools.toJson(gt.objetivo) + ",";
 
                 //usuarios
                 ret += "\"usuarios\":[";
@@ -253,7 +363,7 @@ namespace nabu.organizaciones
                     ret += "\"docTs\":\"" + pr.docTs.ToShortDateString() + " " + pr.docTs.ToShortTimeString() + "\",";
                     ret += "\"revision\":\"" + pr.revision + "\",";
                     ret += "\"definicion\":\"" + pr.definicion + "\",";
-                    ret += "\"objetivo\":\"" + pr.objetivo + "\"";
+                    ret += "\"objetivo\":" + Tools.toJson(pr.objetivo);
                     ret += "},";
                 }
                 if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
@@ -267,25 +377,23 @@ namespace nabu.organizaciones
             ret += "\"acciones\":[";
             foreach (nabu.plataforma.Accion ac in acciones)
             {
+
                 ret += "{\"nombre\":\"" + ac.nombre + "\",";
                 ret += "\"EID\":" + ac.EID + ",";
                 ret += "\"born\":\"" + ac.born.ToShortDateString() + " " + ac.born.ToShortTimeString() + "\",";
                 ret += "\"docURL\":\"" + ac.docURL + "\",";
                 ret += "\"docTs\":\"" + ac.docTs.ToShortDateString() + " " + ac.docTs.ToShortTimeString() + "\",";
-                ret += "\"estado\":\"" + ac.estado + "\",";
-                ret += "\"estadoTs\":\"" + ac.estadoTs.ToShortDateString() + " " + ac.estadoTs.ToShortTimeString() + "\",";
+                ret += "\"estado\":" + Tools.toJson(ac.estado) + ",";
+                ret += "\"estadoTs\":\"" + ac.estado.estadoTs.ToShortDateString() + " " + ac.estado.estadoTs.ToShortTimeString() + "\",";
                 ret += "\"estadoEmail\":\"" + ac.estadoEmail + "\",";
-                ret += "\"objetivo\":\"" + ac.objetivo + "\",";
+                ret += "\"objetivo\":" + Tools.toJson(ac.objetivo) + ",";
+                ret += "\"responsable\":\"" + ac.responsable + "\",";
 
                 //estados
                 ret += "\"estados\":[";
                 foreach (nabu.plataforma.Accion.Estado es in ac.estados)
                 {
-                    ret += "{\"estado\":\"" + es.estado + "\",";
-                    ret += "\"EID\":" + es.EID + ",";
-                    ret += "\"estadoTs\":\"" + es.estadoTs + "\",";
-                    ret += "\"email\":\"" + es.email + "\",";
-                    ret += "\"descrip\":\"" + es.descrip + "\"},";
+                    ret += Tools.toJson(es) + ",";
                 }
                 if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
                 ret += "]";
@@ -298,17 +406,27 @@ namespace nabu.organizaciones
             return ret;
         }
 
-        public override List<Modelo> getModelos()
+        public override List<Modelo> getModelosDocumento()
         {
             List<Modelo> ret = new List<Modelo>();
             ret.Add(new plataforma.modelos.Manifiesto());
             ret.Add(new plataforma.modelos.GrupoTrabajo());
             ret.Add(new plataforma.modelos.Estrategia());
             ret.Add(new plataforma.modelos.Accion());
-            //ret.Add(new plataforma.modelos.Evento());
+            ret.Add(new plataforma.modelos.AlPadre());
+            ret.Add(new plataforma.modelos.AlHijo());
             //ret.Add(new plataforma.modelos.Proceso());
             return ret;
         }
 
+        public override List<ModeloEvaluacion> getModelosEvaluacion()
+        {
+            List<ModeloEvaluacion> ret = new List<ModeloEvaluacion>();
+            ret.Add(new plataforma.modelosEvaluacion.Accion());
+            ret.Add(new plataforma.modelosEvaluacion.Enlace());
+            ret.Add(new plataforma.modelosEvaluacion.AlPadre());
+            ret.Add(new plataforma.modelosEvaluacion.AlHijo());
+            return ret;
+        }
     }
 }

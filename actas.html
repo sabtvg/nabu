@@ -1,3 +1,25 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
@@ -15,12 +37,17 @@
         var usuario;
         var grupoParam;
         var cantidadTemas = 1;
+        var operativo;
 
         function doLoad() {
             //wait
             document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
             document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
             document.getElementById("florWait").style.visibility = "visible";
+
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
 
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
@@ -55,6 +82,23 @@
                         document.location = 'default.html';
                     }
                     else {
+                        getHttp("doMain.aspx?actn=getOperativo&email=" + usuario.email
+                            + "&grupo=" + usuario.grupo
+                            + "&clave=" + usuario.clave,
+                             function (data) {
+                                 //atrapo el error si es que hay
+                                 if (data.substring(0, 6) == "Error=") {
+                                     //ha habido un error
+                                     document.getElementById("todo").innerHTML = '<font color=red>' + data + '</font>';
+                                 }
+                                 else {
+                                     //tengo el bosque
+                                     //document.getElementById("todo").innerHTML = data;
+                                     operativo = JSON.parse(data);
+                                     dibujarTodo();
+                                 }
+                             });
+
                         //preparo documento en pantalla
                         document.getElementById("temas").innerHTML = HTMLTemas();
                         document.getElementById("florWait").style.visibility = "hidden";
@@ -66,17 +110,33 @@
                 document.location = 'default.html?grupo=' + grupoParam;
         }
 
+        function dibujarTodo() {
+            var d = new Date();
+            document.getElementById("fecha").innerHTML = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+            if (operativo.admin)
+                document.getElementById("coordina").innerHTML = operativo.admin.nombre;
+
+            if (operativo.facilitador)
+                document.getElementById("facilita").innerHTML = operativo.facilitador.nombre;
+
+            if (operativo.representante)
+                document.getElementById("representa").innerHTML = operativo.representante.nombre;
+
+            if (operativo.secretaria)
+                document.getElementById("secretaria").innerHTML = operativo.secretaria.nombre;
+        }
 
         function HTMLTemas() {
             var s = "";
-            var titulo = "";
-            var texto = "";
             for (var i = 0; i < cantidadTemas; i++) {
-                if (document.getElementById("tituloTema" + i)) titulo = document.getElementById("tituloTema" + i).value;
-                if (document.getElementById("textoTema" + i)) texto = document.getElementById("textoTema" + i).value;
+                var titulo = "";
+                var texto = "";
 
-                s += "<div class='tema'>Tema " + (i + 1) + ":<input id='tituloTema" + i + "' type='text' class='editar' style='width:150px' value='" + titulo + "'></div>";
-                s += "<textarea id='textTema" + i + "' class='editar' maxlength='3000' style='width: 638px; height: 120px;'>"
+                if (document.getElementById("s.tituloTema" + i)) titulo = document.getElementById("s.tituloTema" + i).value;
+                if (document.getElementById("s.textoTema" + i)) texto = document.getElementById("s.textoTema" + i).value;
+
+                s += "<div class='tema'>Tema " + (i + 1) + ":<input id='s.tituloTema" + i + "' type='text' class='editar' style='width:150px' value='" + titulo + "'></div>";
+                s += "<textarea id='s.textoTema" + i + "' class='editar' maxlength='3000' style='width: 638px; height: 120px;'>"
                 s += texto;
                 s += "</textarea>";
                 s += "<div style='text-align: right; width: 652px; font-size: 10px;'>(M&aacute;x: 3000)</div>";
@@ -85,19 +145,21 @@
             return s;
         }
 
-        function crearActa(docID) {
+        function doCrearActa(docID) {
             //envio
             var acta = document.getElementById("documento");
             var post = getPost(acta);
 
             postHttp("doDecidimos.aspx?actn=crearActa"
-                + "&grupo=" + arbolPersonal.nombre
-                + "&email=" + arbolPersonal.usuario.email
-                + "&clave=" + arbolPersonal.usuario.clave,
+                + "&grupo=" + grupoParam
+                + "&email=" + usuario.email
+                + "&clave=" + usuario.clave,
                 post,
                 function (data) {
-                    //muestro
-                    document.getElementById("documento").innerHTML = data;
+                    if (data.substring(0, 6) == "Error=")
+                        document.getElementById("msgDiv").innerHTML=data;
+                    else
+                        document.location = "default.html?grupo=" + grupoParam;
                 });
         }
 
@@ -125,47 +187,57 @@
             </div>
             <table>
                 <tr>
-                    <td>Fecha:</td><td></td>
-                    <td>Coordina:</td><td></td>
+                    <td style="width:120px">Fecha:</td><td id="fecha" style="width:220px"></td>
+                    <td style="width:120px">Coordina:</td><td id="coordina" style="width:220px"></td>
                 </tr>
                 <tr>
-                    <td>Lugar:</td><td></td>
-                    <td>Facilita:</td><td></td>
+                    <td>Lugar:</td><td><input id="s.lugar" type="text" class="editar"></td>
+                    <td>Facilita:</td><td id="facilita"></td>
                 </tr>
                 <tr>
-                    <td>Inicio:</td><td></td>
-                    <td>Representa:</td><td></td>
+                    <td>Inicio:</td><td><input id="s.inicio" type="text" class="editar"></td>
+                    <td>Representa:</td><td id="representa"></td>
                 </tr>
                 <tr>
-                    <td>Fin:</td><td></td>
-                    <td>Secretar&iacute;a:</td><td></td>
+                    <td>Fin:</td><td><input id="s.fin" type="text" class="editar"></td>
+                    <td>Secretar&iacute;a:</td><td id="secretaria"></td>
                 </tr>
                 <tr>
-                    <td>Participan:</td><td colspan="3"></td>
+                    <td style="vertical-align:top">Participan:</td><td colspan="3"><textarea id="s.participan" class="editar" maxlength="500" style="width: 518px; height: 120px;"></textarea></td>
                 </tr>
             </table>
 
             <div class="tema">Ronda de apertura</div>
-            <div class="smalltip" style="width: 638px">¿Ronda de apertura?</div>
-            <textarea id="s.introduccion" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
+            <div class="smalltip" style="width: 638px">Ronda de apertura</div>
+            <textarea id="s.apertura" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
             <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
             <br>
 
-            <div class="tema">Aspectos logísticos</div>
-            <div class="smalltip" style="width: 638px">¿Aspectos log&iacute;sticos?</div>
-            <textarea id="Textarea1" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
+            <div class="tema">Aspectos log&iacute;sticos</div>
+            <div class="smalltip" style="width: 638px">Aspectos log&iacute;sticos</div>
+            <textarea id="s.logisticos" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
             <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
             <br>
 
-            <div class="tema">Orden del día</div>
-            <div class="smalltip" style="width: 638px">¿Orden del d&iacute;a?</div>
-            <textarea id="Textarea2" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
+            <div class="tema">Orden del d&iacute;a</div>
+            <div class="smalltip" style="width: 638px">Orden del d&iacute;a</div>
+            <textarea id="s.ordendeldia" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
             <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
             <br>
 
             <div id="temas"></div>
-            <input type="button" class="btn" value="Crear tema" onclick="doCrearTema();">
+
+            <div class="tema">Evaluaci&oacute;n</div>
+            <div class="smalltip" style="width: 638px">Evaluaci&oacute;n</div>
+            <textarea id="s.evaluacion" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
+            <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
+            <br>
+
+            <input type="button" class="btn" value="Cancelar" onclick="document.location = 'default.html?grupo=' + grupoParam;">&nbsp;
+            <input type="button" class="btn" value="Agregar tema" onclick="doCrearTema();">&nbsp;
             <input type="button" class="btn" value="Crear acta" onclick="doCrearActa();">
+
+            <div id="msgDiv"></div>
         </div>
     </body>
 </html>

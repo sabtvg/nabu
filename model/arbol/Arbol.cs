@@ -1,4 +1,22 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -24,17 +42,15 @@ namespace nabu
         public float minSiPc = 60; //porcentaje minimo de usuarios implicados en el debate (en una rama) para alcanzar consenso
         public float maxNoPc = 15; //porcentaje maximo de usuarios en otras ramas del mismo debate (en una rama) para alcanzar consenso
 
-        [NonSerialized]
-        public Random rnd = new Random();
+        private Random rnd = new Random();
 
         public Arbol()
         {
             raiz = new Nodo();
         }
 
-        public List<Modelo> getModelos()
-        {
-            return grupo.organizacion.getModelos();
+        public float getNexRandom(){
+            return (float)rnd.NextDouble();
         }
 
         public void caerFlores(Usuario u){
@@ -318,7 +334,7 @@ namespace nabu
         private bool comprobarConsenso(Nodo n)
         {
             bool ret = false;
-            Modelo m = grupo.organizacion.getModelo(n.modeloID);
+            Modelo m = grupo.organizacion.getModeloDocumento(n.modeloID);
             List<Nodo> pathn = getPath(n.id);
 
             if (m != null && n.nivel == n.niveles)
@@ -385,9 +401,9 @@ namespace nabu
                     LogDocumento ld = new LogDocumento();
                     ld.fecha = fdate;
                     ld.titulo = p.titulo;
-                    ld.icono = getModelo(n.modeloID).icono;
+                    ld.icono = grupo.organizacion.getModeloDocumento(n.modeloID).icono;
                     if (ld.titulo.Length > 50) ld.titulo = ld.titulo.Substring(0, 50);
-                    ld.modeloNombre = getModelo(n.modeloID).nombre;
+                    ld.modeloNombre = grupo.organizacion.getModeloDocumento(n.modeloID).nombre;
                     ld.modeloID = n.modeloID;
                     ld.x = n.x; if (ld.x == 0) ld.x = 90;
                     ld.docID = docID;
@@ -432,7 +448,7 @@ namespace nabu
 
         private Documento crearDocumento(Nodo n, DateTime now, string fname, string docPath, string URL)
         {
-            Modelo m = getModelo(n.modeloID);
+            Modelo m = grupo.organizacion.getModeloDocumento(n.modeloID);
             Documento doc = new Documento();
             doc.fecha = now;
             doc.nombre = m.nombre;
@@ -457,15 +473,14 @@ namespace nabu
             //guardo propuestas
             doc.propuestas = props;
             
-            //doc.raiz = raiz;
-
             return doc;
         }
 
         private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL)
         {
             List<Nodo> pathn = getPath(n.id);
-            Modelo m = getModelo(n.modeloID);
+            Modelo m = grupo.organizacion.getModeloDocumento(n.modeloID);
+            DateTime inicio = DateTime.MaxValue;
 
             //junto propuestas
             List<Propuesta> props = new List<Propuesta>();
@@ -473,7 +488,10 @@ namespace nabu
             {
                 Propuesta p = getPropuesta(n1);
                 if (p != null) //la raiz
+                {
                     props.Add(p);
+                    if (p.born < inicio) inicio = p.born;
+                }
             }
            
             //firma consenso
@@ -481,6 +499,7 @@ namespace nabu
             ret += "Documento escrito de forma cooperativa.<br>";
             ret += "Grupo: " + this.nombre + "<br>";
             ret += "Documento ID:" + fname + "<br>";
+            ret += "Inicio de debate: " + inicio.ToShortDateString() + "<br>";
             ret += "Fecha de consenso: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
             ret += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
             ret += "Objetivo: " + this.grupo.objetivo + "<br>";
@@ -488,6 +507,10 @@ namespace nabu
             ret += "Activos: " + this.grupo.activos + "<br>";
             ret += "Si: (&ge; " + this.minSiPc + "%): " + n.flores + "<br>";
             ret += "No: (&le; " + this.maxNoPc + "%): " + n.negados + "<br>";
+            if (this.grupo.getAdmin() != null) ret += "Coordinador: " + grupo.getAdmin().nombre + "<br>";
+            if (this.grupo.getRepresentante() != null) ret += "Representante: " + grupo.getRepresentante().nombre + "<br>";
+            if (this.grupo.getSecretaria() != null) ret += "Secretaria: " + grupo.getSecretaria().nombre + "<br>";
+            if (this.grupo.getFacilitador() != null) ret += "Facilitador: " + grupo.getFacilitador().nombre + "<br>";
 
             //armo HTML
             m.firmaConsenso = ret;
@@ -603,6 +626,16 @@ namespace nabu
             Usuario u = grupo.getUsuarioHabilitado(email);
             if (u != null)
             {
+                if (verificarFloresCaducadas(u))
+                {
+                    //notifico por mail al usuario
+                    Usuario admin = grupo.getAdmin();
+                    Tools.encolarMailCaido(grupo.nombre, u.email, admin.email, Tools.MapPath("mails/modelos/" + grupo.idioma));                   
+                    //app.addLog("verifyFloresCaducadas", "", grupo.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
+                }
+
+                comprobarConsenso();
+
                 ArbolPersonal ap = new ArbolPersonal();
                 ap.raiz = raiz; //referecia cruzada pero no importa porque este objeto es para serializar
                 ap.objetivo = grupo.objetivo;
@@ -620,7 +653,7 @@ namespace nabu
                 ap.padreNombre = grupo.padreNombre;
                 ap.padreURL = grupo.padreURL;
 
-                foreach(Tuple<string,string> hijo in grupo.hijos)
+                foreach(Hijo hijo in grupo.hijos)
                 {
                     ap.hijos.Add(hijo);//referecia cruzada pero no importa porque este objeto es para serializar
                 }
@@ -737,11 +770,31 @@ namespace nabu
                 actualizarNegados();
 
                 //veo si algun nodo alcanza el consenso
-                comprobarConsenso();
+                //comprobarConsenso(); se comprueba al crear el arbolpersonal
             }
             else
                 throw new Exception("El nodo no tiene flores para quitar");
             return u;
+        }
+
+        public bool verificarFloresCaducadas(Usuario u)
+        {
+            //verifico caducadas
+            bool caido = false;
+            foreach (Flor f in u.flores)
+            {
+                //if (f.id != 0 && DateTime.Now.Subtract(f.born).TotalDays > 60)
+                if (f.id != 0 && DateTime.Now.Subtract(u.lastLogin).TotalDays > 15) //13/04/2017
+                {
+                    Nodo n = getNodo(f.id);
+                    if (n != null)
+                    {
+                        quitarFlor(n, u);
+                        caido = true;
+                    }
+                }
+            }
+            return caido;
         }
 
         public bool quitarFlor(Nodo n, Usuario u)
@@ -764,7 +817,7 @@ namespace nabu
             actualizarNegados();
 
             //veo si algun nodo alcanza el consenso
-            comprobarConsenso();
+            //comprobarConsenso(); se comprueba al crear el arbolpersonal
 
             return ret;
         }
@@ -807,7 +860,7 @@ namespace nabu
                     throw new appException("No tienes flores disponibles");
             }
             //compruebo consenso alcanzado
-            comprobarConsenso(n);
+            //comprobarConsenso(); se comprueba al crear el arbolpersonal
 
             //actualizo negados
             actualizarNegados();
@@ -935,7 +988,7 @@ namespace nabu
         public void actualizarModelosEnUso()
         {
             //marco los modelos de documentos que estan en uso
-            foreach (Modelo m in getModelos())
+            foreach (Modelo m in grupo.organizacion.getModelosDocumento())
             {
                 m.enUso = false;
                 foreach (Propuesta p in propuestas)
@@ -945,20 +998,6 @@ namespace nabu
                         break;
                     }
             }
-        }
-
-        public Modelo getModelo(string modeloID)
-        {
-            Modelo ret = null;
-
-            foreach (Modelo m in getModelos())
-            {
-                if (m.id == modeloID)
-                {
-                    ret = m;
-                }
-            }
-            return ret;
         }
 
 

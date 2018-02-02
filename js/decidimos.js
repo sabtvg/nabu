@@ -1,4 +1,22 @@
-﻿
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
 
 function doDecidimos() {
     //menu ppal
@@ -14,8 +32,8 @@ function doDecidimos() {
     document.getElementById("panelConsenso").style.visibility = 'visible';
 
     //joystick
-    document.getElementById("joystick").style.visibility = 'visible';
-    document.getElementById("joystick").style.top = (window.innerHeight - 160) + 'px';
+    document.getElementById("joystickArbol").style.visibility = 'visible';
+    document.getElementById("joystickArbol").style.top = (window.innerHeight - 160) + 'px';
 
     //objetivo
     var objetivo = document.getElementById("objetivo");
@@ -38,7 +56,7 @@ function doDecidimos() {
     actualizarDatosConsenso();
 
     //fijo intervalo de actualizacion del arbol
-    timerArbol = setInterval(pedirArbol, refreshArbolInterval);
+    timerArbol = setInterval(pedirArbol, refreshInterval);
 
     estado = 'decidimos';
     clearInterval(timerCiclo);
@@ -49,7 +67,9 @@ function seleccionarModelo() {
     if (getFloresDisponibles().length == 0)
         msg("No tienes flores disponibles");
     else {
-        var list = "<table style='width:100%'>";
+        var listE = "<table style='width:200px'>";
+        var listS = "<table style='width:200px'>";
+        var listI = "<table style='width:200px'>";
 
         //si no hay manifiesto solo permito crear modelo Manifiesto
         for (var i in modelos) {
@@ -57,15 +77,41 @@ function seleccionarModelo() {
             if (modelo.activo && 
                 ((arbolPersonal.URLEstatuto == "" && modelo.id.indexOf('Manifiesto')>=0) || arbolPersonal.URLEstatuto != ""))
             {
-                list += "<tr>";
-                list += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
-                list += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
-                list += "</tr>";
+                if (modelo.tipo == "estructura") {
+                    listE += "<tr>";
+                    listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
+                    listE += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listE += "</tr>";
+                }
+                else if (modelo.tipo == "intergrupal") {
+                    listI += "<tr>";
+                    listI += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
+                    listI += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listI += "</tr>";
+                }
+                else {
+                    listS += "<tr>";
+                    listS += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
+                    listS += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listS += "</tr>";
+                }
             }
         }
+        listE += "</table>";
+        listS += "</table>";
+        listI += "</table>";
+
+        var list = "<table>";
+        list += "<tr><td style='text-align:center' class='titulo1' colspan='3'>Modelos de debate</td></tr>";
+        list += "<tr><td style='text-align:center'>Estructura</td><td style='text-align:center'>Seguimiento</td><td style='text-align:center'>Intergrupal</td></tr>";
+        list += "<tr>";
+        list += "<td style='vertical-align:top;'>" + listE + "</td>";
+        list += "<td style='vertical-align:top;'>" + listS + "</td>";
+        list += "<td style='vertical-align:top;'>" + listI + "</td>";
+        list += "</tr>";
         list += "</table>";
 
-        document.getElementById("modelosList").innerHTML = list;
+        document.getElementById("modelosContent").innerHTML = list;
         document.getElementById("modelos").style.visibility = "visible";
     }
 }
@@ -341,7 +387,7 @@ function getFloresDisponibles() {
 function pedirArbol() {
     if (arbolPersonal) {
         var now = (new Date()).getTime();
-        if (now - lastArbolRecibidoTs > refreshArbolInterval)
+        if (now - lastArbolRecibidoTs > refreshInterval)
             getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + arbolPersonal.usuario.email
                 + "&clave=" + arbolPersonal.usuario.clave
                 + "&grupo=" + arbolPersonal.nombre,

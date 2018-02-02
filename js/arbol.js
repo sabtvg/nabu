@@ -1,4 +1,22 @@
-﻿var duration = 750,
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+var duration = 750,
     d3Arbol,
     diagonal,
     svgArbol,
@@ -100,7 +118,7 @@ function doMouseup() {
 }
 
 function translateArbol(x, y) {
-    d3.select("svg").select("g").attr("transform", "translate(" + (window.innerWidth / 2 + x).toFixed(0) + "," + (window.innerHeight * 0.90 + y).toFixed(0) + ")");
+    d3.select("#arbol").select("g").attr("transform", "translate(" + (window.innerWidth / 2 + x).toFixed(0) + "," + (window.innerHeight * 0.90 + y).toFixed(0) + ")");
 }
 
 function rotarFlores() {
@@ -157,7 +175,7 @@ function dibujarArbol(referencia) {
             return d.consensoAlcanzado ? "gray" : "yellow";
         });
 
-    //1ra linea de texto
+    //1ra linea de texto ETIQUETA
     nodeEnter.append("text")
         .attr("id", function (d) {
             return 't1.' + d.id;
@@ -166,28 +184,19 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", function (d) {
-            if (d.si && !d.consensoAlcanzado)
-                return -40;
-            else
-                return 0;
+            return -20;
         })
         .attr("transform", function (d) {
-            if (d.si && !d.consensoAlcanzado)
                 return "rotate(90)";
-            else
-                return "rotate(10)";
         })
         .attr("fill", function (d) {
-            if (d.si && !d.consensoAlcanzado)
-                return d.siColor;
-            else
                 return "black";
         })
         .attr("text-anchor", function (d) {
             return "middle";
         });
 
-    //2da linea de texto
+    //2da linea de texto NO
     nodeEnter.append("text")
         .attr("id", function (d) {
             return 't2.' + d.id;
@@ -196,22 +205,28 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", function (d) {
-            if (d.si && !d.consensoAlcanzado)
-                return -40 + 16 * scale;
-            else
-                return 0;
+            return -50 + 16 * scale;
         })
         .attr("transform", function (d) {
-            if (d.si && !d.consensoAlcanzado)
-                return "rotate(90)";
-            else
-                return "rotate(10)";
+            return "rotate(90)";
         })
-        .attr("fill", function (d) {
-            if (d.no && !d.consensoAlcanzado)
-                return d.noColor;
-            else
-                return "black";
+        .attr("text-anchor", function (d) {
+            return "middle";
+        });
+
+    //3da linea de texto SI
+    nodeEnter.append("text")
+        .attr("id", function (d) {
+            return 't3.' + d.id;
+        })
+        .attr("x", function (d) {
+            return 0;
+        })
+        .attr("dy", function (d) {
+            return -65 + 16 * scale;
+        })
+        .attr("transform", function (d) {
+            return "rotate(90)";
         })
         .attr("text-anchor", function (d) {
             return "middle";
@@ -242,27 +257,15 @@ function dibujarArbol(referencia) {
                 return d.consensoAlcanzado ? "gray" : (d.id == selectedNode.id ? "blue" : "yellow");
             else
                 return d.consensoAlcanzado ? "gray" : "yellow";
-        });
+        });   
 
-    nodeUpdate.select("text")
+    nodeUpdate.select("text")  //etiqueta
         .style("font-size", function (d) {
             var size = 20 * scale > 30 ? 30 : 15 * scale;
-            document.getElementById('t2.' + d.id).style.fontSize = size + 'px'; //actualizo el 2do texto
             return size + 'px';
         })
         .text(function (d) {
-            if (d.si && !d.consensoAlcanzado) {
-                document.getElementById('t2.' + d.id).innerHTML = d.no; //actualizo el 2do texto
-                return d.si;
-            }
-            else {
-                document.getElementById('t2.' + d.id).innerHTML = ""; //actualizo el 2do texto
-                return txtCut(d.nombre);
-            }
-        })
-        .style("fill", function (d) {
-            document.getElementById('t2.' + d.id).style.fill = d.noColor;
-            return d.si ? d.siColor : (d == selectedNode ? "blue" : "black");
+            return txtCut(d.nombre);
         })
         .style("fill-opacity", 1);
 
@@ -289,6 +292,21 @@ function dibujarArbol(referencia) {
         .style("fill-opacity", 1e-6)
         .attr("text-anchor", function (d) { return d.x < 180 ? "start" : "end"; })
         .attr("transform", function (d) { return d.x < 180 ? "translate(10)" : "rotate(180)translate(-8)"; });
+
+    // textos si y no
+    nodes.forEach(function (d) {
+        var t2 = document.getElementById('t2.' + d.id);
+        if (t2 && d.no && !d.consensoAlcanzado) {
+            t2.style.fill = d.noColor; //actualizo el no texto
+            t2.innerHTML = d.no; //actualizo el no texto
+        }
+
+        var t3 = document.getElementById('t3.' + d.id);
+        if (t3 && d.si && !d.consensoAlcanzado) {
+            t3.style.fill = d.siColor; //actualizo el si texto
+            t3.innerHTML = d.si; //actualizo el si texto
+        }
+    });
 
     //flores ------------------------------------------------------------------------------------------------------------------
     var flor = svgArbol.selectAll("g.flor")
@@ -356,7 +374,7 @@ function dibujarArbol(referencia) {
         .attr("class", "docImage")
         .attr("width", "32px")
         .attr("height", "40px")
-        .attr("transform", "translate(-16, -20)")
+        .attr("transform", "translate(-16, -30)")
         .style("cursor", "pointer")
         .attr("xlink:href", "res/doc.png");
 
@@ -365,7 +383,7 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", ".35em")
-        .attr("transform", "rotate(90)translate(-5, 30)")
+        .attr("transform", "rotate(90)translate(-5, 20)")
         .style("font-size", function (d) { return '12px'; })
         .attr("text-anchor", "middle ")
         .text(function (d) { return d.fname; });
@@ -375,7 +393,7 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", ".35em")
-        .attr("transform", "rotate(90)translate(-5, 45)")
+        .attr("transform", "rotate(90)translate(-5, 35)")
         .style("font-size", function (d) { return '12px'; })
         .style("cursor", "pointer")
         .attr("text-anchor", "middle ")
@@ -386,7 +404,7 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", ".35em")
-        .attr("transform", "rotate(90)translate(-5, 60)")
+        .attr("transform", "rotate(90)translate(-5, 50)")
         .style("font-size", function (d) { return '12px'; })
         .style("cursor", "pointer")
         .attr("text-anchor", "middle ")
@@ -410,7 +428,7 @@ function dibujarArbol(referencia) {
     docUpdate.select("image")
         .attr("width", "32px")
         .attr("height", "40px")
-        .attr("transform", "rotate(90)translate(-16, -20)")
+        .attr("transform", "rotate(90)translate(-16, -30)")
         .attr("xlink:href", "res/doc.png");
 
     var docExit = doc.exit().transition()
@@ -549,6 +567,10 @@ function updateFloresTotales(node) {
             node.noColor = 'green';
         else
             node.noColor = 'red';
+    }
+    else {
+        node.si = "";
+        node.no = "";
     }
 }
 

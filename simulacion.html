@@ -1,3 +1,24 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
 
 
 <!DOCTYPE html>
@@ -53,6 +74,10 @@
 
             treeScale = window.innerWidth / 1920; //valor default
 
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
+
             //cargo idioma
             grupoParam = getParameterByName('grupo');
             if (grupoParam) {
@@ -102,7 +127,6 @@
                 playing = false;
                 document.getElementById("startStop").value = tr("Play");
                 document.getElementById("startStop").className = "btnStop";
-                document.getElementById("sim").style.visibility = sim.style.visibility == "hidden";
             }
             else {
                 pasos = 0;
@@ -175,7 +199,7 @@
             document.getElementById("s2").placeholder = tr("Converger");
             document.getElementById("btnIni").value = tr("Reiniciar");
             document.getElementById("btnPaso").value = tr("Paso");
-            document.getElementById("tit2").innerHTML = tr("Cooperativa 2.0");
+            document.getElementById("tit2").innerHTML = tr("Sociocracia");
             document.getElementById("tit3").innerHTML = tr("Democracia interactiva");
             document.getElementById("tit4").innerHTML = tr("Simulacion");
             document.getElementById("divCon").innerHTML = tr("Consenso");
@@ -228,7 +252,7 @@
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="titulo" style="padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
         <div class="titulo0"><nobr>Nab&uacute;</nobr></div>
-        <div id="tit2" class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
+        <div id="tit2" class="titulo1"><nobr>Sociocracia</nobr></div>
         <div id="tit3" class="titulo2"><nobr>Democracia interactiva</nobr></div>
         <div id="tit4" class="titulo1" style="color:red;"><nobr>Simulacion</nobr></div>
     </div>

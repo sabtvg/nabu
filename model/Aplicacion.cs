@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +32,7 @@ namespace nabu
         public DateTime lastSave = DateTime.MinValue;
         public int saveTime = 10; //guardar arboles cada x minutos
         public int cleanTime = 40; //quito arbol de memoria si no se toca en 20 minutos
+        public MailBot mailBot = new MailBot();
 
         public Aplicacion(HttpServerUtility server, HttpRequest request)
         {
@@ -118,17 +138,23 @@ namespace nabu
                 tipos.Add(typeof(Nodo));
                 tipos.Add(typeof(Comentario));
                 tipos.Add(typeof(Variable));
+                tipos.Add(typeof(Hijo));
 
                 //tipos
                 foreach (Organizacion org in Organizacion.getOrganizaciones())
                 {
                     tipos.Add(org.GetType());
-                    foreach (Modelo mod in org.getModelos())
+                    //modelos de documento
+                    foreach (Modelo mod in org.getModelosDocumento())
+                        tipos.Add(mod.GetType());
+
+                    //modelos de evaluacion
+                    foreach (ModeloEvaluacion mod in org.getModelosEvaluacion())
                         tipos.Add(mod.GetType());
                 }
+
                 ret = Tools.fromJson<Grupo>(s, tipos);
                 ret.path = server.MapPath("grupos/" + nombre);
-                ret.URL = request.UrlReferrer.AbsoluteUri.Substring(0, request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
 
                 //modelos viejos
                 if (ret.arbol == null)
@@ -138,6 +164,7 @@ namespace nabu
 
                 //actualizo modelos
                 ret.arbol.grupo = ret;  //padre del arbol, referencia ciclica, no se puede serializar
+                ret.queso.grupo = ret;  //padre del queso, referencia ciclica, no se puede serializar
                 return ret;
             }
             else

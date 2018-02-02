@@ -8,10 +8,17 @@ namespace nabu.organizaciones
     public class Colegio: Organizacion
     {
 
-        public override List<Modelo> getModelos()
+        public override List<Modelo> getModelosDocumento()
         {
             //deberian ser modelos propios!!!!!
             List<Modelo> ret = new List<Modelo>();
+            return ret;
+        }
+
+        public override List<ModeloEvaluacion> getModelosEvaluacion()
+        {
+            //deberian ser modelos propios!!!!!
+            List<ModeloEvaluacion> ret = new List<ModeloEvaluacion>();
             return ret;
         }
 

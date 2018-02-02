@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -6,21 +25,22 @@ using System.Web;
 
 namespace nabu.plataforma.modelos
 {
-    public class Evento: Modelo
+    public class Accion: Modelo
     {
-        public Evento()
+        public Accion()
         {
-            icono = "res/documentos/evento.png";
+            icono = "res/documentos/accion.png";
             niveles = 5;
-            nombre = "Evento";
-            descripcion = "Evento";
+            nombre = "Accion";
+            descripcion= "Accion";           
+            tipo = "seguimiento";
 
             crearVariables();
         }
 
         public override string carpeta()
         {
-            return "Evento";
+            return "Accion";
         }
 
         protected override void crearVariables()
@@ -36,16 +56,17 @@ namespace nabu.plataforma.modelos
             variables.Add(new Variable("s.aquien", 3000, 2));
 
             //nivel 3
-            variables.Add(new Variable("s.lugar", 3000, 3));
             variables.Add(new Variable("s.materiales", 3000, 3));
-            variables.Add(new Variable("s.transporte", 3000, 3));
+            variables.Add(new Variable("s.rrhh", 3000, 3));
+            variables.Add(new Variable("s.otros", 3000, 3));
 
             //nivel 4
-            variables.Add(new Variable("s.organizacion", 3000, 4));
-            variables.Add(new Variable("d.fecha", 0, 4));
+            variables.Add(new Variable("s.fases", 3000, 4));
 
             //nivel 5
-            variables.Add(new Variable("s.eficiencia", 3000, 5));
+            variables.Add(new Variable("s.presupuesto", 3000, 5));
+            variables.Add(new Variable("s.responsable", 3000, 5));
+            variables.Add(new Variable("s.revision", 3000, 5));
         }
 
         private void validar(Propuesta prop)
@@ -81,29 +102,25 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 3)
                 {
-                    if (getText("s.lugar", prop) == ""
-                        && getText("s.materiales", prop) == ""
-                        && getText("s.transporte", prop) == "")
+                    if (getText("s.materiales", prop) == ""
+                        && getText("s.software", prop) == ""
+                        && getText("s.rrhh", prop) == "")
                     {
                         addError(3, "La propuesta no puede estar completamente vacia");
                     }
                 }
                 else if (prop.nivel == 4)
                 {
-                    if (getText("s.organizacion", prop) == "")
+                    if (getText("s.fases", prop) == "")
                     {
-                        addError(4, "Describe como organizar el evento");
-                    }
-                    if (getDate("d.fecha", prop) == Tools.minValue)
-                    {
-                        addError(4, "Define una fecha para el evento");
+                        addError(4, "La propuesta no puede estar completamente vacia");
                     }
                 }
                 else if (prop.nivel == 5)
                 {
-                    if (getText("s.eficiencia", prop) == "")
+                    if (getText("s.presupuesto", prop) == "")
                     {
-                        addError(5, "Define como se valorar&aacute el resultado del evento");
+                        addError(5, "La propuesta no puede estar completamente vacia");
                     }
                 }
             }
@@ -129,15 +146,11 @@ namespace nabu.plataforma.modelos
             {
                 ret += HTMLEncabezado(prop, g, email, width);
 
-                //fecha
-                if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
-
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.introduccion", g.idioma) 
+                        + Tools.tr("accion.introduccion", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
@@ -152,7 +165,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.objetivo", g.idioma) 
+                        + Tools.tr("accion.objetivo", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
@@ -161,7 +174,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.descripcion", g.idioma) 
+                        + Tools.tr("accion.descripcion", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
@@ -170,7 +183,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("event.aquien", g.idioma) 
+                        + Tools.tr("accion.aquien", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
@@ -183,31 +196,31 @@ namespace nabu.plataforma.modelos
             else if (nivel == 3)
             {
                 //Materiales
-                ret += "<div class='tema'>" + Tools.tr("Lugar", g.idioma) + "</div>";
-                if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.lugar", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.lugar", prop, width, 120, tieneFlores, g.idioma);
-
-                //RRHH
                 ret += "<div class='tema'>" + Tools.tr("Materiales", g.idioma) + "</div>";
                 if (editar)  
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.materiales", g.idioma) 
+                        + Tools.tr("accion.materiales", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.materiales", prop, width, 120, tieneFlores, g.idioma);
 
-                //Otros
-                ret += "<div class='tema'>" + Tools.tr("Transportes", g.idioma) + "</div>";
-                if (editar)
+                //RRHH
+                ret += "<div class='tema'>" + Tools.tr("RRHH", g.idioma) + "</div>";
+                if (editar)  
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.transportes", g.idioma) 
+                        + Tools.tr("accion.rrhh", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.transporte", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLArea("s.rrhh", prop, width, 120, tieneFlores, g.idioma);
+
+                //Otros
+                ret += "<div class='tema'>" + Tools.tr("Software", g.idioma) + "</div>";
+                if (editar)
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("accion.software", g.idioma) 
+                        + "</div>";
+
+                ret += HTMLArea("s.otros", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
@@ -215,22 +228,13 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + Tools.tr("Organizacion", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Fases", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.organizacion", g.idioma) 
+                        + Tools.tr("accion.fases", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.organizacion", prop, width, 120, tieneFlores, g.idioma);
-
-                ret += "<div class='tema'>";
-                ret += Tools.tr("Fecha", g.idioma);
-                ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
-                if (editar)
-                    ret += "<span class='smalltip' style='margin:5px'>"
-                        + Tools.tr("evento.fecha", g.idioma)
-                        + "</span>";
-                ret += "</div>";
+                ret += HTMLArea("s.fases", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
@@ -238,13 +242,32 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + Tools.tr("Valoraci&oacute;n del resultado", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Presupuesto y plazo de entrega", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("evento.valoracion", g.idioma) 
+                        + Tools.tr("accion.presupuesto", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLArea("s.presupuesto", prop, width, 120, tieneFlores, g.idioma);
+
+                ret += "<div class='tema'>" + Tools.tr("Responsable", g.idioma) + "</div>";
+                if (editar)
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("accion.responsable", g.idioma)
+                        + "</div>";
+                //lista de seleccion de usuarios
+                string lista = "|";
+                foreach (Usuario u2 in g.usuarios)
+                    lista += u2.email + "#" + u2.nombre + "|";
+                lista = lista.Substring(0, lista.Length - 1);
+                ret += HTMLLista("s.responsable", lista, prop, 250, tieneFlores, g.idioma);
+
+                ret += "<div class='tema'>" + Tools.tr("Revision de valoracion del resultado", g.idioma) + "</div>";
+                if (editar)
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("accion.revision", g.idioma)
+                        + "</div>";
+                ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
@@ -271,7 +294,25 @@ namespace nabu.plataforma.modelos
 
         public override void ejecutarConsenso(Documento doc)
         {
-            //nada que hacer
+            try
+            {
+                nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
+                nabu.plataforma.Accion accion = new nabu.plataforma.Accion();
+                accion.EID = plataforma.getEID();
+                accion.nombre = doc.titulo;
+                accion.objetivo = doc.getText("s.objetivo");
+                accion.docURL = doc.URLPath;
+                accion.docTs = DateTime.Now;
+                accion.responsable = doc.getText("s.responsable");
+
+                plataforma.acciones.Add(accion);
+
+                doc.addLog(Tools.tr("accion.creada", doc.grupo.idioma));
+            }
+            catch (Exception ex)
+            {
+                doc.addLog(Tools.tr("accion.error", doc.grupo.idioma) + ": " + ex.Message);
+            }
         }
 
 

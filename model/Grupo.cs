@@ -1,7 +1,27 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Runtime.Serialization;
 
 namespace nabu
 {
@@ -21,9 +41,13 @@ namespace nabu
         public string URL = ""; //url base del arbol
         public string padreURL = "";
         public string padreNombre = "";
-        public List<Tuple<string, string>> hijos = new List<Tuple<string, string>>();
+        public List<Hijo> hijos = new List<Hijo>();
         public List<LogDocumento> logDecisiones = new List<LogDocumento>();
         public List<LogDocumento> logResultados = new List<LogDocumento>();
+        public Queso queso = new Queso();
+
+        [IgnoreDataMember]
+        public Bosque bosque = null;
 
         public static Grupo newGrupo(string grupo, string organizacion, string nombreAdmin, string email, string clave, string idioma, string URL)
         {
@@ -85,6 +109,10 @@ namespace nabu
             a.grupo = g; //referencia ciclica, no se pude serializar
             g.arbol = a;
 
+            Queso q = new Queso();
+            q.grupo = g; //referencia ciclica, no se pude serializar
+            g.queso = q;
+
             //admin
             Usuario u = new Usuario(a.cantidadFlores);
             u.nombre = Tools.HtmlEncode(nombreAdmin);
@@ -123,14 +151,17 @@ namespace nabu
         public string toJsonCompleto()
         {
             arbol.grupo = null; //luego lo recupero
+            queso.grupo = null; //luego lo recupero
 
             List<Type> tipos = new List<Type>();
-            foreach (Modelo m in organizacion.getModelos()) tipos.Add(m.GetType());
+            foreach (Modelo m in organizacion.getModelosDocumento()) tipos.Add(m.GetType());
+            foreach (ModeloEvaluacion m in organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
             foreach (Organizacion m in Organizacion.getOrganizaciones()) tipos.Add(m.GetType());
             string json = Tools.toJson(this, tipos);
 
             //restauro al padre
             arbol.grupo = this;
+            queso.grupo = this;
             return json;
         }
 
@@ -167,6 +198,36 @@ namespace nabu
                 fs.Write(json);
                 fs.Close();
             }
+        }
+
+        public Usuario getFacilitador()
+        {
+            foreach (Usuario u in usuarios)
+            {
+                if (u.isFacilitador)
+                    return u;
+            }
+            return null;
+        }
+
+        public Usuario getRepresentante()
+        {
+            foreach (Usuario u in usuarios)
+            {
+                if (u.isRepresentante)
+                    return u;
+            }
+            return null;
+        }
+
+        public Usuario getSecretaria()
+        {
+            foreach (Usuario u in usuarios)
+            {
+                if (u.isSecretaria)
+                    return u;
+            }
+            return null;
         }
 
         public Usuario getAdmin()

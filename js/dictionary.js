@@ -1,3 +1,21 @@
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
 var idioma = "";
 
 var dictionary = [
@@ -13,11 +31,14 @@ var dictionary = [
     { key: 'Solo disponible para el coordinador', idioma: 'es', txt: 'Solo disponible para el coordinador' },
     { key: 'Apoyos', idioma: 'es', txt: 'Apoyos' },
     { key: 'Ultimo', idioma: 'es', txt: 'Ultimo' },
-    { key: 'Activo', idioma: 'es', txt: 'Act' },
-    { key: 'Solo Lectura', idioma: 'es', txt: 'Lect' },
-    { key: 'Habilitado', idioma: 'es', txt: 'Hab' },
-    { key: 'Secretaria', idioma: 'es', txt: 'Sec' },
-    { key: 'Admin', idioma: 'es', txt: 'Adm' },
+    { key: 'Activo', idioma: 'es', txt: 'Activo' },
+    { key: 'Solo Lectura', idioma: 'es', txt: 'Solo lectura' },
+    { key: 'Habilitado', idioma: 'es', txt: 'Habilitado' },
+    { key: 'Secretaria', idioma: 'es', txt: 'Secretaria' },
+    { key: 'abrSoloLectura', idioma: 'es', txt: 'Lect' },
+    { key: 'abrHabilitado', idioma: 'es', txt: 'Hab' },
+    { key: 'abrCoordinador', idioma: 'es', txt: 'Coor' },
+    { key: 'abrSecretaria', idioma: 'es', txt: 'Secr' },
     { key: 'Email', idioma: 'es', txt: 'Email' },
     { key: 'Borrar', idioma: 'es', txt: 'Borrar' },
     { key: 'No se puede borrar el usuario actual', idioma: 'es', txt: 'No se puede borrar el usuario actual' },
@@ -46,10 +67,10 @@ var dictionary = [
     { key: 'Pausa', idioma: 'es', txt: 'Pausa' },
     { key: 'Diverger', idioma: 'es', txt: 'Divergir' },
     { key: 'Converger', idioma: 'es', txt: 'Converger' },
-    { key: 'Cooperativa 2.0', idioma: 'es', txt: 'Cooperativa 2.0' },
+    { key: 'Sociocracia', idioma: 'es', txt: 'Sociocracia' },
     { key: 'Democracia interactiva', idioma: 'es', txt: 'Democracia interactiva' },
-    { key: 'El bosque', idioma: 'es', txt: 'El bosque' },
-    { key: 'El arbol', idioma: 'es', txt: 'El &aacute;rbol' },
+    { key: 'El bosque', idioma: 'es', txt: 'Comunidad' },
+    { key: 'El arbol', idioma: 'es', txt: 'Grupo' },
     { key: 'Mailer', idioma: 'es', txt: 'Mailer' },
     { key: 'Dias', idioma: 'es', txt: 'D&iacute;as' },
     { key: 'Activos', idioma: 'es', txt: 'Activos' },
@@ -106,11 +127,14 @@ var dictionary = [
     { key: 'Paso', idioma: 'es', txt: 'Paso' },
     { key: 'Play', idioma: 'es', txt: 'Play' },
     { key: 'Arbol de decisiones', idioma: 'es', txt: '&Aacute;rbol de decisiones' },
-    { key: 'Publicacion de argumentos', idioma: 'es', txt: 'Publicaci&oacute;n de argumentos' },
+    { key: 'Publicacion de argumentos', idioma: 'es', txt: 'Encuestas de evaluacion' },
     { key: 'Ambito operativo', idioma: 'es', txt: '&Aacute;mbito operativo' },
     { key: 'Documento de consenso alcanzados', idioma: 'es', txt: 'Documento de consenso alcanzados' },
     { key: 'Documentos de resultado', idioma: 'es', txt: 'Documentos de resultado' },
     { key: 'Manifiesto del grupo', idioma: 'es', txt: 'Manifiesto del grupo' },
+    { key: 'Decision', idioma: 'es', txt: 'Decisi&oacute;n' },
+    { key: 'Actas', idioma: 'es', txt: 'Acta' },
+    { key: 'Seguimiento', idioma: 'es', txt: 'Seguimiento' },
 
     { key: 'Crear nuevo grupo', idioma: 'ct', txt: 'Crear nou grup' },
     { key: 'Grupos', idioma: 'ct', txt: 'Grups' },
@@ -124,11 +148,14 @@ var dictionary = [
     { key: 'Solo disponible para el coordinador', idioma: 'ct', txt: 'Nom&eacute;s disponible per al coordinador' },
     { key: 'Apoyos', idioma: 'ct', txt: 'Recolzaments' },
     { key: 'Ultimo', idioma: 'ct', txt: 'Darrera visita' },
-    { key: 'Activo', idioma: 'ct', txt: 'Act' },
-    { key: 'Solo Lectura', idioma: 'ct', txt: 'Lect' },
-    { key: 'Habilitado', idioma: 'ct', txt: 'Hab' },
-    { key: 'Secretaria', idioma: 'ct', txt: 'Sec' },
-    { key: 'Admin', idioma: 'ct', txt: 'Adm' },
+    { key: 'Activo', idioma: 'ct', txt: 'Activo' },
+    { key: 'Solo Lectura', idioma: 'ct', txt: 'Solo lectura' },
+    { key: 'Habilitado', idioma: 'ct', txt: 'Habilitado' },
+    { key: 'Secretaria', idioma: 'ct', txt: 'Secretaria' },
+    { key: 'abrSoloLectura', idioma: 'ct', txt: 'Lect' },
+    { key: 'abrHabilitado', idioma: 'ct', txt: 'Hab' },
+    { key: 'abrCoordinador', idioma: 'ct', txt: 'Coor' },
+    { key: 'abrSecretaria', idioma: 'ct', txt: 'Secr' },
     { key: 'Email', idioma: 'ct', txt: 'Correu electr&ograve;nic' },
     { key: 'Borrar', idioma: 'ct', txt: 'Borrar' },
     { key: 'No se puede borrar el usuario actual', idioma: 'ct', txt: 'No es pot borrar l\'usu&agrave;ria actual' },
@@ -156,10 +183,10 @@ var dictionary = [
     { key: 'Pausa', idioma: 'ct', txt: 'Pausa' },
     { key: 'Diverger', idioma: 'ct', txt: 'Divergir' },
     { key: 'Converger', idioma: 'ct', txt: 'Convergir' },
-    { key: 'Cooperativa 2.0', idioma: 'ct', txt: 'Cooperativa 2.0' },
+    { key: 'Sociocracia', idioma: 'ct', txt: 'Sociocracia' },
     { key: 'Democracia interactiva', idioma: 'ct', txt: 'Democr&agrave;cia interactiva' },
-    { key: 'El bosque', idioma: 'ct', txt: 'El bosc' },
-    { key: 'El arbol', idioma: 'ct', txt: 'L\'arbre' },
+    { key: 'El bosque', idioma: 'ct', txt: 'Communauté' },
+    { key: 'El arbol', idioma: 'ct', txt: 'Groupe' },
     { key: 'Mailer', idioma: 'ct', txt: 'Difusor' },
     { key: 'Dias', idioma: 'ct', txt: 'Dies' },
     { key: 'Activos', idioma: 'ct', txt: 'Actives' },
@@ -221,7 +248,10 @@ var dictionary = [
     { key: 'Documento de consenso alcanzados', idioma: 'ct', txt: 'Document de consens aconseguits' },
     { key: 'Documentos de resultado', idioma: 'ct', txt: 'Documents de resultat' },
     { key: 'Manifiesto del grupo', idioma: 'ct', txt: 'Manifest del grup' },
-    
+    { key: 'Decision', idioma: 'ct', txt: 'Decisi&oacute;n' },
+    { key: 'Actas', idioma: 'ct', txt: 'Acta' },
+    { key: 'Seguimiento', idioma: 'ct', txt: 'Seguimiento' },
+
     { key: 'Crear nuevo grupo', idioma: 'en', txt: 'Create new group' },
     { key: 'Grupos', idioma: 'en', txt: 'Groups' },
     { key: 'auTit2', idioma: 'en', txt: '<br /><br />New users are manually controled by the gardener.<br /><br />Select a group<br /> and complete your data.<br />You will receive an email with access data.<br /><br />' },
@@ -234,11 +264,14 @@ var dictionary = [
     { key: 'Solo disponible para el coordinador', idioma: 'en', txt: 'Available only for the coordinator' },
     { key: 'Apoyos', idioma: 'en', txt: 'Supports' },
     { key: 'Ultimo', idioma: 'en', txt: 'Last' },
-    { key: 'Activo', idioma: 'en', txt: 'Act' },
-    { key: 'Solo Lectura', idioma: 'en', txt: 'Read' },
-    { key: 'Habilitado', idioma: 'en', txt: 'Enab' },
-    { key: 'Secretaria', idioma: 'en', txt: 'Sec' },
-    { key: 'Admin', idioma: 'en', txt: 'Adm' },
+    { key: 'Activo', idioma: 'en', txt: 'Activo' },
+    { key: 'Solo Lectura', idioma: 'en', txt: 'Read only' },
+    { key: 'Habilitado', idioma: 'en', txt: 'Enabled' },
+    { key: 'Secretaria', idioma: 'en', txt: 'Secretary' },
+    { key: 'abrSoloLectura', idioma: 'en', txt: 'Read' },
+    { key: 'abrHabilitado', idioma: 'en', txt: 'Ena' },
+    { key: 'abrCoordinador', idioma: 'en', txt: 'Coor' },
+    { key: 'abrSecretaria', idioma: 'en', txt: 'Secr' },
     { key: 'Email', idioma: 'en', txt: 'Email' },
     { key: 'Borrar', idioma: 'en', txt: 'Delete' },
     { key: 'No se puede borrar el usuario actual', idioma: 'en', txt: 'Can not remove actual user' },
@@ -266,10 +299,10 @@ var dictionary = [
     { key: 'Pausa', idioma: 'en', txt: 'Pause' },
     { key: 'Diverger', idioma: 'en', txt: 'Diverge' },
     { key: 'Converger', idioma: 'en', txt: 'Converge' },
-    { key: 'Cooperativa 2.0', idioma: 'en', txt: 'Cooperative 2.0' },
+    { key: 'Sociocracia', idioma: 'en', txt: 'Sociocracy' },
     { key: 'Democracia interactiva', idioma: 'en', txt: 'Interactive democracy' },
-    { key: 'El bosque', idioma: 'en', txt: 'The forest' },
-    { key: 'El arbol', idioma: 'en', txt: 'The tree' },
+    { key: 'El bosque', idioma: 'en', txt: 'Community' },
+    { key: 'El arbol', idioma: 'en', txt: 'Group' },
     { key: 'Mailer', idioma: 'en', txt: 'Mailer' },
     { key: 'Dias', idioma: 'en', txt: 'Days' },
     { key: 'Activos', idioma: 'en', txt: 'Actives' },
@@ -333,7 +366,10 @@ var dictionary = [
     { key: 'Manifiesto del grupo', idioma: 'en', txt: 'Group Manifest' },
     { key: 'Crear grupo', idioma: 'en', txt: 'Group Manifest' },
     { key: 'Datos del grupo', idioma: 'en', txt: 'Group Manifest' },
-    { key: 'Repetir clave', idioma: 'en', txt: 'Group Manifest' }
+    { key: 'Repetir clave', idioma: 'en', txt: 'Group Manifest' },
+    { key: 'Decision', idioma: 'en', txt: 'Decision' },
+    { key: 'Actas', idioma: 'en', txt: 'Minutes' },
+    { key: 'Seguimiento', idioma: 'en', txt: 'Tracing' }
 ];
 
 function tr(key) {

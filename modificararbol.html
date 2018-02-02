@@ -17,6 +17,10 @@
         var grupoParam;
 
         function doLoad() {
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
+
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
             if (grupoParam && grupoParam != "" && grupoParam != "null") {
@@ -134,7 +138,8 @@
                     param += "{";
                     param += "\"nombre\":\"" + u.nombre + "\",";
                     param += "\"email\":\"" + u.email + "\",";
-                    param += "\"clave\":\"" + u.clave + "\"";
+                    param += "\"clave\":\"" + u.clave + "\",";
+                    param += "\"grupoDesde\":\"" + usuario.grupo + "\"";
                     param += "},";
                 }
                 param = param.substring(0, param.length - 1);
@@ -169,7 +174,8 @@
             getHttp("doMain.aspx?actn=borrarHijo&grupo=" + usuario.grupo
                 + "&email=" + usuario.email
                 + "&clave=" + usuario.clave
-                + "&hijoURL=" + hijo.m_Item1,
+                + "&hijoURL=" + hijo.URL
+                + "&hijoNombre=" + hijo.nombre,
                 function (data) {
                     document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
                     getListaHijos();
@@ -206,8 +212,8 @@
             for (var i in hijos) {
                 var hijo = hijos[i];
                 s += "<tr>"
-                s += "<td>" + hijo.m_Item1 + "</td>";
-                s += "<td>" + hijo.m_Item2 + "</td>";
+                s += "<td>" + hijo.URL + "</td>";
+                s += "<td>" + hijo.nombre + "</td>";
                 s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarHijo(" + i + ");'></td>";
                 s += "</tr>"
             }

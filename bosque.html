@@ -1,3 +1,24 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
@@ -23,9 +44,22 @@
         var grupos;
         var usuarios;
         var lastMouse = null;
+        var generando = false;
+        var torsionInterval;
+        var firefoxWhich = 0;
+
+        $(document).mouseup(function (event) {
+            //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
+            firefoxWhich = 0;
+        });
+
+        $(document).mousedown(function (event) {
+            //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
+            firefoxWhich = 1;
+        });
 
         $(document).mousemove(function (event) {
-            if (event.which == 1 && !event.ctrlKey) {
+            if (firefoxWhich == 1 && !event.ctrlKey) {
                 //scroll
                 if (lastMouse) {
                     offsetX -= lastMouse.clientX - event.clientX;
@@ -36,7 +70,7 @@
                 }
                 lastMouse = { clientX: event.clientX, clientY: event.clientY };
             }
-            else if (event.which == 1 && event.ctrlKey) {
+            else if (firefoxWhich == 1 && event.ctrlKey) {
                 //zoom
                 if (lastMouse) {
                     zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
@@ -57,12 +91,14 @@
 
         function transform(offsetX, offsetY) {
             var g = document.getElementById("grupo");
-            var matrix0 = document.getElementById("todo").createSVGMatrix();
-            matrix0 = matrix0.translate(offsetX, offsetY);
-            if (g.transform.baseVal.numberOfItems == 0)
-                g.transform.baseVal.appendItem(g.transform.baseVal.createSVGTransformFromMatrix(matrix0));
-            else
-                g.transform.baseVal.getItem(0).setMatrix(matrix0);
+            if (g) {
+                var matrix0 = document.getElementById("todo").createSVGMatrix();
+                matrix0 = matrix0.translate(offsetX, offsetY);
+                if (g.transform.baseVal.numberOfItems == 0)
+                    g.transform.baseVal.appendItem(g.transform.baseVal.createSVGTransformFromMatrix(matrix0));
+                else
+                    g.transform.baseVal.getItem(0).setMatrix(matrix0);
+            }
         }
 
         function doLoad() {
@@ -70,6 +106,10 @@
             document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
             document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
             document.getElementById("florWait").style.visibility = "visible";
+
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
 
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
@@ -110,31 +150,111 @@
                         //grupos = 0;
                         //bosque = poblarNodo({ nombre: 'a1', hijos: [], URL: 'http://localhost/nabu', usuarios: 30 }, 15, 4, 833);
                         //dibujarTodo();
+                        actualizarBosque();
 
-                        getHttp("doMain.aspx?actn=getBosque&email=" + usuario.email
-                            + "&grupo=" + usuario.grupo
-                            + "&clave=" + usuario.clave,
-                             function (data) {
-                                 //atrapo el error si es que hay
-                                 if (data.substring(0, 6) == "Error=") {
-                                     //ha habido un error
-                                     document.getElementById("todo").innerHTML = '<font color=red>' + data + '</font>';
-                                 }
-                                 else {
-                                     //tengo el bosque
-                                     //document.getElementById("todo").innerHTML = data;
-                                     bosque = JSON.parse(data);
-
-                                     document.getElementById("florWait").style.visibility = "hidden";
-                                     dibujarTodo();
-                                 }
-                             });
+                        torsionInterval = setInterval(doTorsionAll, 100);
                     }
                 }
             }
             else
                 //login normal
                 document.location = 'default.html?grupo=' + grupoParam;
+        }
+
+        function doTorsionAll() {
+            //recorro el bosque
+            if (bosque) {
+                doIterar(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, doTorsionElem);
+            }
+        }
+
+        function doTorsionElem(nodo, centro, radio, nivel) {
+            if (nodo.id && nodo.usuarios > 0) {
+                var elem = document.getElementById(nodo.id);
+                if (elem) {
+                    var r = toRect(centro.m, centro.a);
+                    elem.setAttribute('transform', "translate(" + r.x.toFixed(0) + "," + r.y.toFixed(0) + ") rotate(" + nodo.torsion + ")");
+                    var step = nodo.activos / nodo.usuarios;
+                    if (nivel % 2 == 1)
+                        nodo.torsion += step;
+                    else
+                        nodo.torsion -= step;
+                }
+            }
+            return "";
+        }
+
+        function doIterar(x, y, radioInicial, accion) {
+            grupos = 0;
+            usuarios = 0;
+            var centro = toPolar(x, y);
+            var niveles = getNiveles(bosque, 0);
+            return doIterar2(bosque, centro, radioInicial, 0, niveles, 360, 90, accion);
+        }
+
+        function doIterar2(nodo, centro, radio, nivel, niveles, apertura, direccion, accion) {
+            var s = '';
+
+            if (nodo.exception) {
+                var rect = toRect(centro.m, centro.a);
+                s += circulo(nodo.exception, "", "", centro, radio, "red", 3)
+            }
+            else {
+                if (radio > 5) {
+                    //hijos
+                    if (nodo.hijos.length > 0) {
+                        var paso = apertura / nodo.hijos.length;
+                        var hijoRadio;
+                        if (nivel == 0)
+                            hijoRadio = Math.PI * 2 * radio * 360 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
+                        else
+                            hijoRadio = Math.PI * 2 * radio / 2 * 180 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
+
+                        if (hijoRadio > radio * 0.7)
+                            hijoRadio = radio * 0.7;
+
+                        for (i in nodo.hijos) {
+                            var hijo = nodo.hijos[i];
+                            var angulo = direccion - paso * (nodo.hijos.length - 1) / 2 + paso * i; //centrado en la direccion
+                            var hijoCentro = addPolar(centro, { m: radio, a: angulo });
+                            s += doIterar2(hijo, hijoCentro, hijoRadio, nivel + 1, niveles, 180, angulo, accion);
+                        }
+                    }
+
+                    //accion
+                    s += accion(nodo, centro, radio, nivel);
+                }
+            }
+            return s;
+        }
+        
+        function actualizarBosque() {
+            getBosque("getBosque");
+        }
+
+        function generarBosque() {
+            getBosque("clearBosque"); 
+        }
+
+        function getBosque(accion) {
+            getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
+                + "&grupo=" + usuario.grupo
+                + "&clave=" + usuario.clave,
+                 function (data) {
+                     //atrapo el error si es que hay
+                     if (data.substring(0, 6) == "Error=") {
+                         //ha habido un error
+                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                     }
+                     else {
+                         //tengo el bosque
+                         //document.getElementById("todo").innerHTML = data;
+                         bosque = JSON.parse(data);
+
+                         document.getElementById("florWait").style.visibility = "hidden";
+                         dibujarTodo();
+                     }
+                 });
         }
 
         //funcion de test a poblado
@@ -158,70 +278,24 @@
             var scaley = window.innerHeight / 1080;
             var s = "";
             s += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 100 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>" + usuario.grupo + " - " + tr("El bosque") + "</text>";
-            s += "<text x='" + (80 * scale) + "' y='" + (55 + 85 * scale) + "' fill='black' style='font-size:14px'>" + tr("Acceso") + "</text>";
-            s += "<text x='" + (80 * scale) + "' y='" + (75 + 85 * scale) + "' fill='black' style='font-size:14px'>" + tr("Solo lectura") + "</text>";
-            s += "<text x='" + (80 * scale) + "' y='" + (95 + 85 * scale) + "' fill='black' style='font-size:14px'>" + tr("Sin acceso") + "</text>";
-            s += "<circle cx='" + (60 * scale) + "' cy='" + (50 + 85 * scale) + "' r='8' stroke='#6B8E23' stroke-width='2' fill='#6B8E23' fill-opacity='0.5' />";
-            s += "<circle cx='" + (60 * scale) + "' cy='" + (70 + 85 * scale) + "' r='8' stroke='#B8860B' stroke-width='2' fill='#B8860B' fill-opacity='0.5' />";
-            s += "<circle cx='" + (60 * scale) + "' cy='" + (90 + 85 * scale) + "' r='8' stroke='#C71585' stroke-width='2' fill='#C71585' fill-opacity='0.5' />";
+
+            generando = false;
 
             s += "<g id='grupo'>";
-            s += dibujarBosque(bosque, window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom);
+            //dibujo bosque
+            s += doIterar(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, circuloNodo);
             s += "</g>"
 
             s += "<text x='" + (80 * scale) + "' y='" + (115 + 85 * scale) + "' fill='black' style='font-size:14px'>Grupos: " + grupos + "</text>";
             s += "<text x='" + (80 * scale) + "' y='" + (135 + 85 * scale) + "' fill='black' style='font-size:14px'>Usuarios: " + usuarios + "</text>";
+            s += "<text x='" + (80 * scale) + "' y='" + (155 + 85 * scale) + "' fill='blue' style='font-size:14px;cursor:pointer;text-decoration: underline;' onclick='actualizarBosque();'>Actualizar</text>";
+            s += "<text x='" + (80 * scale) + "' y='" + (175 + 85 * scale) + "' fill='blue' style='font-size:14px;cursor:pointer;text-decoration: underline;' onclick='generarBosque();'>Generar</text>";
 
             document.getElementById("todo").innerHTML = s;
             transform(offsetX, offsetY);
-        }
 
-        function dibujarBosque(bosque, x, y, radioInicial) {
-            grupos = 0;
-            usuarios = 0;
-            var centro = toPolar(x, y);
-            var niveles = getNiveles(bosque, 0);
-            var s = dibujarArbol(bosque, centro, radioInicial, 0, niveles, 360, 90);
-            return s;
-        }
-
-        function dibujarArbol(nodo, centro, radio, nivel, niveles, apertura, direccion) {
-            var s = '';
-
-            if (nodo.exception) {
-                var rect = toRect(centro.m, centro.a);
-                s += circulo(nodo.exception, "", "", centro, radio, "red", 3)
-            }
-            else {
-                //circulo de grupo
-                grupos += 1;
-                usuarios += nodo.usuarios;
-
-                if (radio > 5) {
-                    s += circuloNodo(nodo, centro, radio);
-
-                    //hijos
-                    if (nodo.hijos.length > 0) {
-                        var paso = apertura / nodo.hijos.length;
-                        var hijoRadio;
-                        if (nivel == 0)
-                            hijoRadio = Math.PI * 2 * radio * 360 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
-                        else
-                            hijoRadio = Math.PI * 2 * radio / 2 * 180 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
-
-                        if (hijoRadio > radio * 0.7)
-                            hijoRadio = radio * 0.7;
-
-                        for (i in nodo.hijos) {
-                            var hijo = nodo.hijos[i];
-                            var angulo = direccion - paso * (nodo.hijos.length - 1) / 2 + paso * i; //centrado en la direccion
-                            var hijoCentro = addPolar(centro, { m: radio, a: angulo });
-                            s += dibujarArbol(hijo, hijoCentro, hijoRadio, nivel + 1, niveles, 180, angulo);
-                        }
-                    }
-                }
-            }
-            return s;
+            if (generando)
+                setTimeout(actualizarBosque, 1000);
         }
 
         function cut(s, len) {
@@ -259,51 +333,140 @@
             else
                 colorAcceso = "#6B8E23";
 
+            grupos += 1;
+            usuarios += nodo.usuarios;
+            nodo.id = grupos; //id dinamico en la estructura SVG
+            nodo.torsion = 0;
+
             //verifico fallo de defincion de padre
             var url = nodo.URL + '/?grupo=' + nodo.nombre;
-            if (nodo.padreVerificado != "Ok")
+            if (nodo.msg != "") {
+                //flor
+                var rect = toRect(centro.m, centro.a);
+                var x = rect.x;
+                var y = rect.y;
+                s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='red' style='font-size:12px' text-anchor='middle'>" + nodo.msg + "</text>";
+            }
+            else if (!nodo.descargado) {
+                //flor
+                var rect = toRect(centro.m, centro.a);
+                var x = rect.x;
+                var y = rect.y;
+                s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='red' style='font-size:18px' text-anchor='middle'>[?]</text>";
+                generando = true;
+                //s += "<image xlink:href='res/icono2.png' cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' height='39px' width='38px'/>";
+            }
+            else if (!nodo.padreVerificado)
                 s += circulo(nodo.nombre,
                     "[" + tr("Grupo padre no corresponde") + "]",
-                    nodo.usuarios + " " + tr("Usuarios"),
+                    nodo.activos + "/" + nodo.usuarios + " " + tr("Usuarios"),
                     centro,
                     radio,
                     colorAcceso,
-                    nodo.nombre == usuario.grupo ? 8 : 3,
-                    url);
+                    nodo.nombre == usuario.grupo,
+                    url,
+                    nodo);
             else
                 s += circulo(nodo.nombre,
                     cut(nodo.objetivo, 25),
-                    nodo.usuarios + " " + tr("Usuarios"),
+                    nodo.activos + "/" + nodo.usuarios + " " + tr("Usuarios"),
                     centro,
                     radio,
                     colorAcceso,
-                    nodo.nombre == usuario.grupo ? 8 : 3,
-                    url);
+                    nodo.nombre == usuario.grupo,
+                    url,
+                    nodo);
             return s;
         }
 
-        function circulo(t1, t2, t3, centro, r, colorb, width, url) {
+        function circulo(t1, t2, t3, centro, r, colorb, own, url, nodo) {
             var rect = toRect(centro.m, centro.a);
             var x = rect.x;
             var y = rect.y;
-            var fontSize1 = (4 + r / 10) * zoom;
-            var fontSize2 = (4 + r / 10) * zoom - 8;
-            var fontSize3 = (4 + r / 10) * zoom - 16;
+            var fontSize1 = (4 + r / 5) * zoom;
+            var fontSize2 = (4 + r / 5) * zoom - 8 * zoom;
+            var fontSize3 = (4 + r / 5) * zoom - 16 * zoom;
             if (fontSize1 > 30) fontSize1 = 30;
             if (fontSize2 > 30 - 8) fontSize2 = 30 - 8;
             if (fontSize3 > 30 - 16) fontSize3 = 30 - 16;
-            var s = "<circle cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
-            if (r > 50) {
+
+            //var s = "<circle cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+            var s = "<g id='" + nodo.id + "' transform='translate(" + x.toFixed(0) + "," + y.toFixed(0) + ")'>";
+            s += engranaje(x, y, r, colorb, 1, nodo, url);
+
+            if (r > 30) {
                 //dibujo textos
                 //nombre de grupo
-                if (t1 != "" && fontSize1 > 10)
-                    s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='" + colorb + "' style='cursor:pointer;text-decoration: underline;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
-                if (t2 != "" && fontSize2 > 10)
-                    s += "<text x='" + x.toFixed(0) + "' y='" + (y + fontSize1 + 2).toFixed(0) + "' fill='" + colorb + "' style='font-size:" + (fontSize2).toFixed(0) + "px' text-anchor='middle'>" + t2 + "</text>";
-                if (t3 != "" && fontSize3 > 10)
-                    s += "<text x='" + x.toFixed(0) + "' y='" + (y + fontSize1 + fontSize2 + 2).toFixed(0) + "' fill='" + colorb + "' style='font-size:" + (fontSize3).toFixed(0) + "px' text-anchor='middle'>" + t3 + "</text>";
+                if (t1 != "" && fontSize1 > 8)
+                    s += "<text x='0' y='" + (-fontSize1 / 2).toFixed(0) + "' fill='" + colorb + "' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
+                if (t2 != "" && fontSize2 > 8)
+                    s += "<text x='0' y='" + (fontSize1 + 2).toFixed(0) + "' fill='" + colorb + "' style='font-size:" + (fontSize2).toFixed(0) + "px' text-anchor='middle'>" + t2 + "</text>";
+                if (t3 != "" && fontSize3 > 8)
+                    s += "<text x='0' y='" + (fontSize1 + fontSize2 + 2).toFixed(0) + "' fill='" + colorb + "' style='font-size:" + (fontSize3).toFixed(0) + "px' text-anchor='middle'>" + t3 + "</text>";
             }
+
+            //own
+            if (own) {
+                s += "<image xlink:href='res/tu2.png' x='-8' y='" + (-r - 10 - 42) + "' height='42px' width='17px'/>";
+                //s += "<circle cx='" + (r + 15).toFixed(0) + "' cy='0' r='10' stroke='" + colorb + "' stroke-width='3' fill='white' fill-opacity='1' />";
+            }
+
+            //centro
+            s += "<circle cx='0' cy='0' r='5' stroke='" + colorb + "' stroke-width='1' fill='white' fill-opacity='0.6' />";
+
+            s += "</g>";
+
             return s;
+        }
+
+        function engranaje(x, y, r, colorb, width, nodo, url) {
+            var s = "";
+            //s += "<line x1='0' y1='0' x2='" + r.toFixed(0) + "' y2='0' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+           
+            //poligono
+            //var lastp;
+            //var points = "";
+            //for (var a = 0; a < 361; a+= 360 / nodo.usuarios) {
+            //    var p2 = toRect(r, a);
+            //    if (lastp)
+            //        points += p2.x.toFixed(0) + "," + p2.y.toFixed(0) + " ";
+
+            //    lastp = { x: p2.x, y: p2.y };
+            //}
+            //s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:gray;stroke-width:" + width + ";opacity:0.4' />";
+
+            //engranaje
+            var lastp;
+            var points = "";
+            for (var a = 0; a < 361; a+=0.5) {
+                var p2 = toRect(diente(r, a), a);
+                if (lastp)
+                    points += p2.x.toFixed(0) + "," + p2.y.toFixed(0) + " ";
+			
+               lastp = { x: p2.x, y : p2.y};
+            }
+            s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;cursor:pointer;' onClick=\"document.location='" + url + "'\"/>";
+
+            //circulo
+            //s += "<circle cx='0' cy='0' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+            //var lastp;
+            //for (var a = 0; a < nodo.usuarios; a++) {
+            //    var p2 = toRect(r, a * r / 50);
+            //    if (lastp) {
+            //        s += "<circle cx='" + p2.x.toFixed(0) + "' cy='" + p2.y.toFixed(0) + "' r='5' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+            //    }
+
+            //    lastp = { x: p2.x, y: p2.y };
+            //}
+
+            return s;
+        }
+
+        function diente(r, a) {
+            var sin = Math.sin(a * 2 * 3.1415 / 180 * (2 / 20) * r) * 2;
+            var rect;
+            if (sin > 0.5) rect = 0; else rect = -10;
+            return r + rect * r / 150;
         }
 
         function toPolar(x, y){
@@ -340,6 +503,8 @@
 
         <svg id="todo"  style="position: absolute;">
         </svg>
+
+        <div id="msg"></div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
         <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />

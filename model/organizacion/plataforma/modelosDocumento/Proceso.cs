@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -246,10 +265,6 @@ namespace nabu.plataforma.modelos
             {              
                 ret += HTMLEncabezado(prop, g, email, width);
 
-                //fecha
-                if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
-
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                 if (editar) 
@@ -384,7 +399,7 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
                         + Tools.tr("proceso.revision", g.idioma)
                         + "</div>";
-                ret += HTMLLista("s.revision", ":Mensual:Trimestral:Semestral:Anual", prop, 250, tieneFlores, g.idioma);
+                ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)

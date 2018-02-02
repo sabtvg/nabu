@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -37,13 +56,12 @@ namespace nabu
                 app.verifySave();
                 
                 //limpio flores caducadas periodicamente de todos los usuarios 
-                verifyFloresCaducadas();
+                //verifyFloresCaducadas(); se verifica al crear al arbol personal
 
                 //proceso peticiones
                 Grupo grupo;
                 Arbol a;
                 string ret = "";
-                string msg;
 
                 if (actn != null)
                 {
@@ -54,6 +72,12 @@ namespace nabu
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             Response.Write(doComentar(int.Parse(Request["id"]), Request["grupo"], Request["email"], Request["comentario"]));
                             app.addLog("doComentar", Request.UserHostAddress, Request["grupo"], "", Request["comentario"]);
+                            break;
+
+                        case "crearacta":
+                            //devuelvo las propuestas de toda la rama
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            Response.Write(crearActa(Request["grupo"], Request["email"], Request));
                             break;
 
                         case "htmldocumento":
@@ -186,7 +210,7 @@ namespace nabu
                                 app.grupos.Add(g);
                             }
                             a.minSiPc = 60;
-                            a.maxNoPc = 50;
+                            a.maxNoPc = 10;
 
                             //usuario de prueba
                             Usuario u1 = new Usuario();
@@ -197,11 +221,12 @@ namespace nabu
 
                             //escribo respuesta
                             List<Type> tipos = new List<Type>();
-                            foreach (Modelo m in g.organizacion.getModelos())
-                            {
-                                tipos.Add(m.GetType());
-                            }
-                            Response.Write("{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("Prueba")) + ",\"modelos\":" + Tools.toJson(a.getModelos(), tipos) + "}");
+                            foreach (Modelo m in g.organizacion.getModelosDocumento()) tipos.Add(m.GetType());
+                            foreach (ModeloEvaluacion m in g.organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
+                            ret = "{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("Prueba")) + ",";
+                            ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(), tipos) + ",";
+                            ret += "\"modelosEvaluacion\":" + Tools.toJson(g.organizacion.getModelosEvaluacion(), tipos) + "}";
+                            Response.Write(ret);
                             app.addLog("crearSimulacion", Request.UserHostAddress, "", "", "Simulacion creada");
                             break;
 
@@ -240,7 +265,7 @@ namespace nabu
         {
             string ret = "";
             Grupo g = app.getGrupo(grupo);
-            Modelo m = g.organizacion.getModelo(modeloID);
+            Modelo m = g.organizacion.getModeloDocumento(modeloID);
             lock (g)
             {
                 List<Propuesta> props = prepararDocumento(g, email, modeloID, id, req);
@@ -269,7 +294,7 @@ namespace nabu
         {
             string ret = "";
             Grupo g = app.getGrupo(grupo);
-            Modelo m = g.organizacion.getModelo(modeloID);
+            Modelo m = g.organizacion.getModeloDocumento(modeloID);
 
             lock (g)
             {
@@ -301,7 +326,7 @@ namespace nabu
             List<Propuesta> props = new List<Propuesta>();
             Arbol a = g.arbol;
             List<Nodo> path = a.getPath(id);
-            Modelo m = g.organizacion.getModelo(modeloID);
+            Modelo m = g.organizacion.getModeloDocumento(modeloID);
 
             g.ts = DateTime.Now;
             foreach (Nodo n in path)
@@ -448,7 +473,7 @@ namespace nabu
             lock (g)
             {
                 Arbol a = g.arbol;
-                float action = coopProb + (float)a.rnd.NextDouble() - 0.5f;
+                float action = coopProb + a.getNexRandom() - 0.5f;
 
                 if (action > 3f/4f) {
                     //cooperacion, muevo un voto del menor al mayor
@@ -495,7 +520,7 @@ namespace nabu
                     {
                         //agrego nodo
                         //creo texto segun nivel y modelo de documento
-                        Modelo m = g.organizacion.getModelo("nabu.plataforma.modelos.Accion");  //modelo de simulacion (Accion)
+                        Modelo m = g.organizacion.getModeloDocumento("nabu.plataforma.modelos.Accion");  //modelo de simulacion (Accion)
                         Propuesta prop = new Propuesta();
                         prop.email = g.usuarios[0].email;
                         prop.modeloID = m.id;
@@ -547,61 +572,199 @@ namespace nabu
             return ret;
         }
 
-        void verifyFloresCaducadas()
+        //void verifyFloresCaducadas()
+        //{
+        //    DateTime lastVerifyFloresCaducadas;
+        //    Application.Lock();
+        //    if (Application["lastVerifyFloresCaducadas"] == null)
+        //        lastVerifyFloresCaducadas = DateTime.MinValue;
+        //    else
+        //        lastVerifyFloresCaducadas = (DateTime)Application["lastVerifyFloresCaducadas"];
+        //    Application["lastVerifyFloresCaducadas"] = lastVerifyFloresCaducadas;
+        //    Application.UnLock();
+
+        //    bool caido = false;
+        //    if (DateTime.Now.Subtract(lastVerifyFloresCaducadas).TotalHours > 24)
+        //    {
+        //        lock (app.grupos)
+        //        {
+        //            foreach (Grupo g in app.grupos)
+        //            {
+        //                Arbol a = g.arbol;
+        //                foreach (Usuario u in g.usuarios)
+        //                {
+        //                    if (a.verificarFloresCaducadas(u))
+        //                    {
+        //                        //notifico por mail al usuario
+        //                        Usuario admin = g.getAdmin();
+        //                        Tools.encolarMailCaido(g.nombre, u.email, admin.email, Server.MapPath("mails/modelos/" + g.idioma));
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        Application.Lock();
+        //        Application["lastVerifyFloresCaducadas"] = DateTime.Now;
+        //        Application.UnLock();
+        //    }
+        //}
+        string crearActa(string grupo, string email, HttpRequest req)
         {
-            DateTime lastVerifyFloresCaducadas;
-            Application.Lock();
-            if (Application["lastVerifyFloresCaducadas"] == null)
-                lastVerifyFloresCaducadas = DateTime.MinValue;
-            else
-                lastVerifyFloresCaducadas = (DateTime)Application["lastVerifyFloresCaducadas"];
-            Application["lastVerifyFloresCaducadas"] = lastVerifyFloresCaducadas;
-            Application.UnLock();
-
-            bool caido = false;
-            if (DateTime.Now.Subtract(lastVerifyFloresCaducadas).TotalHours > 24)
+            string ret;
+            List<Propuesta> l = new List<Propuesta>();
+            Grupo g = app.getGrupo(grupo);
+            lock (g)
             {
-                lock (app.grupos)
+                try
                 {
-                    foreach (Grupo g in app.grupos)
+                    int docID = g.arbol.lastDocID++;
+                    ret = Tools.tr("Acta creada", g.idioma);
+                    string fname = "Acta_" + docID.ToString("0000");
+                    string docPath = "documentos\\Acta\\" + docID.ToString("0000");
+                    string URL = g.URL + "/grupos/" + g.nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
+                    string fecha = DateTime.Now.ToShortDateString();
+
+                    string carpeta = g.path + "\\" + docPath;
+                    if (!System.IO.Directory.Exists(carpeta))
+                        System.IO.Directory.CreateDirectory(carpeta);
+                    System.IO.File.Copy(g.path + "\\..\\..\\styles.css", g.path + "\\" + docPath + "\\styles.css");
+
+
+                    //creo documento json
+                    Documento doc = new Documento();
+                    doc.fecha = DateTime.Now;
+                    doc.nombre = "Acta";
+                    doc.fname = fname;
+                    doc.modeloID = "";
+                    doc.path = g.path + "\\" + docPath + "\\" + fname + ".json";
+                    doc.URLPath = URL;
+                    doc.titulo = "Acta";
+
+                    Propuesta prop = new Propuesta();
+                    prop.bag["fecha"] = fecha;
+                    prop.bag["apertura"] = req["s.apertura"];
+                    prop.bag["logisticos"] = req["s.logisticos"];
+                    prop.bag["ordendeldia"] = req["s.ordendeldia"];
+                    prop.bag["evaluacion"] = req["s.evaluacion"];
+                    prop.bag["lugar"] = req["s.lugar"];
+                    prop.bag["inicio"] = req["s.inicio"];
+                    prop.bag["fin"] = req["s.fin"];
+                    prop.bag["participan"] = req["s.participan"];
+
+                    int q = 0;
+                    while (req.Form.AllKeys.Contains("s.tituloTema" + q))
                     {
-                        Arbol a = g.arbol;
-                        foreach (Usuario u in g.usuarios)
-                        {                           
-                            //verifico caducadas
-                            caido = false;
-                            foreach (Flor f in u.flores)
-                            {
-                                //if (f.id != 0 && DateTime.Now.Subtract(f.born).TotalDays > 60)
-                                if (f.id != 0 && DateTime.Now.Subtract(u.lastLogin).TotalDays > 15) //13/04/2017
-                                {
-                                    Nodo n = a.getNodo(f.id);
-                                    if (n != null)
-                                    {
-                                        a.quitarFlor(n, u);
-                                        caido = true;
-                                        app.addLog("verifyFloresCaducadas", Request.UserHostAddress, g.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
-                                    }                                    
-                                }
-                            }
-
-                            if (caido)
-                            {
-                                //notifico por mail al usuario
-                                Usuario admin = g.getAdmin();
-                                Tools.encolarMailCaido(g.nombre, u.email, admin.email, Server.MapPath("mails/modelos/" + g.idioma));
-                            }
-                        }
+                        prop.bag["tituloTema" + q] = req["s.tituloTema" + q];
+                        prop.bag["textoTema" + q] = req["s.textoTema" + q];
+                        q++;
                     }
+
+                    List<Propuesta> props = new List<Propuesta>();
+                    props.Add(prop);
+                    doc.propuestas = props;
+                    doc.save();
+
+                    //creo documento HTML
+                    string html = "<html><head><link rel='stylesheet' type='text/css' href='styles.css'></head><body>";
+                    html += "<div class='titulo1'>";
+                    html += "<nobr>Acta de reuni&oacute;n</nobr>";
+                    html += "</div>";
+                    html += "<table>";
+                    html += "    <tr>";
+                    html += "        <td style='width:120px'>Fecha:</td><td id='fecha' style='width:220px' class='texto'>" + fecha + "</td>";
+                    string coordina = "";
+                    if (g.getAdmin() != null) coordina = g.getAdmin().nombre;
+                    html += "        <td style='width:120px'>Coordina:</td><td class='texto'>" + coordina + "</td>";
+                    html += "    </tr>";
+                    html += "    <tr>";
+                    html += "        <td>Lugar:</td><td class='texto'>" + req["s.lugar"] + "</td>";
+                    string facilita = "";
+                    if (g.getFacilitador() != null) facilita = g.getFacilitador().nombre;
+                    html += "        <td>Facilita:</td><td class='texto'>" + facilita + "</td>";
+                    html += "    </tr>";
+                    html += "    <tr>";
+                    html += "        <td>Inicio:</td><td class='texto'>" + req["s.inicio"] + "</td>";
+                    string representa = "";
+                    if (g.getRepresentante() != null) representa = g.getRepresentante().nombre;
+                    html += "        <td>Representa:</td><td class='texto'>" + representa + "</td>";
+                    html += "    </tr>";
+                    html += "    <tr>";
+                    html += "        <td>Fin:</td><td class='texto'>" + req["s.fin"] + "</td>";
+                    string secretaria = "";
+                    if (g.getSecretaria() != null) secretaria = g.getSecretaria().nombre;
+                    html += "        <td>Secretar&iacute;a:</td><td class='texto'>" + secretaria + "</td>";
+                    html += "    </tr>";
+                    html += "    <tr>";
+                    html += "        <td style='vertical-align:top'>Participan:</td><td colspan='3' class='texto'>" + req["s.participan"] + "</td>";
+                    html += "    </tr>";
+                    html += "</table>";
+
+                    html += "<div class='tema'>Ronda de apertura</div>";
+                    html += "<div class='texto'>" + req["s.apertura"] + "</div>";
+                    html += "<br>";
+
+                    html += "<div class='tema'>Aspectos log&iacute;sticos</div>";
+                    html += "<div class='texto'>" + req["s.logisticos"] + "</div>";
+                    html += "<br>";
+
+                    html += "<div class='tema'>Orden del d&iacute;a</div>";
+                    html += "<div class='texto'>" + req["s.ordendeldia"] + "</div>";
+                    html += "<br>";
+
+                    q = 0;
+                    while (req.Form.AllKeys.Contains("s.tituloTema" + q))
+                    {
+                        html += "<div class='tema'>Tema " + (q + 1) + ":" + req["s.tituloTema" + q] + "</div>";
+                        html += "<div class='texto'>" + req["s.textoTema" + q] + "</div>";
+                        html += "<br>";
+                        q++;
+                    }
+                    html += "<br>";
+
+                    html += "<div class='tema'>Evaluaci&oacute;n</div>";
+                    html += "<div class='texto'>" + req["s.evaluacion"] + "</div>";
+                    html += "<br>";
+
+                    html += "<hr>";
+                    html += "Documento escrito por secretaria: " + email + "<br>";
+                    html += "Grupo: " + g.nombre + "<br>";
+                    html += "Documento ID:" + fname + "<br>";
+                    html += "Fecha de creaci&oacute;n: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
+                    html += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
+                    html += "Objetivo: " + g.objetivo + "<br>";
+                    html += "Usuarios: " + g.getUsuariosHabilitados().Count + "<br>";
+                    html += "Activos: " + g.activos + "<br>";
+                    html += "</body></html>";
+                    System.IO.File.WriteAllText(g.path + "\\" + docPath + "\\" + fname + ".html", html, System.Text.Encoding.UTF8);
+
+                    //creo logDocumentos
+                    LogDocumento ld = new LogDocumento();
+                    ld.fecha = doc.fecha;
+                    ld.titulo = doc.titulo;
+                    ld.icono = "res/documentos/acta.png";
+                    if (ld.titulo.Length > 50) ld.titulo = ld.titulo.Substring(0, 50);
+                    ld.modeloNombre = "Acta";
+                    ld.modeloID = "";
+                    ld.x = 90;
+                    ld.docID = docID;
+                    ld.fname = fname;
+                    ld.arbol = g.nombre;
+                    ld.objetivo = g.objetivo;
+                    ld.flores = 0;
+                    ld.negados = 0;
+                    ld.carpeta = "Acta";
+                    ld.URL = URL;
+                    g.logDecisiones.Add(ld);
+
+                    g.save(g.path + "\\" + docPath); //guardo copia del arbol
                 }
-                Application.Lock();
-                Application["lastVerifyFloresCaducadas"] = DateTime.Now;
-                Application.UnLock();
+                catch (Exception ex)
+                {
+                    ret = "Error=" + ex.Message;
+                }
             }
+            return ret;
         }
-
-
-
+        
         string HTMLDocumento(int id, string modeloID, string grupo, string email, int width)
         {
             string ret = "";
@@ -619,7 +782,7 @@ namespace nabu
                         l.Add(op);
                     }
                 }
-                Modelo m = g.organizacion.getModelo(modeloID);
+                Modelo m = g.organizacion.getModeloDocumento(modeloID);
                 ret = m.toHTML(l, g, email, width, Modelo.eModo.editar); //las propuesta debe ir en orden de nivel
             }
             return ret;
@@ -637,7 +800,7 @@ namespace nabu
                 Propuesta p = a.getPropuesta(id);
                 if (p != null)
                 {
-                    Modelo m = g.organizacion.getModelo(p.modeloID);
+                    Modelo m = g.organizacion.getModeloDocumento(p.modeloID);
                     ret = m.toHTML(p, g, email, width, Modelo.eModo.ver);
                 }
             }
@@ -661,7 +824,7 @@ namespace nabu
                     p.comentarios.Add(c);
                 }
                 //retorno el nuevo html de todos los comentarios de ese nodo
-                Modelo m = g.organizacion.getModelo(p.modeloID);
+                Modelo m = g.organizacion.getModeloDocumento(p.modeloID);
                 ret = m.toHTMLComentarios(p.nivel, p, g, email, 250, true);
             }
             
@@ -719,7 +882,7 @@ namespace nabu
                 //preparo propuestas de nodos ancestros
                 Arbol a = g.arbol;
                 List<Nodo> path = a.getPath(id);
-                Modelo m = g.organizacion.getModelo(modeloID);
+                Modelo m = g.organizacion.getModeloDocumento(modeloID);
                 g.ts = DateTime.Now;
                 foreach (Nodo n in path)
                 {
@@ -760,7 +923,7 @@ namespace nabu
             string ret = "";
             List<Propuesta> props = new List<Propuesta>();
             Grupo g = app.getGrupo(grupo);
-            Modelo m = g.organizacion.getModelo(modeloID);
+            Modelo m = g.organizacion.getModeloDocumento(modeloID);
 
             lock (g)
             {
@@ -796,27 +959,35 @@ namespace nabu
             lock (g)
             {
                 Arbol a = g.arbol;
-                Nodo padre = a.getNodo(id);
-                if (padre.consensoAlcanzado)
-                    throw new appException(Tools.tr("Este debate ya ha alcanzado el acuerdo",g.idioma));
+                //obtengo cabeza del debate
+                Nodo nodo = a.getNodo(id);
+                Nodo debate;
+                List<Nodo> path = a.getPath(id);
+                if (path.Count >= 2)
+                    debate = path[path.Count - 2];
+                else
+                    debate = nodo;
+
+                if (nodo.consensoAlcanzado)
+                    throw new appException(Tools.tr("Este debate ya ha alcanzado el acuerdo", g.idioma));
                 else
                 {
                     //agrego propuestas de la prevista guardada
                     Usuario u = g.getUsuario(email);
                     foreach (Propuesta p in u.prevista.propuestas)
                     {
-                        if (padre.nivel == 0)
+                        if (nodo.nivel == 0)
                             p.etiqueta = u.prevista.etiqueta;
                         else
-                            p.etiqueta = a.getEtiqueta(u.prevista.etiqueta, padre);
+                            p.etiqueta = a.getEtiqueta(u.prevista.etiqueta, debate);
 
                         p.titulo = u.prevista.titulo;
 
-                        padre = a.addNodo(padre, p);
+                        nodo = a.addNodo(nodo, p);
                     }
                 }
                 //devuelvo el arbolPersonal
-                ret = Tools.toJson(a.getArbolPersonal(email, padre.id));
+                ret = Tools.toJson(a.getArbolPersonal(email, nodo.id));
             }
 
             app.saveGrupos();
@@ -871,6 +1042,7 @@ namespace nabu
             lock (g)
             {
                 if (padreURL.EndsWith("/")) padreURL = padreURL.Substring(0, padreURL.Length - 1);
+                if (padreURL == "") padreURL = Request.UrlReferrer.AbsoluteUri.Substring(0, Request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
                 g.padreURL = padreURL;
                 g.padreNombre = padreNombre;
                 g.idioma = idioma;

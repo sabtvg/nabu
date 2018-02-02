@@ -60,6 +60,7 @@
   <ItemGroup>
     <Content Include="actas.html" />
     <Content Include="bosque.html" />
+    <Content Include="doAprendemos.aspx" />
     <Content Include="decisiones.html" />
     <Content Include="resultados.html" />
     <Content Include="seguimiento.html" />
@@ -149,6 +150,13 @@
     <Content Include="styles.css" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="doAprendemos.aspx.cs">
+      <DependentUpon>doAprendemos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="doAprendemos.aspx.designer.cs">
+      <DependentUpon>doAprendemos.aspx</DependentUpon>
+    </Compile>
     <Compile Include="doMain.aspx.cs">
       <DependentUpon>doMain.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -156,25 +164,34 @@
     <Compile Include="doMain.aspx.designer.cs">
       <DependentUpon>doMain.aspx</DependentUpon>
     </Compile>
+    <Compile Include="MailBot.cs" />
     <Compile Include="model\Aplicacion.cs" />
     <Compile Include="model\appException.cs" />
+    <Compile Include="model\Bosque.cs" />
     <Compile Include="model\documento\Comentario.cs" />
     <Compile Include="model\Grupo.cs" />
     <Compile Include="model\documento\Documento.cs" />
     <Compile Include="model\documento\LogDocumento.cs" />
     <Compile Include="model\documento\Comparador.cs" />
+    <Compile Include="model\hijo.cs" />
     <Compile Include="model\organizacion\plataforma\Accion.cs" />
     <Compile Include="model\organizacion\plataforma\Estrategia.cs" />
-    <Compile Include="model\organizacion\plataforma\modelos\Estrategia.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\AlHijo.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\AlPadre.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Estrategia.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Accion.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosEvaluacion\AlHijo.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosEvaluacion\AlPadre.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Enlace.cs" />
     <Compile Include="model\organizacion\plataforma\Proceso.cs" />
     <Compile Include="model\organizacion\plataforma\GrupoTrabajo.cs" />
-    <Compile Include="model\organizacion\plataforma\modelos\Accion.cs" />
-    <Compile Include="model\organizacion\plataforma\modelos\Proceso.cs" />
-    <Compile Include="model\organizacion\plataforma\modelos\GrupoTrabajo.cs" />
-    <Compile Include="model\organizacion\plataforma\modelos\Evento.cs" />
-    <Compile Include="model\organizacion\plataforma\modelos\Manifiesto.cs" />
-    <Compile Include="model\modelo\Modelo.cs" />
-    <Compile Include="model\modelo\Prevista.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Accion.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Proceso.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\GrupoTrabajo.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Evento.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Manifiesto.cs" />
+    <Compile Include="model\documento\Modelo.cs" />
+    <Compile Include="model\documento\Prevista.cs" />
     <Compile Include="model\arbol\Arbol.cs" />
     <Compile Include="model\arbol\ArbolPersonal.cs" />
     <Compile Include="model\Config.cs" />
@@ -188,11 +205,17 @@
       <DependentUpon>doDecidimos.aspx</DependentUpon>
     </Compile>
     <Compile Include="model\documento\Propuesta.cs" />
-    <Compile Include="model\modelo\Variable.cs" />
+    <Compile Include="model\documento\Variable.cs" />
     <Compile Include="model\organizacion\Organizacion.cs" />
     <Compile Include="model\organizacion\cooperativa\Cooperativa.cs" />
     <Compile Include="model\organizacion\colegio\Colegio.cs" />
     <Compile Include="model\organizacion\plataforma\Plataforma.cs" />
+    <Compile Include="model\queso\Evaluacion.cs" />
+    <Compile Include="model\queso\ModeloEvaluacion.cs" />
+    <Compile Include="model\queso\Pregunta.cs" />
+    <Compile Include="model\queso\Queso.cs" />
+    <Compile Include="model\queso\QuesoPersonal.cs" />
+    <Compile Include="model\queso\Tema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="model\arbol\Usuario.cs" />
     <Compile Include="model\Tools.cs" />

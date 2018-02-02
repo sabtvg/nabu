@@ -1,3 +1,24 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
@@ -24,25 +45,38 @@
         var viewWidth;
         var viewRight = 180;
         var viewLeft = 40;
+        var viewTop = 200;
         var grupoParam;
         var monthNames;
         var lastMouse = null;
+        var firefoxWhich = 0;
+
+        $(document).mouseup(function (event) {
+            //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
+            firefoxWhich = 0;
+        });
+
+        $(document).mousedown(function (event) {
+            //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
+            firefoxWhich = 1;
+        });
 
         $(document).mousemove(function (event) {
-            if (event.which == 1 && !event.ctrlKey) {
+            if (firefoxWhich == 1 && !event.ctrlKey) {
                 //scroll
                 if (lastMouse) {
                     var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
                     offsetDays += ((event.clientX - lastMouse.clientX) / diaPixels);
                     if (offsetDays < 0) offsetDays = 0;
                     //document.body.style.cursor = "all-scroll";
+                    viewTop -= lastMouse.clientY - event.clientY;
                     event.preventDefault();
                     dibujarTodo();
                     saveSettings();
                 }
                 lastMouse = { clientX: event.clientX, clientY: event.clientY };
             }
-            else if (event.which == 1 && event.ctrlKey) {
+            else if (firefoxWhich == 1 && event.ctrlKey) {
                 //zoom
                 if (lastMouse) {
                     var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
@@ -68,6 +102,10 @@
             document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
             document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
             document.getElementById("florWait").style.visibility = "visible";
+
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
 
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
@@ -185,7 +223,6 @@
 
         function dibujarFrutos(lds) {
             var s = "";
-            var top = 200;
             var modelos = getModelos(lds);
             try
             {
@@ -200,19 +237,19 @@
 
             //modelos
             for (var h in modelos) {
-                var y = top + h * stepY + 25;
+                var y = viewTop + h * stepY + 25;
                 s += "<text x='" + (window.innerWidth - viewRight + 5) + "' y='" + y + "' fill='black' style='font-size:18px'>" + modelos[h] + "</text>";
             }
 
             //marcas
-            var y = top + modelos.length * stepY + 50;
+            var y = viewTop + modelos.length * stepY + 50;
             var totalDias = days(final) - days(inicio);
             for (var i = 0; i < totalDias; i++) {
                 var x = window.innerWidth - viewRight - i / viewDays * viewWidth;
                 var fecha = final.addDays(-i - offsetDays);
                 if (fecha.getDate() == 1) {
                     //1 del mes
-                    s += "<line x1='" + x + "' y1='" + top + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:blue;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:blue;stroke-width:1' />";
                     if (i > 4 && i < viewDays - 4) {
                         sdt = formatDate(fecha);
                         s += "<text x='" + x + "' y='" + (y + 30) + "' fill='blue' style='font-size:12px' text-anchor='middle'>" + sdt + "</text>";
@@ -220,7 +257,7 @@
                 }
                 else if (fecha.getDay() == 1) {
                     //lunes
-                    s += "<line x1='" + x + "' y1='" + top + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:green;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:green;stroke-width:1' />";
                     var labelX = i / viewDays * viewWidth;
                     if (labelX < window.innerWidth - viewRight + 30 && labelX > viewLeft) {
                         s += "<text x='" + x + "' y='" + (y + 15) + "' fill='green' style='font-size:12px' text-anchor='middle'>" + tr("Lunes") + "</text>";
@@ -237,7 +274,7 @@
                 //var x = 180 + ld.dias * 10 * zoom - offsetDays;
                 var fecha = toDate(ld.fecha);
                 var x = window.innerWidth - viewRight - (days(final) - days(fecha) - offsetDays) / viewDays * viewWidth;
-                var y = top + indexOf(ld.modeloNombre, modelos) * stepY;
+                var y = viewTop + indexOf(ld.modeloNombre, modelos) * stepY;
                 if (x <= window.innerWidth - viewRight && x >= viewLeft) {
                     var imgWidth = 64 * 0.5;
                     s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + (x - imgWidth) + "' y='" + y + "' ";
@@ -251,7 +288,7 @@
             }
 
             //recta
-            y = top + modelos.length * stepY + 50;
+            y = viewTop + modelos.length * stepY + 50;
             var x1 = 40;
             var x2 = window.innerWidth - viewRight;
             s += "<line x1='" + x1 + "' y1='" + y + "' x2='" + x2 + "' y2='" + y + "' style='stroke:gray;stroke-width:2' />";
@@ -375,6 +412,8 @@
             <table>
                 <tr>
                     <td><img id="jzm" src="res/jzm.png" style='cursor:pointer;' onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();"  /></td>
+                    <td><img src="res/ju.png" style='cursor:pointer;' onclick="viewTop -= 30; dibujarTodo(); saveSettings();" /></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td><img id="jl" src="res/jl.png" style='cursor:pointer;' onclick="if (offsetDays > 0) {offsetDays -= 1; dibujarTodo(); saveSettings();}" /></td>
@@ -383,6 +422,8 @@
                 </tr>
                 <tr>
                     <td><img id="jzl" src="res/jzl.png" style='cursor:pointer;' onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" /></td>
+                    <td><img src="res/jd.png" style='cursor:pointer;' onclick="viewTop += 30; dibujarTodo(); saveSettings();" /></td>
+                    <td></td>
                 </tr>
             </table>
         </div>

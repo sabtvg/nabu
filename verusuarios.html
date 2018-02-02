@@ -1,3 +1,24 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
@@ -15,6 +36,10 @@
         var grupoParam;
 
         function doLoad() {
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
+
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
             if (grupoParam && grupoParam != "" && grupoParam != "null") {
@@ -70,9 +95,10 @@
                         s += "<tr>"
                         s += "<td style='width:370px;'><b>" + tr("Nombre") + "</b></td>";
                         s += "<td style='width:370px;'><b>" + tr("Email") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("Solo Lectura") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("Habilitado") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("Coordinador") + "</b></td>";
+                        s += "<td style='width:220px;'><b>" + tr("Desde") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrSoloLectura") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrHabilitado") + "</b></td>";
+                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrCoordinador") + "</b></td>";
                         s += "<td style='width:60px;'><b>" + tr("Apoyos") + "</b></td>";
                         s += "<td style='width:70px;'><b>" + tr("Activo") + "</b></td>";
                         s += "</tr>"
@@ -81,6 +107,7 @@
                             s += "<tr>"
                             s += "<td style='width:220px;'>" + usu.nombre + "</td>";
                             s += "<td style='width:220px;'>" + usu.email + "</td>";
+                            s += "<td>" + usu.grupoDesde + "</td>";
                             s += "<td style='text-align:center;'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
                             s += "<td style='text-align:center;'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
                             s += "<td style='text-align:center;'>" + (usu.isAdmin ? "<img src='res/luzverde.gif'>" : "") + "</td>";

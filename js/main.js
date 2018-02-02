@@ -1,3 +1,21 @@
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
 var frasesDelDia = 16;
 var frasesVistas = [];
 
@@ -7,7 +25,7 @@ var estado = '';
 var rotacionCiclo = 0;
 var timerCiclo, timerFlores, timerArbol;
 var rotFlores = 0;
-var refreshArbolInterval = 10000; //10seg
+var refreshInterval = 10000; //10seg
 var lastArbolRecibidoTs = (new Date()).getTime();
 var joyInterval;
 var textAreas;
@@ -16,9 +34,11 @@ var propuestaTemp;
 var scalex = window.innerWidth / 1920;
 var scaley = window.innerHeight / 955; //1080-bordes de pantalla
 var docsTimeScale = 15;
-var usuario;
+var usuario;  ////creo que no se usa
 var grupoParam;
 var emailParam;
+var historico = false;
+var historicoFecha;
 
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
@@ -38,26 +58,42 @@ var arbolPersonal;
 //modelos de documentos
 var modelos;
 
+//modelos de documentos de evaluacion
+var modelosEvaluacion;
+
 $(document).mousemove(function (event) {
     if (!preguntarAlSalir) {
         if (event.which == 1 && !event.ctrlKey) {
             //scroll
             if (lastMouse) {
-                translatex -= lastMouse.clientX - event.clientX;
-                translatey -= lastMouse.clientY - event.clientY;
-                //document.body.style.cursor = "all-scroll";
-                event.preventDefault();
-                translateArbol(translatex, translatey);
+                if (estado == "aprendemos") {
+                    quesox -= lastMouse.clientX - event.clientX;
+                    quesoy -= lastMouse.clientY - event.clientY;
+                    translateQueso(quesox, quesoy);
+                }
+                else if (estado == "decidimos") {
+                    translatex -= lastMouse.clientX - event.clientX;
+                    translatey -= lastMouse.clientY - event.clientY;
+                    //document.body.style.cursor = "all-scroll";
+                    event.preventDefault();
+                    translateArbol(translatex, translatey);
+                }
             }
             lastMouse = { clientX: event.clientX, clientY: event.clientY };
         }
         else if (event.which == 1 && event.ctrlKey) {
             //zoom
             if (lastMouse) {
-                treeScale += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
-                //document.body.style.cursor = "w-resize";
-                event.preventDefault();
-                dibujarArbol(arbolPersonal.raiz);
+                if (estado == "aprendemos") {
+                    quesoScale += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                    dibujarQueso();
+                }
+                else if (estado == "decidimos") {
+                    treeScale += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                    //document.body.style.cursor = "w-resize";
+                    event.preventDefault();
+                    dibujarArbol(arbolPersonal.raiz);
+                }
             }
             lastMouse = { clientX: event.clientX, clientY: event.clientY };
         }
@@ -117,11 +153,13 @@ function doLoad2() {
 
         treeScale = scale; //valor default
 
+        //idioma
+        idioma = getParameterByName('idioma');
+        if (idioma == null) idioma = 'es';
+
         //obtengo datos de los parametros
         grupoParam = getParameterByName('grupo');
         emailParam = getParameterByName('email');
-        idioma = getParameterByName('idioma');
-        if (idioma == null) idioma = "es";
 
         //si hay cookie, login automatico si no login normal
         var cookie = "";
@@ -181,13 +219,8 @@ function traducir() {
     document.getElementById("mejorVisto").innerHTML = tr("Mejor visto en");
     document.getElementById("version").innerHTML = tr("version beta");
     document.getElementById("lnkAyuda").innerHTML = tr("Ayuda");
-    document.getElementById("titulo1").innerHTML = tr("Cooperativa 2.0");
+    document.getElementById("titulo1").innerHTML = tr("Sociocracia");
     document.getElementById("titulo2").innerHTML = tr("Democracia interactiva");
-    document.getElementById("mnuOption1").innerHTML = tr("El bosque");
-    document.getElementById("mnuOption2").innerHTML = tr("El arbol");
-    document.getElementById("mnuOption3").innerHTML = tr("Usuarios");
-    document.getElementById("mnuOption4").innerHTML = tr("Mailer");
-    document.getElementById("mnuOption5").innerHTML = tr("Acta");
     document.getElementById("oldPass").placeholder = tr("Clave actual");
     document.getElementById("newPass").placeholder = tr("Nueva clave");
     document.getElementById("repeat").placeholder = tr("Repitela");
@@ -205,7 +238,12 @@ function traducir() {
 }
 
 function gruposEffectIn() {
-    var s = "<h1>" + tr("Grupos") + "</h1>"; 
+    var s
+    s = "<table style='margin:0px auto'>";
+    s += "<tr><td><img src='res/logo2.png'></td>";
+    s += "<td class='titulo0' style='font-size:38px'>Nab&uacute;</td></tr>"
+    s += "</table><br><br>";
+    s += "<div class='titulo1'><b>" + tr("Grupos") + "</b></div>";
     for (i in config.grupos) {
         var grupo = config.grupos[i];
         if (i > 0)
@@ -213,9 +251,9 @@ function gruposEffectIn() {
         s += "<a href='default.html?grupo=" + grupo;
         if (idioma)
             s += "&idioma=" + idioma;
-        s += "' style='font-size:24px'>" + grupo + "</a>"
+        s += "' style='font-size:22px'>" + grupo + "</a>"
     }
-    s += "<br><br><a href='creararbol.html?idioma=" + idioma + "' style='font-size:24px'>" + tr("Crear nuevo grupo") + "</a>"
+    s += "<br><br><input type='button' class='btn' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creararbol.html?idioma=" + idioma + "'\" style='font-size:18px'>";
 
     document.getElementById("grupos").style.visibility = "visible";
     document.getElementById("grupos").style.top = window.innerHeight / 2 - 250 + 'px';
@@ -255,6 +293,7 @@ function loginAutomatico(email, clave, grupo) {
 
                     //guardo los modelos
                     modelos = loginData.modelos;
+                    modelosEvaluacion = loginData.modelosEvaluacion;
 
                     //guardo cookie
                     setCookie("nabu-" + arbolPersonal.nombre,
@@ -277,6 +316,45 @@ function loginAutomatico(email, clave, grupo) {
 function preguntar() {
     if (preguntarAlSalir)
         return tr("Se perderan los datos no guardados");
+}
+
+function doTimeBack() {
+    historico = true;
+    historicoFecha = new Date();
+    historicoFecha.setDate(historicoFecha.getDate() - 1);
+    showTimePanel();
+    document.body.style.backgroundImage = "url('res/night.jpg')";
+    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+}
+
+function doTimePresent() {
+    historico = false;
+    showTimePanel();
+    document.body.style.backgroundImage = "url('res/background.jpg')";
+    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+}
+
+function showTimePanel() {
+    //timePanel
+    if (historico) {
+        var now = new Date();
+        now.setDate(now.getDate() - 1);
+        if (historicoFecha > now) 
+            historicoFecha = now;
+        document.getElementById("timePanel").style.visibility = "visible";
+        document.getElementById("timePanel").style.top = (window.innerHeight - 120) + 'px';
+        document.getElementById("timePanel").style.left = (window.innerWidth - 195) + 'px';
+        document.getElementById("timeDia").innerHTML = historicoFecha.getDate() < 10 ? '0' + historicoFecha.getDate() : historicoFecha.getDate();
+        document.getElementById("timeMes").innerHTML = historicoFecha.getMonth() + 1 < 10 ? '0' + (historicoFecha.getMonth() + 1) : historicoFecha.getMonth() + 1;
+        document.getElementById("timeYear").innerHTML = historicoFecha.getFullYear();
+        document.getElementById("timeBack").style.visibility = "hidden";
+    }
+    else {
+        document.getElementById("timeBack").style.visibility = "visible";
+        document.getElementById("timeBack").style.top = (window.innerHeight - 90) + 'px';
+        document.getElementById("timeBack").style.left = (window.innerWidth - 60) + 'px';
+        document.getElementById("timePanel").style.visibility = "hidden";
+    }
 }
 
 function calcularResize() {
@@ -324,7 +402,10 @@ function calcularResize() {
     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
     //joystick
-    document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+    document.getElementById("joystickArbol").style.top = (window.innerHeight - 190) + 'px';
+
+    //timePanel
+    showTimePanel();
 
     //resize del menuppal segun pantalla
     var menuscale = scaley * 1.1;
@@ -404,21 +485,6 @@ function calcularResize() {
     document.getElementById("ppal8").style.height = 50 * menuscale + 'px';
     document.getElementById("ppal8").style.left = 210 * menuscale + 'px';
     document.getElementById("ppal8").style.top = 268 * menuscale + 'px';
-
-    //pongo icono ce manifiesto
-    if (arbolPersonal && arbolPersonal.URLEstatuto != "")
-        document.getElementById("ppal9").src = "res/documentos/manifiesto.png";
-    else
-        document.getElementById("ppal9").src = "res/noManifiesto.png";
-
-    //activo la rueda
-    if (arbolPersonal && arbolPersonal.URLEstatuto != "" && timerCiclo == null)
-        timerCiclo = setInterval(function () {
-            document.getElementById("ciclo").style.transform = 'rotate(' + rotacionCiclo++ + 'deg)';
-        }, 100);
-    else
-        timerCiclo == null;
-
 
     document.getElementById("ppal9").style.width = 64 * menuscale + 'px';
     document.getElementById("ppal9").style.height = 79 * menuscale + 'px';
@@ -598,8 +664,8 @@ function doMenuppal() {
         var hijos = "<nobr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         for (q in arbolPersonal.hijos) {
             var thijo = arbolPersonal.hijos[q];
-            var hijoURL = thijo.m_Item1 + "/default.html?grupo=" + thijo.m_Item2 + "&email=" + arbolPersonal.usuario.email;
-            hijos += "<td><a href='" + hijoURL + "'>" + thijo.m_Item2 + "</a></td>";
+            var hijoURL = thijo.URL + "/default.html?grupo=" + thijo.nombre + "&email=" + arbolPersonal.usuario.email;
+            hijos += "<td><a href='" + hijoURL + "'>" + thijo.nombre + "</a></td>";
             hijos += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         }
         hijos += "</nobr>";
@@ -623,30 +689,39 @@ function doMenuppal() {
         document.getElementById("panelUsuario").style.visibility = 'visible';
 
         //opciiones de menu
+        var mnu = "";
         if (arbolPersonal.usuario.isAdmin) {
             //adminOptions
-            document.getElementById("mnuOption1").style.visibility = "visible";
-            document.getElementById("mnuOption1").href = "bosque.html?grupo=" + grupoParam;
-            document.getElementById("mnuOption2").style.visibility = "visible";
-            document.getElementById("mnuOption2").href = "modificararbol.html?grupo=" + grupoParam;
-            document.getElementById("mnuOption3").style.visibility = "visible";
-            document.getElementById("mnuOption3").href = "usuarios.html?grupo=" + grupoParam;
-            document.getElementById("mnuOption4").style.visibility = "visible";
-            document.getElementById("mnuOption4").href = "mailer.html?grupo=" + grupoParam;
+            mnu += "<a class='titulo3' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a><br>";
+            mnu += "<a class='titulo3' href='modificararbol.html?grupo=" + grupoParam + "'>" + tr("El arbol") + "</a><br>";
+            mnu += "<a class='titulo3' href='usuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a><br>";
+            mnu += "<a class='titulo3' href='mailer.html?grupo=" + grupoParam + "'>" + tr("Mailer") + "</a><br>";
         }
         else {
             //user options
-            document.getElementById("mnuOption1").style.visibility = "visible";
-            document.getElementById("mnuOption1").href = "bosque.html?grupo=" + grupoParam;
-            document.getElementById("mnuOption3").style.visibility = "visible";
-            document.getElementById("mnuOption3").href = "verusuarios.html?grupo=" + grupoParam;
+            mnu += "<a class='titulo3' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a><br>";
+            mnu += "<a class='titulo3' href='verusuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a><br>";
         }
         if (arbolPersonal.usuario.isSecretaria) {
             //adminOptions
-            document.getElementById("mnuOption5").style.visibility = "visible";
-            document.getElementById("mnuOption5").href = "actas.html?grupo=" + grupoParam;
+            mnu += "<a class='titulo3' href='actas.html?grupo=" + grupoParam + "'>" + tr("Actas") + "</a><br>";
         }
-    
+        document.getElementById("mnuOptions").innerHTML = mnu;
+
+        //pongo icono ce manifiesto
+        if (arbolPersonal && arbolPersonal.URLEstatuto != "")
+            document.getElementById("ppal9").src = "res/documentos/manifiesto.png";
+        else
+            document.getElementById("ppal9").src = "res/noManifiesto.png";
+
+        //activo la rueda
+        if (arbolPersonal && arbolPersonal.URLEstatuto != "" && timerCiclo == null)
+            timerCiclo = setInterval(function () {
+                document.getElementById("ciclo").style.transform = 'rotate(' + rotacionCiclo++ + 'deg)';
+            }, 100);
+        else
+            timerCiclo == null;
+
         //menuppal
         //var menuscale = scale * 1.1;
         //document.getElementById("menuppal").style.top = (window.innerHeight / 2 - 300 * menuscale).toFixed(0) + 'px';
@@ -774,16 +849,20 @@ function doAtras() {
     }
     else if (estado == 'aprendemos') {
         //aprendemos voy a menuppal
+        document.getElementById("panelQueso").style.visibility = 'hidden';
 
-        document.getElementById("aprendemos").style.visibility = "hidden";
-        document.getElementById("aprendemos").style.display = "none";
+        document.getElementById("quesoDiv").style.visibility = "hidden";
+        document.getElementById("quesoDiv").style.display = "none";
 
-        //demoMsg
-        document.getElementById("demoMsg").style.visibility = "hidden";
         document.getElementById("panelUsuario").style.visibility = 'visible';
-
+        document.getElementById("menuEvaluacion").style.visibility = 'hidden';
+        document.getElementById("modelos").style.visibility = "hidden";
+        document.getElementById("joystickQueso").style.visibility = "hidden";
+       
+        quesoPersonal = null;
         estado = 'menuppal';
         actualizarDatosGrupo();
+        clearInterval(quesoInterval);
 
         //activo el menuppal
         if (visual.level == 1) {
@@ -809,11 +888,7 @@ function doAtras() {
         document.getElementById("clave").value = '';
         setTimeout(loginEffectIn, 600); //doy tiempo al menu a irse
 
-        document.getElementById("mnuOption1").style.visibility = "hidden";
-        document.getElementById("mnuOption2").style.visibility = "hidden";
-        document.getElementById("mnuOption3").style.visibility = "hidden";
-        document.getElementById("mnuOption4").style.visibility = "hidden";
-        document.getElementById("mnuOption5").style.visibility = "hidden";
+        document.getElementById("mnuOptions").innerHTML = "";
         document.getElementById("panelUsuario").style.visibility = 'hidden';
 
         document.getElementById("atras").style.visibility = "hidden";
@@ -840,7 +915,7 @@ function doAtras() {
         arbolPersonal.logDecisiones = logDecisiones;
 
 
-        document.getElementById("joystick").style.visibility = 'hidden';
+        document.getElementById("joystickArbol").style.visibility = 'hidden';
         document.getElementById("modelos").style.visibility = "hidden";
         document.getElementById("panelConsenso").style.visibility = 'hidden';
         document.getElementById("documento").style.visibility = 'hidden';

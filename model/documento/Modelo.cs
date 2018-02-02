@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -10,6 +29,7 @@ namespace nabu
 
         public string nombre = "";
         public string descripcion = "";
+        public string tipo = "estructura";
         public string icono = "res/doc.png";
         public bool enUso = false;
         public bool activo = true;
@@ -67,6 +87,11 @@ namespace nabu
             if (prop == null)
                 ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
+
+            //fecha
+            if (modo == eModo.consenso)
+                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+
             return ret;
         }
 
@@ -317,9 +342,13 @@ namespace nabu
                     ret += "<select id='" + id + "'  ";
                     ret += "class='" + v.editClassName + "' ";
                     ret += "style='width:" + width + "px;'>";
-                    foreach (string l in valores.Split(':'))
+                    foreach (string l in valores.Split('|'))
                     {
-                        ret += "<option id='" + l + "'>" + l + "</option>";
+                        string[] item = l.Split('#');
+                        if (item.Length == 1)
+                            ret += "<option id='" + item[0] + "'>" + item[0] + "</option>";
+                        else
+                            ret += "<option id='" + item[0] + "'>" + item[1] + "</option>";
                     }
                     ret += "</select>";
                 }
@@ -331,20 +360,41 @@ namespace nabu
                 ret += "<select id='" + id + "' ";
                 ret += "class='" + v.editClassName + "' ";
                 ret += "style='width:" + width + "px;'>";
-                foreach (string l in valores.Split(':'))
+                foreach (string l in valores.Split('|'))
                 {
-                    ret += "<option " + (value == l ? "selected" : "") + " id='" + l + "'>" + l + "</option>";
+                    string[] item = l.Split('#');
+                    if (item.Length == 1)
+                        ret += "<option " + (value == item[0] ? "selected" : "") + " id='" + item[0] + "'>" + item[0] + "</option>";
+                    else
+                        ret += "<option " + (value == item[0] ? "selected" : "") + " id='" + item[0] + "'>" + item[1] + "</option>";
                 }
                 ret += "</select>";
             }
             else if (prop != null)
             {
                 //ver
-                string value = (string)getValue(id, prop);
-                ret += "<input type='text' readonly ";
-                ret += "class='" + v.className + "' ";
-                ret += "style='width:" + width + "px;' ";
-                ret += "value='" + value + "'>";
+                string value = getValue(id, prop).ToString();
+                foreach (string l in valores.Split('|'))
+                {
+                    string[] item = l.Split('#');
+                    if (value == item[0])
+                    {
+                        if (item.Length == 1)
+                        {
+                            ret += "<input type='text' readonly ";
+                            ret += "class='" + v.className + "' ";
+                            ret += "style='width:" + width + "px;' ";
+                            ret += "value='" + item[0] + "'>";
+                        }
+                        else
+                        {
+                            ret += "<input type='text' readonly ";
+                            ret += "class='" + v.className + "' ";
+                            ret += "style='width:" + width + "px;' ";
+                            ret += "value='" + item[1] + "'>";
+                        }
+                    }
+                }
             }
             else
                 //sin flores

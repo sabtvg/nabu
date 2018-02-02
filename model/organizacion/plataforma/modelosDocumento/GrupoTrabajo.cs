@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -6,50 +25,49 @@ using System.Web;
 
 namespace nabu.plataforma.modelos
 {
-    public class Estrategia: Modelo
+    public class GrupoTrabajo: Modelo
     {
         private string accion = ""; //para que existe en otros nivels mientras dibujo
 
-        public Estrategia()
+        public GrupoTrabajo()
         {
-            icono = "res/documentos/estrategia.png";
+            icono = "res/documentos/grupoTrabajo.png";
             niveles = 5;
-            nombre = "Estrategia";
-            descripcion = "Estrategia operativa";
+            nombre = "GrupoTrabajo";
+            descripcion = "Grupo de trabajo";
 
             crearVariables();
         }
 
         public override string carpeta()
         {
-            return "Estrategia";
+            return "GrupoTrabajo";
         }
 
         protected override void crearVariables()
         {
             variables.Clear();
             variables.Add(new Variable("s.etiqueta", 12, 1));
-            Variable v = new Variable("s.nombreProceso", 30, 1);
+            Variable v = new Variable("s.nombreGrupoTrabajo", 30, 1);
             v.className = "textoBig";
             v.editClassName = "editarBig";
             variables.Add(v);
             variables.Add(new Variable("r.accion", 6, 1));
-
             variables.Add(new Variable("s.introduccion", 3000, 1));
 
             //nivel 2
             variables.Add(new Variable("s.objetivo", 3000, 2));
             variables.Add(new Variable("s.descripcion", 3000, 2));
             variables.Add(new Variable("s.aquien", 3000, 2));
-			variables.Add(new Variable("s.consecuencias", 3000, 2));
-			
+            variables.Add(new Variable("s.consecuencias", 3000, 2));
+
             //nivel 3
-            variables.Add(new Variable("s.definicion", 5000, 3));
+            variables.Add(new Variable("s.recursos", 3000, 3));
+            variables.Add(new Variable("s.capacidades", 3000, 3));
             variables.Add(new Variable("s.conclusiones", 3000, 3));
-			
+
             //nivel 4
-            variables.Add(new Variable("s.grupoTrabajo", 60, 4));
-            variables.Add(new Variable("s.implantacion", 3000, 4));
+            variables.Add(new Variable("s.integrantes", 3000, 4));
 
             //nivel 5
             variables.Add(new Variable("s.eficiencia", 3000, 5));
@@ -67,10 +85,10 @@ namespace nabu.plataforma.modelos
                         addError(1, "La etiqueta determina el nombre con que aparece en el arbol, no puede ser vacia");
                         getVariable("s.etiqueta").className = "errorfino";
                     }
-                    if (getText("s.nombreProceso", prop) == "")
+                    if (getText("s.nombreGrupoTrabajo", prop) == "")
                     {
-                        addError(1, "El nombre del proceso no puede ser vacio");
-                        getVariable("s.nombreProceso").className = "errorfino";
+                        addError(1, "El nombre del grupo de trabajo no puede ser vacio");
+                        getVariable("s.nombreGrupoTrabajo").className = "errorfino";
                     }
                     if (getText("s.introduccion", prop) == "")
                     {
@@ -90,13 +108,9 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 3)
                 {
-                    if (getText("r.accion", prop) != "borrar" && getText("s.definicion", prop) == "")
-                    {
-                        addError(3, "Debes definir el proceso");
-                        getVariable("s.definicion").className = "errorfino";
-                    }
-
-                    if (getText("s.definicion", prop) == ""
+                    if (getText("s.capacidades", prop) == ""
+                        && getText("s.recursos", prop) == ""
+                        && getText("s.procesos", prop) == ""
                         && getText("s.conclusiones", prop) == "")
                     {
                         addError(3, "La propuesta no puede estar completamente vacia");
@@ -104,16 +118,9 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 4)
                 {
-                    if (getText("r.accion", prop) == "nuevo" && getText("s.grupoTrabajo", prop) == "")
+                    if (getText("s.integrantes", prop) == "")
                     {
-                        addError(4, "Debes seleccionar un grupo de trabajo");
-                        getVariable("s.grupoTrabajo").className = "errorfino";
-                    }
-
-                    if (getText("s.implantacion", prop) == "" 
-                        && getText("s.grupoTrabajo", prop) == "")
-                    {
-                        addError(4, "La propuesta no puede estar completamente vacia");
+                        addError(4, "Debes proponer integrantes");
                     }
                 }
                 else if (prop.nivel == 5)
@@ -123,6 +130,7 @@ namespace nabu.plataforma.modelos
                         addError(5, "Debes seleccionar un periodo de revisi&oacute;n");
                         getVariable("s.revision").className = "errorfino";
                     }
+
 
                     if (getText("s.eficiencia", prop) == "" && getText("s.revision", prop) == "")
                     {
@@ -139,7 +147,7 @@ namespace nabu.plataforma.modelos
             bool tieneFlores = false;
             if (u != null) tieneFlores = u.floresDisponibles().Count > 0;
 
-            titulo = getText("s.nombreProceso", prop);
+            titulo = getText("s.nombreGrupoTrabajo", prop);
             etiqueta = getText("s.etiqueta", prop);
 
             //valor default para tipo
@@ -152,46 +160,46 @@ namespace nabu.plataforma.modelos
             //nuevo
             ret += "<table>";
             ret += "<tr>";
-            ret += "<td colspan=2 class='titulo2'><nobr>" + Tools.tr("accion", g.idioma) + "</nobr></td>";
+            ret += "<td colspan=2 class='titulo2'><nobr>" + Tools.tr("Accion", g.idioma) + "</nobr></td>";
             ret += "<td colspan=2 class='titulo2'><nobr>" + Tools.tr("Nombre", g.idioma) + "</nobr></td>";
             ret += "</tr>";
 
             ret += "<tr>";
             ret += "<td>" + HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo", g.idioma) + "</td>";
-            ret += "<td style='vertical-align:middle'>" + Tools.tr("Crear nueva estrategia", g.idioma) + "</td>";
+            ret += "<td style='vertical-align:middle'>" + Tools.tr("Crear nuevo grupo de trabajo", g.idioma) + "</td>";
             ret += "<td class='titulo2'>";
             //nombre del grupo
             if (prop != null && accion == "nuevo")
             {
-                ret += HTMLText("s.nombreProceso", prop, 40 * 8, tieneFlores, g.idioma);
+                ret += HTMLText("s.nombreGrupoTrabajo", prop, 60 * 8, tieneFlores, g.idioma);
             }
             ret += "</td>";
             ret += "</tr>";
 
             //existente
-            string listaPRs = getListaPRs();
-            if (listaPRs != "")
+            string listaGTs = getListaGTs();
+            if (listaGTs != "")
             {
                 ret += "<tr>";
                 ret += "<td>" + HTMLRadio("r.accion", 2, prop, tieneFlores, "existente", g.idioma) + "</td>";
-                ret += "<td style='vertical-align:middle'>" + Tools.tr("Modificar estrategia", g.idioma) + "</td>";
+                ret += "<td style='vertical-align:middle'>" + Tools.tr("Modificar grupo de trabajo", g.idioma) + "</td>";
                 ret += "<td class='titulo2'>";
                 //nombre del grupo
                 if (prop != null && accion == "existente")
                 {
-                    ret += HTMLLista("s.nombreProceso", listaPRs, prop, 80 * 8, tieneFlores, g.idioma);
+                    ret += HTMLLista("s.nombreGrupoTrabajo", listaGTs, prop, 60 * 8, tieneFlores, g.idioma);
                 }
                 ret += "</tr>";
 
                 //borrar
                 ret += "<tr>";
                 ret += "<td>" + HTMLRadio("r.accion", 3, prop, tieneFlores, "borrar", g.idioma) + "</td>";
-                ret += "<td style='vertical-align:middle'>" + Tools.tr("Eliminar estrategia", g.idioma) + "</td>";
+                ret += "<td style='vertical-align:middle'>" + Tools.tr("Eliminar grupo de trabajo", g.idioma) + "</td>";
                 ret += "<td class='titulo2'>";
                 //nombre del grupo
                 if (prop != null && accion == "borrar")
                 {
-                    ret += HTMLLista("s.nombreProceso", listaPRs, prop, 80 * 8, tieneFlores, g.idioma);
+                    ret += HTMLLista("s.nombreGrupoTrabajo", getListaGTs(), prop, 60 * 8, tieneFlores, g.idioma);
                 }
                 ret += "</tr>";
             }
@@ -217,7 +225,6 @@ namespace nabu.plataforma.modelos
             editar = editar && !consensoAlcanzado;
             bool puedeVariante = prop != null && !prop.esPrevista() && modo == eModo.editar && tieneFlores && !consensoAlcanzado;
 
-
             //accion
             if (prop != null)
             {
@@ -231,22 +238,19 @@ namespace nabu.plataforma.modelos
             else
                 niveles = 5;
 
+
             //validaciones de este nivel
             if (modo == eModo.prevista) validar(prop);
 
             if (nivel == 1)
-            {              
+            {
                 ret += HTMLEncabezado(prop, g, email, width);
-
-                //fecha
-                if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("proceso.introduccion", g.idioma) 
+                        + Tools.tr("grupoTrabajo.introduccion", g.idioma) 
                         + "</div>";
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
@@ -261,7 +265,7 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='tema'>" + Tools.tr("Consecuencias", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + Tools.tr("proceso.consecuancias", g.idioma)
+                            + Tools.tr("grupoTrabajo.consecuencias", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.consecuencias", prop, width, 120, tieneFlores, g.idioma);
                 }
@@ -271,30 +275,31 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
                     if (editar) 
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + Tools.tr("proceso.objetivo", g.idioma) 
+                            + Tools.tr("grupoTrabajo.objetivo", g.idioma) 
                             + "</div>";
                     ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
 
                     //Descripcion
                     ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
-                    if (editar) 
+                    if (editar)
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + Tools.tr("proceso.descripcion", g.idioma) 
+                            + Tools.tr("grupoTrabajo.descripcion", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
 
                     //A quien va dirigido
                     ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
-                    if (editar) 
-                        ret += "<div class='smalltip' style='width:" + width + "px'>" 
-                            + Tools.tr("Quienes se beneficiaran con los resultados de utilizar este proceso operativo", g.idioma) 
+                    if (editar)
+                        ret += "<div class='smalltip' style='width:" + width + "px'>"
+                            + Tools.tr("grupoTrabajo.aquien", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
-
-                    //variante
-                    if (puedeVariante) 
-                        ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
                 }
+
+                //variante
+                if (puedeVariante) 
+                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+
             }
             else if (nivel == 3)
             {
@@ -303,19 +308,28 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='tema'>" + Tools.tr("Conclusiones", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + Tools.tr("proceso.conclusiones", g.idioma)
+                            + Tools.tr("grupoTrabajo.conclusiones", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.conclusiones", prop, width, 120, tieneFlores, g.idioma);
                 }
                 else
                 {
-                    //definicion
-                    ret += "<div class='tema'>" + Tools.tr("Definicion de la estrategia", g.idioma) + "</div>";
-                    if (editar)  
+                    //Recursos
+                    ret += "<div class='tema'>" + Tools.tr("Recursos", g.idioma) + "</div>";
+                    if (editar)
                         ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + Tools.tr("proceso.definicion", g.idioma) 
+                            + Tools.tr("grupoTrabajo.recursos", g.idioma)
                             + "</div>";
-                    ret += HTMLArea("s.definicion", prop, width, 220, tieneFlores, g.idioma);
+                    ret += HTMLArea("s.recursos", prop, width, 120, tieneFlores, g.idioma);
+
+                    //Capacidades
+                    ret += "<div class='tema'>" + Tools.tr("Capacidades", g.idioma) + "</div>";
+                    if (editar)
+                        ret += "<div class='smalltip' style='width:" + width + "px'>"
+                            + Tools.tr("grupoTrabajo.capacidades", g.idioma)
+                            + "</div>";
+                    ret += HTMLArea("s.capacidades", prop, width, 120, tieneFlores, g.idioma);
+
                 }
 
                 //variante
@@ -324,30 +338,18 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 4)
             {
-                //guardo la accion en cada nivel porque su representacion depende de este valor
-                if (prop != null && accion != "")
-                    prop.bag["r.accion"] = accion;
-                else if (prop != null && accion == "" && prop.bag.ContainsKey("r.accion"))
-                    accion = getText("r.accion", prop);
-
-                if (accion == "nuevo")
-                {
-                    //grupo de trabajo
-                    ret += "<div class='tema'>" + Tools.tr("Grupo de trabajo", g.idioma) + "</div>";
-                    if (editar)
-                        ret += "<div class='smalltip' style='width:" + width + "px'>"
-                            + Tools.tr("proceso.grupo", g.idioma)
-                            + "</div>";
-                    ret += HTMLLista("s.grupoTrabajo", getListaGTs(), prop, width, tieneFlores, g.idioma);
-                }
-
-                //implantacion
-                ret += "<div class='tema'>" + Tools.tr("Implantacion", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Integrantes", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("proceso.implantacion", g.idioma) 
+                        + Tools.tr("grupoTrabajo.integrantes", g.idioma) 
                         + "</div>";
-                ret += HTMLArea("s.implantacion", prop, width, 120, tieneFlores, g.idioma);
+
+                //lista de seleccion de usuarios
+                string lista = "";
+                foreach(Usuario u2 in g.usuarios) 
+                    lista += u2.email + ":" + u2.nombre + "|";
+                lista = lista .Substring(0, lista.Length-1);
+                ret += HTMLListaSeleccion("s.integrantes", prop, width - 150, 250, tieneFlores, lista, "Pertenece al grupo", "NO pertenece al grupo", g.idioma);
 
                 //variante
                 if (puedeVariante)
@@ -358,16 +360,16 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("Valoracion del resultado", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("proceso.valoracion", g.idioma)
+                        + Tools.tr("grupoTrabajo.valoracion", g.idioma)
                         + "</div>";
                 ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
 
                 ret += "<div class='tema'>" + Tools.tr("Revision de valoracion del resultado", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("proceso.revision", g.idioma)
+                        + Tools.tr("grupoTrabajo.revision", g.idioma)
                         + "</div>";
-                ret += HTMLLista("s.revision", ":Mensual:Trimestral:Semestral:Anual", prop, 250, tieneFlores, g.idioma);
+                ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
@@ -394,76 +396,132 @@ namespace nabu.plataforma.modelos
 
         public override void ejecutarConsenso(Documento doc)
         {
+            ////creo grupo remoto si no existe    
+            ////usuarios
+            //string[] usuarios = ((string)doc.getValor("s.integrantes")).Split('|');
+            //string admins = "";
+            //foreach(string usuario in usuarios)
+            //{
+            //    Usuario u = doc.grupo.getUsuario(usuario.Split(':')[1]);
+            //    admins += u.nombre + ":" + u.email + ":" + u.clave + "|"; 
+            //}
+            //if (admins != "") admins = admins.Substring(0, admins.Length - 1);
+
+            //string grupoTrabajoNombre = doc.titulo;
+            //string grupoTrabajoOrganizacion = (string)doc.getValor("s.organizacion");
+
+            ////creo
+            //string retGrupo = Tools.getHttp(doc.grupo.URL + "/" 
+            //    + "doMain.aspx?actn=newgrupoadmins?grupo=" + grupoTrabajoNombre
+            //    + "&organizacion=" + grupoTrabajoOrganizacion
+            //    + "&idioma=" + doc.grupo.idioma 
+            //    + "&admins=" + admins
+            //    + "&padreurl=" + doc.grupo.URL
+            //    + "&padrenombre=" + doc.grupo.nombre);
+
+            //doc.addLog(tr("Grupo remoto:" + retGrupo));
+
             nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
             if ((string)doc.getValor("r.accion") == "borrar")
             {
-                //borro estrategia
-                string grupoTrabajo = doc.titulo.Split('.')[0];
-                string estrategia = doc.titulo.Split('.')[1];
+                //borro grupoTrabajo
                 foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-                    if (gt.nombre == grupoTrabajo)
-                        foreach (nabu.plataforma.Estrategia pr in gt.estrategias)
-                            if (pr.nombre == Tools.HTMLDecode(estrategia))
-                            {
-                                gt.estrategias.Remove(pr);
-                                doc.addLog(Tools.tr("estrategia.eliminada", grupoTrabajo, doc.grupo.idioma));
-                                break;
-                            }
+                {
+                    if (gt.nombre == doc.titulo)
+                    {
+                        plataforma.gruposTrabajo.Remove(gt);
+                        doc.addLog(Tools.tr("grupoTrabajo.eliminado", doc.grupo.idioma));
+                        break;
+                    }
+                }
             }
             else if ((string)doc.getValor("r.accion") == "existente")
             {
                 //creo/actualizo grupoTrabajo actual
-                string grupoTrabajo = doc.titulo.Split('.')[0];
-                string estrategia = doc.titulo.Split('.')[1];
                 foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-                    if (gt.nombre == grupoTrabajo)
+                {
+                    if (gt.nombre == doc.titulo)
                     {
-                        foreach (nabu.plataforma.Estrategia pr in gt.estrategias)
-                            if (pr.nombre == Tools.HTMLDecode(estrategia))
-                            {
-                                //actualizo
-                                pr.docURL = doc.URLPath; //nuevo consenso
-                                pr.docTs = DateTime.Now;
-                                pr.revision = doc.getText("s.revision");
-                                pr.objetivo = doc.getText("s.objetivo");
-                                pr.definicion = doc.getText("s.definicion");
+                        //actualizo
+                        gt.docURL = doc.URLPath; //nuevo consenso
+                        gt.docTs = DateTime.Now;
+                        gt.revision = (string)doc.getValor("s.revision");
+                        gt.objetivo = (string)doc.getValor("s.objetivo");
 
-                                doc.addLog(Tools.tr("estrategia.actualizada", grupoTrabajo, doc.grupo.idioma));
-                            }
+                        string[] usuarios = ((string)doc.getValor("s.integrantes")).Split('|');
+                        gt.integrantes.Clear();
+                        foreach (string usuario in usuarios)
+                        {
+                            gt.integrantes.Add(usuario.Split(':')[0]);
+                        }
+                        doc.addLog(Tools.tr("grupoTrabajo.actualizado", doc.grupo.idioma));
                     }
+                }
             }
             else
-            {//nuevo
-                string grupoTrabajo = (string)doc.getValor("s.grupoTrabajo");
-                foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-                    if (gt.nombre == Tools.HTMLDecode(grupoTrabajo))
-                    {
-                        //creo
-                        nabu.plataforma.Estrategia pr = new plataforma.Estrategia();
-                        pr.EID = plataforma.getEID();
-                        pr.nombre = doc.titulo;
-                        pr.docURL = doc.URLPath;
-                        pr.docTs = DateTime.Now;
-                        pr.revision = doc.getText("s.revision");
-                        pr.objetivo = doc.getText("s.objetivo");
-                        pr.definicion = doc.getText("s.definicion");
+            {
+                //nuevo
+                nabu.plataforma.GrupoTrabajo gt = new plataforma.GrupoTrabajo();
+                gt.EID = plataforma.getEID();
+                gt.grupoIdioma = doc.grupo.idioma;
+                gt.nombre = doc.titulo;
+                gt.docURL = doc.URLPath;
+                gt.docTs = DateTime.Now;
+                gt.revision = (string)doc.getValor("s.revision");
+                gt.objetivo = (string)doc.getValor("s.objetivo");
 
-                        gt.estrategias.Add(pr);
+                string[] usuarios = ((string)doc.getValor("s.integrantes")).Split('|');
+                foreach (string usuario in usuarios)
+                {
+                    gt.integrantes.Add(usuario.Split(':')[0]);
+                }
+                plataforma.gruposTrabajo.Add(gt);
 
-                        doc.addLog(Tools.tr("estrategia.creada", grupoTrabajo, doc.grupo.idioma));
-                    }
+                doc.addLog(Tools.tr("grupoTrabajo.creado", doc.grupo.idioma));
             }
         }
-        
-        private string getListaPRs()
+
+        public override string documentSubmit(string accion, string parametro, List<Propuesta> props, Grupo g, string email, int width, Modelo.eModo modo)
         {
-            string ret = ":";
-            nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
-            foreach (plataforma.GrupoTrabajo gt in pl.gruposTrabajo)
-                foreach (plataforma.Estrategia pr in gt.estrategias)
-                    ret += gt.nombre + "." + pr.nombre + ":";
-            if (ret.EndsWith(":")) ret = ret.Substring(0, ret.Length - 1);
-            return ret;
+            if (accion == "s.integrantes_agregar" && getVariable("s.integrantes").nivel <= props.Count)
+            {
+                Variable v = getVariable("s.integrantes");
+                Propuesta prop;
+                prop = props[v.nivel - 1];
+                if (prop.nivel == v.nivel)
+                {
+                    string value = (string)prop.bag["s.integrantes"];
+
+                    if (value == "*")
+                        prop.bag["s.integrantes"] = parametro; //caso inicial
+                    else
+                        prop.bag["s.integrantes"] += "|" + parametro;
+                }
+            }
+            else if (accion == "s.integrantes_quitar" && getVariable("s.integrantes").nivel <= props.Count)
+            {
+                Variable v = getVariable("s.integrantes");
+                Propuesta prop;
+                prop = props[v.nivel - 1];
+                if (prop.nivel == v.nivel)
+                {
+                    string value = (string)prop.bag["s.integrantes"];
+
+                    //quito
+                    string ret = "";
+                    foreach (string item in value.Split('|'))
+                    {
+                        if (!item.StartsWith(parametro.Split(':')[0]))
+                        {
+                            ret += item + "|";
+                        }
+                    }
+                    if (ret != "") ret = ret.Substring(0, ret.Length - 1);
+                    prop.bag["s.integrantes"] = ret;
+                }
+            }
+
+            return toHTML(props, g, email, width, modo);
         }
 
         private string getListaGTs()
@@ -478,5 +536,6 @@ namespace nabu.plataforma.modelos
             return ret;
         }
     }
+
 }
 

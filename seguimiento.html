@@ -1,4 +1,24 @@
-<!DOCTYPE html>
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
 <meta charset="utf-8">
 <html>
 <head>
@@ -13,17 +33,35 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script>
         var usuario;
-        var offsetX = 0;
+        var offsetDays = 0;
         var offsetY = 0;
         var operativo;
         var col = 300;
-        var row = 130;
+        var row = 35;
         var scale = window.innerWidth / 1920;
         var zoom = scale;
         var grupoParam;
         var arbolPersonal;
         var lastMouse = null;
         var editando = false;
+        var viewWidth;
+        var viewDaysInit = 90;
+        var viewDays = viewDaysInit;
+        var viewLeft = 20;
+        var viewRight = 40;
+        var inicio = new Date();
+        var luz = "verde.png";
+        var firefoxWhich = 0;
+
+        $(document).mouseup(function (event) {
+            //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
+            firefoxWhich = 0;
+        });
+
+        $(document).mousedown(function (event) {
+            //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
+            firefoxWhich = 1;
+        });
 
         //var operativo = {
         //    objetivo: 'xxxxx', URLEstatuto: 'xxx',
@@ -36,24 +74,27 @@
 
         $(document).mousemove(function (event) {
             if (!editando) {
-                if (event.which == 1 && !event.ctrlKey) {
+                if (firefoxWhich == 1 && !event.ctrlKey) {
                     //scroll
                     if (lastMouse) {
-                        offsetX -= lastMouse.clientX - event.clientX;
+                        var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
+                        offsetDays += ((event.clientX - lastMouse.clientX) / diaPixels);
                         offsetY -= lastMouse.clientY - event.clientY;
                         //document.body.style.cursor = "all-scroll";
                         event.preventDefault();
-                        transform();
+                        dibujarTodo();
+                        saveSettings();
                     }
                     lastMouse = { clientX: event.clientX, clientY: event.clientY };
                 }
-                else if (event.which == 1 && event.ctrlKey) {
+                else if (firefoxWhich == 1 && event.ctrlKey) {
                     //zoom
                     if (lastMouse) {
-                        zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                        viewDays += (lastMouse.clientX - event.clientX) / 20;
                         //document.body.style.cursor = "w-resize";
                         event.preventDefault();
                         dibujarTodo();
+                        saveSettings();
                     }
                     lastMouse = { clientX: event.clientX, clientY: event.clientY };
                 }
@@ -67,10 +108,16 @@
             }
         });
 
+        Date.prototype.addDays = function (days) {
+            var dat = new Date(this.valueOf());
+            dat.setDate(dat.getDate() + days);
+            return dat;
+        }
+
         function transform() {
             var g = document.getElementById("grupo");
             var matrix0 = document.getElementById("todo").createSVGMatrix();
-            matrix0 = matrix0.translate(offsetX, offsetY);
+            matrix0 = matrix0.translate(offsetDays, offsetY);
             if (g.transform.baseVal.numberOfItems == 0)
                 g.transform.baseVal.appendItem(g.transform.baseVal.createSVGTransformFromMatrix(matrix0));
             else
@@ -78,6 +125,10 @@
         }
 
         function doLoad() {
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
+
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
             if (grupoParam && grupoParam != "" && grupoParam != "null") {
@@ -162,55 +213,128 @@
             s += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 100 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>"
                 + usuario.grupo + " - " + tr("Seguimiento") + "</text>";
             s += "<g id='grupo'>";
-            s += dibujarSeguimiento(operativo, 100 + col / 2 + offsetX, 150 + offsetY, zoom);
+            s += dibujarSeguimiento(operativo, 120 + offsetY, zoom);
             s += "</g>"
 
             document.getElementById("todo").innerHTML = s;
         }
 
-        function dibujarSeguimiento(operativo, x, y, zoom) {
+        function dibujarSeguimiento(operativo, y, zoom) {
             //manifiesto
             var zrow = row * zoom;
             var zcol = col * zoom;
             var s = "";
+            var x = viewLeft;
+            viewWidth = window.innerWidth - viewLeft - viewRight;
 
             //acciones
             for (i in operativo.acciones) {
-                var ac = operativo.acciones[i];
+                var index = operativo.acciones.length - i - 1;
+                var ac = operativo.acciones[index];
 
-                var acX = x + i * zcol + 10;
-                var acY = y;
-                s += caja(ac.nombre, ac.estado, ac.estadoTs, acX, acY, "#4169E1", zoom, "openAC(" + i + ");");
+                //var acX = x + i * zcol + 10;
+                var acX = x + zcol / 2;
+                var acY = y + i * zrow + 10;
+                s += caja(ac, acY, "openAC(" + index + ");");
             }
+
+            //recta
+            y = y + window.innerHeight * 0.5;
+            var x1 = viewLeft;
+            var x2 = window.innerWidth - viewRight;
+            s += "<line x1='" + x1 + "' y1='" + y + "' x2='" + x2 + "' y2='" + y + "' style='stroke:gray;stroke-width:2' />";
+
+            //inicio (derecha)
+            var sdt = formatDate(inicio.addDays(-offsetDays));
+            s += "<text x='" + x1 + "' y='" + (y - 15) + "' fill='blue' style='font-size:12px' text-anchor='start'>" + sdt + "</text>";
+
+            //fin (izquierda)
+            var final = inicio.addDays(-offsetDays).addDays(viewDays);
+            sdt = formatDate(final);
+            s += "<text x='" + x2 + "' y='" + (y - 15) + "' fill='blue' style='font-size:12px' text-anchor='end'>" + sdt + "</text>";
+
+            //marcas
+            var d = new Date();
+            for (var i = 0; i < viewDays; i++) {
+                var x = viewLeft + i / viewDays * viewWidth;
+                var fecha = inicio.addDays(i - offsetDays);
+                if (fecha.getDate() == d.getDate() && fecha.getMonth() == d.getMonth() && fecha.getFullYear() == d.getFullYear()) {
+                    //hoy
+                        s += "<line x1='" + x + "' y1='" + (y - 888) + "' x2='" + x + "' y2='" + (y + 58) + "' style='stroke:red;stroke-width:1' />";
+                }
+                else if (fecha.getDate() == 1) {
+                    //1 del mes
+                    s += "<line x1='" + x + "' y1='" + (y - 10) + "' x2='" + x + "' y2='" + (y + 10) + "' style='stroke:blue;stroke-width:1' />";
+                    if (i > 4 && i < viewDays - 4) {
+                        sdt = formatDate(fecha);
+                        s += "<text x='" + x + "' y='" + (y + 15) + "' fill='blue' style='font-size:12px' text-anchor='middle'>" + sdt + "</text>";
+                    }
+                }
+                else if (fecha.getDay() == 1) {
+                    //lunes
+                    s += "<line x1='" + x + "' y1='" + (y - 8) + "' x2='" + x + "' y2='" + (y + 8) + "' style='stroke:green;stroke-width:1' />";
+                    var labelX = i / viewDays * viewWidth;
+                    if (labelX > viewLeft + 30 && labelX < viewLeft + viewWidth - viewRight) {
+                        s += "<text x='" + x + "' y='" + (y + 30) + "' fill='green' style='font-size:12px' text-anchor='middle'>" + tr("Lunes") + "</text>";
+                    }
+                }
+                else
+                    //dias
+                    s += "<line x1='" + x + "' y1='" + (y - 5) + "' x2='" + x + "' y2='" + (y + 5) + "' style='stroke:gray;stroke-width:1' />";
+            }
+
             return s;
         }
 
-        function caja(nombre, estado, estadoTs, x, y, color, zoom, onclick) {
-            var boxWidth = col * 0.8 * zoom;
-            var boxHeight = row * 0.8 * zoom;
-            var nom = nombre;
+        function caja(ac, y, onclick) {
+            var nom = ac.nombre;
+            var color = "#4169E1";
+            var padding = 2
             if (nom.length > 15)
                 nom = nom.substring(0, 15) + "...";
+            var acinicio = toDate(ac.estado.inicio)
+            var acfin = toDate(ac.estado.fin);
+            var x = viewLeft + (days(acinicio) - days(inicio) + offsetDays) / viewDays * viewWidth;
+            var boxWidth = (days(acfin) - days(acinicio)) / viewDays * viewWidth;
+            var boxHeight = row * 0.9 * zoom;
 
-            var s = "<rect x='" + (x - boxWidth / 2).toFixed(0) + "' y='" + (y - boxHeight / 2).toFixed(0) + "' rx='20' ry='20' ";
+            var s = "<rect x='" + x.toFixed(0) + "' y='" + (y - boxHeight / 2).toFixed(0) + "' rx='5' ry='5' ";
             s += "width='" + boxWidth.toFixed(0) + "' height='" + boxHeight.toFixed(0) + "' ";
-            s += "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:" + (5 * zoom).toFixed(0) + ";opacity:0.4' ";
+            s += "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:2;opacity:0.4' ";
             s += "onclick=\"" + onclick + "\"/></rect>";
 
-            s += "<text x='" + x.toFixed(0) + "' y='" + (y - boxHeight / 6).toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (20 * zoom).toFixed(0) + "px' text-anchor='middle' ";
-            s += "onclick=\"" + onclick + "\">";
-            s += nom;
-            s += "</text>";
+            //avance
+            var avanceColor;
+            if (ac.estado.luz == "rojo.png")
+                avanceColor = "red";
+            else if (ac.estado.luz == "verde.png")
+                avanceColor = "green";
+            else
+                avanceColor = "yellow";
 
-            s += "<text x='" + x.toFixed(0) + "' y='" + (y - boxHeight / 6 + 20 * zoom).toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (16 * zoom).toFixed(0) + "px' text-anchor='middle' ";
-            s += "onclick=\"" + onclick + "\">";
-            s += estado;
-            s += "</text>";
+            s += "<rect x='" + (x + padding).toFixed(0) + "' y='" + (y - boxHeight / 2 + padding).toFixed(0) + "' rx='4' ry='4' ";
+            s += "width='" + (boxWidth * ac.estado.avance/100 - padding * 2).toFixed(0) + "' height='" + (boxHeight - padding * 2).toFixed(0) + "' ";
+            s += "style='cursor:pointer;fill:" + avanceColor + ";stroke:black;stroke-width:1;opacity:0.4' ";
+            s += "onclick=\"" + onclick + "\"/></rect>";
 
-            s += "<text x='" + x.toFixed(0) + "' y='" + (y - boxHeight / 6 + 40 * zoom).toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (12 * zoom).toFixed(0) + "px' text-anchor='middle' ";
+            s += "<text x='" + (x + 5).toFixed(0) + "' y='" + (y + 5).toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (15 * zoom).toFixed(0) + "px' text-anchor='left' ";
             s += "onclick=\"" + onclick + "\">";
-            s += estadoTs;
+            s += nom + ' - ' + ac.estado.estado;
             s += "</text>";
+            return s;
+        }
+
+        function toDate(d) {
+            return new Date(d.match(/\d+/)[0] * 1);
+        }
+
+        function days(d) {
+            return d.getTime() / 1000 / 60 / 60 / 24;
+        }
+
+        function replacen(s) {
+            while (s.indexOf("\n") >= 0)
+                s = s.replace("\n", "<br>");
             return s;
         }
 
@@ -227,35 +351,55 @@
             s += "<b>" + tr("Nacido") + ":</b> " + AC.born + "<br>";
             s += "<b>" + tr("Decision fecha") + ":</b> " + AC.docTs + "<br>";
             s += "<b>" + tr("Decision") + ":</b> <a href='" + AC.docURL + "' target='_blank'>" + getURLName(AC.docURL) + "</a><br>";
-            s += "<b>" + tr("Objetivo") + ":</b><br> " + AC.objetivo + "<br>";
-            s += "<b>" + tr("Estado") + ":</b> " + AC.estado + "<br>";
-            s += "<b>" + tr("EstadoTs") + ":</b> " + AC.estadoTs + "<br>";
+            s += "<b>" + tr("Responsable") + ":</b> " + AC.responsable + "<br>";
+            s += "<b>" + tr("Objetivo") + ":</b><br> " + replacen(AC.objetivo) + "<br>";
+            s += "<b>" + tr("Estado") + ":</b> " + AC.estado.estado + "<br>";
+            s += "<b>" + tr("EstadoTs") + ":</b> " + formatDate(toDate(AC.estado.estadoTs)) + "<br>";
             s += "<br>";
 
             //cierre
             s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
-            if (usuario.email == operativo.admin) {
-                s += "<input type='button' class='btn' value='" + tr("Finalizar") + "' onclick='doFinalizar(" + index + ");'>";
+            if (usuario.email == operativo.admin || usuario.email == AC.responsable) {
+                s += "<input type='button' class='btn' value='" + tr("Finalizar acci&oacute;n") + "' onclick='doFinalizar(" + index + ");'>";
             }
-            
+            s += "<br><br>";
             //estados
-            s += "<b>Estados:</b><br>"
+            s += "<b>" + tr("Estados") + ":</b><br>"
+            var einicio = formatDate(new Date());
+            var efin = formatDate((new Date()).addDays(30));
             for (var j in AC.estados) {
-                var estado = AC.estados[j];
-                s += "<b>" + estado.estadoTs + " - " + estado.estado + "</b><br>"
+                var estado = AC.estados[AC.estados.length - j - 1];
+                einicio = formatDate(toDate(estado.inicio));
+                efin = formatDate(toDate(estado.fin));
+                s += "<b>" + formatDate(toDate(estado.estadoTs)) + " - " + estado.estado + " - " + estado.avance + " - ";
+                s += "<img src='res/" + estado.luz + "' style='vertical-align:bottom'></b>";
+                s += "<span style='float:right'><b>" + einicio + " - " + efin + "</b></span><br>"
                 s += estado.descrip + "<br>";
                 s += "<hr>";
                 s += "<br>";
             }
+            s += "<br>";
 
             //agregar estado
-            if (usuario.email == operativo.admin) {
+            s += "<b>" + tr("Nuevo estado") + "</b>:<br>";
+            if (usuario.email == operativo.admin || usuario.email == AC.responsable) {
                 //puede crear estados
-                s += "<br><br><input type='text' id='nuevoEstado' class='editar' size=10><br>";
-                s += "<textarea id='nuevoDescrip' class='editar' style='width:90%;height:150px'></textarea>"
-            }
+                einicio = formatDate(toDate(AC.estado.inicio));
+                efin = formatDate(toDate(AC.estado.fin));
+                s += "<input type='text' id='estado' class='editar' placeholder='Estado' size=10>";
+                s += "<input type='text' id='avance' class='editar' placeholder='%' size=2>";
+                s += "<img id='verde' src='res/verde.png' style='border:0px;vertical-align:middle' onclick='setLuz(0)'>";
+                s += "<img id='amarillo' src='res/amarillo.png' style='border:0px;vertical-align:middle' onclick='setLuz(1);'>";
+                s += "<img id='rojo' src='res/rojo.png' style='border:0px;vertical-align:middle' onclick='setLuz(2);'>";
+                s += "<input type='text' id='fin' class='editar' placeholder='fin' size=10 style='float:right' value='" + efin + "'>";
+                s += "<input type='text' id='inicio' placeholder='Inicio' size=10 value='" + einicio + "'";
+                if (toDate(AC.estado.inicio) < (new Date()))
+                    s += "  class='txt' style='float:right;border:2px gray solid' disabled ";
+                else
+                    s += "  class='editar' style='float:right' ";
+                s += "><br>";
+                s += "<textarea id='descrip' class='editar' placeholder='Descripcion' style='width:100%;height:150px'></textarea>"
 
-            if (usuario.email == operativo.admin) {
                 s += "<input type='button' class='btn' value='" + tr("Agregar estado") + "' onclick='doAgregarEstado(" + index + ");'>";
                 s += "<div id='msg'></div>";
             }
@@ -264,6 +408,28 @@
 
         }
           
+        function setLuz(i) {
+            if (i == 0) {
+                luz = "verde.png";
+                document.getElementById("verde").style.opacity = 1;
+                document.getElementById("amarillo").style.opacity = 0.2;
+                document.getElementById("rojo").style.opacity = 0.2;
+            }
+            else if (i == 1) {
+                luz = "amarillo.png";
+                document.getElementById("verde").style.opacity = 0.2;
+                document.getElementById("amarillo").style.opacity = 1;
+                document.getElementById("rojo").style.opacity = 0.2;
+            }
+            else {
+                luz = "rojo.png";
+                document.getElementById("verde").style.opacity = 0.2;
+                document.getElementById("amarillo").style.opacity = 0.2;
+                document.getElementById("rojo").style.opacity = 1;
+            }
+
+        }
+
         function doFinalizar(index) {
             var AC = operativo.acciones[index];
             getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
@@ -292,32 +458,41 @@
 
         function doAgregarEstado(index) {
             var AC = operativo.acciones[index];
-            var nuevoEstado = document.getElementById("nuevoEstado");
-            var nuevoDescrip = document.getElementById("nuevoDescrip");
+            var estado = document.getElementById("estado").value;
+            var avance = document.getElementById("avance").value;
+            var inicio = document.getElementById("inicio").value;
+            var fin = document.getElementById("fin").value;
+            var descrip = document.getElementById("descrip").value;
+            var msg = document.getElementById("msg");
+
             postHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
                 + "&grupo=" + usuario.grupo
                 + "&clave=" + usuario.clave
                 + "&accion=accionAddEstado"
                 + "&EID=" + AC.EID
-                + "&estado=" + nuevoEstado.value,
-                "descrip=" + URIEncode(nuevoDescrip.value),
-                 function (data) {
-                     //atrapo el error si es que hay
-                     if (data.substring(0, 6) == "Error=") {
-                         //ha habido un error
-                         document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
-                     }
-                     else {
-                         //tengo el bosque
-                         //document.getElementById("todo").innerHTML = data;
-                         var respuesta = JSON.parse(data);
-                         operativo = respuesta.operativo;
-                         if (respuesta.resultado != 'ok')
-                            document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
-                         dibujarTodo();
-                         openAC(index);
-                     }
-                 });
+                + "&estado=" + estado
+                + "&avance=" + avance
+                + "&luz=" + luz
+                + "&inicio=" + inicio
+                + "&fin=" + fin,
+                "descrip=" + URIEncode(descrip),
+                    function (data) {
+                        //atrapo el error si es que hay
+                        if (data.substring(0, 6) == "Error=") {
+                            //ha habido un error
+                            document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                        }
+                        else {
+                            //tengo el bosque
+                            //document.getElementById("todo").innerHTML = data;
+                            var respuesta = JSON.parse(data);
+                            operativo = respuesta.operativo;
+                            if (respuesta.resultado != 'ok')
+                                document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                            dibujarTodo();
+                            openAC(index);
+                        }
+                    }); 
         }
 
         function doCerrarDocumento() {
@@ -329,6 +504,10 @@
             document.location = "default.html?grupo=" + grupoParam;
         }
 
+        function saveSettings() {
+            var cname = "nabu-" + grupoParam.replace(' ', '') + "-Seguimiento";
+            setCookie(cname, offsetDays + "|" + viewDays);
+        }
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
@@ -339,7 +518,7 @@
             <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
                 <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
             </a>
-            <div id="titulo1" class="titulo1"><nobr>Cooperativa 2.0</nobr></div>
+            <div id="titulo1" class="titulo1"><nobr>Sociocracia</nobr></div>
             <div id="titulo2" class="titulo2"><nobr>Democracia interactiva</nobr></div>
             <div id="msgDiv" class="msg"></div>
         </div>
@@ -351,17 +530,17 @@
         <div id="joystick" style="padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
             <table>
                 <tr>
-                    <td><img src="res/jzm.png" style='cursor:pointer;' onclick="zoom *= 1.1; dibujarTodo();"  /></td>
+                    <td><img src="res/jzm.png" style='cursor:pointer;' onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();"  /></td>
                     <td><img src="res/ju.png" style='cursor:pointer;' onclick="offsetY -= 30; transform();" /></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td><img src="res/jl.png" style='cursor:pointer;' onclick="offsetX -= 30; transform();" /></td>
-                    <td><img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" /></td>
-                    <td><img src="res/jr.png" style='cursor:pointer;' onclick="offsetX += 30; transform();" /></td>
+                    <td><img src="res/jl.png" style='cursor:pointer;' onclick="offsetDays -= 1; dibujarTodo(); saveSettings();" /></td>
+                    <td><img src="res/j00.png" style='cursor:pointer;' onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" /></td>
+                    <td><img src="res/jr.png" style='cursor:pointer;' onclick="offsetDays += 1; dibujarTodo(); saveSettings();" /></td>
                 </tr>
                 <tr>
-                    <td><img src="res/jzl.png" style='cursor:pointer;' onclick="if (zoom > 0.6) zoom *= 0.9; dibujarTodo();" /></td>
+                    <td><img src="res/jzl.png" style='cursor:pointer;' onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" /></td>
                     <td><img src="res/jd.png" style='cursor:pointer;' onclick="offsetY += 30; transform();" /></td>
                     <td></td>
                 </tr>

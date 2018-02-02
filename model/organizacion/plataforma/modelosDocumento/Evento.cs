@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -6,21 +25,21 @@ using System.Web;
 
 namespace nabu.plataforma.modelos
 {
-    public class Accion: Modelo
+    public class Evento: Modelo
     {
-        public Accion()
+        public Evento()
         {
-            icono = "res/documentos/accion.png";
+            icono = "res/documentos/evento.png";
             niveles = 5;
-            nombre = "Accion";
-            descripcion= "Accion";
+            nombre = "Evento";
+            descripcion = "Evento";
 
             crearVariables();
         }
 
         public override string carpeta()
         {
-            return "Accion";
+            return "Evento";
         }
 
         protected override void crearVariables()
@@ -36,16 +55,16 @@ namespace nabu.plataforma.modelos
             variables.Add(new Variable("s.aquien", 3000, 2));
 
             //nivel 3
+            variables.Add(new Variable("s.lugar", 3000, 3));
             variables.Add(new Variable("s.materiales", 3000, 3));
-            variables.Add(new Variable("s.rrhh", 3000, 3));
-            variables.Add(new Variable("s.otros", 3000, 3));
+            variables.Add(new Variable("s.transporte", 3000, 3));
 
             //nivel 4
-            variables.Add(new Variable("s.fases", 3000, 4));
+            variables.Add(new Variable("s.organizacion", 3000, 4));
+            variables.Add(new Variable("d.fecha", 0, 4));
 
             //nivel 5
-            variables.Add(new Variable("s.presupuesto", 3000, 5));
-            variables.Add(new Variable("s.revision", 3000, 5));
+            variables.Add(new Variable("s.eficiencia", 3000, 5));
         }
 
         private void validar(Propuesta prop)
@@ -81,25 +100,29 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 3)
                 {
-                    if (getText("s.materiales", prop) == ""
-                        && getText("s.software", prop) == ""
-                        && getText("s.rrhh", prop) == "")
+                    if (getText("s.lugar", prop) == ""
+                        && getText("s.materiales", prop) == ""
+                        && getText("s.transporte", prop) == "")
                     {
                         addError(3, "La propuesta no puede estar completamente vacia");
                     }
                 }
                 else if (prop.nivel == 4)
                 {
-                    if (getText("s.fases", prop) == "")
+                    if (getText("s.organizacion", prop) == "")
                     {
-                        addError(4, "La propuesta no puede estar completamente vacia");
+                        addError(4, "Describe como organizar el evento");
+                    }
+                    if (getDate("d.fecha", prop) == Tools.minValue)
+                    {
+                        addError(4, "Define una fecha para el evento");
                     }
                 }
                 else if (prop.nivel == 5)
                 {
-                    if (getText("s.presupuesto", prop) == "")
+                    if (getText("s.eficiencia", prop) == "")
                     {
-                        addError(5, "La propuesta no puede estar completamente vacia");
+                        addError(5, "Define como se valorar&aacute el resultado del evento");
                     }
                 }
             }
@@ -125,15 +148,11 @@ namespace nabu.plataforma.modelos
             {
                 ret += HTMLEncabezado(prop, g, email, width);
 
-                //fecha
-                if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
-
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.introduccion", g.idioma) 
+                        + Tools.tr("evento.introduccion", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
@@ -148,7 +167,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.objetivo", g.idioma) 
+                        + Tools.tr("evento.objetivo", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
@@ -157,7 +176,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.descripcion", g.idioma) 
+                        + Tools.tr("evento.descripcion", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
@@ -166,7 +185,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.aquien", g.idioma) 
+                        + Tools.tr("event.aquien", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
@@ -179,31 +198,31 @@ namespace nabu.plataforma.modelos
             else if (nivel == 3)
             {
                 //Materiales
+                ret += "<div class='tema'>" + Tools.tr("Lugar", g.idioma) + "</div>";
+                if (editar)  
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("evento.lugar", g.idioma) 
+                        + "</div>";
+
+                ret += HTMLArea("s.lugar", prop, width, 120, tieneFlores, g.idioma);
+
+                //RRHH
                 ret += "<div class='tema'>" + Tools.tr("Materiales", g.idioma) + "</div>";
                 if (editar)  
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.materiales", g.idioma) 
+                        + Tools.tr("evento.materiales", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.materiales", prop, width, 120, tieneFlores, g.idioma);
 
-                //RRHH
-                ret += "<div class='tema'>" + Tools.tr("RRHH", g.idioma) + "</div>";
-                if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.rrhh", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.rrhh", prop, width, 120, tieneFlores, g.idioma);
-
                 //Otros
-                ret += "<div class='tema'>" + Tools.tr("Software", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Transportes", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.software", g.idioma) 
+                        + Tools.tr("evento.transportes", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.otros", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLArea("s.transporte", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
@@ -211,13 +230,22 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + Tools.tr("Fases", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Organizacion", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.fases", g.idioma) 
+                        + Tools.tr("evento.organizacion", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.fases", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLArea("s.organizacion", prop, width, 120, tieneFlores, g.idioma);
+
+                ret += "<div class='tema'>";
+                ret += Tools.tr("Fecha", g.idioma);
+                ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
+                if (editar)
+                    ret += "<span class='smalltip' style='margin:5px'>"
+                        + Tools.tr("evento.fecha", g.idioma)
+                        + "</span>";
+                ret += "</div>";
 
                 //variante
                 if (puedeVariante)
@@ -225,20 +253,13 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + Tools.tr("Presupuesto y plazo de entrega", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Valoraci&oacute;n del resultado", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.presupuesto", g.idioma) 
+                        + Tools.tr("evento.valoracion", g.idioma) 
                         + "</div>";
 
-                ret += HTMLArea("s.presupuesto", prop, width, 120, tieneFlores, g.idioma);
-                
-                ret += "<div class='tema'>" + Tools.tr("Revision de valoracion del resultado", g.idioma) + "</div>";
-                if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("proceso.revision", g.idioma)
-                        + "</div>";
-                ret += HTMLLista("s.revision", ":Mensual:Trimestral:Semestral:Anual", prop, 250, tieneFlores, g.idioma);
+                ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
                 if (puedeVariante)
@@ -265,24 +286,7 @@ namespace nabu.plataforma.modelos
 
         public override void ejecutarConsenso(Documento doc)
         {
-            try
-            {
-                nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
-                nabu.plataforma.Accion accion = new nabu.plataforma.Accion();
-                accion.EID = plataforma.getEID();
-                accion.nombre = doc.titulo;
-                accion.objetivo = doc.getText("s.objetivo");
-                accion.docURL = doc.URLPath;
-                accion.docTs = DateTime.Now;
-
-                plataforma.acciones.Add(accion);
-
-                doc.addLog(Tools.tr("accion.creada", doc.grupo.idioma));
-            }
-            catch (Exception ex)
-            {
-                doc.addLog(Tools.tr("accion.error", doc.grupo.idioma) + ": " + ex.Message);
-            }
+            //nada que hacer
         }
 
 

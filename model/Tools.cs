@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization.Json;
@@ -201,7 +220,29 @@ namespace nabu
             "Nombre de nodo no puede ser vacio|es|Nombre de nodo no puede ser vacio",           
             "El usuario no existe o no esta habilitado|es|El usuario no existe o no esta habilitado",           
             "El nodo no existe|es|El nodo no existe",           
-
+            "accion.evaluacion.p1|es|&iquest;El problema a enfrentar estaba bien definido?",
+            "accion.evaluacion.p2|es|&iquest;El objetivo era adecuado para enfrentar el problema?",
+            "accion.evaluacion.p3|es|&iquest;Se han destinado los recursos previstos?",
+            "accion.evaluacion.p4|es|&iquest;La fases en que se realiz&oacute; eran adecuadas?",
+            "accion.evaluacion.p5|es|&iquest;El costo y plazo ha sido seg&uacute;n lo planeado?",
+            "accion.evaluacion.p6|es|&iquest;Crees que se requiere otro ciclo de Accion para resolver este tema?",
+            "enlace.evaluacion.p1|es|&iquest;Este articulo esta relacionado con los intereses del grupo?",
+            "enlace.evaluacion.p2|es|&iquest;Tiene referencias s&oacute;lidas?",
+            "enlace.evaluacion.p3|es|&iquest;Se esta tratando este tema en el grupo?",
+            "enlace.evaluacion.p4|es|&iquest;Deberia tratarse este tema en el grupo?",
+            "enlace.evaluacion.p5|es|&iquest;Crees que este tema deberia generar un ciclo de Accion?",
+            "accion.evaluacion.tip1|es|",
+            "accion.evaluacion.tip2|es|",
+            "accion.evaluacion.tip3|es|",
+            "accion.evaluacion.tip4|es|",
+            "accion.evaluacion.tip5|es|",
+            "accion.evaluacion.tip6|es|",
+            "enlace.evaluacion.tip1|es|",
+            "enlace.evaluacion.tip2|es|",
+            "enlace.evaluacion.tip3|es|",
+            "enlace.evaluacion.tip4|es|",
+            "enlace.evaluacion.tip5|es|",
+            
             "El usuario no existe|ct|La usu&agrave;ria no existeix", 
             "La clave actual no corresponde|ct|La clau actual no correspon", 
             "La clave nueva no puede ser vacia|ct|La clau nova no pot estar buida", 
@@ -501,6 +542,13 @@ namespace nabu
             post = System.Web.HttpUtility.UrlEncode(post);
             string ret = wc.UploadString(sincroURL, "sinf=" + post);
             return ret;
+        }
+
+        public static string getFileHttp(string sincroURL, string fname)
+        {
+            WebClient wc = new WebClient();
+            Byte[] res = wc.UploadFile(sincroURL, fname);
+            return System.Text.Encoding.UTF8.GetString(res);
         }
 
         public static string dateToString(DateTime d)

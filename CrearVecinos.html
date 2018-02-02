@@ -1,0 +1,217 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
+<html4f>
+<head>
+<script>
+    var index = 0;
+    var log;
+    var prefURL = "http://nabu.cooperativa.cat/neighbors";
+
+    //asegurarse de recompilar antes de ejecutar para que el server no tenga grupos en memoria !!!!!!!!!!!!!!!!!
+
+    function doCrear() {
+
+        index = 0;
+        log = document.getElementById("log");
+        log.innerHTML = "";
+
+        var prof = document.getElementById("prof").value;
+        prefURL = document.getElementById("prefURL").value;
+
+        var tree = crearTree({nombre: 'Ayuntamiento', hijos: []}, 7, ['Federacion', 'Asociacion', 'Comunidad']);
+        var lista = [];
+        crearLista(lista, '', tree);
+        doCrearGrupos(lista);
+
+        //var tree = {
+        //    nombre: 'Ayuntamiento', hijos: [
+        //{
+        //    nombre: 'Federacion1', hijos: [
+        //      {
+        //          nombre: 'Asociacion1', hijos: [
+        //            { nombre: 'Comunidad1', hijos: [] }
+        //          ]
+        //      }
+        //    ]
+        //}
+        //    ]
+        //};
+
+
+        //doCrearGrupos(
+        //    [
+        //        { nombre: 'Ayuntamiento', padre: '', hijos: ['Federacion1', 'Federacion2', 'Federacion3', 'Federacion4', 'Federacion5', 'Federacion6', 'Federacion7', 'Federacion8'] },
+        //        { nombre: 'Federacion1', padre: 'Ayuntamiento', hijos: ['Asociacion1', 'Asociacion2', 'Asociacion3', 'Asociacion4', 'Asociacion5', 'Asociacion6', 'Asociacion7', 'Asociacion8'] },
+        //        { nombre: 'Asociacion1', padre: 'Federacion1', hijos: ['Comunidad1', 'Comunidad2', 'Comunidad3', 'Comunidad4', 'Comunidad5', 'Comunidad6', 'Comunidad7', 'Comunidad8'] },
+        //        { nombre: 'Comunidad1', padre: 'Asociacion1', hijos: [] },
+
+        //    ]);
+
+
+
+    }
+
+    function crearLista(lista, padre, tree) {
+        var hijos = [];
+        for (i in tree.hijos)
+            hijos.push(tree.hijos[i].nombre);
+
+        var nodo = { nombre: tree.nombre, padre: padre, hijos: hijos };
+        
+        lista.push(nodo);
+        log.innerHTML = log.innerHTML + "<br>" + nodo.nombre + " - padre:" + nodo.padre;
+
+        for (i in tree.hijos)
+            crearLista(lista, tree.nombre, tree.hijos[i]);
+
+    }
+
+    function crearTree(raiz, prof, prefs) {
+        if (prefs.length > 0) {
+            var pref = prefs[0];
+            prefs.splice(0, 1);
+
+            for (var q = 0; q < prof; q++) {
+                index++;
+                raiz.hijos.push(crearTree({ nombre: pref + (index), hijos: [] }, prof, prefs.slice()));
+            }
+        }
+        return raiz;
+    }
+
+
+    function doCrearGrupos(grupos) {
+        if (grupos.length > 0) {
+            var grupo = grupos[0];
+            grupos.splice(0, 1);
+
+            var usuarios = [];
+            for (var i = 1; i <= 10; i++)
+                usuarios.push("U" + i + '.' + grupo.nombre);
+
+            getHttp("doMain.aspx?actn=newgrupo&grupo=" + grupo.nombre
+                + "&organizacion=Plataforma"
+                + "&nombreAdmin=admin"
+                + "&email=admin"
+                + "&idioma=es"
+                + "&clave=admin",
+                function (data) {
+                    if (data.substring(0, 6) == "Error=")
+                        alert(data);
+                    else {
+                        //log
+                        log.innerHTML = log.innerHTML + "<br>" + grupo.nombre;
+
+                        //creo hijos
+                        doCrearPadre(grupo.nombre, grupo.padre, usuarios, grupo.hijos, grupos);
+                    }
+                });
+        }
+        else
+            log.innerHTML = log.innerHTML + "<br>" + "hecho!";
+    }
+
+    function crearHijos(nombre, hijos, grupos) {
+        if (hijos.length > 0) {
+            var hijo = hijos[0];
+            hijos.splice(0, 1);
+            getHttp("doMain.aspx?actn=crearHijo&grupo=" + nombre
+                + "&email=admin"
+                + "&clave=admin"
+                + "&hijoURL=" + prefURL
+                + "&hijoNombre=" + hijo,
+                function (data) {
+                    crearHijos(nombre, hijos, grupos);
+                });
+        }
+        else
+            doCrearGrupos(grupos);
+    }
+    
+    function doCrearPadre(nombre, padre, usuarios, hijos, grupos) {
+        if (padre != "")
+            getHttp("doDecidimos.aspx?actn=updatearbol&grupo=" + nombre
+                + "&cantidadFlores=5" 
+                + "&idioma=es"
+                + "&minSiPc=100"
+                + "&maxNoPc=0"
+                + "&padreURL=" + prefURL
+                + "&padreNombre=" + padre
+                + "&email=admin"
+                + "&clave=admin",
+                 function (data) {
+                     if (data.substring(0, 6) == "Error=")
+                         alert(data);
+                     else {
+                         doCrearUsuarios(usuarios, nombre, hijos, grupos);
+                     }
+                 });
+        else
+            doCrearUsuarios(usuarios, nombre, hijos, grupos);
+    }
+
+    function doCrearUsuarios(usuarios, nombre, hijos, grupos) {
+        if (usuarios.length > 0) {
+            var usuario = usuarios[0];
+            usuarios.splice(0, 1);
+            getHttp("doMain.aspx?actn=actualizarUsuario&nuevonombre=" + usuario
+                + "&nuevoemail=" + usuario
+                + "&nuevaclave=" + usuario
+                + "&grupo=" + nombre
+                + "&readOnly=false"
+                + "&isAdmin=false"
+                + "&habilitado=true"
+                + "&email=admin"
+                + "&secretaria=false"
+                + "&clave=admin",
+                function (data) {
+                    if (data.substring(0, 6) == "Error=")
+                        alert(data);
+                    else {
+                        doCrearUsuarios(usuarios, nombre, hijos, grupos);
+                    }
+                });
+        }
+        else
+            crearHijos(nombre, hijos, grupos);
+    }
+
+    function getHttp(url, callback) {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open('get', url, true);
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4) {
+                if (callback)
+                    callback(xmlhttp.responseText);
+            }
+        }
+        xmlhttp.send();
+    }
+</script>
+</head>
+<body>
+    Prefijo URL: <input type="text" id="prefURL" value ="http://nabu.cooperativa.cat/neighbors" /><br />
+    Ancho: <input type="text" id="prof" value ="7" /><br />
+    <input type="button" value="crear" onclick="doCrear();" />
+    <div id="log"></div>
+</body>
+</html4f>

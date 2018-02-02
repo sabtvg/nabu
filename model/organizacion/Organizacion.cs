@@ -1,4 +1,23 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+
+
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -14,9 +33,13 @@ namespace nabu
 
         public DateTime born = DateTime.Now;
 
-        public Modelo getModelo(string id)
+        public Organizacion()
         {
-            foreach (Modelo m in getModelos())
+        }
+
+        public Modelo getModeloDocumento(string id)
+        {
+            foreach (Modelo m in getModelosDocumento())
             {
                 if (m.id == id)
                     return m;
@@ -24,7 +47,18 @@ namespace nabu
             throw new Exception("Modelo [" + id + "] no existe");
         }
 
-        public abstract List<Modelo> getModelos();
+        public ModeloEvaluacion getModeloEvaluacion(string id)
+        {
+            foreach (ModeloEvaluacion m in getModelosEvaluacion())
+            {
+                if (m.id == id)
+                    return m;
+            }
+            throw new Exception("Modelo [" + id + "] no existe");
+        }
+
+        public abstract List<Modelo> getModelosDocumento();
+        public abstract List<ModeloEvaluacion> getModelosEvaluacion();
 
         public abstract string getOperativo(Grupo g);
         public abstract string doAccion(Grupo g, string email, string accion, HttpRequest req);
