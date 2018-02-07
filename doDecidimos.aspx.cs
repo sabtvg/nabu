@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ namespace nabu
         public Aplicacion app;
         public int saveTime = 10; //guardar arboles cada x minutos
         public int cleanTime = 20; //quito arbol de memoria si no se toca en 20 minutos
+
+        private Random simRND = new Random();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -155,38 +157,88 @@ namespace nabu
                         //    app.addLog("download", Request.UserHostAddress, Request["grupo"], "", "nodo=" + Request["id"]);
                         //    break;
 
-                        case "simulacionlive":
-                            string separador = (0.0f).ToString("0.0").Substring(1,1);
-                            float coopProb = float.Parse(Request["coopProb"].Replace(".",separador));
-                            string x = Request["x"];
+                        //case "simulacionlive0":
+                        //    string separador = (0.0f).ToString("0.0").Substring(1,1);
+                        //    float coopProb = float.Parse(Request["coopProb"].Replace(".",separador));
+                        //    string x = Request["x"];
 
-                            //guardo las coordenadas x
-                            if (x != "")
-                            {
-                                grupo = app.getGrupo(Request["grupo"]);
-                                lock (grupo)
-                                {
-                                    a = grupo.arbol;
-                                    foreach (string s in x.Split(','))
-                                    {
-                                        Nodo n = a.getNodo(int.Parse(s.Split('=')[0]));
-                                        n.x = float.Parse(s.Split('=')[1]);
-                                    }
-                                }
-                            }
+                        //    //guardo las coordenadas x
+                        //    if (x != "")
+                        //    {
+                        //        grupo = app.getGrupo(Request["grupo"]);
+                        //        lock (grupo)
+                        //        {
+                        //            a = grupo.arbol;
+                        //            foreach (string s in x.Split(','))
+                        //            {
+                        //                Nodo n = a.getNodo(int.Parse(s.Split('=')[0]));
+                        //                n.x = float.Parse(s.Split('=')[1]);
+                        //            }
+                        //        }
+                        //    }
 
-                            //live
-                            bool consensoAlcanzado = false;
-                            grupo = app.getGrupo(Request["grupo"]);
-                            lock (grupo)
-                            {
-                                for (int pasos = 0; pasos < 10 && !consensoAlcanzado; pasos++)
-                                    consensoAlcanzado = consensoAlcanzado || doSimulacionLive(grupo, coopProb);
-                            }
-                            Response.Write("{\"stop\": " + (consensoAlcanzado ? "true" : "false") + ", \"arbolPersonal\":" + Tools.toJson(grupo.arbol.getArbolPersonal("Prueba")) + "}");
+                        //    //live
+                        //    bool consensoAlcanzado = false;
+                        //    grupo = app.getGrupo(Request["grupo"]);
+                        //    lock (grupo)
+                        //    {
+                        //        for (int pasos = 0; pasos < 10 && !consensoAlcanzado; pasos++)
+                        //            consensoAlcanzado = consensoAlcanzado || doSimulacionLive0(grupo, coopProb);
+                        //    }
+                        //    Response.Write("{\"stop\": " + (consensoAlcanzado ? "true" : "false") + ", \"arbolPersonal\":" + Tools.toJson(grupo.arbol.getArbolPersonal("Prueba")) + "}");
+                        //    break;
+
+                        //case "crearsimulacion0":
+                        //    g = new Grupo();
+                        //    g.nombre = getSimName();
+                        //    g.path = Server.MapPath("grupos/" + g.nombre);
+                        //    g.URL = Request.UrlReferrer.AbsoluteUri.Substring(0, Request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
+                        //    g.objetivo = "simulacion";
+
+                        //    //organizacion
+                        //    g.organizacion = new nabu.organizaciones.Plataforma();
+
+                        //    //arbol
+                        //    a = new Arbol();
+                        //    a.nombre = g.nombre;
+                        //    a.simulacion = true;
+                        //    a.raiz = new Nodo();
+                        //    a.raiz.nombre = "Sim";
+                        //    a.grupo = g;
+                        //    g.arbol = a;
+
+                        //    a.minSiPc = 60;
+                        //    a.maxNoPc = 10;
+
+                        //    //usuario de prueba
+                        //    u1 = new Usuario();
+                        //    u1.nombre = "Prueba";
+                        //    u1.email = "Prueba";
+                        //    g.usuarios.Add(u1);
+                        //    a.lastSimUsuario = u1;
+
+                        //    //escribo respuesta
+                        //    tipos = new List<Type>();
+                        //    foreach (Modelo m in g.organizacion.getModelosDocumento()) tipos.Add(m.GetType());
+                        //    foreach (ModeloEvaluacion m in g.organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
+                        //    ret = "{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("Prueba")) + ",";
+                        //    ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(), tipos) + ",";
+                        //    ret += "\"modelosEvaluacion\":" + Tools.toJson(g.organizacion.getModelosEvaluacion(), tipos) + "}";
+                        //    lock (app.grupos)
+                        //    {
+                        //        app.grupos.Add(g);
+                        //    }
+                        //    Response.Write(ret);
+                        //    app.addLog("crearSimulacion", Request.UserHostAddress, "", "", "Simulacion creada");
+                        //    break;
+
+                        case "documentsubmit":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            Response.Write(doDocumentSubmit(Request["accion"], Request["parametro"], Request["grupo"], Request["email"], Request["modelo"], int.Parse(Request["id"]), int.Parse(Request["width"]), Request));
                             break;
 
                         case "crearsimulacion":
+                            //creo grupo
                             Grupo g = new Grupo();
                             g.nombre = getSimName();
                             g.path = Server.MapPath("grupos/" + g.nombre);
@@ -205,34 +257,91 @@ namespace nabu
                             a.grupo = g;
                             g.arbol = a;
 
-                            lock (app.grupos)
-                            {                               
-                                app.grupos.Add(g);
-                            }
-                            a.minSiPc = 60;
-                            a.maxNoPc = 10;
+                            a.minSiPc = 90;
+                            a.maxNoPc = 5;
 
-                            //usuario de prueba
-                            Usuario u1 = new Usuario();
-                            u1.nombre = "Prueba";
-                            u1.email = "Prueba";
-                            g.usuarios.Add(u1);
-                            a.lastSimUsuario = u1;
+                            //usuarios de prueba
+                            for (int i = 0; i < 100; i++)
+                            {
+                                Usuario u = new Usuario();
+                                u.nombre = "u" + i;
+                                u.email = "u" + i;
+                                for (int q = 0; q < 5; q++)
+                                    u.flores.Add(new Flor());
+                                g.usuarios.Add(u);
+                            }
 
                             //escribo respuesta
                             List<Type> tipos = new List<Type>();
                             foreach (Modelo m in g.organizacion.getModelosDocumento()) tipos.Add(m.GetType());
                             foreach (ModeloEvaluacion m in g.organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
-                            ret = "{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("Prueba")) + ",";
+                            ret = "{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("u1")) + ",";
                             ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(), tipos) + ",";
                             ret += "\"modelosEvaluacion\":" + Tools.toJson(g.organizacion.getModelosEvaluacion(), tipos) + "}";
+                            lock (app.grupos)
+                            {
+                                app.grupos.Add(g);
+                            }
                             Response.Write(ret);
                             app.addLog("crearSimulacion", Request.UserHostAddress, "", "", "Simulacion creada");
                             break;
 
-                        case "documentsubmit":
-                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            Response.Write(doDocumentSubmit(Request["accion"], Request["parametro"], Request["grupo"], Request["email"], Request["modelo"], int.Parse(Request["id"]), int.Parse(Request["width"]), Request));
+                        case "simulacionnuevodebate":
+                            grupo = app.getGrupo(Request["grupo"]);
+                            lock (grupo)
+                            {
+                                Usuario u = null;
+                                //busco un usuario con flores
+                                foreach(Usuario u2 in grupo.usuarios)
+                                    if (u2.floresDisponibles().Count > 0)
+                                    {
+                                        u = u2;
+                                        break;
+                                    }
+
+                                //agergo nodos iniciales
+                                if (u != null)
+                                {
+                                    //el nombre de este nodo es la cantidad de dias
+                                    Nodo NuevoTema = simAgregarNodo(grupo, u, grupo.arbol.raiz, 0); //introduccion al debate
+                                    //el nombre de este nodo es la generacion
+                                    Nodo n1 = simAgregarNodo(grupo, u, NuevoTema, 1);
+                                }
+                                ret = "{\"stop\": false, \"arbolPersonal\":" + Tools.toJson(grupo.arbol.getArbolPersonal("u1")) + "}";
+                            }
+                            Response.Write(ret);
+                            break;
+
+                        case "simulacionlive":
+                            string x = Request["x"];
+
+                            grupo = app.getGrupo(Request["grupo"]);
+                            lock (grupo)
+                            {
+                                //guardo x
+                                if (x != "")
+                                {
+                                    a = grupo.arbol;
+                                    foreach (string s in x.Split(','))
+                                    {
+                                        Nodo n = a.getNodo(int.Parse(s.Split('=')[0]));
+                                        n.x = float.Parse(s.Split('=')[1]);
+                                    }
+                                }
+
+                                //para cada debate live
+                                int i = 0;
+                                while (i < grupo.arbol.raiz.children.Count)
+                                {
+                                    Nodo n = grupo.arbol.raiz.children[i];
+                                    int dias = int.Parse(n.nombre);
+                                    simDebateLive(grupo, n, dias);
+                                    n.nombre = (dias + 1).ToString();
+                                    i++;
+                                }
+                                ret = "{\"stop\": false, \"arbolPersonal\":" + Tools.toJson(grupo.arbol.getArbolPersonal("u1")) + "}";
+                            }
+                            Response.Write(ret);
                             break;
 
                         default:
@@ -260,6 +369,257 @@ namespace nabu
             }
             Response.End();
         }
+
+        public void simDebateLive(Grupo g, Nodo tema, float dias)
+        {
+            int cantDiscrepar = 0;
+            for(int iu = 0; iu < g.usuarios.Count; iu++)
+            {
+                //limpio consensos
+                Usuario u = g.usuarios[iu];
+                foreach(Flor f in u.flores)
+                    if (f.id != 0){
+                        Nodo n = g.arbol.getNodo(f.id);
+                        if (n == null)
+                            f.id = 0;
+                        else if (n.consensoAlcanzado)
+                            g.arbol.quitarFlor(n, u);
+                    }
+
+                //actuo
+                if (simHoyConsiente(dias / 30))
+                    simConsentir(g, u, tema);
+                else
+                    if (cantDiscrepar < 30)  //evito que discrepen todos de golpe al principio
+                    {
+                        simDiscrepar(g, u, tema);
+                        cantDiscrepar++;
+                    }
+            }
+        }
+
+        public void simConsentir(Grupo g, Usuario u, Nodo tema)
+        {
+            //muevo una flor a un nodo con generacion mayor
+            List<Nodo> nodes = g.arbol.toList2(tema, new List<Nodo>());
+            //si tengo flor en este tema la quito
+            int generacion = 1;
+            Nodo nViejo = null;
+            foreach (Nodo n2 in nodes)
+                if (u.getFlor(n2.id) != null)
+                {
+                    generacion = int.Parse(n2.nombre);
+                    nViejo = n2;
+                    break;
+                }
+
+            //busco nodo para apoyar
+            Nodo nNuevo = null;
+            int nivel = 1;
+            foreach (Nodo n2 in nodes)
+                //if (int.Parse(n2.nombre) > generacion && n2.nivel > 1 && !n2.consensoAlcanzado)
+                if (n2.nivel > nivel && !n2.consensoAlcanzado)
+                {
+                    //generacion = int.Parse(n2.nombre);
+                    nivel = n2.nivel;
+                    nNuevo = n2;
+                }
+            if (nNuevo != null)
+            {
+                if (nViejo != null) 
+                    g.arbol.quitarFlor(nViejo, u);  //quito la flor solo si hay nuevo candidato
+                if (u.floresDisponibles().Count != 0)
+                    g.arbol.asignarflor(u, nNuevo);
+            }
+
+        }
+
+        public void simDiscrepar(Grupo g, Usuario u, Nodo tema)
+        {
+            //creo hermano o hijo
+            List<Nodo> nodes = g.arbol.toList2(tema, new List<Nodo>());
+            //si tengo flor en este tema entonces nada
+            bool hayFlor = false;
+            foreach (Nodo n2 in nodes)
+                if (u.getFlor(n2.id) != null)
+                {
+                    hayFlor = true;
+                }
+            if (!hayFlor)
+            {
+                //seleccion nodo al azar dentro del subarbol de n
+                Nodo selected = g.arbol.rndElement(nodes);
+                if (!selected.consensoAlcanzado)
+                {
+                    int generacion = int.Parse(selected.nombre);
+                    if (u.floresDisponibles().Count > 0)
+                    {
+                        if (simRND.NextDouble() <= 0.3)
+                        {
+                            //hijo
+                            if (selected.nivel < 5)
+                                simAgregarNodo(g, u, selected, generacion + 1);
+                            else if (selected != tema)
+                            {
+                                //hermano
+                                List<Nodo> path = g.arbol.getPath(selected.id);
+                                if (path.Count > 2)
+                                {
+                                    Nodo padre = path[1];
+                                    simAgregarNodo(g, u, padre, generacion + 1);
+                                }
+                                else if (selected.nivel < 5)
+                                    //hijo
+                                    simAgregarNodo(g, u, selected, generacion + 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public bool simHoyConsiente(float prob)
+        {
+            return simRND.NextDouble() <= prob;
+        }
+
+        public Nodo simAgregarNodo(Grupo g, Usuario u, Nodo selected, int generacion){
+            //agrego nodo
+            //creo texto segun nivel y modelo de documento
+            Modelo m = g.organizacion.getModeloDocumento("nabu.plataforma.modelos.Accion");  //modelo de simulacion (Accion)
+            Propuesta prop = new Propuesta();
+            prop.email = u.email;
+            prop.modeloID = m.id;
+            prop.nivel = selected.nivel + 1;  //esta propuesta es para el hijo que voy a crear
+            prop.nodoID = selected.id;
+            prop.niveles = 5;
+            prop.titulo = Tools.tr("Documento simulado", g.idioma);
+            prop.etiqueta = generacion.ToString();
+
+            //lleno datos de prueba
+            foreach (Variable v in m.getVariables())
+            {
+                if (v.id == "s.etiqueta")
+                    prop.bag.Add("s.etiqueta", "Sim");
+                else if (v.id == "s.titulo")
+                    prop.bag.Add("s.titulo", Tools.tr("Documento simulado", g.idioma));
+                else
+                    prop.bag.Add(v.id, Tools.tr("Simulacion", g.idioma));
+            }
+
+            Nodo nuevoNodo = g.arbol.addNodo(selected, prop);
+            
+            return nuevoNodo;
+        }
+
+        // public bool doSimulacionLive0(Grupo g, float coopProb)
+        //{
+        //    bool ret = false;
+        //    lock (g)
+        //    {
+        //        Arbol a = g.arbol;
+        //        float action = coopProb + a.getNexRandom() - 0.5f;
+
+        //        if (action > 3f / 4f)
+        //        {
+        //            //cooperacion, muevo un voto del menor al mayor
+        //            Nodo mayor = a.getMayorAgregar(0);
+        //            Nodo menor = a.getMenorQuitar(mayor.id);
+
+        //            if (mayor != menor && menor.flores > 0 && !mayor.consensoAlcanzado)
+        //            {
+        //                Usuario u = a.quitarFlor(menor);
+        //                try { a.asignarflor(u, mayor); }
+        //                catch { }
+        //                if (mayor.consensoAlcanzado) ret = true;
+        //            }
+        //        }
+        //        else if (action > 2f / 4f)
+        //        {
+        //            //voto a minorias, muevo un voto del mayor al menor
+        //            var mayor = a.getMayorQuitar(0);
+        //            var menor = a.getMenorAgregar(mayor.id);
+
+        //            if (mayor != menor && mayor.flores > 0 && !menor.consensoAlcanzado)
+        //            {
+        //                Usuario u = a.quitarFlor(mayor);
+        //                try { a.asignarflor(u, menor); }
+        //                catch { }
+        //                if (menor.consensoAlcanzado) ret = true;
+        //            }
+        //        }
+        //        else if (action > 1f / 4f)
+        //        {
+        //            //quito alguna flor
+        //            var mayor = a.getMayorQuitar(0);
+        //            if (mayor.flores > 0)
+        //            {
+        //                a.quitarFlor(mayor);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            //creo una rama nueva
+        //            //seleccion nodo al azar
+        //            List<Nodo> nodes = a.toList();
+        //            Nodo selected = a.rndElement(nodes);
+
+        //            //agrego nuevo nodo
+        //            if (!selected.consensoAlcanzado && selected.nivel < 5)
+        //            {
+        //                //agrego nodo
+        //                //creo texto segun nivel y modelo de documento
+        //                Modelo m = g.organizacion.getModeloDocumento("nabu.plataforma.modelos.Accion");  //modelo de simulacion (Accion)
+        //                Propuesta prop = new Propuesta();
+        //                prop.email = g.usuarios[0].email;
+        //                prop.modeloID = m.id;
+        //                prop.nivel = selected.nivel + 1;  //esta propuesta es para el hijo que voy a crear
+        //                prop.nodoID = selected.id;
+        //                prop.niveles = 5;
+        //                prop.titulo = Tools.tr("Documento simulado", g.idioma);
+        //                prop.etiqueta = ".";
+
+        //                //lleno datos de prueba
+        //                foreach (Variable v in m.getVariables())
+        //                {
+        //                    if (v.id == "s.etiqueta")
+        //                        prop.bag.Add("s.etiqueta", "Sim");
+        //                    else if (v.id == "s.titulo")
+        //                        prop.bag.Add("s.titulo", Tools.tr("Documento simulado", g.idioma));
+        //                    else
+        //                        prop.bag.Add(v.id, Tools.tr("Simulacion", g.idioma));
+        //                }
+
+        //                //me aseguro que el usuario tenga flores o agrego otro
+        //                if (a.lastSimUsuario.flores.Count < 5)
+        //                    a.lastSimUsuario.flores.Add(new Flor());
+        //                else
+        //                {
+        //                    //busco un usuario con flores
+        //                    a.lastSimUsuario = a.getUsuarioConFloresDisponibles();
+        //                }
+        //                if (a.lastSimUsuario == null)
+        //                {
+        //                    Usuario u = new Usuario();
+        //                    u.nombre = "Sim" + g.usuarios.Count + 1;
+        //                    u.email = "Sim" + g.usuarios.Count + 1;
+        //                    u.flores.Add(new Flor());
+        //                    g.usuarios.Add(u);
+        //                    a.lastSimUsuario = u;
+        //                }
+
+        //                prop.email = a.lastSimUsuario.email;
+        //                Nodo nuevo = a.addNodo(selected, prop);
+
+        //                if (selected.nivel == 1)
+        //                {
+        //                    selected.nombre = "Sim" + selected.id;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return ret;
+        //}
 
         string doPrevista(int id, string modeloID, string grupo, string email, int width, HttpRequest req)
         {
@@ -467,111 +827,6 @@ namespace nabu
         //    return ret;
         //}
 
-        public bool doSimulacionLive(Grupo g, float coopProb)
-        {
-            bool ret = false;
-            lock (g)
-            {
-                Arbol a = g.arbol;
-                float action = coopProb + a.getNexRandom() - 0.5f;
-
-                if (action > 3f/4f) {
-                    //cooperacion, muevo un voto del menor al mayor
-                    Nodo mayor = a.getMayorAgregar(0);
-                    Nodo menor = a.getMenorQuitar(mayor.id);
-
-                    if (mayor != menor && menor.flores > 0 && !mayor.consensoAlcanzado)
-                    {
-                        Usuario u = a.quitarFlor(menor);
-                        try { a.asignarflor(u, mayor); } catch {}
-                        if (mayor.consensoAlcanzado) ret = true;
-                    }
-                }
-                else if (action > 2f/4f) {
-                    //voto a minorias, muevo un voto del mayor al menor
-                    var mayor = a.getMayorQuitar(0);
-                    var menor = a.getMenorAgregar(mayor.id);
-
-                    if (mayor != menor && mayor.flores > 0 && !menor.consensoAlcanzado)
-                    {
-                        Usuario u = a.quitarFlor(mayor);
-                        try { a.asignarflor(u, menor); } catch {}
-                        if (menor.consensoAlcanzado) ret = true;
-                    }
-                }
-                else if (action > 1f / 4f)
-                {
-                    //quito alguna flor
-                    var mayor = a.getMayorQuitar(0);
-                    if (mayor.flores > 0)
-                    {
-                        a.quitarFlor(mayor);
-                    }
-                }
-                else
-                {
-                    //creo una rama nueva
-                    //seleccion nodo al azar
-                    List<Nodo> nodes = a.toList();
-                    Nodo selected = a.rndElement(nodes);
-
-                    //agrego nuevo nodo
-                    if (!selected.consensoAlcanzado && selected.nivel < 5)
-                    {
-                        //agrego nodo
-                        //creo texto segun nivel y modelo de documento
-                        Modelo m = g.organizacion.getModeloDocumento("nabu.plataforma.modelos.Accion");  //modelo de simulacion (Accion)
-                        Propuesta prop = new Propuesta();
-                        prop.email = g.usuarios[0].email;
-                        prop.modeloID = m.id;
-                        prop.nivel = selected.nivel + 1;  //esta propuesta es para el hijo que voy a crear
-                        prop.nodoID = selected.id;
-                        prop.niveles = 5;
-                        prop.titulo = Tools.tr("Documento simulado",g.idioma);
-                        prop.etiqueta = ".";
-
-                        //lleno datos de prueba
-                        foreach (Variable v in m.getVariables())
-                        {
-                            if (v.id == "s.etiqueta")
-                                prop.bag.Add("s.etiqueta", "Sim");
-                            else if (v.id == "s.titulo")
-                                prop.bag.Add("s.titulo", Tools.tr("Documento simulado", g.idioma));
-                            else
-                                prop.bag.Add(v.id, Tools.tr("Simulacion",g.idioma));
-                        }
-
-                        //me aseguro que el usuario tenga flores o agrego otro
-                        if (a.lastSimUsuario.flores.Count < 5)
-                            a.lastSimUsuario.flores.Add(new Flor());
-                        else
-                        {
-                            //busco un usuario con flores
-                            a.lastSimUsuario = a.getUsuarioConFloresDisponibles();
-                        }
-                        if (a.lastSimUsuario == null)
-                        {
-                            Usuario u = new Usuario();
-                            u.nombre = "Sim" + g.usuarios.Count + 1;
-                            u.email = "Sim" + g.usuarios.Count + 1;
-                            u.flores.Add(new Flor());
-                            g.usuarios.Add(u);
-                            a.lastSimUsuario = u;
-                        }
-
-                        prop.email = a.lastSimUsuario.email;
-                        Nodo nuevo = a.addNodo(selected, prop);
-
-                        if (selected.nivel == 1)
-                        {
-                            selected.nombre = "Sim" + selected.id;
-                        }
-                    }
-                }
-            }
-            return ret;
-        }
-
         //void verifyFloresCaducadas()
         //{
         //    DateTime lastVerifyFloresCaducadas;
@@ -607,6 +862,7 @@ namespace nabu
         //        Application.UnLock();
         //    }
         //}
+
         string crearActa(string grupo, string email, HttpRequest req)
         {
             string ret;

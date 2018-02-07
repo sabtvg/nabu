@@ -26,6 +26,7 @@
         var lastMouse = null;
         var editando = false;
         var firefoxWhich = 0;
+        var historico = historico || false;
 
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
@@ -104,6 +105,10 @@
                     document.location = 'default.html?grupo=' + grupoParam;
                 else {
                     calcularResize();
+
+                    //fondo segun timeline
+                    if (historico)
+                        document.body.style.backgroundImage = "url('res/night.jpg')";
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -344,7 +349,8 @@
                     s += "<option id='Plataforma'>Plataforma social</option>";
                     s += "</select></td></tr>";
                     s += "</table>";
-                    s += "<input type='button' class='btn' value='" + tr("Crear arbol") + "' onclick='doCrearArbolParaGrupo(" + GT.EID + ");'>";
+                    if (!historico)
+                        s += "<input type='button' class='btn' value='" + tr("Crear arbol") + "' onclick='doCrearArbolParaGrupo(" + GT.EID + ");'>";
                     s += "<div id='retmsg'></div>"
                     s += "</div>";
                 }
@@ -354,7 +360,7 @@
             else {
                 //ya tiene un grupo
                 s += "<a href='" + GT.grupoURL + "?grupo=" + GT.grupoNombre + "'>" + GT.grupoNombre + "</a>";
-                if (usuarioPertenece(GT))
+                if (usuarioPertenece(GT) && !historico)
                     s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
             }
 

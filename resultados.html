@@ -1,6 +1,6 @@
 <!--
 ///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@
         var monthNames;
         var lastMouse = null;
         var firefoxWhich = 0;
+        var historico = historico || false;
 
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
@@ -139,6 +140,10 @@
 
                     //resize
                     calcularResize();
+
+                    //fondo segun timeline
+                    if (historico)
+                        document.body.style.backgroundImage = "url('res/night.jpg')";
 
                     //loadsettings
                     var cookie = getCookie("nabu-" + grupoParam.replace(' ', '') + "-Resultados");

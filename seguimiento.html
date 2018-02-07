@@ -1,6 +1,6 @@
 <!--
 ///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -52,6 +52,8 @@
         var inicio = new Date();
         var luz = "verde.png";
         var firefoxWhich = 0;
+        var historico = historico || false;
+
 
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
@@ -139,6 +141,10 @@
                     document.location = 'default.html?grupo=' + grupoParam;
                 else {
                     calcularResize();
+
+                    //fondo segun timeline
+                    if (historico)
+                        document.body.style.backgroundImage = "url('res/night.jpg')";
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -359,7 +365,7 @@
 
             //cierre
             s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
-            if (usuario.email == operativo.admin || usuario.email == AC.responsable) {
+            if ((usuario.email == operativo.admin || usuario.email == AC.responsable) && !historico) {
                 s += "<input type='button' class='btn' value='" + tr("Finalizar acci&oacute;n") + "' onclick='doFinalizar(" + index + ");'>";
             }
             s += "<br><br>";
@@ -400,7 +406,8 @@
                 s += "><br>";
                 s += "<textarea id='descrip' class='editar' placeholder='Descripcion' style='width:100%;height:150px'></textarea>"
 
-                s += "<input type='button' class='btn' value='" + tr("Agregar estado") + "' onclick='doAgregarEstado(" + index + ");'>";
+                if (!historico)
+                    s += "<input type='button' class='btn' value='" + tr("Agregar estado") + "' onclick='doAgregarEstado(" + index + ");'>";
                 s += "<div id='msg'></div>";
             }
             document.getElementById("AC").innerHTML = s;

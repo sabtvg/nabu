@@ -60,6 +60,7 @@
   <ItemGroup>
     <Content Include="actas.html" />
     <Content Include="bosque.html" />
+    <Content Include="simulacion.html" />
     <Content Include="doAprendemos.aspx" />
     <Content Include="decisiones.html" />
     <Content Include="resultados.html" />
@@ -108,7 +109,7 @@
     <Content Include="res\jzm.png" />
     <Content Include="res\ponerflor.png" />
     <Content Include="res\quitarflor.png" />
-    <Content Include="simulacion.html" />
+    <Content Include="simulacion0.html" />
     <Content Include="usuarios.html" />
     <Content Include="modificararbol.html" />
     <Content Include="creararbol.html" />

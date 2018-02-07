@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ function doAprendemos() {
         //menu
         document.getElementById("menuEvaluacion").style.top = (window.innerHeight - 100).toFixed(0) + 'px';
         document.getElementById("menuEvaluacion").style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
-        document.getElementById("menuEvaluacion").style.visibility = "visible";
+        document.getElementById("menuEvaluacion").style.visibility = historico ? "hidden" : "visible";
 
         estado = 'aprendemos';
 
@@ -230,10 +230,12 @@ function dibujarTema(temaIndex) {
     ret += "</g>";
 
     //boton agregar
-    p = cart(quesoInicio + acumBoton * quesoScale + 70 * botonScale, a);
-    ret += "<g transform='translate(" + p.x + "," + p.y + ")'>";
-    ret += "<image xlink:href='res/proponer.png' x='-" + (40 * botonScale / 2) + "' y='0' style='cursor:pointer' transform='rotate(" + (a - 90) + ")'  height='" + (40 * botonScale) + "px' width='" + (40 * botonScale) + "px' onclick='doEvaluarTema(\"" + tema.id + "\");'/>";
-    ret += "</g>";
+    if (!historico) {
+        p = cart(quesoInicio + acumBoton * quesoScale + 70 * botonScale, a);
+        ret += "<g transform='translate(" + p.x + "," + p.y + ")'>";
+        ret += "<image xlink:href='res/proponer.png' x='-" + (40 * botonScale / 2) + "' y='0' style='cursor:pointer' transform='rotate(" + (a - 90) + ")'  height='" + (40 * botonScale) + "px' width='" + (40 * botonScale) + "px' onclick='doEvaluarTema(\"" + tema.id + "\");'/>";
+        ret += "</g>";
+    }
 
     //titulo
     p = cart(quesoInicio + acumBoton * quesoScale + 110 * botonScale, a);
@@ -276,10 +278,13 @@ function doSelectCelda(celdaid) {
 function getSVGCelda(temaIndex, nivel, iniDeg, finDeg, celda, selected) {
     //poligono
     var ret = "";
-    var color = "rgba(" + (100 - celda.respuesta * 10) + "%, " + (celda.respuesta * 10) + "%, 50%, 0.6)";
-    var stroke = selected ? "blue" : "gray";
+    var color = historico ? "rgba(" + (100 - celda.respuesta * 10) + "%, " + (celda.respuesta * 10) + "%, 0%, 0.6)"  : "rgba(" + (100 - celda.respuesta * 10) + "%, " + (celda.respuesta * 10) + "%, 50%, 0.6)";
+    var stroke = historico ? "gray" : (selected ? "blue" : "gray");
     ret = "<polygon fill='" + color + "' stroke='" + stroke + "' stroke-width='3' style='cursor:pointer;' ";
-    ret += "points='" + getSVGPoints(temaIndex, iniDeg, finDeg, celda) + "' onclick='doSelectCelda(\"" + celda.id + "\");'/>";
+    ret += "points='" + getSVGPoints(temaIndex, iniDeg, finDeg, celda) + "' ";
+    if (!historico) 
+        ret += "onclick='doSelectCelda(\"" + celda.id + "\");'";
+    ret += "/>";
 
     //texto
     var m = quesoInicio + celda.top * quesoScale + celda.height * quesoScale / 2 + 10;

@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -283,7 +283,7 @@ namespace nabu
             return nodes;
         }
 
-        private List<Nodo> toList2(Nodo node, List<Nodo> l) {
+        public List<Nodo> toList2(Nodo node, List<Nodo> l) {
             List<Nodo> ret = l;
             ret.Add(node);
             if (node.children.Count > 0) {
@@ -834,7 +834,7 @@ namespace nabu
             foreach (Nodo padre in getPath(n.id))
             {
                 Flor usada = u.getFlor(padre.id);
-                if (usada != null)
+                if (usada != null && padre != n)
                 {
                     //hay flor en un nodo anterior la subo
                     padre.flores -= 1;

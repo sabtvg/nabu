@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,9 @@ var downEvent = null;
 var translatex = 0;
 var translatey = 0;
 var rotFlores = 0;
-
+var maxWidth = 50;
+var useMaxWidth = false;
+var historico = historico || false;
 
 function crearArbol() {
     var diameter = window.innerHeight / 2;
@@ -131,6 +133,7 @@ function rotarFlores() {
 function dibujarArbol(referencia) {
 
     //actualizo las flores de los padres
+    useMaxWidth = false;
     updateFloresTotales(arbolPersonal.raiz);
 
     // Compute the new tree layout.
@@ -166,6 +169,8 @@ function dibujarArbol(referencia) {
     nodeEnter.append("circle")
         .attr("r", function (d) {
             var r = d.totalFlores / 4 + 2;
+            if (useMaxWidth)
+                r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             if (r < 10) r = 10;
             if (visual.level == 1)
                 r = r * 2;
@@ -242,6 +247,8 @@ function dibujarArbol(referencia) {
     nodeUpdate.select("circle")
         .attr("r", function (d) {
             var r = d.totalFlores / 4 + 2;
+            if (useMaxWidth)
+                r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             if (r < 10) r = 10;
             if (selectedNode && d.id == selectedNode.id) r += 10;
             return r * scale;
@@ -253,7 +260,9 @@ function dibujarArbol(referencia) {
                 return "black";
         })
         .style("fill", function (d) {
-            if (selectedNode)
+            if (historico)
+                return "gray";
+            else if (selectedNode)
                 return d.consensoAlcanzado ? "gray" : (d.id == selectedNode.id ? "blue" : "yellow");
             else
                 return d.consensoAlcanzado ? "gray" : "yellow";
@@ -284,7 +293,10 @@ function dibujarArbol(referencia) {
 
     nodeExit.select("circle")
         .attr("r", function (d) {
-            var r = d.totalFlores / 2 + 2;
+            var r = d.totalFlores / 4 + 2;
+            if (useMaxWidth)
+                r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
+            if (r < 10) r = 10;
             return r * scale;
         })
 
@@ -345,7 +357,8 @@ function dibujarArbol(referencia) {
     florUpdate.select("image")
         .attr("width", 37 * scale + "px")
         .attr("height", 36 * scale + "px")
-        .attr("xlink:href", "res/icono2.png");
+        .attr("xlink:href", "res/icono2.png")
+        .attr("visibility", !historico);
 
     var florExit = flor.exit().transition()
         .duration(duration)
@@ -457,12 +470,14 @@ function dibujarArbol(referencia) {
     link.transition()
         .duration(duration)
         .attr("style", function (d) {
-            var w = d.target.totalFlores + 1;
+            var w = d.target.totalFlores;
+            if (useMaxWidth)
+                w = Math.ceil(w / arbolPersonal.usuarios * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             var r = Math.round(255 / d.target.depth);
-            var stroke = "rgb(100," + (255 - r) + ",0)";
+            var stroke = historico ? "gray" : "rgb(100," + (255 - r) + ",0)";
             if (d.target.consensoAlcanzado) stroke = "gray";
             else if (d.target.email == arbolPersonal.usuario.email) stroke = "Crimson";
-            return "fill: none; stroke: " + stroke + ";stroke-width: " + (w * scale).toFixed(0) + "px;";
+            return "fill: none; stroke: " + stroke + ";stroke-width: " + (w * scale + 1).toFixed(0) + "px;";
         })
         .attr("d", diagonal);
 
@@ -532,12 +547,9 @@ function updateFloresTotales(node) {
         else
             node.flores = 1;
 
-    //if (node.nivel == undefined)
-    //    node.nivel = 0;
-
     node.totalFlores = node.flores;
 
-    //obtengo los hijos segun si se visualiza o no
+    //obtengo los hijos 
     var hijos = node.children;
     var totalFlores = 0;
     for (var i in hijos) {
@@ -548,6 +560,9 @@ function updateFloresTotales(node) {
         totalFlores += hijo.totalFlores;
     }
     node.totalFlores = totalFlores + node.flores;
+
+    if (node.totalFlores > maxWidth)
+        useMaxWidth = true; //esto es para que se dibuje proporcional
 
     //defino texto de parametros de consenso si es una hoja
     //node.negados = getNegados(node);
@@ -601,12 +616,14 @@ function docClick(d) {
 }
 
 function florClick(d) {
-    if (d.id != 0) {
-        var n = getNodo(d.id);
-        nodeClick(n);
+    if (!historico) {
+        if (d.id != 0) {
+            var n = getNodo(d.id);
+            nodeClick(n);
+        }
+        else
+            nodeClick(arbolPersonal.raiz);
     }
-    else
-        nodeClick(arbolPersonal.raiz);
 }
 
 function nodeClick(d) {
@@ -623,14 +640,16 @@ function nodeClick(d) {
     showPanel();
 
     //activo menu contextual 
-    if (arbolPersonal.usuario.habilitado) {
-        if (selectedNode == arbolPersonal.raiz) {
-            seleccionarModelo();
-        }
-        else {
-            menu = document.getElementById("menuNode");
-            menu.style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
-            menu.style.visibility = "visible";
+    if (!historico) {
+        if (arbolPersonal.usuario.habilitado) {
+            if (selectedNode == arbolPersonal.raiz) {
+                seleccionarModelo();
+            }
+            else {
+                menu = document.getElementById("menuNode");
+                menu.style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
+                menu.style.visibility = "visible";
+            }
         }
     }
 }

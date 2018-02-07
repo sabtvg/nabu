@@ -1,6 +1,6 @@
 <!--
 ///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -42,8 +42,6 @@
         var stopSim = false;
         var selectedNode; //siempre nulo
         var playing = false;
-        var maxPasos = 200; //la simulacion se corta a los 300 pasos
-        var pasos = 0;
         //tipo de visualizacion
         var visual = {level: 10};  //Chrome, Zafari, InternetExplorer. Por ahora solo usa la visualizacion completa 10
         var joyInterval;
@@ -96,9 +94,6 @@
             duration = 250;
             visual.level = 1;
 
-            //flores
-            timerFlores = setInterval(rotarFlores, 200);
-
             traducir();
 
             iniciar();
@@ -107,12 +102,18 @@
         function iniciar(){
             getHttp("doDecidimos.aspx?actn=crearSimulacion",
                 function (data) {
-                    var js = JSON.parse(data);
-                    arbolPersonal = js.arbolPersonal;
-                    modelos = js.modelos;
+                    var ret = JSON.parse(data);
+                    arbolPersonal = ret.arbolPersonal;
+                    modelos = ret.modelos;
 
-                    if (svgArbol == null)
-                        crearArbol(arbolPersonal.raiz);
+                    document.getElementById("usuarios").innerHTML = tr("Usuarios") + ":" + ret.arbolPersonal.usuarios
+                    document.getElementById("minSiPc").innerHTML = tr("Si") + "&ge;" + (ret.arbolPersonal.minSiPc / 100 * ret.arbolPersonal.usuarios).toFixed(0) + " (" + ret.arbolPersonal.minSiPc + "%)";
+                    document.getElementById("maxNoPc").innerHTML = tr("No") + "&le;" + (ret.arbolPersonal.maxNoPc / 100 * ret.arbolPersonal.usuarios).toFixed(0) + " (" + ret.arbolPersonal.maxNoPc + "%)";
+
+                    crearArbol(arbolPersonal.raiz);
+
+                    //flores
+                    timerFlores = setInterval(rotarFlores, 200);
 
                     document.getElementById("startStop").value = tr("Pausa");
 
@@ -129,23 +130,34 @@
                 document.getElementById("startStop").className = "btnStop";
             }
             else {
-                pasos = 0;
                 stopSim = false;
-                live();
                 playing = true;
+                live();
                 document.getElementById("startStop").value = tr("Pausa");
                 document.getElementById("startStop").className = "btnPlay";
             }
+        }
+
+        function nuevoDebate() {
+            getHttp("doDecidimos.aspx?actn=simulacionNuevoDebate&grupo=" + arbolPersonal.nombre,
+                function (data) {
+                    if (data.substring(0, 6) == "Error=")
+                        alert(data);
+                    else {
+                        //actualizo el arbol recibido
+                        var ret = JSON.parse(data);
+
+                        arbolPersonal = ret.arbolPersonal;
+                        dibujarArbol();                      
+                    }
+                });
         }
 
         function live() {
             var x = getx("", arbolPersonal.raiz); //lista coordenada x de los nodos hoja
             if (x != "") x = x.substring(0, x.length - 1); //quito la , final
 
-            var coopProb;
-            if (document.getElementById("tipo1").checked) coopProb = 0; else coopProb = 1;
-
-            getHttp("doDecidimos.aspx?actn=simulacionLive&coopProb=" + coopProb + "&grupo=" + arbolPersonal.nombre + "&x=" + x,
+            getHttp("doDecidimos.aspx?actn=simulacionLive&grupo=" + arbolPersonal.nombre + "&x=" + x,
                 function (data) {
                     if (data.substring(0, 6) == "Error=") 
                         alert(data);
@@ -161,14 +173,8 @@
                             startStop(); //paro la simulacion
                         else {
                             actualizarDatosConsenso();
-                            pasos += 1;
-
-                            if (pasos < maxPasos) {
-                                if (!stopSim)
-                                    setTimeout(live, 300);
-                            }
-                            else
-                                startStop(); //paro la simulacion
+                            if (playing)
+                                setTimeout(live, 1000);
                         }
                     }
                 });
@@ -195,9 +201,6 @@
         }
 
         function traducir() {
-            document.getElementById("s1").innerHTML = tr("Diverger");
-            document.getElementById("s2").placeholder = tr("Converger");
-            document.getElementById("btnIni").value = tr("Reiniciar");
             document.getElementById("btnPaso").value = tr("Paso");
             document.getElementById("tit2").innerHTML = tr("Sociocracia");
             document.getElementById("tit3").innerHTML = tr("Democracia interactiva");
@@ -236,15 +239,9 @@
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="Div1" style="padding: 10px; position: absolute; left:110px; top:10px;">
-        <nobr>
-            <input id="tipo1" type="radio" style="width: 30px; height:30px;" value="Diverger" name="tipo" checked /><span id="s1" style="font-size:24px">Diverger</span>
-            <input id="tipo2" type="radio" style="width: 30px; height:30px;" value="Converger" name="tipo" /><span id="s2" style="font-size:24px">Converger</span>
-        </nobr>
-        <br />
-        <nobr>
-        <input id="btnIni" class="simtxt" type="button" value="Reiniciar" onclick="iniciar();" />
+        <input id="btnNuevo" class="simtxt" type="button" value="Nuevo debate" onclick="nuevoDebate();" />
         <input id="btnPaso" class="simtxt" type="button" value="Paso" onclick="live();" />
-        <input id="startStop" class="btnPlay" type="button" value="Pausa" onclick="startStop();" />
+        <input id="startStop" class="btnPlay" type="button" value="Play" onclick="startStop();" />
         </nobr>
         <div id="nodes" class="titulo1"></div>
     </div>

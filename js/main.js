@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -325,6 +325,7 @@ function doTimeBack() {
     showTimePanel();
     document.body.style.backgroundImage = "url('res/night.jpg')";
     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+    menuOptions();
 }
 
 function doTimePresent() {
@@ -332,6 +333,7 @@ function doTimePresent() {
     showTimePanel();
     document.body.style.backgroundImage = "url('res/background.jpg')";
     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+    menuOptions();
 }
 
 function showTimePanel() {
@@ -500,7 +502,7 @@ function calcularResize() {
     document.getElementById("ppal11").src = "res/" + idioma + "/operativo.png";
     document.getElementById("ppal11").style.width = 35 * menuscale + 'px';
     document.getElementById("ppal11").style.height = 230 * menuscale + 'px';
-    document.getElementById("ppal11").style.left = 839 * menuscale + 'px';
+    document.getElementById("ppal11").style.left = 800 * menuscale + 'px';
     document.getElementById("ppal11").style.top = 150 * menuscale + 'px';
 
     //arbol
@@ -688,25 +690,7 @@ function doMenuppal() {
         //panel usuario        
         document.getElementById("panelUsuario").style.visibility = 'visible';
 
-        //opciiones de menu
-        var mnu = "";
-        if (arbolPersonal.usuario.isAdmin) {
-            //adminOptions
-            mnu += "<a class='titulo3' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a><br>";
-            mnu += "<a class='titulo3' href='modificararbol.html?grupo=" + grupoParam + "'>" + tr("El arbol") + "</a><br>";
-            mnu += "<a class='titulo3' href='usuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a><br>";
-            mnu += "<a class='titulo3' href='mailer.html?grupo=" + grupoParam + "'>" + tr("Mailer") + "</a><br>";
-        }
-        else {
-            //user options
-            mnu += "<a class='titulo3' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a><br>";
-            mnu += "<a class='titulo3' href='verusuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a><br>";
-        }
-        if (arbolPersonal.usuario.isSecretaria) {
-            //adminOptions
-            mnu += "<a class='titulo3' href='actas.html?grupo=" + grupoParam + "'>" + tr("Actas") + "</a><br>";
-        }
-        document.getElementById("mnuOptions").innerHTML = mnu;
+        menuOptions();
 
         //pongo icono ce manifiesto
         if (arbolPersonal && arbolPersonal.URLEstatuto != "")
@@ -739,6 +723,29 @@ function doMenuppal() {
 
     //wait
     document.getElementById("florWait").style.visibility = "hidden";
+}
+
+function menuOptions() {
+    //opciiones de menu
+    var mnu = "";
+    if (arbolPersonal.usuario.isAdmin) {
+        //adminOptions
+        mnu += "<a class='titulo3' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a><br>";
+        mnu += "<a class='titulo3' href='modificararbol.html?grupo=" + grupoParam + "'>" + tr("El arbol") + "</a><br>";
+        mnu += "<a class='titulo3' href='usuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a><br>";
+        mnu += "<a class='titulo3' href='mailer.html?grupo=" + grupoParam + "'>" + tr("Mailer") + "</a><br>";
+    }
+    else {
+        //user options
+        mnu += "<a class='titulo3' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a><br>";
+        mnu += "<a class='titulo3' href='verusuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a><br>";
+    }
+    if (arbolPersonal.usuario.isSecretaria) {
+        //adminOptions
+        mnu += "<a class='titulo3' href='actas.html?grupo=" + grupoParam + "'>" + tr("Actas") + "</a><br>";
+    }
+    if (historico) mnu = "";
+    document.getElementById("mnuOptions").innerHTML = mnu;
 }
 
 function doCloseHelp() {

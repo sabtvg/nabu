@@ -1,6 +1,6 @@
 <!--
 ///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -407,7 +407,7 @@
 
             //own
             if (own) {
-                s += "<image xlink:href='res/tu2.png' x='-8' y='" + (-r - 10 - 42) + "' height='42px' width='17px'/>";
+                s += "<image xlink:href='res/tu2.png' x='-8' y='" + (-r - 10 * zoom - 42 * zoom) + "' height='" + (42 * zoom) + "px' width='" + (17 * zoom) + "px'/>";
                 //s += "<circle cx='" + (r + 15).toFixed(0) + "' cy='0' r='10' stroke='" + colorb + "' stroke-width='3' fill='white' fill-opacity='1' />";
             }
 
@@ -519,7 +519,7 @@
                 </tr>
                 <tr>
                     <td><img src="res/jl.png" style='cursor:pointer;' onclick="offsetX -= 30; dibujarTodo();" /></td>
-                    <td><img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" /></td>
+                    <td><img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; transform(0,0); dibujarTodo();" /></td>
                     <td><img src="res/jr.png" style='cursor:pointer;' onclick="offsetX += 30; dibujarTodo();" /></td>
                 </tr>
                 <tr>

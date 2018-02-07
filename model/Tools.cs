@@ -1,5 +1,5 @@
 ﻿///////////////////////////////////////////////////////////////////////////
-//  Copyright 2015 - 2020 Sabrina Prestigiacomo sabtvg@gmail.com
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -242,6 +242,34 @@ namespace nabu
             "enlace.evaluacion.tip3|es|",
             "enlace.evaluacion.tip4|es|",
             "enlace.evaluacion.tip5|es|",
+            "alhijo.documento.introduccion.tip|es|",
+            "alhijo.documento.situacionactual.tip|es|",
+            "alhijo.documento.propuesta.tip|es|",
+            "alhijo.documento.situaciondeseada.tip|es|",
+            "alpadre.documento.introduccion.tip|es|",
+            "alpadre.documento.situacionactual.tip|es|",
+            "alpadre.documento.propuesta.tip|es|",
+            "alpadre.documento.situaciondeseada.tip|es|",
+            "alhijo.evaluacion.p1|es|&iquest;El problema a enfrentar esta bien definido?",
+            "alhijo.evaluacion.p2|es|&iquest;La situaci&oacute;n actual se corresponde con la realidad?",
+            "alhijo.evaluacion.p3|es|&iquest;La propuesta deberia analizarce?",
+            "alhijo.evaluacion.p4|es|&iquest;La situaci&oacute;n deseada es asumible?",
+            "alhijo.evaluacion.p5|es|&iquest;Este tema deberia atenderse en este grupo?",
+            "alhijo.evaluacion.tip1|es|",
+            "alhijo.evaluacion.tip2|es|",
+            "alhijo.evaluacion.tip3|es|",
+            "alhijo.evaluacion.tip4|es|",
+            "alhijo.evaluacion.tip5|es|",
+            "alpadre.evaluacion.p1|es|&iquest;El problema a enfrentar esta bien definido?",
+            "alpadre.evaluacion.p2|es|&iquest;La situaci&oacute;n actual se corresponde con la realidad?",
+            "alpadre.evaluacion.p3|es|&iquest;La propuesta deberia analizarce?",
+            "alpadre.evaluacion.p4|es|&iquest;La situaci&oacute;n deseada es asumible?",
+            "alpadre.evaluacion.p5|es|&iquest;Este tema deberia atenderse en este grupo?",
+            "alpadre.evaluacion.tip1|es|",
+            "alpadre.evaluacion.tip2|es|",
+            "alpadre.evaluacion.tip3|es|",
+            "alpadre.evaluacion.tip4|es|",
+            "alpadre.evaluacion.tip5|es|",
             
             "El usuario no existe|ct|La usu&agrave;ria no existeix", 
             "La clave actual no corresponde|ct|La clau actual no correspon", 
@@ -521,7 +549,13 @@ namespace nabu
             foreach (string entry in dictionary)
             {
                 if (entry.ToLower().StartsWith(key.ToLower() + "|" + idioma.ToLower() + "|"))
-                    return entry.Substring(key.Length + idioma.Length + 2);
+                {
+                    var ret = entry.Substring(key.Length + idioma.Length + 2);
+                    if (ret != "")
+                        return ret;
+                    else
+                        return "[" + key + "]";
+                }
             }
             return "[" + key + "]";
         }
