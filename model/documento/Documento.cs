@@ -109,7 +109,7 @@ namespace nabu
             string ret = "";
             ret += "<div class='titulo1'>Seguimiento: " + fname + "</div>";
             ret += "<div class='titulo1'>Titulo: " + titulo + "</div>";
-            ret += "<div class='titulo2'>Fecha: " + fecha.ToShortDateString() + "</div>";
+            ret += "<div class='titulo2'>Fecha: " + fecha.ToString("dd/MM/yy") + "</div>";
             ret += "<div class='titulo2'>Modelo" + ": " + nombre + "</div>";
             ret += "<div class='titulo2'><a href='" + URLPath + "' target='_blank'>" + URLPath + "</a></div><br>";
                             
@@ -117,7 +117,7 @@ namespace nabu
             foreach (Log l in logs)
             {
                 ret += "<tr>";
-                ret += "<td>" + l.fecha.ToShortDateString() + "</td><td>" + l.msg + "</td>";
+                ret += "<td>" + l.fecha.ToString("dd/MM/yy") + "</td><td>" + l.msg + "</td>";
                 ret += "<tr>";
             }
             ret += "</table>";

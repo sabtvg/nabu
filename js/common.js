@@ -73,7 +73,7 @@ function showPanelIzq(data) {
     var panelIzq2 = document.getElementById("panelIzq2");
     if (panelIzq.style.visibility == "hidden") {
         panelIzq.style.visibility = "visible";
-        efectoLeft(panelIzq, 0, -400 * scale, 20, TWEEN.Easing.Cubic.Out);
+        efectoLeft(panelIzq, 0, 750, -400 * scale, 20, TWEEN.Easing.Cubic.Out);
     }
 
     panelIzq.style.top = "220px";
@@ -90,7 +90,7 @@ function showPanelDer(data) {
     var panelDer2 = document.getElementById("panelDer2");
     if (panelDer && panelDer.style.visibility == "hidden") {
         panelDer.style.visibility = "visible";
-        efectoLeft(panelDer, 0, window.innerWidth, window.innerWidth - 400 * scale - 40, TWEEN.Easing.Cubic.Out);
+        efectoLeft(panelDer, 0, 750, window.innerWidth, window.innerWidth - 400 * scale - 40, TWEEN.Easing.Cubic.Out);
     }
 
     panelDer.style.top = "220px";
@@ -104,7 +104,7 @@ function showPanelDer(data) {
 function hidePanelIzq() {
     var panelIzq = document.getElementById("panelIzq");
     if (panelIzq && panelIzq.style.visibility == "visible") {
-        efectoLeft(panelIzq, 0, 20, -450 * scale, TWEEN.Easing.Cubic.Out, function () {
+        efectoLeft(panelIzq, 0, 750, 20, -450 * scale, TWEEN.Easing.Cubic.Out, function () {
             document.getElementById("panelIzq").style.visibility = "hidden";
         });
     }
@@ -113,7 +113,7 @@ function hidePanelIzq() {
 function hidePanelDer() {
     var panelDer = document.getElementById("panelDer");
     if (panelDer.style.visibility == "visible") {
-        efectoLeft(panelDer, 0, window.innerWidth - 400 * scale - 40, window.innerWidth, TWEEN.Easing.Cubic.Out, function () {
+        efectoLeft(panelDer, 0, 750, window.innerWidth - 400 * scale - 40, window.innerWidth, TWEEN.Easing.Cubic.Out, function () {
             document.getElementById("panelDer").style.visibility = "hidden";
             document.getElementById("panelDer").style.left = "0px"; //evita que aparezcan las barras de scroll
         });

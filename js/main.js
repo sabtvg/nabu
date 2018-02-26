@@ -213,14 +213,14 @@ function traducir() {
     document.getElementById("btnEntrar").value = tr("Entrar");
     document.getElementById("email").placeholder = tr("email");
     document.getElementById("clave").placeholder = tr("clave");
-    document.getElementById("tit1").innerHTML = tr("Democracia interactiva");
+    //document.getElementById("tit1").innerHTML = tr("Sociocracia");
     document.getElementById("btnCancelar").value = tr("Cancelar");
     document.getElementById("lnkSim").innerHTML = tr("simulacion");
     document.getElementById("mejorVisto").innerHTML = tr("Mejor visto en");
     document.getElementById("version").innerHTML = tr("version beta");
     document.getElementById("lnkAyuda").innerHTML = tr("Ayuda");
     document.getElementById("titulo1").innerHTML = tr("Sociocracia");
-    document.getElementById("titulo2").innerHTML = tr("Democracia interactiva");
+    //document.getElementById("titulo2").innerHTML = tr("Democracia interactiva");
     document.getElementById("oldPass").placeholder = tr("Clave actual");
     document.getElementById("newPass").placeholder = tr("Nueva clave");
     document.getElementById("repeat").placeholder = tr("Repitela");
@@ -366,8 +366,8 @@ function calcularResize() {
     //login
     document.getElementById("tip").style.top = (window.innerHeight / 2 + 130) + 'px';
     document.getElementById("tip").style.left = (window.innerWidth / 2 - 200) + 'px';
-    document.getElementById("loginIn").style.top = window.innerHeight / 6 + 'px';
-    document.getElementById("loginFlor").style.top = (window.innerHeight / 6 + 50 * scaley) + 'px';
+    document.getElementById("loginIn").style.top = window.innerHeight / 4 + 50 + 'px';
+    document.getElementById("loginFlor").style.top = (window.innerHeight / 4 + 50 * scaley) + 'px';
     document.getElementById("loginIn").style.left = (window.innerWidth / 2 - 50) + 'px';
     document.getElementById("loginFlor").style.left = (window.innerWidth / 2 - 280) + 'px';
 
@@ -375,7 +375,7 @@ function calcularResize() {
     document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
     document.getElementById("titulo0").style.fontSize = (50 * scaley).toFixed(0) + 'px';
     document.getElementById("titulo1").style.fontSize = (30 * scaley).toFixed(0) + 'px';
-    document.getElementById("titulo2").style.fontSize = (25 * scaley).toFixed(0) + 'px';
+    //document.getElementById("titulo2").style.fontSize = (25 * scaley).toFixed(0) + 'px';
 
     //atras
     document.getElementById("atras").style.width = (100 * scalex) + 'px';
@@ -383,7 +383,7 @@ function calcularResize() {
 
     //pie
     document.getElementById("pie").style.top = (window.innerHeight - 25).toFixed(0) + 'px';
-    document.getElementById("pie").style.left = (window.innerWidth / 2 - 300).toFixed(0) + 'px';
+    document.getElementById("pie").style.left = (window.innerWidth / 2 - 360).toFixed(0) + 'px';
     document.getElementById("pie").style.visibility = 'visible';
     document.getElementById("lnkSim").href = 'simulacion.html?grupo=' + grupoParam;
 
@@ -488,10 +488,10 @@ function calcularResize() {
     document.getElementById("ppal8").style.left = 210 * menuscale + 'px';
     document.getElementById("ppal8").style.top = 268 * menuscale + 'px';
 
-    document.getElementById("ppal9").style.width = 64 * menuscale + 'px';
-    document.getElementById("ppal9").style.height = 79 * menuscale + 'px';
-    document.getElementById("ppal9").style.left = 140 * menuscale + 'px';
-    document.getElementById("ppal9").style.top = 258 * menuscale + 'px';
+    document.getElementById("ppal9").style.width = 64 * 1.1 * menuscale + 'px';
+    document.getElementById("ppal9").style.height = 79 * 1.1 * menuscale + 'px';
+    document.getElementById("ppal9").style.left = 130 * menuscale + 'px';
+    document.getElementById("ppal9").style.top = 248 * menuscale + 'px';
 
     document.getElementById("ppal10").src = "res/" + idioma + "/politico.png";
     document.getElementById("ppal10").style.width = 35 * menuscale + 'px';
@@ -532,7 +532,7 @@ function loginEffectIn(){
 
             document.getElementById("tip").style.top = (window.innerHeight / 2 + 130) + 'px';
             document.getElementById("tip").style.left = (window.innerWidth / 2 - 200) + 'px';
-            document.getElementById("loginIn").style.top = window.innerHeight / 6 + 'px';
+            document.getElementById("loginIn").style.top = window.innerHeight / 6 + 150 + 'px';
             document.getElementById("loginFlor").style.top = (window.innerHeight / 6 + 50 * scale) + 'px';
             document.getElementById("loginIn").style.left = (window.innerWidth / 2 - 50) + 'px';
             document.getElementById("loginFlor").style.left = (window.innerWidth / 2 - 280) + 'px';
@@ -544,11 +544,11 @@ function loginEffectIn(){
             document.getElementById("loginFlor").style.visibility = "hidden";
 
             document.getElementById("tip").style.left = (window.innerWidth / 2 - 200) + 'px';
-            document.getElementById("loginIn").style.top = window.innerHeight / 4 + 'px';
-            document.getElementById("loginFlor").style.top = (window.innerHeight / 4 + 50 * scale) + 'px';
+            document.getElementById("loginIn").style.top = window.innerHeight / 4 + 50 + 'px';
+            document.getElementById("loginFlor").style.top = (window.innerHeight / 4 + 50) + 'px';
 
-            efectoLeft(document.getElementById("loginIn"), 0, window.innerWidth, window.innerWidth / 2 - 50, TWEEN.Easing.Cubic.Out);
-            efectoLeft(document.getElementById("loginFlor"), 200, -200, window.innerWidth / 2 - 280, TWEEN.Easing.Exponential.Out);
+            efectoLeft(document.getElementById("loginIn"), 0, 750, window.innerWidth, window.innerWidth / 2 - 50, TWEEN.Easing.Cubic.Out);
+            efectoLeft(document.getElementById("loginFlor"), 0, 750, -200, window.innerWidth / 2 - 280, TWEEN.Easing.Exponential.Out);
             efectoTop(document.getElementById("tip"), 800, window.innerHeight, window.innerHeight / 2 + 130, TWEEN.Easing.Elastic.Out);
             timerFlores = setInterval(function () {
                 rotFlores += 0.3;
@@ -578,8 +578,8 @@ function loginEffectIn(){
 
 function loginEffectOut() {
     //login effect
-    efectoLeft(document.getElementById("loginIn"), 0, window.innerWidth / 2 - 50, window.innerWidth, TWEEN.Easing.Cubic.Out);
-    efectoLeft(document.getElementById("loginFlor"), 200, window.innerWidth / 2 - 280, -250, TWEEN.Easing.Linear.None);
+    efectoLeft(document.getElementById("loginIn"), 0, 750, window.innerWidth / 2 - 50, window.innerWidth, TWEEN.Easing.Cubic.Out);
+    efectoLeft(document.getElementById("loginFlor"), 0, 750, window.innerWidth / 2 - 280, -250, TWEEN.Easing.Linear.None);
     efectoTop(document.getElementById("tip"), 0, window.innerHeight / 2 + 130, window.innerHeight, TWEEN.Easing.Exponential.Out);
     clearInterval(timerFlores);
     timerFlores = setInterval(function () {
@@ -594,6 +594,15 @@ function loginEffectOut() {
         document.getElementById("tip").style.visibility = "hidden";
     }, 1000);
     document.getElementById("loginGrupo").style.visibility = "hidden";
+}
+
+function loginEffectNo() {
+    //login effect
+    var l = document.getElementById("loginIn");
+    var x = window.innerWidth / 2;
+    efectoLeft(l, 0, 100, x - 50, x - 10, TWEEN.Easing.Cubic.InOut);
+    efectoLeft(l, 100, 200, x - 10, x - 90, TWEEN.Easing.Cubic.InOut);
+    efectoLeft(l, 300, 100, x - 90, x - 50, TWEEN.Easing.Cubic.InOut);
 }
 
 function animate(time) {
@@ -612,6 +621,9 @@ function doLogin() {
     var loginResponse = document.getElementById("loginResponse");
     loginResponse.innerHTML = '';
 
+    email = email.trim();
+    clave = clave.trim();
+
     //login to server
     getHttp("doMain.aspx?actn=login&email=" + email
         + "&clave=" + clave
@@ -621,6 +633,7 @@ function doLogin() {
                 //ha habido un error
                 var loginResponse = document.getElementById("loginResponse");
                 loginResponse.innerHTML = '<font color=red>' + data.substring(6) + '</font>';
+                loginEffectNo();
             }
             else {
                 //login effect
@@ -644,9 +657,35 @@ function doLogin() {
                 loginEffectOut();
 
                 //activo menuppal
-                doMenuppal(data);
+                doMenuppal();
             }
         });
+}
+
+function showAlertas(alertas) {
+    if (alertas.length > 0) {
+        var s = "<span class='titulo2'><b>" + tr("Alertas") + "</b></span>";
+        s += "<div class='titulo2' style='float:right'><img src='res/rojo.gif' style='opacity:0.5;cursor:pointer' onclick='doBorrarAlertas();'></div><br>";
+        for (var i in alertas) {
+            var a = alertas[i];
+            s += "<span style='color:#bbbbbb'>" + formatDate(jsonToDate(a.ts)) + "</span><br>" + a.msg + "<br><br>";
+        }
+        var div = document.getElementById("alertas");
+        div.innerHTML = s;
+        div.style.width = (250 * scale) + "px";
+        div.style.height = (350 * scale) + "px";
+        div.style.visibility = "visible";
+    }
+}
+
+function doBorrarAlertas() {
+    var div = document.getElementById("alertas");
+    //login to server
+    getHttp("doMain.aspx?actn=borrarAlertas&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&grupo=" + arbolPersonal.nombre,
+        function (data) {}); //no proceso respuesta
+    div.style.visibility = "hidden";
 }
 
 function doMenuppal() {
@@ -687,6 +726,9 @@ function doMenuppal() {
         //panel grupo
         actualizarDatosGrupo();
 
+        //alertas
+        setInterval(getGrupoPersonal, refreshInterval);
+
         //panel usuario        
         document.getElementById("panelUsuario").style.visibility = 'visible';
 
@@ -725,6 +767,21 @@ function doMenuppal() {
     document.getElementById("florWait").style.visibility = "hidden";
 }
 
+function getGrupoPersonal(){
+    getHttp("doMain.aspx?actn=getGrupoPersonal&grupo=" + arbolPersonal.nombre
+        + "&email=" + arbolPersonal.usuario.email
+        + "&clave=" + arbolPersonal.usuario.clave,
+        function (data) {
+            //atrapo el error si es que hay
+            if (data.substring(0, 6) == "Error=") {
+            }
+            else {
+                var grupoPersonal = JSON.parse(data);
+                showAlertas(grupoPersonal.alertas);
+            }
+        }); 
+}
+
 function menuOptions() {
     //opciiones de menu
     var mnu = "";
@@ -739,6 +796,10 @@ function menuOptions() {
         //user options
         mnu += "<a class='titulo3' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a><br>";
         mnu += "<a class='titulo3' href='verusuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a><br>";
+    }
+    if (arbolPersonal.usuario.isFacilitador) {
+        //adminOptions
+        mnu += "<a class='titulo3' href='mailer.html?grupo=" + grupoParam + "'>" + tr("Mailer") + "</a><br>";
     }
     if (arbolPersonal.usuario.isSecretaria) {
         //adminOptions
@@ -758,7 +819,7 @@ function showCambiarClave() {
     document.getElementById("cambiarClaveMsg").innerHTML = "";
     document.getElementById("cambiarClave").style.top = '240px';
     document.getElementById("cambiarClave").style.visibility = 'visible';
-    efectoLeft(document.getElementById("cambiarClave"), 0, -230, 20, TWEEN.Easing.Cubic.Out);
+    efectoLeft(document.getElementById("cambiarClave"), 0, 750, -230, 20, TWEEN.Easing.Cubic.Out);
 }
 
 function doAltaUsuario() {
@@ -831,7 +892,7 @@ function doCambiarClave() {
                 if (data != '')
                     document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
                 else 
-                    efectoLeft(document.getElementById("cambiarClave"), 0, 20, -260, TWEEN.Easing.Cubic.Out, function () {
+                    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -260, TWEEN.Easing.Cubic.Out, function () {
                         document.getElementById("cambiarClave").style.visibility = 'hidden';
                     });
             });
@@ -839,7 +900,7 @@ function doCambiarClave() {
 }
 
 function doHideCambiarClave() {
-    efectoLeft(document.getElementById("cambiarClave"), 0, 20, -260, TWEEN.Easing.Cubic.In, function () {
+    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -260, TWEEN.Easing.Cubic.In, function () {
             document.getElementById("cambiarClave").style.visibility = 'hidden';
         });
 }
@@ -897,6 +958,8 @@ function doAtras() {
 
         document.getElementById("mnuOptions").innerHTML = "";
         document.getElementById("panelUsuario").style.visibility = 'hidden';
+
+        document.getElementById("alertas").style.visibility = 'hidden';
 
         document.getElementById("atras").style.visibility = "hidden";
         root = { "name": "?" };

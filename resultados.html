@@ -254,15 +254,15 @@
                 var fecha = final.addDays(-i - offsetDays);
                 if (fecha.getDate() == 1) {
                     //1 del mes
-                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:blue;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:CornflowerBlue;stroke-width:1' />";
                     if (i > 4 && i < viewDays - 4) {
                         sdt = formatDate(fecha);
-                        s += "<text x='" + x + "' y='" + (y + 30) + "' fill='blue' style='font-size:12px' text-anchor='middle'>" + sdt + "</text>";
+                        s += "<text x='" + x + "' y='" + (y + 30) + "' fill='CornflowerBlue' style='font-size:12px' text-anchor='middle'>" + sdt + "</text>";
                     }
                 }
                 else if (fecha.getDay() == 1) {
                     //lunes
-                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:green;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:lightgray;stroke-width:1' />";
                     var labelX = i / viewDays * viewWidth;
                     if (labelX < window.innerWidth - viewRight + 30 && labelX > viewLeft) {
                         s += "<text x='" + x + "' y='" + (y + 15) + "' fill='green' style='font-size:12px' text-anchor='middle'>" + tr("Lunes") + "</text>";
@@ -274,6 +274,8 @@
             }
 
             //documentos
+            var xant = 0;
+            var dif = 0;
             for (var h in lds) {
                 var ld = lds[h];
                 //var x = 180 + ld.dias * 10 * zoom - offsetDays;
@@ -281,15 +283,18 @@
                 var x = window.innerWidth - viewRight - (days(final) - days(fecha) - offsetDays) / viewDays * viewWidth;
                 var y = viewTop + indexOf(ld.modeloNombre, modelos) * stepY;
                 if (x <= window.innerWidth - viewRight && x >= viewLeft) {
+                    if (Math.abs(x - xant) < 5) dif = 10; //agrego una pequeña diferencia por si caen justo uno encima del otro
                     var imgWidth = 64 * 0.5;
-                    s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + (x - imgWidth) + "' y='" + y + "' ";
-                    s += "height='" + (79 * 0.5) + "px' width='" + (64 * 0.5) + "px' ";
+                    s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + (x + dif - imgWidth) + "' y='" + y + "' ";
+                    s += "height='79px' width='64px' ";
                     s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
 
                     //seguimiento
                     var sdt = formatShortDate(toDate(ld.fecha));
-                    s += "<text x='" + (x + 12 - imgWidth) + "' y='" + (y + 50) + "' fill='blue' style='font-size:10px;cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                    s += "<text x='" + (x + dif + 32 - imgWidth) + "' y='" + (y + 90) + "' fill='blue' style='font-size:10px;cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
+                xant = x;
+                dif = 0;
             }
 
             //recta

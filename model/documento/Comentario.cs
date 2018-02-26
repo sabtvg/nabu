@@ -29,6 +29,7 @@ namespace nabu
         public string email = "";
         public DateTime fecha = DateTime.Now;
         public string texto = "";
+        public bool objecion = false;
 
     }
 }

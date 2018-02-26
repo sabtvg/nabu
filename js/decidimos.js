@@ -67,9 +67,9 @@ function seleccionarModelo() {
     if (getFloresDisponibles().length == 0)
         msg("No tienes flores disponibles");
     else {
-        var listE = "<table style='width:200px'>";
-        var listS = "<table style='width:200px'>";
-        var listI = "<table style='width:200px'>";
+        var listE = "<table style='border-collapse: collapse; border-spacing: 0;'>";
+        var listS = "<table style='border-collapse: collapse; border-spacing: 0;'>";
+        var listI = "<table style='border-collapse: collapse; border-spacing: 0;'>";
 
         //si no hay manifiesto solo permito crear modelo Manifiesto
         for (var i in modelos) {
@@ -79,20 +79,20 @@ function seleccionarModelo() {
             {
                 if (modelo.tipo == "estructura") {
                     listE += "<tr>";
-                    listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
-                    listE += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
+                    listE += "<td style='text-align: left;margin:5px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                     listE += "</tr>";
                 }
                 else if (modelo.tipo == "intergrupal") {
                     listI += "<tr>";
-                    listI += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
-                    listI += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listI += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
+                    listI += "<td style='text-align: left;margin:5px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                     listI += "</tr>";
                 }
                 else {
                     listS += "<tr>";
-                    listS += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
-                    listS += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listS += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
+                    listS += "<td style='text-align: left;margin:5px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                     listS += "</tr>";
                 }
             }
@@ -101,9 +101,11 @@ function seleccionarModelo() {
         listS += "</table>";
         listI += "</table>";
 
-        var list = "<table>";
-        list += "<tr><td style='text-align:center' class='titulo1' colspan='3'>Modelos de debate</td></tr>";
-        list += "<tr><td style='text-align:center'>Estructura</td><td style='text-align:center'>Seguimiento</td><td style='text-align:center'>Intergrupal</td></tr>";
+        var list = "<table style='border-collapse: collapse; border-spacing: 0;'>";
+        list += "<tr><td style='text-align:center' class='titulo1' colspan='3'><b>" + tr("Modelos de debate") + "</b></td></tr>";
+        list += "<tr><td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Estructura") + "</b></td>";
+        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Seguimiento") + "</b></td>";
+        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Intergrupal") + "</b></td></tr>";
         list += "<tr>";
         list += "<td style='vertical-align:top;'>" + listE + "</td>";
         list += "<td style='vertical-align:top;'>" + listS + "</td>";
@@ -231,7 +233,7 @@ function doRevisar() {
         + "&clave=" + arbolPersonal.usuario.clave
         + "&id=" + node.id
         + "&grupo=" + arbolPersonal.nombre
-        + "&width=" + (window.innerWidth - 80).toFixed(0),
+        + "&width=" + (window.innerWidth - 10).toFixed(0),
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
@@ -249,7 +251,7 @@ function doPrevista() {
         + "&clave=" + arbolPersonal.usuario.clave
         + "&id=" + node.id
         + "&grupo=" + arbolPersonal.nombre
-        + "&width=" + (window.innerWidth - 80).toFixed(0),
+        + "&width=" + (window.innerWidth - 10).toFixed(0),
         post,
         function (data) {
             //muestro
@@ -276,7 +278,7 @@ function doProponer() {
         + "&clave=" + arbolPersonal.usuario.clave
         + "&id=" + node.id
         + "&grupo=" + arbolPersonal.nombre
-        + "&width=" + (window.innerWidth - 80).toFixed(0),
+        + "&width=" + (window.innerWidth - 10).toFixed(0),
         recibirArbolPersonal);
 
     //cierro documento
@@ -294,7 +296,7 @@ function doVerDocumento() {
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
-        + "&width=" + (window.innerWidth - 80).toFixed(0),
+        + "&width=" + (window.innerWidth - 10).toFixed(0),
         function (data) {
             //puedo mostrar el documento
             hidePanelDer();
@@ -307,7 +309,7 @@ function doVerDocumento() {
 
             document.getElementById("documento").style.visibility = 'visible';
             document.getElementById("documento").style.left = (10) + 'px';
-            document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
+            document.getElementById("documento").style.width = (window.innerWidth - 60) + 'px';
             document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
             efectoTop(document.getElementById("documento"), 0, -window.innerHeight, 20, TWEEN.Easing.Cubic.Out);
         }
@@ -319,7 +321,8 @@ function doComentar(id) {
     postHttp("doDecidimos.aspx?actn=doComentar&id=" + id
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
-        + "&clave=" + arbolPersonal.usuario.clave,
+        + "&clave=" + arbolPersonal.usuario.clave
+        + "&objecion=" + document.getElementById("objecion" + id).checked,
         "comentario=" + comentario,
         function (data) {
             //muestro

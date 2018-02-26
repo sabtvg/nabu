@@ -126,8 +126,7 @@ function dibujarQueso() {
     var maxAcumh = 0;
     var celdaid = 0;
     var totalEvaluaciones = 0;
-    var totalProm = 0;
-    for (d in quesoPersonal.temas) {
+     for (d in quesoPersonal.temas) {
         d = parseInt(d);
         var tema = quesoPersonal.temas[d];
         if (!tema.celdas) tema.celdas = [];
@@ -145,7 +144,6 @@ function dibujarQueso() {
             tema.celdas.push(celda);
             acumh += celda.height;
 
-            totalProm += tema.respuestas[n];
         }
 
         if (acumh > maxAcumh) maxAcumh = acumh;
@@ -182,9 +180,11 @@ function dibujarQueso() {
     var born = new Date(ap.born.match(/\d+/)[0] * 1);
     var dias = Math.abs(new Date() - born) / (24 * 60 * 60 * 1000);
     var pan = "";
+    var HTMLColorPromedio = quesoPersonal.colorPromedio == 0 ? "transparent" : HTMLColor(quesoPersonal.colorPromedio);
+
     pan = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>" + tr("Grupo") + "</b></nobr></div>";
     pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Evaluaciones") + ":" + totalEvaluaciones + "</nobr></div>";
-    pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Promedio") + ": " + (totalEvaluaciones != 0 ? (totalProm / totalEvaluaciones).toFixed(0) : 0) + "</nobr></div>";
+    pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Promedio") + ": <span style='border:1px solid gray;background-color:" + HTMLColorPromedio + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></nobr></div>";
     panel.innerHTML = pan; 
     panel.style.visibility = 'visible';
 
@@ -218,13 +218,16 @@ function dibujarTema(temaIndex) {
 
     //cantidad de evaluaciones
     var a = tema.iniDeg + (tema.finDeg - tema.iniDeg) / 2;
-    var p = cart(quesoInicio + acumBoton * quesoScale + 15 * botonScale, a);
+    var dist = botonScale > 1 ? 15 : 15 * botonScale;
+    var p = cart(quesoInicio + acumBoton * quesoScale + dist, a);
     ret += "<g transform='translate(" + p.x + "," + p.y + ")'>";
-    ret += "<text x='0' y='0' fill='blue' transform='rotate(" + (a - 90) + ")translate(0,5)' text-anchor='middle'>(" + tema.evaluaciones.length + ")</text>";
+    var w = botonScale > 1 ? 15 : 15 * botonScale;
+    ret += "<text x='0' y='0' font-size='" + w + "' fill='blue' transform='rotate(" + (a - 90) + ")translate(0,5)' text-anchor='middle'>(" + tema.evaluaciones.length + ")</text>";
     ret += "</g>";
 
     //icono documento
-    p = cart(quesoInicio + acumBoton * quesoScale + 28 * botonScale, a);
+    dist = botonScale > 1 ? 28 : 28 * botonScale;
+    p = cart(quesoInicio + acumBoton * quesoScale + dist, a);
     ret += "<g transform='translate(" + p.x + "," + p.y + ")'>";
     ret += "<image xlink:href='" + tema.icono + "' x='-" + (32 * botonScale / 2) + "' y='0' style='cursor:pointer' transform='rotate(" + (a - 90) + ")'  height='" + (40 * botonScale) + "px' width='" + (32 * botonScale) + "px' onclick='window.open(\"" + tema.URL + "\");'/>";
     ret += "</g>";
@@ -233,7 +236,8 @@ function dibujarTema(temaIndex) {
     if (!historico) {
         p = cart(quesoInicio + acumBoton * quesoScale + 70 * botonScale, a);
         ret += "<g transform='translate(" + p.x + "," + p.y + ")'>";
-        ret += "<image xlink:href='res/proponer.png' x='-" + (40 * botonScale / 2) + "' y='0' style='cursor:pointer' transform='rotate(" + (a - 90) + ")'  height='" + (40 * botonScale) + "px' width='" + (40 * botonScale) + "px' onclick='doEvaluarTema(\"" + tema.id + "\");'/>";
+        w = botonScale > 1 ? 40 : 40 * botonScale;
+        ret += "<image xlink:href='res/proponer.png' x='-" + (w / 2) + "' y='0' style='cursor:pointer' transform='rotate(" + (a - 90) + ")'  height='" + w + "px' width='" + w + "px' onclick='doEvaluarTema(\"" + tema.id + "\");'/>";
         ret += "</g>";
     }
 
@@ -278,9 +282,9 @@ function doSelectCelda(celdaid) {
 function getSVGCelda(temaIndex, nivel, iniDeg, finDeg, celda, selected) {
     //poligono
     var ret = "";
-    var color = historico ? "rgba(" + (100 - celda.respuesta * 10) + "%, " + (celda.respuesta * 10) + "%, 0%, 0.6)"  : "rgba(" + (100 - celda.respuesta * 10) + "%, " + (celda.respuesta * 10) + "%, 50%, 0.6)";
-    var stroke = historico ? "gray" : (selected ? "blue" : "gray");
-    ret = "<polygon fill='" + color + "' stroke='" + stroke + "' stroke-width='3' style='cursor:pointer;' ";
+    var color = HTMLColor(celda.respuesta); 
+    var stroke = selected ? "blue" : "gray";
+    ret = "<polygon fill='" + color + "' stroke='" + stroke + "' stroke-width='1' style='cursor:pointer;' ";
     ret += "points='" + getSVGPoints(temaIndex, iniDeg, finDeg, celda) + "' ";
     if (!historico) 
         ret += "onclick='doSelectCelda(\"" + celda.id + "\");'";
@@ -291,8 +295,8 @@ function getSVGCelda(temaIndex, nivel, iniDeg, finDeg, celda, selected) {
     var a = iniDeg + (finDeg - iniDeg) / 2;
     var txt = '' + celda.respuesta;
     ret += "<g transform='translate(" + cart(m, a).x + "," + cart(m, a).y + ")'>";
-    ret += "<text x='0' y='0' fill='white'  transform='rotate(" + (a - 90) + ") translate(" + -5 * txt.length + ")' style='cursor:pointer;' "
-    ret += "text-anchor='start' onclick='doSelectCelda(\"" + celda.id + "\");'>";
+    //ret += "<text x='0' y='0' fill='white'  transform='rotate(" + (a - 90) + ") translate(" + -5 * txt.length + ")' style='cursor:pointer;' "
+    //ret += "text-anchor='start' onclick='doSelectCelda(\"" + celda.id + "\");'>";
     ret += txt + "</text>";
     ret += "</g>";
 

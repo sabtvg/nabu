@@ -24,7 +24,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-//atiendo peticiones de arbol
+//atiendo peticiones de grupo
 
 namespace nabu
 {
@@ -36,15 +36,12 @@ namespace nabu
         {
             string actn = Request["actn"];
 
-            //verifico lista global de arboles
+            Application.Lock();
             if (Application["aplicacion"] == null)
-            {
-                Application.Lock();
                 Application["aplicacion"] = new Aplicacion(Server, Request);
-                Application.UnLock();
-            }
             app = (Aplicacion)Application["aplicacion"];
-
+            Application.UnLock();
+            
             Tools.startupPath = Server.MapPath("");
             Tools.server = Server;
 
@@ -162,7 +159,7 @@ namespace nabu
                                 foreach(Usuario u in usuarios)
                                     if (grupo.getUsuario(u.email) == null)
                                         //este no existe, lo creo
-                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false, false, u.grupoDesde);
+                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false, false, false, false, u.grupoDesde);
                                 Response.Write(Tools.tr("Usuarios creados desahibilitados", Request["grupo"], grupo.idioma));
                             }
                             break;
@@ -263,13 +260,27 @@ namespace nabu
                             if (grupo.padreNombre == "")
                             {
                                 //yo soy la cabeza del bosque
-                                if (grupo.bosque == null || DateTime.Now.Subtract(grupo.bosque.born).TotalHours >= 24)
-                                    grupo.bosque = new Bosque(grupo);
-                                ret = grupo.bosque.toJson();
+                                try
+                                {
+                                    if (grupo.bosque == null || DateTime.Now.Subtract(grupo.bosque.born).TotalHours >= 24)
+                                        grupo.bosque = new Bosque(grupo);
+                                        ret = grupo.bosque.toJson();
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception("Comunidad [" + grupo.nombre + "]> " + ex.Message);
+                                }
                             }
                             else
                                 //pido al padre
-                                ret = Tools.getHttp(grupo.padreURL + "/doMain.aspx?actn=getBosque&grupo=" + grupo.padreNombre);
+                                try
+                                {
+                                    ret = Tools.getHttp(grupo.padreURL + "/doMain.aspx?actn=getBosque&grupo=" + grupo.padreNombre);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception("No se puede alcanzar la cabeza de la comunidad desde [" + grupo.nombre + "]> " + ex.Message);
+                                }
 
                             Response.Write(ret);
                             break;
@@ -279,26 +290,12 @@ namespace nabu
                             try
                             {
                                 grupo = app.getGrupo(Request["grupo"]);
-                                Bosque.Nodo nodo = new Bosque.Nodo();
-                                nodo.nombre = grupo.nombre;
-                                nodo.objetivo = grupo.objetivo;
-                                nodo.padreURL = grupo.padreURL;
-                                nodo.padreNombre = grupo.padreNombre;
-                                nodo.acceso = "si";
-                                nodo.usuarios = grupo.getUsuariosHabilitados().Count;
-                                nodo.activos = grupo.getUsuariosHabilitadosActivos().Count;
-                                foreach (Hijo hijo in grupo.hijos)
-                                {
-                                    Bosque.Nodo n = new Bosque.Nodo();
-                                    n.URL = hijo.URL;
-                                    n.nombre = hijo.nombre;
-                                    nodo.hijos.Add(n);
-                                } 
+                                Bosque.Nodo nodo = Bosque.crearNodo(grupo);
                                 ret = Tools.toJson(nodo);
                             }
                             catch (Exception ex)
                             {
-                                ret = "error=" + ex.Message;
+                                throw new Exception("getNodo(" + Request["grupo"] + ") > " + ex.Message);
                             }
                             Response.Write(ret);
                             break;
@@ -333,13 +330,15 @@ namespace nabu
 
                         case "actualizarusuario":
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            Usuario u2 = actualizarUsuario(Server.HtmlEncode(Request["nuevonombre"]), Request["nuevoemail"], Request["nuevaclave"], Request["grupo"], 
-                                Request["readOnly"] == "true" ? true : false,
-                                Request["isAdmin"] == "true" ? true : false,
-                                Request["secretaria"] == "true" ? true : false,
-                                Request["habilitado"] == "true" ? true : false,
-                                null);
                             grupo = app.getGrupo(Request["grupo"]);
+                            Usuario u2 = actualizarUsuario(Server.HtmlEncode(Request["nuevonombre"]), Request["nuevoemail"], Request["nuevaclave"], Request["grupo"],
+                                Request["habilitado"] == "true",
+                                Request["readOnly"] == "true",
+                                Request["isAdmin"] == "true",
+                                Request["isSecretaria"] == "true",
+                                Request["isRepresentante"] == "true",
+                                Request["isFacilitador"] == "true",
+                                null);
                             Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
                             app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
                             break;
@@ -358,6 +357,29 @@ namespace nabu
                         case "login":
                             Response.Write(doLogin(Request["email"], Request["clave"], Request["grupo"]));
                             break;
+
+                        case "borraralertas":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            grupo = app.getGrupo(Request["grupo"]);
+                            lock (grupo)
+                            {
+                                Usuario u = grupo.getUsuario(Request["email"]);
+                                u.alertas.Clear();
+                            }
+                            Response.End(); //no hay respuesta
+                            break;
+
+                        case "getgrupopersonal":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            grupo = app.getGrupo(Request["grupo"]);
+                            GrupoPersonal gp = null;
+                            lock (grupo)
+                            {
+                                gp = grupo.getGrupoPersonal(Request["email"]);
+                            }
+                            Response.Write(Tools.toJson(gp)); 
+                            break;
+                            
 
                         default:
                             throw new appException("Peticion no reconocida");
@@ -557,6 +579,7 @@ namespace nabu
                         //notifico
                         Tools.encolarMailInactivo(u.email);
                         u.notificado = DateTime.Now;
+                        u.alertas.Add(new Alerta(Tools.tr("Tu estado es inactivo", g.idioma)));
                     }
                 }
                 Application.Lock();
@@ -589,6 +612,7 @@ namespace nabu
                     a.actualizarModelosEnUso();
                     //knowtypes para modelos
                     List<Type> tipos = new List<Type>();
+                    tipos.Add((new Alerta()).GetType());
                     foreach (Modelo m in g.organizacion.getModelosDocumento()) tipos.Add(m.GetType());
                     foreach (ModeloEvaluacion m in g.organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
                     ret = "{\"msg\":\"\", \"grupo\":" + g.toJson() + ", ";
@@ -635,7 +659,7 @@ namespace nabu
             }
         }
 
-        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool readOnly, bool isAdmin, bool isSecretaria, bool habilitado, string grupoDesde)
+        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool habilitado, bool readOnly, bool isAdmin, bool isSecretaria, bool isRepresentante, bool isFacilitador, string grupoDesde)
         {
             string idioma = "es";
             Grupo g;
@@ -648,25 +672,44 @@ namespace nabu
 
             if (grupo == "")
                 throw new appException(Tools.tr("Nombre de arbol no puede ser vacio",idioma));
-            if (email == "")
+            else if (email == "")
                 throw new appException(Tools.tr("Email no puede ser vacio",idioma));
-            if (clave == "")
+            else if (clave == "")
                 throw new appException(Tools.tr("Clave no puede ser vacio", idioma));
+            else if (isAdmin && isRepresentante)
+                throw new appException(Tools.tr("No puede ser coordinador y representante", idioma));
 
             g = app.getGrupo(grupo);
-            Usuario u = g.getUsuario(email);
-
+            Usuario u = null;
             lock (g)
             {
+                //limpio roles anteriores
+                if (isAdmin)
+                    foreach (Usuario u2 in g.usuarios)
+                        if (u2.isAdmin)
+                            u2.isAdmin = false;
+                if (isSecretaria)
+                    foreach (Usuario u2 in g.usuarios)
+                        if (u2.isSecretaria)
+                            u2.isSecretaria = false;
+                if (isFacilitador)
+                    foreach (Usuario u2 in g.usuarios)
+                        if (u2.isFacilitador)
+                            u2.isFacilitador = false;
+
+                //actualizo
+                u = g.getUsuario(email);
                 if (u != null)
                 {
                     //lo actualizo
                     u.nombre = nombre;
                     u.clave = clave;
+                    u.habilitado = habilitado;
                     u.readOnly = readOnly;
                     u.isAdmin = isAdmin;
                     u.isSecretaria = isSecretaria;
-                    u.habilitado = habilitado;
+                    u.isRepresentante = isRepresentante;
+                    u.isFacilitador = isFacilitador;
                     if (grupoDesde != null) u.grupoDesde = grupoDesde;
                 }
                 else
@@ -676,10 +719,12 @@ namespace nabu
                     u.nombre = nombre;
                     u.email = email;
                     u.clave = clave;
+                    u.habilitado = habilitado;
                     u.readOnly = readOnly;
                     u.isAdmin = isAdmin;
                     u.isSecretaria = isSecretaria;
-                    u.habilitado = habilitado;
+                    u.isRepresentante = isRepresentante;
+                    u.isFacilitador = isFacilitador;
                     if (grupoDesde != null) u.grupoDesde = grupoDesde;
                     g.usuarios.Add(u);
                 }

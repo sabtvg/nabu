@@ -40,14 +40,11 @@ namespace nabu
         {
             string actn = Request["actn"];
 
-            //verifico lista global de arboles
+            Application.Lock();
             if (Application["aplicacion"] == null)
-            {
-                Application.Lock();
                 Application["aplicacion"] = new Aplicacion(Server, Request);
-                Application.UnLock();
-            }
             app = (Aplicacion)Application["aplicacion"];
+            Application.UnLock();
 
             Tools.startupPath = Server.MapPath("");
             Tools.server = Server;
@@ -72,7 +69,7 @@ namespace nabu
                         case "docomentar":
                             //devuelvo las propuestas de toda la rama
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            Response.Write(doComentar(int.Parse(Request["id"]), Request["grupo"], Request["email"], Request["comentario"]));
+                            Response.Write(doComentar(int.Parse(Request["id"]), Request["grupo"], Request["email"], Request["comentario"], Request["objecion"] == "true"));
                             app.addLog("doComentar", Request.UserHostAddress, Request["grupo"], "", Request["comentario"]);
                             break;
 
@@ -257,11 +254,11 @@ namespace nabu
                             a.grupo = g;
                             g.arbol = a;
 
-                            a.minSiPc = 90;
-                            a.maxNoPc = 5;
+                            a.minSiPc = 100;
+                            a.maxNoPc = 0;
 
                             //usuarios de prueba
-                            for (int i = 0; i < 100; i++)
+                            for (int i = 0; i < 50; i++)
                             {
                                 Usuario u = new Usuario();
                                 u.nombre = "u" + i;
@@ -319,13 +316,15 @@ namespace nabu
                             lock (grupo)
                             {
                                 //guardo x
+                                //&x=38=43,42=111,43=146
                                 if (x != "")
                                 {
                                     a = grupo.arbol;
                                     foreach (string s in x.Split(','))
                                     {
                                         Nodo n = a.getNodo(int.Parse(s.Split('=')[0]));
-                                        n.x = float.Parse(s.Split('=')[1]);
+                                        if (n != null) 
+                                            n.x = float.Parse(s.Split('=')[1]);
                                     }
                                 }
 
@@ -877,12 +876,14 @@ namespace nabu
                     string fname = "Acta_" + docID.ToString("0000");
                     string docPath = "documentos\\Acta\\" + docID.ToString("0000");
                     string URL = g.URL + "/grupos/" + g.nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
-                    string fecha = DateTime.Now.ToShortDateString();
+                    string fecha = DateTime.Now.ToString("dd/MM/yy");
 
                     string carpeta = g.path + "\\" + docPath;
                     if (!System.IO.Directory.Exists(carpeta))
+                    {
                         System.IO.Directory.CreateDirectory(carpeta);
-                    System.IO.File.Copy(g.path + "\\..\\..\\styles.css", g.path + "\\" + docPath + "\\styles.css");
+                        System.IO.File.Copy(g.path + "\\..\\..\\styles.css", g.path + "\\" + docPath + "\\styles.css");
+                    }
 
 
                     //creo documento json
@@ -939,9 +940,15 @@ namespace nabu
                     html += "    </tr>";
                     html += "    <tr>";
                     html += "        <td>Inicio:</td><td class='texto'>" + req["s.inicio"] + "</td>";
-                    string representa = "";
-                    if (g.getRepresentante() != null) representa = g.getRepresentante().nombre;
-                    html += "        <td>Representa:</td><td class='texto'>" + representa + "</td>";
+                    
+                    //reprsenta
+                    ret += "<td>Representa:</td><td class='texto'>";
+                    foreach (Usuario rep in g.getRepresentantes())
+                    {
+                        ret += rep.nombre + ",";
+                    }
+                    if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
+                    ret += "</td>";
                     html += "    </tr>";
                     html += "    <tr>";
                     html += "        <td>Fin:</td><td class='texto'>" + req["s.fin"] + "</td>";
@@ -955,36 +962,36 @@ namespace nabu
                     html += "</table>";
 
                     html += "<div class='tema'>Ronda de apertura</div>";
-                    html += "<div class='texto'>" + req["s.apertura"] + "</div>";
+                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.apertura"])) + "</div>";
                     html += "<br>";
 
                     html += "<div class='tema'>Aspectos log&iacute;sticos</div>";
-                    html += "<div class='texto'>" + req["s.logisticos"] + "</div>";
+                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.logisticos"])) + "</div>";
                     html += "<br>";
 
                     html += "<div class='tema'>Orden del d&iacute;a</div>";
-                    html += "<div class='texto'>" + req["s.ordendeldia"] + "</div>";
+                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.ordendeldia"])) + "</div>";
                     html += "<br>";
 
                     q = 0;
                     while (req.Form.AllKeys.Contains("s.tituloTema" + q))
                     {
                         html += "<div class='tema'>Tema " + (q + 1) + ":" + req["s.tituloTema" + q] + "</div>";
-                        html += "<div class='texto'>" + req["s.textoTema" + q] + "</div>";
+                        html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.textoTema" + q])) + "</div>";
                         html += "<br>";
                         q++;
                     }
                     html += "<br>";
 
                     html += "<div class='tema'>Evaluaci&oacute;n</div>";
-                    html += "<div class='texto'>" + req["s.evaluacion"] + "</div>";
+                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.evaluacion"])) + "</div>";
                     html += "<br>";
 
                     html += "<hr>";
                     html += "Documento escrito por secretaria: " + email + "<br>";
                     html += "Grupo: " + g.nombre + "<br>";
                     html += "Documento ID:" + fname + "<br>";
-                    html += "Fecha de creaci&oacute;n: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
+                    html += "Fecha de creaci&oacute;n: " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "<br>";
                     html += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
                     html += "Objetivo: " + g.objetivo + "<br>";
                     html += "Usuarios: " + g.getUsuariosHabilitados().Count + "<br>";
@@ -1010,6 +1017,11 @@ namespace nabu
                     ld.carpeta = "Acta";
                     ld.URL = URL;
                     g.logDecisiones.Add(ld);
+
+                    //alertas
+                    foreach (Usuario u in g.getUsuariosHabilitados())
+                        if (u.email != email)
+                            u.alertas.Add(new Alerta(Tools.tr("Nueva Acta publicada", g.idioma)));
 
                     g.save(g.path + "\\" + docPath); //guardo copia del arbol
                 }
@@ -1063,7 +1075,7 @@ namespace nabu
             return ret;
         }
 
-        string doComentar(int id, string grupo, string email, string comentario)
+        string doComentar(int id, string grupo, string email, string comentario, bool objecion)
         {
             string ret = "";
             Grupo g = app.getGrupo(grupo);
@@ -1077,11 +1089,12 @@ namespace nabu
                     Comentario c = new Comentario();
                     c.email = email;
                     c.texto = Server.HtmlEncode(comentario);
+                    c.objecion = objecion;
                     p.comentarios.Add(c);
                 }
                 //retorno el nuevo html de todos los comentarios de ese nodo
                 Modelo m = g.organizacion.getModeloDocumento(p.modeloID);
-                ret = m.toHTMLComentarios(p.nivel, p, g, email, 250, true);
+                ret = m.toHTMLComentarios(p.nivel, p, g, email, 330, true);
             }
             
             return ret;

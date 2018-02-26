@@ -77,6 +77,8 @@
 
                     idioma = vals[5]; //para el tradcutor
 
+                    calcularResize();
+
                     if (!usuario) {
                         //login normal
                         document.location = 'default.html';
@@ -110,6 +112,23 @@
                 document.location = 'default.html?grupo=' + grupoParam;
         }
 
+        function calcularResize() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+
+            document.getElementById("aperturatip").style.width = (1680 * scalex).toFixed(0) + "px";
+            document.getElementById("s.apertura").style.width = (1680 * scalex).toFixed(0) + "px";
+
+            document.getElementById("logisticostipo").style.width = (1680 * scalex).toFixed(0) + "px";
+            document.getElementById("s.logisticos").style.width = (1680 * scalex).toFixed(0) + "px";
+
+            document.getElementById("ordendeldiatip").style.width = (1680 * scalex).toFixed(0) + "px";
+            document.getElementById("s.ordendeldia").style.width = (1680 * scalex).toFixed(0) + "px";
+
+            document.getElementById("evaluaciontip").style.width = (1680 * scalex).toFixed(0) + "px";
+            document.getElementById("s.evaluacion").style.width = (1680 * scalex).toFixed(0) + "px";
+        }
+
         function dibujarTodo() {
             var d = new Date();
             document.getElementById("fecha").innerHTML = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
@@ -119,8 +138,13 @@
             if (operativo.facilitador)
                 document.getElementById("facilita").innerHTML = operativo.facilitador.nombre;
 
-            if (operativo.representante)
+            if (operativo.representantes.length > 0) {
+                var reps = "";
+                for (var r in operativo.representantes) {
+                    reps += operativo.representantes.nombre + ",";
+                }              
                 document.getElementById("representa").innerHTML = operativo.representante.nombre;
+            }
 
             if (operativo.secretaria)
                 document.getElementById("secretaria").innerHTML = operativo.secretaria.nombre;
@@ -128,6 +152,8 @@
 
         function HTMLTemas() {
             var s = "";
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
             for (var i = 0; i < cantidadTemas; i++) {
                 var titulo = "";
                 var texto = "";
@@ -135,11 +161,11 @@
                 if (document.getElementById("s.tituloTema" + i)) titulo = document.getElementById("s.tituloTema" + i).value;
                 if (document.getElementById("s.textoTema" + i)) texto = document.getElementById("s.textoTema" + i).value;
 
-                s += "<div class='tema'>Tema " + (i + 1) + ":<input id='s.tituloTema" + i + "' type='text' class='editar' style='width:150px' value='" + titulo + "'></div>";
-                s += "<textarea id='s.textoTema" + i + "' class='editar' maxlength='3000' style='width: 638px; height: 120px;'>"
+                s += "<div class='tema'>Tema " + (i + 1) + ":<input id='s.tituloTema" + i + "' type='text' class='editar' style='width:" + (1550 * scalex).toFixed(0) + "px' value='" + titulo + "'></div>";
+                s += "<textarea id='s.textoTema" + i + "' class='editar' maxlength='3000' style='width: " + (1680 * scalex).toFixed(0) + "px; height: 120px;'>"
                 s += texto;
                 s += "</textarea>";
-                s += "<div style='text-align: right; width: 652px; font-size: 10px;'>(M&aacute;x: 3000)</div>";
+                s += "<div style='text-align: right; width: 95%; font-size: 10px;'>(M&aacute;x: 3000)</div>";
                 s += "<br>";
             }
             return s;
@@ -208,29 +234,29 @@
             </table>
 
             <div class="tema">Ronda de apertura</div>
-            <div class="smalltip" style="width: 638px">Ronda de apertura</div>
+            <div id="aperturatip" class="smalltip" style="width: 638px">Ronda de apertura</div>
             <textarea id="s.apertura" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
-            <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
+            <div style="text-align: right; width: 95%; font-size: 10px;">(M&aacute;x: 3000)</div>
             <br>
 
             <div class="tema">Aspectos log&iacute;sticos</div>
-            <div class="smalltip" style="width: 638px">Aspectos log&iacute;sticos</div>
+            <div id="logisticostipo" class="smalltip" style="width: 638px">Aspectos log&iacute;sticos</div>
             <textarea id="s.logisticos" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
-            <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
+            <div style="text-align: right; width: 95%; font-size: 10px;">(M&aacute;x: 3000)</div>
             <br>
 
             <div class="tema">Orden del d&iacute;a</div>
-            <div class="smalltip" style="width: 638px">Orden del d&iacute;a</div>
+            <div id="ordendeldiatip" class="smalltip" style="width: 638px">Orden del d&iacute;a</div>
             <textarea id="s.ordendeldia" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
-            <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
+            <div style="text-align: right; width: 95%; font-size: 10px;">(M&aacute;x: 3000)</div>
             <br>
 
             <div id="temas"></div>
 
             <div class="tema">Evaluaci&oacute;n</div>
-            <div class="smalltip" style="width: 638px">Evaluaci&oacute;n</div>
+            <div id="evaluaciontip" class="smalltip" style="width: 638px">Evaluaci&oacute;n</div>
             <textarea id="s.evaluacion" class="editar" maxlength="3000" style="width: 638px; height: 120px;"></textarea>
-            <div style="text-align: right; width: 652px; font-size: 10px;">(M&aacute;x: 3000)</div>
+            <div style="text-align: right; width: 95%; font-size: 10px;">(M&aacute;x: 3000)</div>
             <br>
 
             <input type="button" class="btn" value="Cancelar" onclick="document.location = 'default.html?grupo=' + grupoParam;">&nbsp;

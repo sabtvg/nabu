@@ -45,6 +45,7 @@ namespace nabu
             ret.temas = temas;
             ret.caducaDias = caducaDias;
             ret.msg = msg;
+            ret.colorPromedio = getColorPromedio();
 
             /////queda pendiente clonar temas, evalauciones y quitar preguntas para que el mensaje sea bastante mas chico
 
@@ -59,6 +60,27 @@ namespace nabu
             return null;
         }
 
+        public float getColorPromedio()
+        {
+            float total = 0;
+            int cant = 0;
+            foreach (Tema t in temas)
+            {
+                foreach (Evaluacion ev in t.evaluaciones)
+                {
+                    foreach(Pregunta pr in ev.preguntas)
+                    {
+                        total += pr.respuesta;
+                        cant++;
+                    }
+                }
+            }
+            if (cant == 0)
+                return 0;
+            else
+                return total / cant;
+        }
+
         public void limpiarCaducados()
         {
             int indext = 0;
@@ -71,7 +93,12 @@ namespace nabu
                     Evaluacion e = t.evaluaciones[indexe];
                     if (DateTime.Now.Subtract(e.born).TotalDays > caducaDias)
                     {
+                        Usuario u = grupo.getUsuario(e.email);
+                        if (u != null)
+                            u.alertas.Add(new Alerta(Tools.tr("Evaluacion caida para el tema [%1]", t.nombre, grupo.idioma)));
+
                         t.evaluaciones.RemoveAt(indexe);
+                        
                         if (t.evaluaciones.Count == 0)
                         {
                             temas.RemoveAt(indext);

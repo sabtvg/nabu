@@ -54,7 +54,7 @@ namespace nabu
         }
 
         public void caerFlores(Usuario u){
-            //verifico caducadas
+            //caigo flores de u
             foreach (Flor f in u.flores)
             {
                 if (f.id != 0)
@@ -311,12 +311,12 @@ namespace nabu
             }
         }
 
-        private bool comprobarConsenso()
+        private bool comprobarConsenso(string email)
         {
             List<Nodo> nodos = toList();
             foreach (Nodo n in nodos)
                 if (n.nivel > 0)
-                    if (comprobarConsenso(n))
+                    if (comprobarConsenso(n, email))
                         return true;
             return false;
         }
@@ -331,7 +331,7 @@ namespace nabu
             return null;
         }
 
-        private bool comprobarConsenso(Nodo n)
+        private bool comprobarConsenso(Nodo n, string email)
         {
             bool ret = false;
             Modelo m = grupo.organizacion.getModeloDocumento(n.modeloID);
@@ -393,11 +393,25 @@ namespace nabu
                     if (!simulacion)
                     {
                         foreach (Usuario u in grupo.usuarios)
-                            Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, URL);
+                            if (u.email != email)
+                            {
+                                Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, URL);
+                                u.alertas.Add(new Alerta(Tools.tr("Nueva decision [%1]", doc.titulo, grupo.idioma)));
+                            }
+                    }
+
+                    //cruzo modelo con valores
+                    Propuesta p;
+                    List<Propuesta> props = new List<Propuesta>();
+                    foreach (Nodo n1 in pathn)
+                    {
+                        p = getPropuesta(n1);
+                        if (p != null) //la raiz
+                            props.Add(p);
                     }
 
                     //guardo el log historico en el arbol
-                    Propuesta p = getPropuesta(n.id);  //obtengo el titulo del debate de cualquiera de las propuestas 
+                    p = getPropuesta(n.id);  //obtengo el titulo del debate de cualquiera de las propuestas 
                     LogDocumento ld = new LogDocumento();
                     ld.fecha = fdate;
                     ld.titulo = p.titulo;
@@ -414,6 +428,7 @@ namespace nabu
                     ld.negados = n.negados;
                     ld.carpeta = m.carpeta();
                     ld.URL = URL;
+                    ld.revisionDias = m.getRevisionDias(props);
                     grupo.logDecisiones.Add(ld);
 
                     //marco a todos los nodos del debate y sus propuestas
@@ -499,17 +514,31 @@ namespace nabu
             ret += "Documento escrito de forma cooperativa.<br>";
             ret += "Grupo: " + this.nombre + "<br>";
             ret += "Documento ID:" + fname + "<br>";
-            ret += "Inicio de debate: " + inicio.ToShortDateString() + "<br>";
-            ret += "Fecha de consenso: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
+            ret += "Inicio de debate: " + inicio.ToString("dd/MM/yy") + "<br>";
+            ret += "Fecha de consenso: " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "<br>";
             ret += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
             ret += "Objetivo: " + this.grupo.objetivo + "<br>";
             ret += "Usuarios: " + this.grupo.getUsuariosHabilitados().Count + "<br>";
             ret += "Activos: " + this.grupo.activos + "<br>";
             ret += "Si: (&ge; " + this.minSiPc + "%): " + n.flores + "<br>";
             ret += "No: (&le; " + this.maxNoPc + "%): " + n.negados + "<br>";
+            
+            //admin
             if (this.grupo.getAdmin() != null) ret += "Coordinador: " + grupo.getAdmin().nombre + "<br>";
-            if (this.grupo.getRepresentante() != null) ret += "Representante: " + grupo.getRepresentante().nombre + "<br>";
+            
+            //representates
+            ret += "Representantes: ";
+            foreach(Usuario rep in this.grupo.getRepresentantes())
+            {
+                ret += rep.nombre + ",";
+            }
+            if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
+            ret += "<br>";
+            
+            //secretaria
             if (this.grupo.getSecretaria() != null) ret += "Secretaria: " + grupo.getSecretaria().nombre + "<br>";
+            
+            //facilitador
             if (this.grupo.getFacilitador() != null) ret += "Facilitador: " + grupo.getFacilitador().nombre + "<br>";
 
             //armo HTML
@@ -630,11 +659,12 @@ namespace nabu
                 {
                     //notifico por mail al usuario
                     Usuario admin = grupo.getAdmin();
-                    Tools.encolarMailCaido(grupo.nombre, u.email, admin.email, Tools.MapPath("mails/modelos/" + grupo.idioma));                   
+                    Tools.encolarMailCaido(grupo.nombre, u.email, admin.email, Tools.MapPath("mails/modelos/" + grupo.idioma));
+                    u.alertas.Add(new Alerta(Tools.tr("Tus floras han caido", grupo.idioma)));
                     //app.addLog("verifyFloresCaducadas", "", grupo.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
                 }
 
-                comprobarConsenso();
+                comprobarConsenso(email);
 
                 ArbolPersonal ap = new ArbolPersonal();
                 ap.raiz = raiz; //referecia cruzada pero no importa porque este objeto es para serializar
@@ -790,6 +820,11 @@ namespace nabu
                     if (n != null)
                     {
                         quitarFlor(n, u);
+                        string msg = Tools.tr("Flor caducada para [%1]", n.nombre, grupo.idioma);
+                        if (n.flores <= 0 && n.children.Count == 0)
+                            msg += "<br>" + Tools.tr("El tema ha caido", grupo.idioma);
+
+                        u.alertas.Add(new Alerta(msg));
                         caido = true;
                     }
                 }

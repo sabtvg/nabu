@@ -154,10 +154,11 @@
             document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
 
             //titulo
+            document.getElementById("titulo1").innerHTML = tr("Sociocracia");
             document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
             document.getElementById("titulo0").style.fontSize = (50 * scaley).toFixed(0) + 'px';
             document.getElementById("titulo1").style.fontSize = (30 * scaley).toFixed(0) + 'px';
-            document.getElementById("titulo2").style.fontSize = (25 * scaley).toFixed(0) + 'px';
+            //document.getElementById("titulo2").style.fontSize = (25 * scaley).toFixed(0) + 'px';
             document.getElementById("titulo").style.visibility = "visible";
 
             //atras
@@ -291,8 +292,8 @@
                         s += "<b>" + tr("Decision fecha") + ":</b> " + PR.docTs + "<br>";
                         s += "<b>" + tr("Decision") + ":</b> <a href='" + PR.docURL + "' target='_blank'>" + getURLName(PR.docURL) + "</a><br>";
                         s += "<b>" + tr("Objetivo") + ":</b> " + PR.objetivo + "<br>";
-                        s += "<b>" + tr("Revisi&oacute;n") + ":</b> " + PR.revision + "<br>";
-                        s += "<b>" + tr("Definici&oacute;n") + ":</b><br> " + PR.definicion + "<br>";
+                        s += "<b>" + tr("Revision") + ":</b> " + PR.revision + "<br>";
+                        s += "<b>" + tr("Definicion") + ":</b><br> " + PR.definicion + "<br>";
                         s += "<br>";
                     }
                 }
@@ -319,7 +320,7 @@
                     s += "<b>" + tr("Decision fecha") + ":</b> " + GT.docTs + "<br>";
                     s += "<b>" + tr("Decision") + ":</b> <a href='" + GT.docURL + "' target='_blank'>" + getURLName(GT.docURL) + "</a><br>";
                     s += "<b>" + tr("Objetivo") + ":</b> " + GT.objetivo + "<br>";
-                    s += "<b>" + tr("Revisi&oacute;n") + ":</b> " + GT.revision + "<br>";
+                    s += "<b>" + tr("Revision") + ":</b> " + GT.revision + "<br>";
                     s += "<br>";
                     s += "<b>" + tr("Integrantes") + ":</b><br>";
                     for (j in GT.usuarios) {
@@ -339,7 +340,7 @@
             s += "<b>" + tr("Arbol") + ":</b><br>";
             if (GT.grupoNombre == "") {
                 //no tiene grupo creado
-                if (usuarioPertenece(GT)){
+                if (usuario.isAdmin) {
                     //se puede crear un nuevo grupo
                     s += "<div class='cuadro' style='width:620px;border-radius: 4px;'>";
                     s += tr("Crear arbol") + "<br>";
@@ -360,7 +361,7 @@
             else {
                 //ya tiene un grupo
                 s += "<a href='" + GT.grupoURL + "?grupo=" + GT.grupoNombre + "'>" + GT.grupoNombre + "</a>";
-                if (usuarioPertenece(GT) && !historico)
+                if (usuario.isAdmin && !historico)
                     s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
             }
 
@@ -465,7 +466,6 @@
                 <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
             </a>
             <div id="titulo1" class="titulo1"><nobr>Sociocracia</nobr></div>
-            <div id="titulo2" class="titulo2"><nobr>Democracia interactiva</nobr></div>
             <div id="msgDiv" class="msg"></div>
         </div>
 

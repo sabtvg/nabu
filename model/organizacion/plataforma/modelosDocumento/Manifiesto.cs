@@ -156,14 +156,14 @@ namespace nabu.plataforma.modelos
                     ret += "<img src='" + anterior.icono + "' style='width:32px;height:40px'></td>";
                     ret += "<td style='text-align:left;'>";
                     ret += anterior.fname + "<br>";
-                    ret += anterior.fecha.ToShortDateString() + "<br>";
+                    ret += anterior.fecha.ToString("dd/MM/yy") + "<br>";
                     ret += "<a href='" + anterior.URL + "' target='_blank'>" + anterior.titulo + "</a></td>";
                     ret += "</tr></table>";
                 }
 
                 //fecha
                 if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("Vision", g.idioma) + "</div>";

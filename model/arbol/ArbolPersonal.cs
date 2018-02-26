@@ -41,7 +41,6 @@ namespace nabu
         public string padreNombre = "";
         public List<Hijo> hijos = new List<Hijo>();
 
-
         //log de consensos alcanzados
         public List<LogDocumento> logDecisiones = new List<LogDocumento>();
 

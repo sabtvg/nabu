@@ -44,7 +44,7 @@ namespace nabu.organizaciones
                     string luz = req["luz"];
                     string inicio = req["inicio"];
                     string fin = req["fin"];
-                    string descrip = req.Form["descrip"];
+                    string descrip = Tools.HTMLLinksBR(Tools.HtmlEncode(req.Form["descrip"]));
                     int favance = 0;
                     DateTime finicio;
                     DateTime ffin;
@@ -78,7 +78,7 @@ namespace nabu.organizaciones
                             e.luz = Tools.HtmlEncode(luz);
                             e.inicio = finicio;
                             e.fin = ffin;
-                            e.descrip = Tools.HtmlEncode(descrip).Replace("\n", "<br>");
+                            e.descrip = descrip;
                             e.email = email;
                             a.estados.Add(e);
 
@@ -173,6 +173,11 @@ namespace nabu.organizaciones
                             //quito accion
                             acciones.Remove(a);
 
+                            //alertas
+                            foreach (Usuario u in g.getUsuariosHabilitados())
+                                if (u.email != email)
+                                    u.alertas.Add(new Alerta(Tools.tr("Accion finalizada [%1]", a.nombre, g.idioma)));
+
                             //guardo todo el grupo
                             g.save(Tools.server.MapPath("grupos/" + g.nombre));
 
@@ -210,7 +215,7 @@ namespace nabu.organizaciones
             doc.titulo = "Resultado de Accion: " + ac.nombre;
 
             Propuesta prop = new Propuesta();
-            prop.bag["fecha"] = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString();
+            prop.bag["fecha"] = DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString();
             prop.bag["Accion"] = ac.nombre;
             prop.bag["Nacido"] = ac.born;
             prop.bag["Decision"] = ac.docURL;
@@ -225,7 +230,7 @@ namespace nabu.organizaciones
                 nabu.plataforma.Accion.Estado es = ac.estados[i];
                 prop.bag["Estado" + i] = es.estado;
                 prop.bag["Email" + i] = es.email;
-                prop.bag["EstadoTs" + i] = es.estadoTs.ToShortDateString() + " " + es.estadoTs.ToShortTimeString();
+                prop.bag["EstadoTs" + i] = es.estadoTs.ToString("dd/MM/yy") + " " + es.estadoTs.ToShortTimeString();
             }
             List<Propuesta> props = new List<Propuesta>();
             props.Add(prop);
@@ -237,7 +242,7 @@ namespace nabu.organizaciones
             //firma Decision
             html = "<body>";
             html += "<h1>Resultado de Accion: " + ac.nombre + "</h1>";
-            html += "<h2>Fecha: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</h2><br>";
+            html += "<h2>Fecha: " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</h2><br>";
             html += "<b>" + Tools.tr("Accion", gr.idioma) + ":</b> " + ac.nombre + "<br>";
             html += "<b>" + Tools.tr("Nacido", gr.idioma) + ":</b> " + ac.born + "<br>";
             html += "<b>" + Tools.tr("Decision", gr.idioma) + ":</b> <a href='" + ac.docURL + "' target='_blank'>" + Tools.getURLName(ac.docURL) + "</a><br>";
@@ -251,14 +256,14 @@ namespace nabu.organizaciones
             {
                 nabu.plataforma.Accion.Estado es = ac.estados[i];
                 html += "<hr>";
-                html += "Estado: " + es.estado + " " + es.email + " " +  es.estadoTs.ToShortDateString() + " " + es.estadoTs.ToShortTimeString() + "<br>";
+                html += "Estado: " + es.estado + " " + es.email + " " + es.estadoTs.ToString("dd/MM/yy") + " " + es.estadoTs.ToShortTimeString() + "<br>";
                 html += es.descrip;
             }
             html += "<hr>";
             html += "Documento publicado por: " + email + "<br>";
             html += "Grupo: " + gr.nombre + "<br>";
             html += "Documento ID:" + fname + "<br>";
-            html += "Fecha de publicación: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "<br>";
+            html += "Fecha de publicación: " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "<br>";
             html += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
             html += "Objetivo: " + gr.objetivo + "<br>";
             html += "Usuarios: " + gr.getUsuariosHabilitados().Count + "<br>";
@@ -312,11 +317,17 @@ namespace nabu.organizaciones
             else
                 ret += "\"facilitador\":null,";
 
-            Usuario representante = grupo.getRepresentante();
-            if (representante != null)
-                ret += "\"representante\":{\"nombre\":\"" + representante.nombre + "\",\"email\":\"" + representante.email + "\"},";
+            List<Usuario> reps = grupo.getRepresentantes();
+            if (reps.Count == 0)
+                ret += "\"representantes\":[],";
             else
-                ret += "\"representante\":null,";
+            {
+                ret += "\"representantes\":[";
+                foreach(Usuario rep in reps)
+                    ret += "{\"nombre\":\"" + rep.nombre + "\",\"email\":\"" + rep.email + "\"},";
+                if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
+                ret += "],";
+            }
 
             ret += "\"URLEstatuto\":\"" + URLEstatuto + "\",";
             ret += "\"gruposTrabajo\":[";
@@ -325,9 +336,9 @@ namespace nabu.organizaciones
             {
                 ret += "{\"nombre\":\"" + gt.nombre + "\",";
                 ret += "\"EID\":" + gt.EID + ",";
-                ret += "\"born\":\"" + gt.born.ToShortDateString() + " " + gt.born.ToShortTimeString() + "\",";
+                ret += "\"born\":\"" + gt.born.ToString("dd/MM/yy") + " " + gt.born.ToShortTimeString() + "\",";
                 ret += "\"docURL\":\"" + gt.docURL + "\",";
-                ret += "\"docTs\":\"" + gt.docTs.ToShortDateString() + " " + gt.docTs.ToShortTimeString() + "\",";
+                ret += "\"docTs\":\"" + gt.docTs.ToString("dd/MM/yy") + " " + gt.docTs.ToShortTimeString() + "\",";
                 ret += "\"grupoURL\":\"" + gt.grupoURL + "\",";
                 ret += "\"grupoNombre\":\"" + gt.grupoNombre + "\",";
                 ret += "\"grupoIdioma\":\"" + gt.grupoIdioma + "\",";
@@ -358,9 +369,9 @@ namespace nabu.organizaciones
                 {
                     ret += "{\"nombre\":\"" + pr.nombre + "\",";
                     ret += "\"EID\":" + pr.EID + ",";
-                    ret += "\"born\":\"" + pr.born.ToShortDateString() + " " + pr.born.ToShortTimeString() + "\",";
+                    ret += "\"born\":\"" + pr.born.ToString("dd/MM/yy") + " " + pr.born.ToShortTimeString() + "\",";
                     ret += "\"docURL\":\"" + pr.docURL + "\",";
-                    ret += "\"docTs\":\"" + pr.docTs.ToShortDateString() + " " + pr.docTs.ToShortTimeString() + "\",";
+                    ret += "\"docTs\":\"" + pr.docTs.ToString("dd/MM/yy") + " " + pr.docTs.ToShortTimeString() + "\",";
                     ret += "\"revision\":\"" + pr.revision + "\",";
                     ret += "\"definicion\":\"" + pr.definicion + "\",";
                     ret += "\"objetivo\":" + Tools.toJson(pr.objetivo);
@@ -380,11 +391,11 @@ namespace nabu.organizaciones
 
                 ret += "{\"nombre\":\"" + ac.nombre + "\",";
                 ret += "\"EID\":" + ac.EID + ",";
-                ret += "\"born\":\"" + ac.born.ToShortDateString() + " " + ac.born.ToShortTimeString() + "\",";
+                ret += "\"born\":\"" + ac.born.ToString("dd/MM/yy") + " " + ac.born.ToShortTimeString() + "\",";
                 ret += "\"docURL\":\"" + ac.docURL + "\",";
-                ret += "\"docTs\":\"" + ac.docTs.ToShortDateString() + " " + ac.docTs.ToShortTimeString() + "\",";
+                ret += "\"docTs\":\"" + ac.docTs.ToString("dd/MM/yy") + " " + ac.docTs.ToShortTimeString() + "\",";
                 ret += "\"estado\":" + Tools.toJson(ac.estado) + ",";
-                ret += "\"estadoTs\":\"" + ac.estado.estadoTs.ToShortDateString() + " " + ac.estado.estadoTs.ToShortTimeString() + "\",";
+                ret += "\"estadoTs\":\"" + ac.estado.estadoTs.ToString("dd/MM/yy") + " " + ac.estado.estadoTs.ToShortTimeString() + "\",";
                 ret += "\"estadoEmail\":\"" + ac.estadoEmail + "\",";
                 ret += "\"objetivo\":" + Tools.toJson(ac.objetivo) + ",";
                 ret += "\"responsable\":\"" + ac.responsable + "\",";

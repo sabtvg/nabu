@@ -93,26 +93,33 @@
                         var usuarios = JSON.parse(data);
                         var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
                         s += "<tr>"
-                        s += "<td style='width:370px;'><b>" + tr("Nombre") + "</b></td>";
-                        s += "<td style='width:370px;'><b>" + tr("Email") + "</b></td>";
-                        s += "<td style='width:220px;'><b>" + tr("Desde") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrSoloLectura") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrHabilitado") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrCoordinador") + "</b></td>";
-                        s += "<td style='width:60px;'><b>" + tr("Apoyos") + "</b></td>";
-                        s += "<td style='width:70px;'><b>" + tr("Activo") + "</b></td>";
+                        s += "<td style='width:200px;'><b>" + tr("Nombre") + "</b></td>";
+                        s += "<td style='width:220px;'><b>" + tr("Email") + "</b></td>";
+                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
+                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
+                        s += "<td style='width:55px;text-align:center;'><b>" + tr("activo") + "</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("Habilitado") + "'><b>Hb</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("Solo Lectura") + "'><b>SL</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrCoordinador") + "'><b>C</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrSecretaria") + "'><b>S</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrRepresentante") + "'><b>R</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrFacilitador") + "'><b>F</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
                             s += "<tr>"
-                            s += "<td style='width:220px;'>" + usu.nombre + "</td>";
-                            s += "<td style='width:220px;'>" + usu.email + "</td>";
-                            s += "<td>" + usu.grupoDesde + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.isAdmin ? "<img src='res/luzverde.gif'>" : "") + "</td>";
+                            s += "<td>" + usu.nombre + "</td>";
+                            s += "<td>" + usu.email + "</td>";
                             s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
-                            s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td>" + usu.sLastLogin + "</td>";
+                            s += "<td style='text-align:center;' title='" + tr("Activo") + "'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;' title='" + tr("Habilitado") + "'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;' title='" + tr("Solo Lectura") + "'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
+
+                            s += "<td style='text-align:center;" + (usu.isAdmin ? "background-color:#0066CC" : "") + "' title='" + tr("abrCoordinador") + "'></td>";
+                            s += "<td style='text-align:center;" + (usu.isSecretaria ? "background-color:#FF66CC" : "") + "' title='" + tr("abrSecretaria") + "'></td>";
+                            s += "<td style='text-align:center;" + (usu.isRepresentante ? "background-color:#00CC99" : "") + "' title='" + tr("abrRepresentante") + "'></td>";
+                            s += "<td style='text-align:center;" + (usu.isFacilitador ? "background-color:#FF9900" : "") + "' title='" + tr("abrFacilitador") + "'></td>";
                             s += "</tr>"
                         }
                         s += "</table>";

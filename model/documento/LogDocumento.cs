@@ -42,12 +42,14 @@ namespace nabu
         public int negados = 0;
         public string carpeta = "";
         public string autor = "";
+        public int revisionDias = 0; //por si el documento tiene revision periodica
+
 
         public string sFecha
         {
             get
             {
-                return fecha.ToShortDateString();
+                return fecha.ToString("dd/MM/yy");
             }
             set
             {

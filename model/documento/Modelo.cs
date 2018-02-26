@@ -52,6 +52,12 @@ namespace nabu
         {
         }
 
+        public virtual int getRevisionDias(List<Propuesta> props)
+        {
+            return 0; //por si el documento tiene revision periodica
+        }
+
+
         public Dictionary<int, object> errores = new Dictionary<int, object>();
 
         public List<Variable> getVariables()
@@ -90,7 +96,7 @@ namespace nabu
 
             //fecha
             if (modo == eModo.consenso)
-                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             return ret;
         }
@@ -106,7 +112,7 @@ namespace nabu
             
             ret += toHTMLContenido(prop.nivel, prop, g, email, width);
             ret += "<br>" + Tools.tr("Comentarios", g.idioma) + ":";
-            ret += toHTMLComentarios(prop.nivel, prop, g, email, width - 30, false);
+            ret += toHTMLComentarios(prop.nivel, prop, g, email, width, false);
             return ret;
         }
 
@@ -156,7 +162,7 @@ namespace nabu
                     addError(q, "Las propuestas deben completarse por niveles correlativos, te has saltado el nivel anterior."); //esto evita que pueda proponer
                 }
 
-                ret += "<table style='width: " + (width - 10) + "px;'>";
+                ret += "<table>";
                 //mensaje de nivel
                 if (q > 1 && modo != eModo.consenso)
                 {
@@ -170,14 +176,14 @@ namespace nabu
 
                 ret += "<tr>";
                 //contenido de la propuesta
-                int contenidoWidth = modo == eModo.consenso ? width : width - 340;
+                int contenidoWidth = modo == eModo.consenso ? width : width - 420;
                 ret += "<td ";
                 ret += "style='width: " + contenidoWidth + "px;vertical-align:top;' ";
                 if (editar && !consensoAlcanzado)
                     ret += "class='seccion'";
                 ret += ">";
                 ret += toHTMLContenido(q, prop, g, email, contenidoWidth);
-                ret += "    </td>";
+                ret += "</td>";
 
                 //comentarios
                 if (modo != eModo.consenso)
@@ -185,13 +191,13 @@ namespace nabu
                     if (prop != null && !prop.esPrevista())
                     {
                         //se puede comentar
-                        ret += "<td id='comentarios" + prop.nodoID + "' style='width: " + 250 + "px;vertical-align:top;' class='comentarios'>";
-                        ret += toHTMLComentarios(q, prop, g, email, 246, !consensoAlcanzado);
+                        ret += "<td id='comentarios" + prop.nodoID + "' style='width: " + 330 + "px;vertical-align:top;' class='comentarios'>";
+                        ret += toHTMLComentarios(q, prop, g, email, 326, !consensoAlcanzado);
                         ret += "</td>";
                     }
                     else
                     {
-                        ret += "<td style='width: " + (250) + "px;vertical-align:top;' >";
+                        ret += "<td style='width: " + 330 + "px;vertical-align:top;' >";
                         ret += "</td>";
                     }
                 }
@@ -248,22 +254,28 @@ namespace nabu
             {
                 foreach (Comentario c in prop.comentarios)
                 {
-                    ret += "<div class='comentario' style='overflow: auto;width:" + (width - 15) + "px'>";
+                    if (c.objecion)
+                        ret += "<div class='comentario' style='overflow: auto;width:" + (width) + "px;background-color:#ffa6c7'>";
+                    else
+                        ret += "<div class='comentario' style='overflow: auto;width:" + (width) + "px;background-color:#adf1b2'>";
                     ret += toHTMLText(c.texto);
                     ret += "</div>";
+                    //objecion
+
                     //fecha
-                    ret += "<div style='text-align:right;color:gray;font-size:10px;width:" + (width - 10) + "px'>";
-                    ret += c.fecha.ToShortDateString();
+                    ret += "<div style='text-align:right;color:gray;font-size:10px;width:" + (width) + "px'>";
+                    ret += c.fecha.ToString("dd/MM/yy");
                     ret += "</div>";
                 }
 
                 //agregar
                 if (agregar && !prop.esPrevista())
                 {
-                    ret += "<textarea id='comentario" + prop.nodoID + "' maxlength='200' class='editar' style='width: " + (width - 15) + "px; height: 70px;'>";
+                    ret += "<textarea id='comentario" + prop.nodoID + "' maxlength='300' class='editar' style='font-size:10px;width: " + (width) + "px; height: 70px;'>";
                     ret += "</textarea><br>";
                     ret += "<input type='button' class='btn2' value='" + Tools.tr("Enviar", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ");'>";
-                    ret += "&nbsp;<font size='1'>(max: 200)</font>";
+                    ret += "&nbsp;<font size='1'>(max: 300)</font>";
+                    ret += "&nbsp;<input type='checkbox' id='objecion" + prop.nodoID + "'><span style='font-size:10px'>" + Tools.tr("Objecion", g.idioma) + "</span>";
                 }
             }
 
@@ -831,7 +843,7 @@ namespace nabu
             string ret;
             ret = "<table style='width:100%;'><tr>";
             ret += "<td class='votos' style='vertical-align:center;'><nobr>&nbsp;";
-            ret += n.born.ToShortDateString();
+            ret += n.born.ToString("dd/MM/yy");
             ret += "&nbsp;<img src='res/icono.png' style='vertical-align:middle'>";
             ret += "&nbsp;" + n.getFloresTotales();
             ret += "&nbsp;</nobr></td><td style='text-align:right;'>";

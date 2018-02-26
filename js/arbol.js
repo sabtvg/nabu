@@ -385,11 +385,8 @@ function dibujarArbol(referencia) {
 
     docEnter.append("image")
         .attr("class", "docImage")
-        .attr("width", "32px")
-        .attr("height", "40px")
-        .attr("transform", "translate(-16, -30)")
         .style("cursor", "pointer")
-        .attr("xlink:href", "res/doc.png");
+        .attr("xlink:href", function (d) { return d.icono; });
 
     docEnter.append("text")
         .attr("x", function (d) {
@@ -439,10 +436,9 @@ function dibujarArbol(referencia) {
         });
 
     docUpdate.select("image")
-        .attr("width", "32px")
-        .attr("height", "40px")
-        .attr("transform", "rotate(90)translate(-16, -30)")
-        .attr("xlink:href", "res/doc.png");
+        .attr("width", (64 * treeScale).toFixed(0) + "px")
+        .attr("height", (79 * treeScale).toFixed(0) + "px")
+        .attr("transform", "rotate(90) translate(" + (-32 * treeScale).toFixed(0) + "," + (-70 * treeScale).toFixed(0) + ")")
 
     var docExit = doc.exit().transition()
         .duration(duration)

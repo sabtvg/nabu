@@ -270,7 +270,35 @@ namespace nabu
             "alpadre.evaluacion.tip3|es|",
             "alpadre.evaluacion.tip4|es|",
             "alpadre.evaluacion.tip5|es|",
-            
+            "Palabras clave|es|Palabras clave",
+            "Evaluación de comunicado intergrupal|es|Evaluación de comunicado intergrupal",
+            "Documento de comunicado a evaluar|es|Documento de comunicado a evaluar",
+            "Prevista de evaluacion|es|Prevista de evaluaci&oacute;n",
+            "Revisar evaluacion|es|Revisar evaluaci&oacute;n",
+            "Crear evaluacion|es|Crear evaluaci&oacute;n",
+            "Evaluación de Accion|es|Evaluaci&oacute;n de Accion",
+            "Documento de resultado a evaluar|es|Documento de resultado a evaluar",
+            "Evaluacion de Enlace|es|Evaluaci&oacute;n de Enlace",
+            "Nombre de la publicacion|es|Nombre de la publicaci&oacute;n",
+            "URL de la publicacion|es|URL de la publicaci&oacute;n",
+            "Autor de la publicacion|es|Autor de la publicaci&oacute;n",
+            "accion.responsable|es|Responsable de proyecto",
+            "accion.revision|es|Revisi&oacute;n",
+            "Responsable|es|Responsable",
+            "accion.creada|es|Accion creada",
+            "Nueva decision [%1]|es|Nueva decisi&oacute;n [%1]",
+            "Recursos|es|Recursos",
+            "Capacidaddes|es|Capacidaddes",
+            "Integrantes|es|Integrantes",
+            "Consecuencias|es|Consecuencias",
+            "Comunicado al grupo padre|es|Comunicado al grupo padre",            
+            "Representante|es|Representante",
+            "Prevista de evaluacion|es|Prevista de evaluaci&oacute;n",
+            "Revisar evaluacion|es|Revisar evaluaci&oacute;n",
+            "Crear evaluacion|es|Crear evaluaci&oacute;n",
+            "Evaluación de comunicado intergrupal|es|Evaluaci&oacute;n de comunicado intergrupal",     
+            "Nueva Acta publicada|es|Nueva Acta publicada",
+
             "El usuario no existe|ct|La usu&agrave;ria no existeix", 
             "La clave actual no corresponde|ct|La clau actual no correspon", 
             "La clave nueva no puede ser vacia|ct|La clau nova no pot estar buida", 
@@ -554,10 +582,19 @@ namespace nabu
                     if (ret != "")
                         return ret;
                     else
+                    {
+                        registrarDictionaryException(key, idioma);
                         return "[" + key + "]";
+                    }
                 }
             }
+            registrarDictionaryException(key, idioma);
             return "[" + key + "]";
+        }
+
+        private static void registrarDictionaryException(string key, string idioma)
+        {
+            System.IO.File.AppendAllText(startupPath + "\\logDictionary.txt", DateTime.Now.ToString("dd/MM/yy") + " " + key + "|" + idioma + "\r\n"); 
         }
 
 
@@ -627,7 +664,7 @@ namespace nabu
             lock (logFile)
             {
                 DateTime n = DateTime.Now;
-                logFile.Write(n.ToShortDateString() + ";" + n.ToShortTimeString() + ";" + ip + ";" + logMessage + "\r\n");
+                logFile.Write(n.ToString("dd/MM/yy") + ";" + n.ToShortTimeString() + ";" + ip + ";" + logMessage + "\r\n");
             }
         }
 
@@ -686,6 +723,29 @@ namespace nabu
                 s = Encoding.UTF8.GetString(ms.ToArray());
                 return s;
             }
+        }
+
+        public static string HTMLLinksBR(string s)
+        {
+            //links con <a>
+            s = s.Replace("\n", "<br>");
+
+            List<string> links = new List<string>();
+            for (int ini = 0; ini < s.Length; ini++)
+            {
+                string rest = s.Substring(ini);
+                if (rest.StartsWith("http://") || rest.StartsWith("https://"))
+                {
+                    int fin = Math.Min(rest.IndexOf(" "), rest.IndexOf("<br>"));
+                    if (fin == -1) fin = rest.Length; //fin de texto
+                    links.Add(s.Substring(ini, fin));
+                }
+            }
+            foreach(string lnk in links){
+                s = s.Replace(lnk, "<a href='" + lnk + "' target='_blank'>" + lnk + "</a>");
+            }
+    
+            return s;
         }
 
         public static string toJson(object objeto)

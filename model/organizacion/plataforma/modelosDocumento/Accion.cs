@@ -255,6 +255,7 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
                         + Tools.tr("accion.responsable", g.idioma)
                         + "</div>";
+
                 //lista de seleccion de usuarios
                 string lista = "|";
                 foreach (Usuario u2 in g.usuarios)
@@ -289,6 +290,29 @@ namespace nabu.plataforma.modelos
             {
                 ret += "<div class='error' style='width:" + (width-4) + "px'>" + errores[nivel] + "</div>";
             }
+            return ret;
+        }
+
+        public override int getRevisionDias(List<Propuesta> props)
+        {
+            int ret = 0;
+            foreach(Propuesta p in props)
+                foreach(string key in p.bag.Keys)
+                    if (key == "s.revision")
+                        switch((string)p.bag[key]){
+                            case "Mensual":
+                                ret = 30;
+                                break;
+                            case "Trimestral":
+                                ret = 90;
+                                break;
+                            case "Semestral":
+                                ret = 180;
+                                break;
+                            case "Anual":
+                                ret = 365;
+                                break;
+                        }
             return ret;
         }
 

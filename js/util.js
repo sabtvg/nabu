@@ -74,6 +74,11 @@
 //    return s;
 //}
 
+function HTMLColor(v) {
+    //el color de una celda del queso segun su valor (entre 0 y 10)
+    return "rgba(" + (100 - v * 10) + "%, " + (v * 10) + "%, 50%, 0.8)";
+}
+
 function clone(obj) {
     if (null == obj || "object" != typeof obj) return obj;
     var copy = obj.constructor();
@@ -199,7 +204,7 @@ function getVisualizacion(config) {
     return visual;
 }
 
-function efectoLeft(obj, wait, xini, xfin, efecto, complete) {
+function efectoLeft(obj, wait, duration, xini, xfin, efecto, complete) {
     if (visual.level == 1) {
         obj.style.visibility = "visible";
         obj.style.left = xfin.toFixed(0) + 'px';
@@ -208,7 +213,7 @@ function efectoLeft(obj, wait, xini, xfin, efecto, complete) {
     }
     else
         var tween = new TWEEN.Tween({ x: xini })
-            .to({ x: xfin }, 750)
+            .to({ x: xfin }, duration)
             .easing(efecto)
             .onStart(function () {
                 obj.style.left = xini;

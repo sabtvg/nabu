@@ -424,6 +424,30 @@ namespace nabu.plataforma.modelos
             return ret;
         }
 
+        public override int getRevisionDias(List<Propuesta> props)
+        {
+            int ret = 0;
+            foreach (Propuesta p in props)
+                foreach (string key in p.bag.Keys)
+                    if (key == "s.revision")
+                        switch ((string)p.bag[key])
+                        {
+                            case "Mensual":
+                                ret = 30;
+                                break;
+                            case "Trimestral":
+                                ret = 90;
+                                break;
+                            case "Semestral":
+                                ret = 180;
+                                break;
+                            case "Anual":
+                                ret = 365;
+                                break;
+                        }
+            return ret;
+        }
+
         public override void ejecutarConsenso(Documento doc)
         {
             //nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;

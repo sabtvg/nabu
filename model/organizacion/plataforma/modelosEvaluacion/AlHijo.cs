@@ -118,7 +118,7 @@ namespace nabu.plataforma.modelosEvaluacion
 
             //fecha
             if (modo == eModo.finalizado)
-                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             //documento de Accon a evaluar
             string valores = getListaResultados();
@@ -139,7 +139,7 @@ namespace nabu.plataforma.modelosEvaluacion
                 ret += "<img src='" + ld.icono + "' style='width:32px;height:40px'></td>";
                 ret += "<td style='text-align:left;'>";
                 ret += ld.fname + "<br>";
-                ret += ld.fecha.ToShortDateString() + "<br>";
+                ret += ld.fecha.ToString("dd/MM/yy") + "<br>";
                 ret += "<a href='" + ld.URL + "' target='_blank'>" + ld.titulo + "</a></td>";
                 ret += "</tr></table>";
             }
@@ -212,7 +212,7 @@ namespace nabu.plataforma.modelosEvaluacion
                 LogDocumento ld = grupo.logResultados[i];
                 if (ld.modeloID == "Accion")
                 {
-                    ret += ld.docID + "#" + ld.titulo + " (" + ld.fecha.ToShortDateString() + ")|";
+                    ret += ld.docID + "#" + ld.titulo + " (" + ld.fecha.ToString("dd/MM/yy") + ")|";
                 }
             }
             if (ret.EndsWith("|")) ret = ret.Substring(0, ret.Length - 1);

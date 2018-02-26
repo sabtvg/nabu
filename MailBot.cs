@@ -73,13 +73,13 @@ namespace nabu
 
                 try
                 {
-                    //Tools.sendMail(para, asunto, body);
-                    throw new Exception("error");
+                    Tools.sendMail(para, asunto, body);
+                    //throw new Exception("error");
                 }
                 catch (Exception ex)
                 {
                     File.AppendAllText(Tools.startupPath + "\\mails\\errores\\log.txt",
-                        DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()
+                        DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString()
                         + " " + fi.Name
                         + " " + ex.Message + "\r\n");
 

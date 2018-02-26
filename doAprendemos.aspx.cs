@@ -39,14 +39,11 @@ namespace nabu
         {
             string actn = Request["actn"];
 
-            //verifico lista global de arboles
+            Application.Lock();
             if (Application["aplicacion"] == null)
-            {
-                Application.Lock();
                 Application["aplicacion"] = new Aplicacion(Server, Request);
-                Application.UnLock();
-            }
             app = (Aplicacion)Application["aplicacion"];
+            Application.UnLock();
 
             Tools.startupPath = Server.MapPath("");
             Tools.server = Server;
@@ -227,6 +224,11 @@ namespace nabu
 
                     //creo evaluacion vacia para este documento nuevo
                     doCrearEvaluacion(m, g, "", null);
+
+                    //alertas
+                    foreach (Usuario u in g.getUsuariosHabilitados())
+                        u.alertas.Add(new Alerta(Tools.tr("Nuevo documento intergrupal [%1]", doctitulo, g.idioma)));
+
                     ret = "ok";
                 }
                 else
@@ -285,6 +287,11 @@ namespace nabu
 
                     //creo evaluacion vacia para este documento nuevo
                     doCrearEvaluacion(m, g, "", null);
+
+                    //alertas
+                    foreach (Usuario u in g.getUsuariosHabilitados())
+                        u.alertas.Add(new Alerta(Tools.tr("Nuevo documento intergrupal [%1]", doctitulo, g.idioma)));
+
                     ret = "ok";
                 }
                 else
@@ -501,25 +508,30 @@ namespace nabu
 
         string getQuesoResultado(string grupo, int temaIndex, int preguntaIndex)
         {
-            string ret = "<table style='width:100%'>";
+            string ret = "";
             Grupo g = app.getGrupo(grupo);
             List<string> textos = new List<string>();
             lock (g)
             {
+                ret += "<div class='titulo1'>#pregunta#</div>";
+
+                //kyewords
+                ret += "<div>" + Tools.tr("Palabras clave", g.idioma) + ":</div>";
+                ret += getPalabrasClave(textos) + "<br><br>";
+
+                //textos
+                ret += "<table style='width:100%'>";
                 g.ts = DateTime.Now;                //separo info del queso
                 var tema = g.queso.temas[temaIndex];
                 var textoPregunta = "";
-                ret += "<tr><td colspan=2 class='titulo1'>#pregunta#</td></tr>";
                 foreach (Evaluacion ev in tema.evaluaciones) {
                     var pr = ev.preguntas[preguntaIndex];
                     textoPregunta = pr.pregunta;
-                    ret += "<tr><td>" + ev.born.ToShortDateString() + "</td><td style='width:240px'>" + HTMLBarra(pr.respuesta) + "</td></tr>";
+                    ret += "<tr><td>" + ev.born.ToString("dd/MM/yy") + "</td><td style='width:240px'>" + HTMLBarra(pr.respuesta) + "</td></tr>";
                     ret += "<tr><td colspan=2 class='cuadro'>" + pr.texto.Replace("\n","<br>") + "</td></tr>";
                     textos.Add(pr.texto);
                 }
                 ret += "</table><br>";
-                ret += "<div>" + Tools.tr("Palabras clave", g.idioma) + ":</div>";
-                ret += getPalabrasClave(textos) + "<br><br>";
                 ret += "<input type='button' class='btn' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
                 ret = ret.Replace("#pregunta#", textoPregunta);
             }

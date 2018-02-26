@@ -160,11 +160,11 @@ namespace nabu.plataforma.modelosEvaluacion
             validar(prop);
 
             //titulo
-            ret += "<br><div class='titulo1'>" + Tools.tr("Evaluaci&oacute;n de Enlace", g.idioma) + "</div><br>";
+            ret += "<br><div class='titulo1'>" + Tools.tr("Evaluacion de Enlace", g.idioma) + "</div><br>";
 
             //fecha
             if (modo == eModo.finalizado)
-                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             //documento a evaluar
             if (getText("s.basadoEnTemaExistente", prop) == "")

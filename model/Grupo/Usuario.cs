@@ -16,6 +16,13 @@
 //  
 ///////////////////////////////////////////////////////////////////////////
 
+
+//colores
+//coordinador   0x0066CC
+//secretaria    0xFF66CC
+//representante 0x00CC99
+//facilitador   0xFF9900
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +32,42 @@ namespace nabu
 {
     public class Usuario: IComparable
     {
+        public class AlfaComparer: Comparer<Usuario>
+        {
+            public override int Compare(Usuario x, Usuario y)
+            {
+                return x.nombre.CompareTo(y.nombre);
+            }
+        }
+
+        public class RolComparer : Comparer<Usuario>
+        {
+            public override int Compare(Usuario x, Usuario y)
+            {
+                if (x.isAdmin && !y.isAdmin) return -1;
+                else if (!x.isAdmin && y.isAdmin) return 1;
+                else if (x.isAdmin && y.isAdmin) return x.nombre.CompareTo(y.nombre);
+
+                else if (x.isRepresentante && !y.isRepresentante) return -1;
+                else if (!x.isRepresentante && y.isRepresentante) return 1;
+                else if (x.isRepresentante && y.isRepresentante) return x.nombre.CompareTo(y.nombre);
+
+                else if (x.isFacilitador && !y.isFacilitador) return -1;
+                else if (!x.isFacilitador && y.isFacilitador) return 1;
+                else if (x.isFacilitador && y.isFacilitador) return x.nombre.CompareTo(y.nombre);
+
+                else if (x.isSecretaria && !y.isSecretaria) return -1;
+                else if (!x.isSecretaria && y.isSecretaria) return 1;
+                else if (x.isSecretaria && y.isSecretaria) return x.nombre.CompareTo(y.nombre);
+
+                else if (x.isActive && !y.isActive) return -1;
+                else if (!x.isActive && y.isActive) return 1;
+                else if (x.isActive && y.isActive) return x.nombre.CompareTo(y.nombre);
+
+                else return x.nombre.CompareTo(y.nombre);
+            }
+        }
+
         public string nombre = "";
         public string email = "";
         public string clave = "";
@@ -41,6 +84,7 @@ namespace nabu
         public bool readOnly = false;
         public bool habilitado = true;
         public string grupoDesde = "";
+        public List<Alerta> alertas = new List<Alerta>();
 
         public Usuario()
         {
@@ -76,7 +120,7 @@ namespace nabu
         {
             get
             {
-                return lastLogin.ToShortDateString();
+                return lastLogin.ToString("dd/MM/yy");
             }
             set
             {

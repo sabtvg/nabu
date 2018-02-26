@@ -90,21 +90,26 @@
             var nombre = document.getElementById("nombre").value;
             var email = document.getElementById("email").value;
             var clave = document.getElementById("clave").value;
+
+            var habilitado = document.getElementById("habilitado").checked;
             var readOnly = document.getElementById("readOnly").checked;
             var isAdmin = document.getElementById("isAdmin").checked;
             var isSecretaria = document.getElementById("isSecretaria").checked;
-            var habilitado = document.getElementById("habilitado").checked;
+            var isRepresentante = document.getElementById("isRepresentante").checked;
+            var isFacilitador = document.getElementById("isFacilitador").checked;
 
             if (nombre != "") {
                 getHttp("doMain.aspx?actn=actualizarUsuario&nuevonombre=" + nombre
+                    + "&email=" + usuario.email
                     + "&nuevoemail=" + email
                     + "&nuevaclave=" + clave
                     + "&grupo=" + usuario.grupo
+                    + "&habilitado=" + habilitado
                     + "&readOnly=" + readOnly
                     + "&isAdmin=" + isAdmin
-                    + "&habilitado=" + habilitado
-                    + "&email=" + usuario.email
-                    + "&secretaria=" + isSecretaria
+                    + "&isSecretaria=" + isSecretaria
+                    + "&isRepresentante=" + isRepresentante
+                    + "&isFacilitador=" + isFacilitador
                     + "&clave=" + usuario.clave,
                     function (data) {
                         if (data.substring(0, 6) == "Error=")
@@ -116,10 +121,13 @@
                             document.getElementById("nombre").value = "";
                             document.getElementById("email").value = "";
                             document.getElementById("clave").value = "";
+
+                            document.getElementById("habilitado").checked = false;
                             document.getElementById("readOnly").checked = false;
                             document.getElementById("isAdmin").checked = false;
                             document.getElementById("isSecretaria").checked = false;
-                            document.getElementById("habilitado").checked = false;
+                            document.getElementById("isRepresentante").checked = false;
+                            document.getElementById("isFacilitador").checked = false;
 
                             //actualizo lista
                             getListaUsuarios();
@@ -135,10 +143,13 @@
                     document.getElementById("nombre").value = u.nombre;
                     document.getElementById("email").value = u.email;
                     document.getElementById("clave").value = u.clave;
+
+                    document.getElementById("habilitado").checked = u.habilitado;
                     document.getElementById("readOnly").checked = u.readOnly;
                     document.getElementById("isAdmin").checked = u.isAdmin;
                     document.getElementById("isSecretaria").checked = u.isSecretaria;
-                    document.getElementById("habilitado").checked = u.habilitado;
+                    document.getElementById("isRepresentante").checked = u.isRepresentante;
+                    document.getElementById("isFacilitador").checked = u.isFacilitador;
                 }
             }
         }
@@ -161,16 +172,17 @@
                         s += "<td style='width:20px;'></td>";
                         s += "<td style='width:200px;'><b>" + tr("Nombre") + "</b></td>";
                         s += "<td style='width:220px;'><b>" + tr("Email") + "</b></td>";
-                        s += "<td style='width:220px;'><b>" + tr("Desde") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
-                        s += "<td style='width:70px;text-align:center;'><b>" + tr("Activo") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrSoloLectura") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrHabilitado") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrCoordinador") + "</b></td>";
-                        s += "<td style='width:60px;text-align:center'><b>" + tr("abrSecretaria") + "</b></td>";
-                        s += "<td style='width:70px;text-align:center;'><b>" + tr("Email") + "</b></td>";
-                        s += "<td style='width:70px;text-align:center;'><b>" + tr("Borrar") + "</b></td>";
+                        s += "<td style='width:55px;text-align:center;'><b>" + tr("activo") + "</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("Habilitado") + "'><b>Hb</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("Solo Lectura") + "'><b>SL</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrCoordinador") + "'><b>C</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrSecretaria") + "'><b>S</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrRepresentante") + "'><b>R</b></td>";
+                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrFacilitador") + "'><b>F</b></td>";
+                        s += "<td style='width:50px;text-align:center;'><b>" + tr("email") + "</b></td>";
+                        s += "<td style='width:50px;text-align:center;'><b>" + tr("borrar") + "</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
@@ -178,14 +190,15 @@
                             s += "<td><img src='res/ver.gif' onclick=\"doSelect('" + usu.email + "');\" style='cursor:pointer;'></td>";
                             s += "<td>" + usu.nombre + "</td>";
                             s += "<td>" + usu.email + "</td>";
-                            s += "<td>" + usu.grupoDesde + "</td>";
                             s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
                             s += "<td>" + usu.sLastLogin + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "") + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.isAdmin ? "<img src='res/luzverde.gif'>" : "") + "</td>";
-                            s += "<td style='text-align:center;'>" + (usu.isSecretaria ? "<img src='res/luzverde.gif'>" : "") + "</td>";
+                            s += "<td style='text-align:center;' title='" + tr("Activo") + "'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;' title='" + tr("Habilitado") + "'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
+                            s += "<td style='text-align:center;' title='" + tr("Solo Lectura") + "'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
+                            s += "<td style='text-align:center;" + (usu.isAdmin ? "background-color:#0066CC" : "") + "' title='" + tr("abrCoordinador") + "'></td>";
+                            s += "<td style='text-align:center;" + (usu.isSecretaria ? "background-color:#FF66CC" : "") + "' title='" + tr("abrSecretaria") + "'></td>";
+                            s += "<td style='text-align:center;" + (usu.isRepresentante ? "background-color:#00CC99" : "") + "' title='" + tr("abrRepresentante") + "'></td>";
+                            s += "<td style='text-align:center;" + (usu.isFacilitador ? "background-color:#FF9900" : "") + "' title='" + tr("abrFacilitador") + "'></td>";
                             s += "<td style='text-align:center;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
                             if (!usu.isAdmin)
                                 s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
@@ -251,10 +264,14 @@
             document.getElementById("nombre").placeholder = tr("Nombre");
             document.getElementById("email").placeholder = tr("Email");
             document.getElementById("clave").placeholder = tr("Clave");
-            document.getElementById("lsoloLec").innerHTML = tr("Solo lectura");
-            document.getElementById("ladmin").innerHTML = "Coordinator"; //tr("Coordinador");
-            document.getElementById("lsecre").innerHTML = tr("Secretaria");
             document.getElementById("lHab").innerHTML = tr("Habilitado");
+            document.getElementById("lsoloLec").innerHTML = tr("Solo lectura");
+
+            document.getElementById("ladmin").innerHTML = tr("Coordinador");
+            document.getElementById("lsecre").innerHTML = tr("Secretaria");
+            document.getElementById("lrepre").innerHTML = tr("Representante");
+            document.getElementById("lfacil").innerHTML = tr("Facilitador");
+
             document.getElementById("btnActualizar").value = tr("Actualizar");
         }
     </script>
@@ -275,25 +292,23 @@
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
                 <table style="width:100%">
                     <tr>
-                        <td style="width:600px">
+                        <td style="width:800px">
                             <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
                             <input id="email" type="text" class="txt" size="20" placeholder="Email" />
                             <input id="clave" type="password" class="txt" size="15" placeholder="Clave" />
                         </td>
-                        <td style="vertical-align:top">
-                            <input id="readOnly" type="checkbox" class="txt" /><span id="lsoloLec">Solo lectura</span><br />
-                            <input id="habilitado" type="checkbox" class="txt" /><span id="lHab">Habilitado</span>
-                        </td>
-                        <td style="vertical-align:top">
-                            <input id="isAdmin" type="checkbox" class="txt" /><span id="ladmin">Admin</span><br />
-                            <input id="isSecretaria" type="checkbox" class="txt" /><span id="lsecre">Secretaria</span>
-                        </td>
-                        <td style="vertical-align:top">
-                            <input id="Checkbox1" type="checkbox" class="txt" /><span id="Span1">Representative</span><br />
-                            <input id="Checkbox2" type="checkbox" class="txt" /><span id="Span2">Facilitator</span>
-                        </td>
-                        <td style="vertical-align:top;text-align:right">
+                        <td rowspan="2" style="vertical-align:top;text-align:right">
                             <input id="btnActualizar" type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top">
+                            <input id="habilitado" type="checkbox" class="txt" /><span id="lHab">Habilitado</span>
+                            <input id="readOnly" type="checkbox" class="txt" /><span id="lsoloLec">Solo lectura</span>
+                            <input id="isAdmin" type="checkbox" class="txt" /><span id="ladmin" style="background-color:#0066CC;padding:3px;border-radius:3px">Admin</span>
+                            <input id="isSecretaria" type="checkbox" class="txt" /><span id="lsecre" style="background-color:#FF66CC;padding:3px;border-radius:3px">Secretaria</span>
+                            <input id="isRepresentante" type="checkbox" class="txt" /><span id="lrepre" style="background-color:#00CC99;padding:3px;border-radius:3px">Representative</span>
+                            <input id="isFacilitador" type="checkbox" class="txt" /><span id="lfacil" style="background-color:#FF9900;padding:3px;border-radius:3px">Facilitator</span>
                         </td>
                     </tr>
                 </table>

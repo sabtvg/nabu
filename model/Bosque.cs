@@ -26,6 +26,21 @@ namespace nabu
 {
     public class Bosque
     {
+        public class Usuario
+        {
+            public string nombre = "";
+            public string email = "";
+            public DateTime born = DateTime.Now;
+            public bool isAdmin = false;
+            public bool isSecretaria = false;
+            public bool isFacilitador = false;
+            public bool isRepresentante = false;
+            public int apoyos = 0; //cantidad de apoyos por parte de otros usuarios
+            public bool readOnly = false;
+            public string grupoDesde = "";
+            public bool isActive = false;
+        }
+
         public class Nodo
         {
             public string URL = "";
@@ -35,11 +50,13 @@ namespace nabu
             public string objetivo = "";
             public string msg = "";
             public string acceso = "";
-            public int usuarios;
             public int activos;
             public bool padreVerificado;
             public List<Nodo> hijos = new List<Nodo>();
             public bool descargado = false;
+            public float colorPromedio = 0;
+            public double horizontalidad = 0; //cantidad representates / cantidad usuarios
+            public List<Usuario> usuarios = new List<Usuario>();   
         }
 
         private Grupo grupo = null;
@@ -50,34 +67,95 @@ namespace nabu
         {
             //creo todo el bosque en hilo aparte
             grupo = g;
-            padre = new Nodo();
-            padre.URL = g.URL;
-            padre.nombre = g.nombre;
-            padre.objetivo = g.objetivo;
-            padre.acceso = "si";
-            padre.usuarios = g.getUsuariosHabilitados().Count;
-            padre.activos = g.getUsuariosHabilitadosActivos().Count;
+            padre = crearNodo(g);
             padre.padreVerificado = true;
             padre.descargado = true;
-
-            foreach (Hijo hijo in g.hijos)
-            {
-                Nodo n = new Nodo();
-                n.URL = hijo.URL;
-                n.nombre = hijo.nombre;
-                padre.hijos.Add(n);
-            }
 
             System.Threading.Thread hilo = new System.Threading.Thread(poblar);
             hilo.Start();
             //poblar();
         }
 
-        private void poblar(){
-            poblar(padre);
+        public static void copiarNodo(Nodo ret, Nodo modelo)
+        {
+            ret.nombre = modelo.nombre;
+            ret.objetivo = modelo.objetivo;
+            ret.padreURL = modelo.padreURL;
+            ret.padreNombre = modelo.padreNombre;
+            ret.hijos = modelo.hijos;
+            ret.activos = modelo.activos;
+            ret.colorPromedio = modelo.colorPromedio;
+            ret.horizontalidad = modelo.horizontalidad;
+
+            ret.usuarios.Clear();
+            foreach (Usuario u in modelo.usuarios)
+            {
+                Usuario p = new Usuario();
+                p.nombre = u.nombre;
+                p.email = u.email;
+                p.born = u.born;
+                p.isAdmin = u.isAdmin;
+                p.isSecretaria = u.isSecretaria;
+                p.isFacilitador = u.isFacilitador;
+                p.isRepresentante = u.isRepresentante;
+                p.isActive = u.isActive;
+                p.apoyos = u.apoyos; //cantidad de apoyos por parte de otros usuarios
+                p.readOnly = u.readOnly;
+                p.grupoDesde = u.grupoDesde;
+                ret.usuarios.Add(p);
+            }
         }
 
-        private void poblar(Nodo n)
+        public static Nodo crearNodo(Grupo g)
+        {
+            Nodo nodo = new Nodo();
+            nodo.nombre = g.nombre;
+            nodo.URL = g.URL;
+            nodo.objetivo = g.objetivo;
+            nodo.padreURL = g.padreURL;
+            nodo.padreNombre = g.padreNombre;
+            nodo.acceso = "si";
+            nodo.activos = g.getUsuariosHabilitadosActivos().Count;
+            nodo.colorPromedio = g.queso.getColorPromedio();
+            nodo.horizontalidad = g.getHorizontalidad();
+
+            List<nabu.Usuario> usus = g.usuarios;
+            usus.Sort(new nabu.Usuario.RolComparer());
+            foreach (nabu.Usuario u in usus)
+            {
+                if (u.habilitado)
+                {
+                    Usuario p = new Usuario();
+                    p.nombre = u.nombre;
+                    p.email = u.email;
+                    p.born = u.born;
+                    p.isAdmin = u.isAdmin;
+                    p.isSecretaria = u.isSecretaria;
+                    p.isFacilitador = u.isFacilitador;
+                    p.isRepresentante = u.isRepresentante;
+                    p.isActive = u.isActive;
+                    p.apoyos = u.apoyos; //cantidad de apoyos por parte de otros usuarios
+                    p.readOnly = u.readOnly;
+                    p.grupoDesde = u.grupoDesde;
+                    nodo.usuarios.Add(p);
+                }
+            }
+
+            foreach (Hijo hijo in g.hijos)
+            {
+                Bosque.Nodo n = new Bosque.Nodo();
+                n.URL = hijo.URL;
+                n.nombre = hijo.nombre;
+                nodo.hijos.Add(n);
+            }
+            return nodo;
+        }
+
+        private void poblar(){
+            poblar(padre, ";");
+        }
+
+        private void poblar(Nodo n, string nombres)
         {
             foreach (Nodo hijo in n.hijos)
             {
@@ -91,19 +169,23 @@ namespace nabu
                         lock (this)
                         {
                             Nodo nodoRet = Tools.fromJson<Nodo>(ret);
-                            hijo.objetivo = nodoRet.objetivo;
-                            hijo.padreURL = nodoRet.padreURL;
-                            hijo.padreNombre = nodoRet.padreNombre;
-                            hijo.hijos = nodoRet.hijos;
-                            hijo.usuarios = nodoRet.usuarios;
-                            hijo.activos = nodoRet.activos;
+                            Bosque.copiarNodo(hijo, nodoRet);
+
+                            //compruebo padre
                             if (hijo.padreURL == n.URL && hijo.padreNombre == n.nombre)
                                 hijo.padreVerificado = true;
+
+                            //compruebo recursividad
+                            if (nombres.IndexOf(";" + hijo.nombre + ";") >= 0)
+                                throw new appException("Recursividad detectada");
+                            else
+                                nombres += hijo.nombre + ";";
+
                             hijo.descargado = true;
                         }
 
                         //recurso
-                        poblar(hijo);
+                        poblar(hijo, nombres);
 
                         //retardo de pruebas
                         //System.Threading.Thread.Sleep(3000);

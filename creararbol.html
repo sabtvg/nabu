@@ -45,12 +45,21 @@
 
             document.getElementById("tit2").innerHTML = tr("Crear grupo");
             document.getElementById("datGrupo").innerHTML = tr("Datos del grupo");
-            document.getElementById("nombreArbol").placeholder = tr("Nombre");
+            document.getElementById("nombreArbol").placeholder = tr("Nombre de arbol");
             document.getElementById("jarDat").innerHTML = tr("Datos del coordinador");
             document.getElementById("nombreAdmin").placeholder = tr("Nombre");
             document.getElementById("email").placeholder = tr("Email");
             document.getElementById("clave").placeholder = tr("Clave");
             document.getElementById("clave2").placeholder = tr("Repetir clave");
+            document.getElementById("crearMsg").innerHTML = tr("crearMsg");            
+        }
+
+        function comprobar(n) {
+            var cars = " /\u0008\u0009\u000A\u000B\u000C\u000D\u0020\u0022\u0027\u005C\u00A0\u2028\u2029\uFEFF\u00C1\u00E1\u00C9\u00E9\u00CD\u00ED\u00D3\u00F3\u00DA\u00FA\u00DC\u00FC\u00D1\u00F1";
+            var ret = true;
+            for(i in cars)
+                ret = ret && n.indexOf(cars.substring(parseInt(i), parseInt(i) + 1)) ==  -1;
+            return ret;
         }
 
         function doCrearArbol() {
@@ -64,6 +73,9 @@
 
             if (clave != clave2) {
                 document.getElementById("response").innerHTML = "<font color=red>" + tr("Las claves no coinciden") + "</font>";
+            }
+            else if (!comprobar(nombreArbol)) {
+                document.getElementById("response").innerHTML = "<font color=red>" + tr("error nombre grupo") + "</font>";
             }
             else
                 getHttp("doMain.aspx?actn=newgrupo&grupo=" + nombreArbol
@@ -103,13 +115,13 @@
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
                             <span id="datGrupo" class="titulo3">Datos del grupo</span><br />
-                            <input id="nombreArbol" type="text" class="txt" size="25" maxlength="25" placeholder="Nombre" /><br />
-                            <select id="idioma" class="txt" style="width: 100%">
+                            <input id="nombreArbol" type="text" class="txt" style="width:300px" maxlength="20" placeholder="" /><br />
+                            <select id="idioma" class="txt"  style="width:300px">
                                 <option id="es">Espa&ntilde;ol</option>
                                 <option id="ct">Catal&aacute;n</option>
                                 <option id="en">English</option>
-                            </select>
-                            <select id="organizacion" class="txt" style="width: 100%">
+                            </select><br />
+                            <select id="organizacion" class="txt"  style="width:300px">
                                 <option id="Plataforma">Plataforma social</option>
                             </select>                        
                         </div>
@@ -117,16 +129,18 @@
 
                         <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
                             <span id="jarDat" class="titulo3">Datos del coordinador</span><br />
-                            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  size="25"/><br />
-                            <input id="email" type="text" class="txt" placeholder="Email"  size="25"/><br />
-                            <input id="clave" type="password" class="txt" placeholder="Clave"  size="25"/><br />
-                            <input id="clave2" type="password" class="txt" placeholder="Repetir clave"  size="25"/>
+                            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  style="width:300px"/><br />
+                            <input id="email" type="text" class="txt" placeholder="Email"  style="width:300px"/><br />
+                            <input id="clave" type="password" class="txt" placeholder="Clave"  style="width:300px"/><br />
+                            <input id="clave2" type="password" class="txt" placeholder="Repetir clave"  style="width:300px"/>
                         </div>
                         <br />
 
-                        <table>
+                        <div id="crearMsg" style="width: 300px;text-align:center"></div>
+                        <br />
+                        <table style="width:100%">
                             <tr>
-                                <td><input type="button" class="btn" value="Crear" onclick="doCrearArbol();" /> </td>
+                                <td style="text-align:center"><input type="button" class="btn" value="Crear" onclick="doCrearArbol();" /> </td>
                             </tr>
                         </table>                           
 

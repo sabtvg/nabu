@@ -33,11 +33,38 @@ namespace nabu
         public int saveTime = 10; //guardar arboles cada x minutos
         public int cleanTime = 40; //quito arbol de memoria si no se toca en 20 minutos
         public MailBot mailBot = new MailBot();
+        public DateTime initTs = DateTime.Now;
 
         public Aplicacion(HttpServerUtility server, HttpRequest request)
         {
             this.server = server;
             this.request = request;
+            addLog("Aplicacion(): Instancia creada");
+        }
+
+        ~Aplicacion()
+        {
+            try
+            {
+                // Perform some cleanup operations here.
+                saveGrupos();
+                addLog("Finalize(): Grupos guardados");
+            }
+            catch(Exception ex)
+            {
+                addLog("Finalize(): " + ex.Message);
+            }
+        }
+
+        public void addLog(string s)
+        {
+            //este log se desarrollo para comprobar el uso de memoria compartida y detectar servidores replcados con balanceadores de carga
+            //el valor de machineName debe ser siempre el mismo y el initTs tambien hasta que caiga la instancia y se guarden los grupos con el destructor de clase
+            //lock (this)
+            //{
+            //    System.IO.File.AppendAllText(server.MapPath("logGrupos.html"), 
+            //        server.MachineName + " " + initTs.Ticks + " " +  DateTime.Now.ToString("dd/MM/yy HH:mm:ss.sss") + " " + s + "<br>\r\n");
+            //}
         }
 
         public void verifySave()
@@ -75,6 +102,7 @@ namespace nabu
                                 System.IO.Directory.Delete(g.path, true);
 
                         grupos.RemoveAt(index);
+                        addLog("depurarMemoria(): [" + g.nombre + "] quitado de memoria");
                     }
                     else
                         index += 1;
@@ -84,13 +112,14 @@ namespace nabu
 
         public void saveGrupos()
         {
-            lock (grupos)
+            lock (this)
             {
                 foreach (Grupo g in grupos)
                 {
                     lock (g)
                     {
                         g.save(server.MapPath("grupos/" + g.nombre));
+                        addLog("saveGrupos(): [" + g.nombre + "] guardado");
                     }
                 }
             }
@@ -107,6 +136,8 @@ namespace nabu
                     if (g.nombre.ToLower() == nombre.ToLower())
                     {
                         ret = g;
+                        addLog("getGrupo(): [" + g.nombre + "] leido de memoria");
+                        break;
                     }
                 }
 
@@ -115,6 +146,7 @@ namespace nabu
                     //no existe en la lista lo busco en la carpeta y lo cargo
                     ret = loadGrupo(nombre);
                     grupos.Add(ret);
+                    addLog("getGrupo(): [" + ret.nombre + "] agregado a memoria");
                 }
             }
 
@@ -156,6 +188,12 @@ namespace nabu
                 ret = Tools.fromJson<Grupo>(s, tipos);
                 ret.path = server.MapPath("grupos/" + nombre);
 
+                try
+                {
+                    ret.URL = request.UrlReferrer.AbsoluteUri.Substring(0, request.UrlReferrer.AbsoluteUri.LastIndexOf("/"));
+                }
+                catch (Exception) { }
+
                 //modelos viejos
                 if (ret.arbol == null)
                 {
@@ -165,6 +203,11 @@ namespace nabu
                 //actualizo modelos
                 ret.arbol.grupo = ret;  //padre del arbol, referencia ciclica, no se puede serializar
                 ret.queso.grupo = ret;  //padre del queso, referencia ciclica, no se puede serializar
+
+                ret.fileReadTs = DateTime.Now;
+
+                addLog("loadGrupo(): [" + ret.nombre + "] leido de disco");
+
                 return ret;
             }
             else
@@ -175,7 +218,7 @@ namespace nabu
         {
             lock (this)
             {
-                string l = "<tr><td>" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</td>";
+                string l = "<tr><td>" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</td>";
                 l += "<td>" + accion + "</td>";
                 l += "<td>" + grupo + "</td>";
                 l += "<td>" + email + "</td>";

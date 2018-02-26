@@ -42,11 +42,18 @@
         var grupoParam;
         var arbolPersonal;
         var grupos;
-        var usuarios;
+        var usuarios = "";
+        var representantes = "";
         var lastMouse = null;
         var generando = false;
         var torsionInterval;
         var firefoxWhich = 0;
+        var altura = 200;
+        var imgW = 17 * zoom; //imagen personita
+        var imgH = 42 * zoom; //imagen personita
+        var email = ""; //usuario seleccionado
+        var ver = "grupos"; //tipo de representacion
+        var margen = 16;
 
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
@@ -126,7 +133,7 @@
                     document.getElementById("todo").style.left = '0px';
                     document.getElementById("todo").style.width = window.innerWidth + 'px';
                     document.getElementById("todo").style.height = window.innerHeight + 'px';
-                    document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+                    document.getElementById("joystick").style.top = (window.innerHeight - 160) + 'px';
 
                     //atras
                     document.getElementById("atras").style.width = (100 * scalex) + 'px';
@@ -152,7 +159,7 @@
                         //dibujarTodo();
                         actualizarBosque();
 
-                        torsionInterval = setInterval(doTorsionAll, 100);
+                        torsionInterval = setInterval(doTorsion, 100);
                     }
                 }
             }
@@ -161,20 +168,99 @@
                 document.location = 'default.html?grupo=' + grupoParam;
         }
 
-        function doTorsionAll() {
+        function actualizarBosque() {
+            getBosque("getBosque");
+        }
+
+        function generarBosque() {
+            getBosque("clearBosque");
+        }
+
+        function getBosque(accion) {
+            email = "";
+
+            var div = document.getElementById("info");
+            div.style.visibility = "hidden";
+
+            getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
+                + "&grupo=" + usuario.grupo
+                + "&clave=" + usuario.clave,
+                 function (data) {
+                     //atrapo el error si es que hay
+                     document.getElementById("florWait").style.visibility = "hidden";
+                     if (data.substring(0, 6) == "Error=") {
+                         //ha habido un error
+                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                     }
+                     else {
+                         //tengo el bosque
+                         //document.getElementById("todo").innerHTML = data;
+                         bosque = JSON.parse(data);
+
+                         dibujarTodo();
+                     }
+                 });
+        }
+
+        function dibujarTodo() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+            var s = "";
+            s += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 100 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>" + usuario.grupo + " - " + tr("El bosque") + "</text>";
+
+            generando = false;
+
+            s += "<g id='grupo'>";
+            //dibujo bosque
+            if (ver == "grupos") 
+                s += doGrupos(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, doGrupoNodo);
+            else
+                s += doPersonas(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 9500, doPersonasNodo);
+            s += "</g>"
+
+            document.getElementById("todo").innerHTML = s;
+            transform(offsetX, offsetY);
+
+            //panelgrupo
+            var usus = (usuarios.split(";").length - 1);
+            var reps = (representantes.split(";").length - 1);
+            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            if (ver != "grupos")
+                s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
+
+            if (ver == "grupos") {
+                s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='ver=\"personas\";dibujarTodo();'><nobr>" + tr("Ver personas") + "</nobr></div>";
+                document.getElementById("info").style.visibility = 'hidden';
+                email = "";
+            }
+            else {
+                s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='ver=\"grupos\";dibujarTodo();'><nobr>" + tr("Ver grupos") + "</nobr></div>";
+            }
+            var panel = document.getElementById("panelGrupo");
+            panel.innerHTML = s;
+            panel.style.visibility = 'visible';
+
+            if (generando)
+                setTimeout(actualizarBosque, 1000);
+        }
+
+        function doTorsion() {
             //recorro el bosque
             if (bosque) {
-                doIterar(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, doTorsionElem);
+                doGrupos(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, doTorsionNodo);
             }
         }
 
-        function doTorsionElem(nodo, centro, radio, nivel) {
-            if (nodo.id && nodo.usuarios > 0) {
+        function doTorsionNodo(nodo, centro, radio, nivel) {
+            if (nodo.id && nodo.usuarios.length > 0) {
                 var elem = document.getElementById(nodo.id);
                 if (elem) {
                     var r = toRect(centro.m, centro.a);
                     elem.setAttribute('transform', "translate(" + r.x.toFixed(0) + "," + r.y.toFixed(0) + ") rotate(" + nodo.torsion + ")");
-                    var step = nodo.activos / nodo.usuarios;
+                    var step = nodo.activos / nodo.usuarios.length;
                     if (nivel % 2 == 1)
                         nodo.torsion += step;
                     else
@@ -184,20 +270,22 @@
             return "";
         }
 
-        function doIterar(x, y, radioInicial, accion) {
+        function doGrupos(x, y, radioInicial, accion) {
             grupos = 0;
-            usuarios = 0;
+            usuarios = ";";
+            representantes = ";";
+
             var centro = toPolar(x, y);
             var niveles = getNiveles(bosque, 0);
-            return doIterar2(bosque, centro, radioInicial, 0, niveles, 360, 90, accion);
+            return doGrupos2(bosque, centro, radioInicial, 0, niveles, 360, 90, accion);
         }
 
-        function doIterar2(nodo, centro, radio, nivel, niveles, apertura, direccion, accion) {
+        function doGrupos2(nodo, centro, radio, nivel, niveles, apertura, direccion, accion) {
             var s = '';
 
             if (nodo.exception) {
                 var rect = toRect(centro.m, centro.a);
-                s += circulo(nodo.exception, "", "", centro, radio, "red", 3)
+                s += msg(nodo.exception, centro)
             }
             else {
                 if (radio > 5) {
@@ -217,7 +305,7 @@
                             var hijo = nodo.hijos[i];
                             var angulo = direccion - paso * (nodo.hijos.length - 1) / 2 + paso * i; //centrado en la direccion
                             var hijoCentro = addPolar(centro, { m: radio, a: angulo });
-                            s += doIterar2(hijo, hijoCentro, hijoRadio, nivel + 1, niveles, 180, angulo, accion);
+                            s += doGrupos2(hijo, hijoCentro, hijoRadio, nivel + 1, niveles, 180, angulo, accion);
                         }
                     }
 
@@ -227,159 +315,159 @@
             }
             return s;
         }
-        
-        function actualizarBosque() {
-            getBosque("getBosque");
+
+        function doPersonas(x, y, accion) {
+            grupos = 0;
+            usuarios = ";";
+            representantes = ";";
+            imgW = 17 * zoom; //imagen personita
+            imgH = 42 * zoom; //imagen personita
+
+            var centro = { x: x, y: y };
+            var niveles = getNiveles(bosque, 0);
+            return doPersonas2(bosque, centro, 0, niveles, accion);
         }
 
-        function generarBosque() {
-            getBosque("clearBosque"); 
-        }
+        function doPersonas2(nodo, centro, nivel, niveles, accion) {
+            var s = '';
 
-        function getBosque(accion) {
-            getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
-                + "&grupo=" + usuario.grupo
-                + "&clave=" + usuario.clave,
-                 function (data) {
-                     //atrapo el error si es que hay
-                     if (data.substring(0, 6) == "Error=") {
-                         //ha habido un error
-                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
-                     }
-                     else {
-                         //tengo el bosque
-                         //document.getElementById("todo").innerHTML = data;
-                         bosque = JSON.parse(data);
+            if (nodo.exception) {
+                var rect = toRect(centro.m, centro.a);
+                s += msg(nodo.exception, centro)
+            }
+            else {
+                //accion
+                s += accion(nodo, centro, nivel);
 
-                         document.getElementById("florWait").style.visibility = "hidden";
-                         dibujarTodo();
-                     }
-                 });
-        }
+                //hijos
+                var hijoLeft = margen / 2 - nodo.ancho / 2;
+                for (i in nodo.hijos) {
+                    var hijo = nodo.hijos[i];
+                    var hijoCentro = { x: centro.x + hijoLeft + hijo.ancho / 2, y: centro.y + altura * zoom + imgH - hijo.horizontalidad / 100 * zoom * altura + 30 * zoom };
 
-        //funcion de test a poblado
-        function poblarNodo(nodo, hijos, niveles, cantidad) {
-            if (niveles > 1) {
-                for (var i = 0; i < hijos; i++) {
-                    if (grupos < cantidad) {
-                        var hijo = { nombre: 'a' + grupos, hijos: [], URL: 'http://localhost/nabu', usuarios:30 };
-                        //if (i == 0)
-                        nodo.hijos.push(hijo);
-                        grupos++;
-                        poblarNodo(hijo, hijos, niveles - 1, cantidad);
+                    //hijo
+                    s += doPersonas2(hijo, hijoCentro, nivel + 1, niveles, accion);
+                    hijoLeft += hijo.ancho;
+
+                    //lineas
+                    if (!generando) {
+                        s += "<line x1='" + (centro.x).toFixed(0) + "' y1='" + (centro.y + imgH + 30 * zoom).toFixed(0) + "' x2='" + (hijoCentro.x).toFixed(0) + "' y2='" + (centro.y + imgH + 30 * zoom).toFixed(0) + "' style='stroke:gray;stroke-width:2' />";
+                        s += "<line x1='" + (hijoCentro.x).toFixed(0) + "' y1='" + (centro.y + imgH + 30 * zoom).toFixed(0) + "' x2='" + (hijoCentro.x).toFixed(0) + "' y2='" + (hijoCentro.y + 4).toFixed(0) + "' style='stroke:gray;stroke-width:2' />";
                     }
                 }
             }
-            return nodo;
+            return s;
         }
-
-        function dibujarTodo() {
-            var scalex = window.innerWidth / 1920;
-            var scaley = window.innerHeight / 1080;
+          
+        function doPersonasNodo(nodo, centro, nivel) {
             var s = "";
-            s += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 100 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>" + usuario.grupo + " - " + tr("El bosque") + "</text>";
-
-            generando = false;
-
-            s += "<g id='grupo'>";
-            //dibujo bosque
-            s += doIterar(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, circuloNodo);
-            s += "</g>"
-
-            s += "<text x='" + (80 * scale) + "' y='" + (115 + 85 * scale) + "' fill='black' style='font-size:14px'>Grupos: " + grupos + "</text>";
-            s += "<text x='" + (80 * scale) + "' y='" + (135 + 85 * scale) + "' fill='black' style='font-size:14px'>Usuarios: " + usuarios + "</text>";
-            s += "<text x='" + (80 * scale) + "' y='" + (155 + 85 * scale) + "' fill='blue' style='font-size:14px;cursor:pointer;text-decoration: underline;' onclick='actualizarBosque();'>Actualizar</text>";
-            s += "<text x='" + (80 * scale) + "' y='" + (175 + 85 * scale) + "' fill='blue' style='font-size:14px;cursor:pointer;text-decoration: underline;' onclick='generarBosque();'>Generar</text>";
-
-            document.getElementById("todo").innerHTML = s;
-            transform(offsetX, offsetY);
-
-            if (generando)
-                setTimeout(actualizarBosque, 1000);
-        }
-
-        function cut(s, len) {
-            if (s.length <= len)
-                return s;
-            else
-                return s.substring(0, 25) + "...";
-        }
-
-        function getNiveles(nodo, nivel) {
-            var ret = 1;
-            var maxHijo = 0;
-            for (i in nodo.hijos) {
-                var hijo = nodo.hijos[i];
-                var hijoNiveles = getNiveles(hijo, nivel + 1);
-                if (hijoNiveles > maxHijo) maxHijo = hijoNiveles;
-            }
-            return ret + maxHijo;
-        }
-
-        function addPolar(p1, p2){
-            var r1 = toRect(p1.m, p1.a);
-            var r2 = toRect(p2.m, p2.a);
-            return toPolar(r1.x + r2.x, r1.y + r2.y);
-        }
-
-        function circuloNodo(nodo, centro, radio) {
-            //color acceso
-            var s = "";
-            var colorAcceso;
-            if (nodo.acceso == "NoExiste" || nodo.acceso == "NoHabilitado")
-                colorAcceso = "#C71585";
-            else if (nodo.acceso == "readOnly")
-                colorAcceso = "#B8860B";
-            else
-                colorAcceso = "#6B8E23";
 
             grupos += 1;
-            usuarios += nodo.usuarios;
+
+            //verifico fallo de defincion de padre
+            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre;
+            if (nodo.msg != "")
+                s += msg(nodo.msg, centro);
+            else if (!nodo.descargado) {
+                s += msg("[?]", centro);
+                generando = true;
+            }
+            else if (!nodo.padreVerificado)
+                s += msg(nodo.nombre + " [" + tr("Grupo padre no corresponde") + "]", centro);
+            else
+                s += doPersonasNodoIconos(nodo.nombre, centro, url, nodo);
+            return s;
+        }
+
+        function doPersonasNodoIconos(t1, centro, url, nodo) {
+            var fontSize1 = 20 * zoom;
+            if (fontSize1 > 20) fontSize1 = 20;
+            var colorb = nodo.colorPromedio == 0 ? "transparent" : HTMLColor(nodo.colorPromedio);
+            var own = nodo.nombre == usuario.grupo;
+
+            var s = "<g transform='translate(" + centro.x.toFixed(0) + "," + centro.y.toFixed(0) + ")'>";
+
+            //dibujo textos
+            //nombre de grupo
+            if (t1 != "" && fontSize1 > 8)
+                s += "<text x='0' y='" + fontSize1.toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
+
+            //usuarios
+            var length = nodo.usuarios.length;
+            for (var i in nodo.usuarios) {
+                var usu = nodo.usuarios[i];
+                s += "<image x='" + (-length * imgW / 2 + imgW * parseInt(i)) + "' y='" + (5 + fontSize1).toFixed(0) + "' height='" + (imgH).toFixed(0) + "px' width='" + (imgW) + "px'";
+                s += " onmouseover='showInfo(\"" + usu.email + ";" + nodo.nombre + "\");email=\"" + usu.email + "\";dibujarTodo();' ";
+                s += " style='cursor:pointer;' ";
+
+                if (usu.email == email || email == "") {
+                    if (usu.isRepresentante)
+                        s += " xlink:href='res/representante.png'";
+                    else if (usu.isAdmin)
+                        s += " xlink:href='res/coordinador.png'";
+                    else if (usu.isSecretaria)
+                        s += " xlink:href='res/secretaria.png'";
+                    else if (usu.isFacilitador)
+                        s += " xlink:href='res/facilitador.png'";
+                    else if (!usu.isActive)
+                        s += " xlink:href='res/inactivo.png'";
+                    else if (usu.readOnly)
+                        s += " xlink:href='res/readonly.png'";
+                    else
+                        s += " xlink:href='res/activo.png'";
+                }
+                else if (email != "") 
+                    s += " xlink:href='res/transparente.png'";
+
+                s += "/>";
+
+                //acumulo lista de usuarios y representntes sin repticion
+                if (usuarios.indexOf(";" + usu.email + ";") == -1)
+                    usuarios += usu.email + ";";
+                if (representantes.indexOf(";" + usu.email + ";") == -1 && usu.isRepresentante)
+                    representantes += usu.email + ";";
+            }
+            s += "</g>";
+
+            return s;
+        }
+
+        function doGrupoNodo(nodo, centro, radio) {
+            var s = "";
+
+            grupos += 1;
             nodo.id = grupos; //id dinamico en la estructura SVG
             nodo.torsion = 0;
 
-            //verifico fallo de defincion de padre
-            var url = nodo.URL + '/?grupo=' + nodo.nombre;
-            if (nodo.msg != "") {
-                //flor
-                var rect = toRect(centro.m, centro.a);
-                var x = rect.x;
-                var y = rect.y;
-                s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='red' style='font-size:12px' text-anchor='middle'>" + nodo.msg + "</text>";
+            //cuento usuarios
+            for (var i in nodo.usuarios) {
+                var usu = nodo.usuarios[i];
+                if (usuarios.indexOf(";" + usu.email + ";") == -1)
+                    usuarios += usu.email + ";";
             }
-            else if (!nodo.descargado) {
-                //flor
-                var rect = toRect(centro.m, centro.a);
-                var x = rect.x;
-                var y = rect.y;
-                s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='red' style='font-size:18px' text-anchor='middle'>[?]</text>";
+
+            //verifico fallo de defincion de padre
+            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre;
+            if (nodo.msg != "") 
+                s += msg(nodo.msg, centro);
+            else if (!nodo.descargado){ 
+                s += msg("[?]", centro);
                 generando = true;
-                //s += "<image xlink:href='res/icono2.png' cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' height='39px' width='38px'/>";
             }
             else if (!nodo.padreVerificado)
-                s += circulo(nodo.nombre,
-                    "[" + tr("Grupo padre no corresponde") + "]",
-                    nodo.activos + "/" + nodo.usuarios + " " + tr("Usuarios"),
-                    centro,
-                    radio,
-                    colorAcceso,
-                    nodo.nombre == usuario.grupo,
-                    url,
-                    nodo);
+                s += msg(nodo.nombre + " [" + tr("Grupo padre no corresponde") + "]", centro);
             else
-                s += circulo(nodo.nombre,
+                s += doGrupoNodoCirculo(nodo.nombre,
                     cut(nodo.objetivo, 25),
-                    nodo.activos + "/" + nodo.usuarios + " " + tr("Usuarios"),
+                    nodo.activos + "/" + nodo.usuarios.length + " " + tr("Activos"),
                     centro,
                     radio,
-                    colorAcceso,
-                    nodo.nombre == usuario.grupo,
                     url,
                     nodo);
             return s;
         }
 
-        function circulo(t1, t2, t3, centro, r, colorb, own, url, nodo) {
+        function doGrupoNodoCirculo(t1, t2, t3, centro, r, url, nodo) {
             var rect = toRect(centro.m, centro.a);
             var x = rect.x;
             var y = rect.y;
@@ -389,25 +477,28 @@
             if (fontSize1 > 30) fontSize1 = 30;
             if (fontSize2 > 30 - 8) fontSize2 = 30 - 8;
             if (fontSize3 > 30 - 16) fontSize3 = 30 - 16;
+            var colorb = nodo.colorPromedio == 0 ? "transparent" : HTMLColor(nodo.colorPromedio);
+            var own = nodo.nombre == usuario.grupo;
+
 
             //var s = "<circle cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
             var s = "<g id='" + nodo.id + "' transform='translate(" + x.toFixed(0) + "," + y.toFixed(0) + ")'>";
-            s += engranaje(x, y, r, colorb, 1, nodo, url);
+            s += doGrupoNodoEngranaje(x, y, r, colorb, 1, nodo, url);
 
             if (r > 30) {
                 //dibujo textos
                 //nombre de grupo
                 if (t1 != "" && fontSize1 > 8)
-                    s += "<text x='0' y='" + (-fontSize1 / 2).toFixed(0) + "' fill='" + colorb + "' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
+                    s += "<text x='0' y='" + (-fontSize1 / 2).toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
                 if (t2 != "" && fontSize2 > 8)
-                    s += "<text x='0' y='" + (fontSize1 + 2).toFixed(0) + "' fill='" + colorb + "' style='font-size:" + (fontSize2).toFixed(0) + "px' text-anchor='middle'>" + t2 + "</text>";
+                    s += "<text x='0' y='" + (fontSize1 + 2).toFixed(0) + "' fill='gray' style='font-size:" + (fontSize2).toFixed(0) + "px' text-anchor='middle'>" + t2 + "</text>";
                 if (t3 != "" && fontSize3 > 8)
-                    s += "<text x='0' y='" + (fontSize1 + fontSize2 + 2).toFixed(0) + "' fill='" + colorb + "' style='font-size:" + (fontSize3).toFixed(0) + "px' text-anchor='middle'>" + t3 + "</text>";
+                    s += "<text x='0' y='" + (fontSize1 + fontSize2 + 2).toFixed(0) + "' fill='gray' style='font-size:" + (fontSize3).toFixed(0) + "px' text-anchor='middle'>" + t3 + "</text>";
             }
 
             //own
             if (own) {
-                s += "<image xlink:href='res/tu2.png' x='-8' y='" + (-r - 10 * zoom - 42 * zoom) + "' height='" + (42 * zoom) + "px' width='" + (17 * zoom) + "px'/>";
+                s += "<image xlink:href='res/tu.png' x='-8' y='" + (-r - 10 * zoom - 42 * zoom) + "' height='" + (42 * zoom) + "px' width='" + (17 * zoom) + "px'/>";
                 //s += "<circle cx='" + (r + 15).toFixed(0) + "' cy='0' r='10' stroke='" + colorb + "' stroke-width='3' fill='white' fill-opacity='1' />";
             }
 
@@ -419,7 +510,7 @@
             return s;
         }
 
-        function engranaje(x, y, r, colorb, width, nodo, url) {
+        function doGrupoNodoEngranaje(x, y, r, colorb, width, nodo, url) {
             var s = "";
             //s += "<line x1='0' y1='0' x2='" + r.toFixed(0) + "' y2='0' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
            
@@ -463,12 +554,21 @@
         }
 
         function diente(r, a) {
-            var sin = Math.sin(a * 2 * 3.1415 / 180 * (2 / 20) * r) * 2;
+            var sin = Math.sin(a * 2 * 3.1415 / 180 / (0.1));
             var rect;
-            if (sin > 0.5) rect = 0; else rect = -10;
+            if (sin > 0) rect = 0; else rect = -10;
             return r + rect * r / 150;
         }
 
+        function msg(s, centro) {
+            var rect = toRect(centro.m, centro.a);
+            var x = rect.x;
+            var y = rect.y;
+            var fontSize1 = 20 * zoom;
+            s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' \">" + s + "</text>";
+            return s;
+        }
+             
         function toPolar(x, y){
             var ret = { m: 0, a: 0 };
             ret.m = Math.sqrt(x * x + y * y);
@@ -495,6 +595,87 @@
             //en grados
             return { x: Math.cos(a * Math.PI / 180) * m, y: Math.sin(a * Math.PI / 180) * m };
         }
+
+        function cut(s, len) {
+            if (s.length <= len)
+                return s;
+            else
+                return s.substring(0, 25) + "...";
+        }
+
+        function getNiveles(nodo, nivel) {
+            //calculo profundiadd de la estructura y ancho por niveles
+            var ret = 1;
+            var maxHijo = 0;
+            var hijosAncho = 0;
+            for (i in nodo.hijos) {
+                var hijo = nodo.hijos[i];
+                var hijoNiveles = getNiveles(hijo, nivel + 1);
+                if (hijoNiveles > maxHijo) maxHijo = hijoNiveles;
+                hijosAncho += hijo.ancho;
+            }
+            nodo.ancho = nodo.usuarios.length * imgW > hijosAncho ? nodo.usuarios.length * imgW : hijosAncho;
+            nodo.ancho = nodo.nombre.length * 11 > nodo.ancho ? nodo.nombre.length * 11 : nodo.ancho;  //nombre de grupo largo
+            nodo.ancho += margen; //margen
+            return ret + maxHijo;
+        }
+
+        function addPolar(p1, p2) {
+            var r1 = toRect(p1.m, p1.a);
+            var r2 = toRect(p2.m, p2.a);
+            return toPolar(r1.x + r2.x, r1.y + r2.y);
+        }
+
+        function showInfo(clave) {
+            var grupo = clave.split(";")[1];
+            var email = clave.split(";")[0];
+            var div = document.getElementById("info");
+            div.innerHTML = "";
+            showInfo2(bosque, grupo, email);
+        }
+
+        function showInfo2(nodo, grupo, email) {
+            //colores
+            //coordinador   #0066CC
+            //secretaria    #FF66CC
+            //representante #00CC99
+            //facilitador   #FF9900
+
+            if (!nodo.exception) {
+                //accion
+                if (nodo.nombre == grupo) {
+                    for (var i in nodo.usuarios) {
+                        var usu = nodo.usuarios[i];
+                        if (usu.email == email) {
+                            var div = document.getElementById("info");
+                            var info = "<span style='font-size:20px'>" + nodo.nombre + "</span><br>"
+                            info += "<b>" + usu.nombre + "</b><br>";
+                            info += "<a href='mailto:" + usu.email + "'>" + usu.email + "</a><br>";
+                            info += usu.readOnly ? "Solo lectura<br>" : "";
+                            info += usu.isActive ? "Activo<br>" : "Inactivo<br>";
+                            info += usu.isSecretaria ? "<span style='color:#FF66CC'>Secretaria</span><br>" : "";
+                            info += usu.isFacilitador ? "<span style='color:#FF9900'>Facilitador</span><br>" : "";
+                            info += usu.isRepresentante ? "<span style='color:#00CC99'>Representante</span><br>" : "";
+                            info += usu.isAdmin ? "<span style='color:#0066CC'>Coordinador</span><br>" : "";
+                            info += "Desde:" + usu.grupoDesde + "<br>";
+                            info += "Nacido:" + formatDate(jsonToDate(usu.born)) + "<br>";
+
+                            div.innerHTML = info;
+                            div.style.width = "170px";
+                            div.style.height = "200px";
+                            div.style.visibility = "visible";
+                        }
+                    }
+                }
+                else {
+                    //hijos
+                    for (i in nodo.hijos) {
+                        var hijo = nodo.hijos[i];
+                        showInfo2(hijo, grupo, email);
+                    }
+                }
+            }
+        }
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
@@ -504,11 +685,19 @@
         <svg id="todo"  style="position: absolute;">
         </svg>
 
-        <div id="msg"></div>
+        <div id="msg" style="position: absolute; left:10px; top:110px;"></div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
         <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     
+        <!--panel grupo--------------------------------------------------------------------------------------------------->
+        <div id="panelGrupo"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:110px; width:170px; color: gray; border: 1px solid gray; margin: 0px;">
+        </div>
+
+        <!--panel info--------------------------------------------------------------------------------------------------->
+        <div id="info"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:240px; color: gray; border: 1px solid gray; margin: 0px;width:200px;height:300px;overflow: auto;">
+        </div>
+
         <!--joystick--------------------------------------------------------------------------------------------------->
         <div id="joystick" style="padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
             <table>

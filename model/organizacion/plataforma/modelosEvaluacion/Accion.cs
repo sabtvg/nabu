@@ -153,11 +153,11 @@ namespace nabu.plataforma.modelosEvaluacion
             validar(prop);
 
             //titulo
-            ret += "<div class='titulo1'>" + Tools.tr("Evaluaci&oacute;n de Accion", g.idioma) + "</div><br>";
+            ret += "<div class='titulo1'>" + Tools.tr("Evaluacion de Accion", g.idioma) + "</div><br>";
 
             //fecha
             if (modo == eModo.finalizado)
-                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             //documento de Accon a evaluar
             string valores = getListaResultados();
@@ -178,7 +178,7 @@ namespace nabu.plataforma.modelosEvaluacion
                 ret += "<img src='" + ld.icono + "' style='width:32px;height:40px'></td>";
                 ret += "<td style='text-align:left;'>";
                 ret += ld.fname + "<br>";
-                ret += ld.fecha.ToShortDateString() + "<br>";
+                ret += ld.fecha.ToString("dd/MM/yy") + "<br>";
                 ret += "<a href='" + ld.URL + "' target='_blank'>" + ld.titulo + "</a></td>";
                 ret += "</tr></table>";
             }
@@ -186,21 +186,84 @@ namespace nabu.plataforma.modelosEvaluacion
 
             //preguntas
             ret += "<table style='width:" + width + "px'>";
-            //preguntas
-            for (var q = 1; q <= 6; q++ )
-            {
-                ret += "<tr>";
-                ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("accion.evaluacion.p" + q, g.idioma) + "</b>";
-                if (Tools.tr("accion.evaluacion.tip" + q, g.idioma) != "")
-                    ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("accion.evaluacion.tip" + q, g.idioma) + "</div>";
-                ret += "</td>";
-                ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p" + q, prop, "No", "Si") + "</td>";
-                ret += "</tr>";
-                //texto
-                ret += "<tr><td colspan='2'>";
-                ret += HTMLArea("s.t" + q, prop, width, 70, g.idioma);
-                ret += "</td></tr>";
-            }        
+            //pregunta 1
+            ret += "<tr>";
+            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("accion.evaluacion.p1", g.idioma) + "</b>";
+            if (Tools.tr("accion.evaluacion.tip1", g.idioma) != "")
+                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("accion.evaluacion.tip1", g.idioma) + "</div>";
+            ret += "</td>";
+            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p1", prop, "No", "Si") + "</td>";
+            ret += "</tr>";
+            //texto
+            ret += "<tr><td colspan='2'>";
+            ret += HTMLArea("s.t1", prop, width, 70, g.idioma);
+            ret += "</td></tr>";
+
+            //pregunta 2
+            ret += "<tr>";
+            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("accion.evaluacion.p2", g.idioma) + "</b>";
+            if (Tools.tr("accion.evaluacion.tip2", g.idioma) != "")
+                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("accion.evaluacion.tip2", g.idioma) + "</div>";
+            ret += "</td>";
+            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p2", prop, "No", "Si") + "</td>";
+            ret += "</tr>";
+            //texto
+            ret += "<tr><td colspan='2'>";
+            ret += HTMLArea("s.t2", prop, width, 70, g.idioma);
+            ret += "</td></tr>";
+
+            //pregunta 3
+            ret += "<tr>";
+            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("accion.evaluacion.p3", g.idioma) + "</b>";
+            if (Tools.tr("accion.evaluacion.tip3", g.idioma) != "")
+                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("accion.evaluacion.tip3", g.idioma) + "</div>";
+            ret += "</td>";
+            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p3", prop, "No", "Si") + "</td>";
+            ret += "</tr>";
+            //texto
+            ret += "<tr><td colspan='2'>";
+            ret += HTMLArea("s.t3", prop, width, 70, g.idioma);
+            ret += "</td></tr>";
+
+            //pregunta 4
+            ret += "<tr>";
+            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("accion.evaluacion.p4", g.idioma) + "</b>";
+            if (Tools.tr("accion.evaluacion.tip4", g.idioma) != "")
+                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("accion.evaluacion.tip4", g.idioma) + "</div>";
+            ret += "</td>";
+            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p4", prop, "No", "Si") + "</td>";
+            ret += "</tr>";
+            //texto
+            ret += "<tr><td colspan='2'>";
+            ret += HTMLArea("s.t4", prop, width, 70, g.idioma);
+            ret += "</td></tr>";
+
+            //pregunta 5
+            ret += "<tr>";
+            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("accion.evaluacion.p5", g.idioma) + "</b>";
+            if (Tools.tr("accion.evaluacion.tip5", g.idioma) != "")
+                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("accion.evaluacion.tip5", g.idioma) + "</div>";
+            ret += "</td>";
+            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p5", prop, "No", "Si") + "</td>";
+            ret += "</tr>";
+            //texto
+            ret += "<tr><td colspan='2'>";
+            ret += HTMLArea("s.t5", prop, width, 70, g.idioma);
+            ret += "</td></tr>";
+
+            //pregunta 6
+            ret += "<tr>";
+            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("accion.evaluacion.p6", g.idioma) + "</b>";
+            if (Tools.tr("accion.evaluacion.tip6", g.idioma) != "")
+                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("accion.evaluacion.tip6", g.idioma) + "</div>";
+            ret += "</td>";
+            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p6", prop, "Si", "No") + "</td>";
+            ret += "</tr>";
+            //texto
+            ret += "<tr><td colspan='2'>";
+            ret += HTMLArea("s.t6", prop, width, 70, g.idioma);
+            ret += "</td></tr>";
+
             ret += "</table>";
 
 
@@ -251,7 +314,7 @@ namespace nabu.plataforma.modelosEvaluacion
                 LogDocumento ld = grupo.logResultados[i];
                 if (ld.modeloID == "Accion")
                 {
-                    ret += ld.docID + "#" + ld.titulo + " (" + ld.fecha.ToShortDateString() + ")|";
+                    ret += ld.docID + "#" + ld.titulo + " (" + ld.fecha.ToString("dd/MM/yy") + ")|";
                 }
             }
             if (ret.EndsWith("|")) ret = ret.Substring(0, ret.Length - 1);

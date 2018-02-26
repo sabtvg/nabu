@@ -45,6 +45,8 @@ namespace nabu
         public List<LogDocumento> logDecisiones = new List<LogDocumento>();
         public List<LogDocumento> logResultados = new List<LogDocumento>();
         public Queso queso = new Queso();
+        public int factorRepresentacion = 10; //un presentante por cada 10 personas. Por ahora esta valore s fijo
+        public DateTime fileReadTs = DateTime.MinValue; //uso esto para comprobar el uso de memoria compartia
 
         [IgnoreDataMember]
         public Bosque bosque = null;
@@ -122,6 +124,42 @@ namespace nabu
             g.usuarios.Add(u);
 
             return g;
+        }
+
+        public GrupoPersonal getGrupoPersonal(string email)
+        {
+            GrupoPersonal ret = new GrupoPersonal();
+            ret.nombre = nombre;
+            ret.objetivo = objetivo;
+            Usuario u = getUsuario(email);
+            ret.alertas = u.alertas;
+            return ret;
+        }
+
+        public double getHorizontalidad()
+        {
+            //porcentaje de horizontalidad
+            float cant = 0;
+            float reps = 0;
+            foreach (Usuario u in usuarios)
+            {
+                if (u.habilitado)
+                {
+                    cant++;
+                    if (u.isRepresentante)
+                        reps++;
+                }
+            }
+            if (cant > 0)
+            {
+                double maxRep = Math.Ceiling(cant / factorRepresentacion);
+                if (reps >= maxRep)
+                    return 100;
+                else
+                    return reps / maxRep * 100;
+            }
+            else
+                return 0;
         }
 
         public DateTime lastLogin
@@ -210,14 +248,15 @@ namespace nabu
             return null;
         }
 
-        public Usuario getRepresentante()
+        public List<Usuario> getRepresentantes()
         {
+            List<Usuario> ret = new List<Usuario>();
             foreach (Usuario u in usuarios)
             {
                 if (u.isRepresentante)
-                    return u;
+                    ret.Add(u); 
             }
-            return null;
+            return ret;
         }
 
         public Usuario getSecretaria()
