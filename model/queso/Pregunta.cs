@@ -29,5 +29,7 @@ namespace nabu
         public string pregunta = "";
         public int respuesta = 0;
         public string texto = "";
+        public string minText = "";
+        public string maxText = "";
     }
 }

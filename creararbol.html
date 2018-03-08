@@ -43,6 +43,10 @@
             idioma = getParameterByName('idioma');
             if (idioma == null) idioma = 'es';
 
+            //background
+            document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+            document.body.style.backgroundImage = "url('res/background.jpg')";
+
             document.getElementById("tit2").innerHTML = tr("Crear grupo");
             document.getElementById("datGrupo").innerHTML = tr("Datos del grupo");
             document.getElementById("nombreArbol").placeholder = tr("Nombre de arbol");

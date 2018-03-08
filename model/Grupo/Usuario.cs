@@ -69,6 +69,7 @@ namespace nabu
         }
 
         public string nombre = "";
+        public string funcion = "";
         public string email = "";
         public string clave = "";
         public List<Flor> flores = new List<Flor>();

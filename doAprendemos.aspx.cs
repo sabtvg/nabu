@@ -517,7 +517,7 @@ namespace nabu
 
                 //kyewords
                 ret += "<div>" + Tools.tr("Palabras clave", g.idioma) + ":</div>";
-                ret += getPalabrasClave(textos) + "<br><br>";
+                ret += "#keywords#<br><br>";
 
                 //textos
                 ret += "<table style='width:100%'>";
@@ -527,20 +527,36 @@ namespace nabu
                 foreach (Evaluacion ev in tema.evaluaciones) {
                     var pr = ev.preguntas[preguntaIndex];
                     textoPregunta = pr.pregunta;
-                    ret += "<tr><td>" + ev.born.ToString("dd/MM/yy") + "</td><td style='width:240px'>" + HTMLBarra(pr.respuesta) + "</td></tr>";
-                    ret += "<tr><td colspan=2 class='cuadro'>" + pr.texto.Replace("\n","<br>") + "</td></tr>";
+                    ret += "<tr><td>" + ev.born.ToString("dd/MM/yy") + "</td><td style='width:240px'>" + HTMLBarra(pr.respuesta, pr.minText, pr.maxText) + "</td></tr>";
+
+                    string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(pr.texto.Replace("\n", "<br>")));
+                    ret += "<tr><td colspan=2 class='cuadro'>" + HTMLText + "</td></tr>";
                     textos.Add(pr.texto);
                 }
                 ret += "</table><br>";
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+
+                //obtengo palkabras clave
+                Dictionary<string, int> pals = new Dictionary<string, int>();
+                string keywords = getPalabrasClave(textos, pals);
+
+                //resalto palarbas
+                foreach (KeyValuePair<string, int> e in pals)
+                    if (e.Value > 1)
+                        ret = ret.Replace(e.Key, "<span style='background-color:#CEE7FF'>" + e.Key + "</span>");
+
+                //agrego la pregunta
                 ret = ret.Replace("#pregunta#", textoPregunta);
+
+                //agrego los keywords
+                ret = ret.Replace("#keywords#", keywords);
+                
             }
             return ret;
         }
 
-        string getPalabrasClave(List<string> textos)
+        string getPalabrasClave(List<string> textos, Dictionary<string, int> pals)
         {
-            Dictionary<string, int> pals = new Dictionary<string,int>();
             foreach (string s in textos)
             {
                 string[] textoPals = s.Split(' ');
@@ -567,7 +583,7 @@ namespace nabu
             string ret = "";
             foreach (KeyValuePair<string, int> e in pals)
             {
-                if (e.Value > 1)
+                if (e.Value > 1 && e.Key.Length < 30)
                 {
                     int size = 12 + 2 * e.Value;
                     if (size > 30) size = 30;
@@ -578,7 +594,7 @@ namespace nabu
             return ret;
         }
 
-        string HTMLBarra(int value)
+        string HTMLBarra(int value, string minText, string maxText)
         {
             string ret = "";
             ret += "<table style='border-collapse: collapse; border-spacing: 0;'><tr>";
@@ -592,7 +608,7 @@ namespace nabu
                 ret += ">&nbsp;</td>";
             }
             ret += "</tr>";
-            //ret += "<tr><td colspan=5 style='text-align:left;font-size:12px'>" + minText + "</td><td colspan=5 style='text-align:right;font-size:12px'>" + maxText + "</td></tr>";
+            ret += "<tr><td colspan=5 style='text-align:left;font-size:12px'>" + minText + "</td><td colspan=5 style='text-align:right;font-size:12px'>" + maxText + "</td></tr>";
             ret += "</table>";
             return ret;
         }

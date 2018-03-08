@@ -32,6 +32,7 @@ namespace nabu.plataforma.modelosEvaluacion
             nombre = "Accion";
             titulo = "Evalucion de Accion";
             preguntas = 6;
+            icono = "res/documentos/accion.png";
 
             crearVariables();
         }
@@ -44,9 +45,19 @@ namespace nabu.plataforma.modelosEvaluacion
                 Pregunta p = new Pregunta();
                 p.pregunta = Tools.tr("accion.evaluacion.p" + i, grupo.idioma);
                 p.respuesta = Convert.ToInt32((float)getValue("f.p" + i, prop));
-                p.texto = (string)getValue("s.t" + i, prop);
+                p.texto = (string)getValue("s.t1", prop);
+                if (i == 6)
+                {
+                    p.minText = "Si";
+                    p.maxText = "No";
+                }
+                else
+                {
+                    p.minText = "No";
+                    p.maxText = "Si";
+                }
                 ret.Add(p);
-            }
+            }                 
             return ret;
         }
 
@@ -92,7 +103,7 @@ namespace nabu.plataforma.modelosEvaluacion
                 for (int i = 1; i <= preguntas; i++)
                     if ((float)getValue("f.p" + i, prop) == 0)
                     {
-                        addError(1, "Se deben responder todas las preguntas para completar la evalauci&oacute;n");
+                        addError(1, "Se deben responder todas las preguntas para completar la evaluaci&oacute;n");
                         break;
                     }
             }
@@ -196,7 +207,7 @@ namespace nabu.plataforma.modelosEvaluacion
             ret += "</tr>";
             //texto
             ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t1", prop, width, 70, g.idioma);
+            ret += HTMLArea("s.t1", prop, width, 120, g.idioma);
             ret += "</td></tr>";
 
             //pregunta 2
@@ -209,7 +220,7 @@ namespace nabu.plataforma.modelosEvaluacion
             ret += "</tr>";
             //texto
             ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t2", prop, width, 70, g.idioma);
+            ret += HTMLArea("s.t2", prop, width, 120, g.idioma);
             ret += "</td></tr>";
 
             //pregunta 3
@@ -222,7 +233,7 @@ namespace nabu.plataforma.modelosEvaluacion
             ret += "</tr>";
             //texto
             ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t3", prop, width, 70, g.idioma);
+            ret += HTMLArea("s.t3", prop, width, 120, g.idioma);
             ret += "</td></tr>";
 
             //pregunta 4
@@ -235,7 +246,7 @@ namespace nabu.plataforma.modelosEvaluacion
             ret += "</tr>";
             //texto
             ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t4", prop, width, 70, g.idioma);
+            ret += HTMLArea("s.t4", prop, width, 120, g.idioma);
             ret += "</td></tr>";
 
             //pregunta 5
@@ -248,7 +259,7 @@ namespace nabu.plataforma.modelosEvaluacion
             ret += "</tr>";
             //texto
             ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t5", prop, width, 70, g.idioma);
+            ret += HTMLArea("s.t5", prop, width, 120, g.idioma);
             ret += "</td></tr>";
 
             //pregunta 6
@@ -261,7 +272,7 @@ namespace nabu.plataforma.modelosEvaluacion
             ret += "</tr>";
             //texto
             ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t6", prop, width, 70, g.idioma);
+            ret += HTMLArea("s.t6", prop, width, 120, g.idioma);
             ret += "</td></tr>";
 
             ret += "</table>";

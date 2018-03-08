@@ -70,11 +70,15 @@ namespace nabu
                 string asunto = txt.Substring(0, txt.IndexOf("\r\n"));
                 txt = txt.Substring(txt.IndexOf("\r\n") + 2);
                 string body = txt;
+                string ret = "";
 
                 try
                 {
-                    Tools.sendMail(para, asunto, body);
-                    //throw new Exception("error");
+                    ret = Tools.sendMail(para, asunto, body);
+                    if (ret.ToLower() != "enviado")
+                        throw new Exception(ret);
+                    else
+                        File.Delete(fi.FullName);
                 }
                 catch (Exception ex)
                 {

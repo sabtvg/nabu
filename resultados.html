@@ -130,6 +130,8 @@
                     document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
                     //background
                     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+                    document.body.style.backgroundImage = "url('res/background.jpg')";
+
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -177,7 +179,7 @@
                                           tr("ene"), tr("feb"), tr("mar"),
                                           tr("abr"), tr("may"), tr("jun"), tr("jul"),
                                           tr("ago"), tr("set"), tr("oct"),
-                                          tr("nov"), tr("dec")
+                                          tr("nov"), tr("dic")
                                      ];
 
                                      dibujarTodo();
@@ -243,7 +245,7 @@
             //modelos
             for (var h in modelos) {
                 var y = viewTop + h * stepY + 25;
-                s += "<text x='" + (window.innerWidth - viewRight + 5) + "' y='" + y + "' fill='black' style='font-size:18px'>" + modelos[h] + "</text>";
+                s += "<text x='" + (window.innerWidth - viewRight + 35) + "' y='" + y + "' fill='black' style='font-size:18px'>" + modelos[h] + "</text>";
             }
 
             //marcas
@@ -293,7 +295,7 @@
                     var sdt = formatShortDate(toDate(ld.fecha));
                     s += "<text x='" + (x + dif + 32 - imgWidth) + "' y='" + (y + 90) + "' fill='blue' style='font-size:10px;cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
-                xant = x;
+                xant = x + dif;
                 dif = 0;
             }
 

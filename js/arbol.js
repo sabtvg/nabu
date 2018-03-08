@@ -274,7 +274,10 @@ function dibujarArbol(referencia) {
             return size + 'px';
         })
         .text(function (d) {
-            return txtCut(d.nombre);
+            if (d.nivel == 0)
+                return "";
+            else
+                return txtCut(d.nombre);
         })
         .style("fill-opacity", 1);
 

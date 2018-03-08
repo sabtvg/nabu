@@ -22,48 +22,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-//representa un grupo de trabajo
+//representa una accion en el tiempo
 
 namespace nabu.plataforma
 {
-    public class Accion
+    public class Accion: Seguimiento
     {
-        public class Estado
+        public Accion()
         {
-            public int EID = 0;
-            public string estado = "";
-            public DateTime estadoTs = DateTime.Now;
-            public string email = "";
-            public string descrip = "";
-            public DateTime inicio = DateTime.Now;
-            public DateTime fin = DateTime.Now.AddMonths(1);
-            public int avance = 0;
-            public string luz = "verde.png";
+           nombre = "Seguimiento de Accion";
+           icono = "res/documentos/accion.png";
+           modeloNombre = "Accion";
+           modeloID = "Accion";
         }
 
-        public int EID = 0;
-        public string nombre = "";
-        public string docURL = "";
-        public DateTime docTs = Tools.minValue;
-        public string objetivo = "";
-        public DateTime born = DateTime.Now;
-        public string estadoEmail = "";
-        public string responsable = "";
-
-        public List<Estado> estados = new List<Estado>();
-
-        public Estado estado
-        {
-            set
-            {
-            }
-            get
-            {
-                if (estados.Count > 0)
-                    return estados[estados.Count - 1];
-                else
-                    return new Estado();
-            }
-        }
     }
 }

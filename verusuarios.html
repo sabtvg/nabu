@@ -61,6 +61,8 @@
 
                     //background
                     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+                    document.body.style.backgroundImage = "url('res/background.jpg')";
+
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -94,6 +96,7 @@
                         var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
                         s += "<tr>"
                         s += "<td style='width:200px;'><b>" + tr("Nombre") + "</b></td>";
+                        s += "<td style='width:200px;'><b>" + tr("Funcion") + "</b></td>";
                         s += "<td style='width:220px;'><b>" + tr("Email") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
@@ -109,6 +112,7 @@
                             var usu = usuarios[i];
                             s += "<tr>"
                             s += "<td>" + usu.nombre + "</td>";
+                            s += "<td>" + usu.funcion + "</td>";
                             s += "<td>" + usu.email + "</td>";
                             s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
                             s += "<td>" + usu.sLastLogin + "</td>";

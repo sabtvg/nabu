@@ -29,6 +29,7 @@ namespace nabu
         public class Usuario
         {
             public string nombre = "";
+            public string funcion = "";
             public string email = "";
             public DateTime born = DateTime.Now;
             public bool isAdmin = false;
@@ -92,6 +93,7 @@ namespace nabu
             {
                 Usuario p = new Usuario();
                 p.nombre = u.nombre;
+                p.funcion = u.funcion;
                 p.email = u.email;
                 p.born = u.born;
                 p.isAdmin = u.isAdmin;
@@ -127,6 +129,7 @@ namespace nabu
                 {
                     Usuario p = new Usuario();
                     p.nombre = u.nombre;
+                    p.funcion = u.funcion;
                     p.email = u.email;
                     p.born = u.born;
                     p.isAdmin = u.isAdmin;

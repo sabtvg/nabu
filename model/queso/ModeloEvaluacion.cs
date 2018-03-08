@@ -376,17 +376,23 @@ namespace nabu
 
         public string HTMLArea(string id, Propuesta prop, int width, int height, string idioma)
         {
+            //es reconocimiento de voz no funcion desde el servidor por motivos de seguridad. Solo funciona con HTTPS
             Variable v = getVariable(id);
             string ret = "";
             if (prop == null)
             {
                 if (modo != eModo.prevista)
                 {
+                    //ret += "<table style='width:" + width + "'>";
+                    //ret += "<tr><td>";
                     ret += "<textarea id='" + id + "' ";
-                    ret += "class='" + v.editClassName + "' ";
+                    ret += "class='editarrtf' ";
                     ret += "maxlength='" + v.len + "' ";
                     ret += "style='width:" + width + "px;height:" + height + "px;'>";
                     ret += "</textarea>";
+                    //ret += "</td><td style='width:25px;vertical-align:top;'>";
+                    //ret += "<img src='res/mic.png' style='cursor:pointer;' onclick='startRecognition(\"" + id + "\");'>";
+                    //ret += "</td></tr></table>";
                     ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                     ret += "<br>";
                 }
@@ -394,22 +400,28 @@ namespace nabu
             else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
             {
                 //revisar
+                //ret += "<table style='width:" + width + "'>";
+                //ret += "<tr><td>";
                 ret += "<textarea id='" + id + "' ";
-                ret += "class='" + v.editClassName + "' ";
+                ret += "class='editarrtf' ";
                 ret += "maxlength='" + v.len + "' ";
                 ret += "style='width:" + width + "px;height:" + height + "px;'>";
                 ret += getValue(id, prop);
                 ret += "</textarea>";
+                //ret += "</td><td style='width:25px;vertical-align:top;'>";
+                //ret += "<img src='res/mic.png' style='cursor:pointer;' onclick='startRecognition(\"" + id + "\");'>";
+                //ret += "</td></tr></table>";
                 ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                 ret += "<br>";
             }
             else if (prop != null)
             {
                 //ver
+                string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(toHTMLText((string)getValue(id, prop))));
                 ret += "<div ";
                 ret += "class='" + v.className + "' ";
                 ret += "style='width:" + width + "px;'>";
-                ret += toHTMLText((string)getValue(id, prop)) + "</div>";
+                ret += HTMLText + "</div>";
                 ret += "<br>";
             }
 
@@ -501,20 +513,20 @@ namespace nabu
         {
             string ret = s;
 
-            //reemplazo links
-            int ini = s.ToLower().IndexOf("http://");
-            int fin;
-            string link;
-            while (ini >= 0)
-            {
-                s = s.Substring(ini);
-                fin = getSeparadorIndex(s);
-                link = s.Substring(0, fin);
-                ret = ret.Replace(link, "<a href='" + link + "' target='_blank'>" + link + "</a>");
+            ////reemplazo links
+            //int ini = s.ToLower().IndexOf("http://");
+            //int fin;
+            //string link;
+            //while (ini >= 0)
+            //{
+            //    s = s.Substring(ini);
+            //    fin = getSeparadorIndex(s);
+            //    link = s.Substring(0, fin);
+            //    ret = ret.Replace(link, "<a href='" + link + "' target='_blank'>" + link + "</a>");
 
-                s = s.Substring(fin);
-                ini = s.ToLower().IndexOf("http://");
-            }
+            //    s = s.Substring(fin);
+            //    ini = s.ToLower().IndexOf("http://");
+            //}
 
             //reemplazo \n
             ret = ret.Replace("\n", "<br>");

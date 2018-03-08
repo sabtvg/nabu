@@ -63,6 +63,8 @@
 
                     //background
                     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+                    document.body.style.backgroundImage = "url('res/background.jpg')";
+
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -88,6 +90,7 @@
 
         function doActualizarUsuario() {
             var nombre = document.getElementById("nombre").value;
+            var funcion = document.getElementById("funcion").value;
             var email = document.getElementById("email").value;
             var clave = document.getElementById("clave").value;
 
@@ -101,6 +104,7 @@
             if (nombre != "") {
                 getHttp("doMain.aspx?actn=actualizarUsuario&nuevonombre=" + nombre
                     + "&email=" + usuario.email
+                    + "&funcion=" + funcion
                     + "&nuevoemail=" + email
                     + "&nuevaclave=" + clave
                     + "&grupo=" + usuario.grupo
@@ -119,6 +123,7 @@
 
                             //limpio valores
                             document.getElementById("nombre").value = "";
+                            document.getElementById("funcion").value = "";
                             document.getElementById("email").value = "";
                             document.getElementById("clave").value = "";
 
@@ -141,6 +146,7 @@
                 var u = usuarios[q];
                 if (u.email == email) {
                     document.getElementById("nombre").value = u.nombre;
+                    document.getElementById("funcion").value = u.funcion;
                     document.getElementById("email").value = u.email;
                     document.getElementById("clave").value = u.clave;
 
@@ -170,8 +176,9 @@
                         var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
                         s += "<tr>"
                         s += "<td style='width:20px;'></td>";
-                        s += "<td style='width:200px;'><b>" + tr("Nombre") + "</b></td>";
-                        s += "<td style='width:220px;'><b>" + tr("Email") + "</b></td>";
+                        s += "<td style='width:180px;'><b>" + tr("Nombre") + "</b></td>";
+                        s += "<td style='width:150px;'><b>" + tr("Funcion") + "</b></td>";
+                        s += "<td style='width:180px;'><b>" + tr("Email") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
                         s += "<td style='width:55px;text-align:center;'><b>" + tr("activo") + "</b></td>";
@@ -189,6 +196,7 @@
                             s += "<tr>"
                             s += "<td><img src='res/ver.gif' onclick=\"doSelect('" + usu.email + "');\" style='cursor:pointer;'></td>";
                             s += "<td>" + usu.nombre + "</td>";
+                            s += "<td>" + usu.funcion + "</td>";
                             s += "<td>" + usu.email + "</td>";
                             s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
                             s += "<td>" + usu.sLastLogin + "</td>";
@@ -262,6 +270,7 @@
         function traducir() {
             document.getElementById("tit1").innerHTML = tr("Modificar usuarios");
             document.getElementById("nombre").placeholder = tr("Nombre");
+            document.getElementById("funcion").placeholder = tr("funcion");
             document.getElementById("email").placeholder = tr("Email");
             document.getElementById("clave").placeholder = tr("Clave");
             document.getElementById("lHab").innerHTML = tr("Habilitado");
@@ -286,28 +295,44 @@
                 <td><div id="response" style="text-align:center; font-size:20px;"></div></td>
             </tr>          
         </table>
-            <br />
             <span id="tit1" class="titulo2">Modificar usuarios</span><br />
 
             <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                <table style="width:100%">
+                <table style="width:100%;">
                     <tr>
-                        <td style="width:800px">
-                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" />
-                            <input id="email" type="text" class="txt" size="20" placeholder="Email" />
-                            <input id="clave" type="password" class="txt" size="15" placeholder="Clave" />
+                        <td style="width:210px;padding:2px;">
+                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" style="margin:0px"/><br />
                         </td>
-                        <td rowspan="2" style="vertical-align:top;text-align:right">
+                        <td style="width:210px;padding:2px;">
+                            <input id="email" type="text" class="txt" size="20" placeholder="Email"  style="margin:0px"/><br />
+                        </td>
+                        <td style="vertical-align:top;width:160px;padding:2px;">
+                            <input id="habilitado" type="checkbox" class="txt" /><span id="lHab">Habilitado</span><br />
+                        </td>
+                        <td style="vertical-align:top;width:160px;padding:2px;">   
+                            <input id="isAdmin" type="checkbox" class="txt" /><span id="ladmin" style="background-color:#0066CC;padding:3px;border-radius:3px">Admin</span><br />
+                        </td>
+                        <td style="vertical-align:top;width:160px;padding:2px;">
+                            <input id="isRepresentante" type="checkbox" class="txt" /><span id="lrepre" style="background-color:#00CC99;padding:3px;border-radius:3px">Representative</span><br />
+                        </td>
+                        <td style="vertical-align:top;text-align:right;padding:4px;" rowspan="2">
                             <input id="btnActualizar" type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' />
                         </td>
                     </tr>
                     <tr>
-                        <td style="vertical-align:top">
-                            <input id="habilitado" type="checkbox" class="txt" /><span id="lHab">Habilitado</span>
+                        <td style="padding:2px;">
+                            <input id="funcion" type="text" class="txt" size="20" placeholder="Funcion"  style="margin:0px"/><br />
+                        </td>
+                        <td style="padding:2px;">
+                            <input id="clave" type="password" class="txt" size="15" placeholder="Clave"  style="margin:0px"/>
+                        </td>
+                        <td style="padding:2px;vertical-align:top">
                             <input id="readOnly" type="checkbox" class="txt" /><span id="lsoloLec">Solo lectura</span>
-                            <input id="isAdmin" type="checkbox" class="txt" /><span id="ladmin" style="background-color:#0066CC;padding:3px;border-radius:3px">Admin</span>
-                            <input id="isSecretaria" type="checkbox" class="txt" /><span id="lsecre" style="background-color:#FF66CC;padding:3px;border-radius:3px">Secretaria</span>
-                            <input id="isRepresentante" type="checkbox" class="txt" /><span id="lrepre" style="background-color:#00CC99;padding:3px;border-radius:3px">Representative</span>
+                        </td>
+                        <td style="padding:2px;vertical-align:top">
+                            <input id="isSecretaria" type="checkbox" class="txt" /><span id="lsecre" style="background-color:#FF66CC;padding:3px;border-radius:3px">Secretaria</span><br />
+                        </td>
+                        <td style="padding:2px;vertical-align:top">
                             <input id="isFacilitador" type="checkbox" class="txt" /><span id="lfacil" style="background-color:#FF9900;padding:3px;border-radius:3px">Facilitator</span>
                         </td>
                     </tr>

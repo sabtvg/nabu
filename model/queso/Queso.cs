@@ -42,6 +42,7 @@ namespace nabu
             limpiarCaducados();
 
             QuesoPersonal ret = new QuesoPersonal();
+            ret.nombre = grupo.nombre;
             ret.temas = temas;
             ret.caducaDias = caducaDias;
             ret.msg = msg;

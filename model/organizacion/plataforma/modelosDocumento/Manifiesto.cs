@@ -116,7 +116,7 @@ namespace nabu.plataforma.modelos
             ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Manifiesto", g.idioma);
             etiqueta = Tools.tr("Manifiesto", g.idioma);
             if (prop == null)
-                ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el &aacute;rbol)", g.idioma) + "</span>";
+                ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
             return ret;
         }

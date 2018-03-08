@@ -159,7 +159,7 @@ namespace nabu
                                 foreach(Usuario u in usuarios)
                                     if (grupo.getUsuario(u.email) == null)
                                         //este no existe, lo creo
-                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false, false, false, false, u.grupoDesde);
+                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false, false, false, false, "", u.grupoDesde);
                                 Response.Write(Tools.tr("Usuarios creados desahibilitados", Request["grupo"], grupo.idioma));
                             }
                             break;
@@ -177,7 +177,7 @@ namespace nabu
                                 string url = Request.UrlReferrer.OriginalString.Substring(0, Request.UrlReferrer.OriginalString.LastIndexOf("/"));
                                 url += "/?grupo=" + Request["grupo"];
                                 Usuario u = grupo.getUsuario(Request["usuarioemail"]);
-                                msg = Tools.sendMailWelcome(Request["grupo"], Request["usuarioemail"], u.clave, url, Server.MapPath("mails/modelos/" + grupo.idioma));
+                                msg = Tools.sendMailWelcome(grupo, Request["usuarioemail"], u.clave, url, Server.MapPath("mails/modelos/" + grupo.idioma));
                             }
                             Response.Write(msg);
                             break;
@@ -193,12 +193,11 @@ namespace nabu
 
                         case "sendmailalta":
                             //peticion de alta al coordinador
-                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             grupo = app.getGrupo(Request["grupo"]);
                             lock (grupo)
                             {
                                 Usuario u = grupo.getAdmin();
-                                msg = Tools.sendMailAlta(Request["grupo"], u.email, Request["nombre"], Request["usuarioemail"], Server.MapPath("mails/modelos"));
+                                msg = Tools.sendMailAlta(grupo, u.email, Request["nombre"], Request["usuarioemail"], Server.MapPath("mails/modelos"));
                             }
                             Response.Write(msg);
                             break;
@@ -338,6 +337,7 @@ namespace nabu
                                 Request["isSecretaria"] == "true",
                                 Request["isRepresentante"] == "true",
                                 Request["isFacilitador"] == "true",
+                                Request["funcion"],
                                 null);
                             Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
                             app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
@@ -577,7 +577,7 @@ namespace nabu
                     if (u.lastLogin < u.notificado && DateTime.Now.Subtract(u.lastLogin).TotalDays > 7)
                     {
                         //notifico
-                        Tools.encolarMailInactivo(u.email);
+                        Tools.encolarMailInactivo(g, u.email);
                         u.notificado = DateTime.Now;
                         u.alertas.Add(new Alerta(Tools.tr("Tu estado es inactivo", g.idioma)));
                     }
@@ -659,7 +659,7 @@ namespace nabu
             }
         }
 
-        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool habilitado, bool readOnly, bool isAdmin, bool isSecretaria, bool isRepresentante, bool isFacilitador, string grupoDesde)
+        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool habilitado, bool readOnly, bool isAdmin, bool isSecretaria, bool isRepresentante, bool isFacilitador, string funcion, string grupoDesde)
         {
             string idioma = "es";
             Grupo g;
@@ -703,6 +703,7 @@ namespace nabu
                 {
                     //lo actualizo
                     u.nombre = nombre;
+                    u.funcion = funcion;
                     u.clave = clave;
                     u.habilitado = habilitado;
                     u.readOnly = readOnly;
@@ -717,6 +718,7 @@ namespace nabu
                     g.ts = DateTime.Now;
                     u = new Usuario(g.arbol.cantidadFlores);
                     u.nombre = nombre;
+                    u.funcion = funcion;
                     u.email = email;
                     u.clave = clave;
                     u.habilitado = habilitado;

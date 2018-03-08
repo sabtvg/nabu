@@ -35,7 +35,6 @@ namespace nabu
         public DateTime born = DateTime.Now;
         public DateTime ts = DateTime.Now;
         public List<Usuario> usuarios = new List<Usuario>();
-        public DateTime lastBackup = DateTime.Now.AddHours(-1);
         public string path = ""; //ruta fisica en el servidor
         public string URLEstatuto = "";
         public string URL = ""; //url base del arbol
@@ -45,8 +44,6 @@ namespace nabu
         public List<LogDocumento> logDecisiones = new List<LogDocumento>();
         public List<LogDocumento> logResultados = new List<LogDocumento>();
         public Queso queso = new Queso();
-        public int factorRepresentacion = 10; //un presentante por cada 10 personas. Por ahora esta valore s fijo
-        public DateTime fileReadTs = DateTime.MinValue; //uso esto para comprobar el uso de memoria compartia
 
         [IgnoreDataMember]
         public Bosque bosque = null;
@@ -139,6 +136,7 @@ namespace nabu
         public double getHorizontalidad()
         {
             //porcentaje de horizontalidad
+            int factorRepresentacion = 10; //un presentante por cada 10 personas. Por ahora esta valore s fijo
             float cant = 0;
             float reps = 0;
             foreach (Usuario u in usuarios)
@@ -195,6 +193,9 @@ namespace nabu
             foreach (Modelo m in organizacion.getModelosDocumento()) tipos.Add(m.GetType());
             foreach (ModeloEvaluacion m in organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
             foreach (Organizacion m in Organizacion.getOrganizaciones()) tipos.Add(m.GetType());
+            tipos.Add(new plataforma.Accion().GetType());
+            tipos.Add(new plataforma.Evento().GetType());
+
             string json = Tools.toJson(this, tipos);
 
             //restauro al padre
@@ -215,24 +216,18 @@ namespace nabu
             
                 //foto del dia
                 System.IO.StreamWriter fs;
-                if (DateTime.Now.Subtract(lastBackup).TotalDays >= 1)
-                {
-                    string date = DateTime.Now.Year.ToString("0000") + "-" + DateTime.Now.Month.ToString("00") + "-" + DateTime.Now.Day.ToString("00");
-                    string bkpath = folderPath + "\\" + nombre + "_" + date + ".json";
-                    if (System.IO.File.Exists(bkpath))
-                        System.IO.File.Delete(bkpath);
-                
+                DateTime ayer = DateTime.Now.AddDays(-1);
+                string date = ayer.Year.ToString("0000") + "-" + ayer.Month.ToString("00") + "-" + ayer.Day.ToString("00");
+                string bkpath = folderPath + "\\" + nombre + "_" + date + ".json";
+                if (!System.IO.File.Exists(bkpath))
+                {              
                     //guardo foto con fecha
-                    fs = new System.IO.StreamWriter(filepath, false, System.Text.Encoding.UTF8);
-                    //fs = System.IO.File.CreateText(filepath);
+                    fs = new System.IO.StreamWriter(bkpath, false, System.Text.Encoding.UTF8);
                     fs.Write(json);
                     fs.Close();
-
-                    lastBackup = DateTime.Now;
                 }
 
                 fs = new System.IO.StreamWriter(filepath, false, System.Text.Encoding.UTF8);
-                //fs = System.IO.File.CreateText(filepath);
                 fs.Write(json);
                 fs.Close();
             }

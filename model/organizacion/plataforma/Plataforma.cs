@@ -27,7 +27,7 @@ namespace nabu.organizaciones
     public class Plataforma: Organizacion
     {
         public List<nabu.plataforma.GrupoTrabajo> gruposTrabajo = new List<nabu.plataforma.GrupoTrabajo>();
-        public List<nabu.plataforma.Accion> acciones = new List<nabu.plataforma.Accion>();
+        public List<nabu.plataforma.Seguimiento> seguimientos = new List<nabu.plataforma.Seguimiento>();
         public string URLEstatuto = "";
         public string objetivo = "";
 
@@ -48,6 +48,7 @@ namespace nabu.organizaciones
                     int favance = 0;
                     DateTime finicio;
                     DateTime ffin;
+                    Usuario usuario = g.getUsuario(email);
 
                     try {favance = int.Parse(avance);} catch(Exception) {throw new appException("Valor inválido para avance");}
                     if (favance < 0 || favance > 100) throw new appException("Valor inválido para avance");
@@ -68,10 +69,10 @@ namespace nabu.organizaciones
                     catch (Exception) { throw new appException("Valor inválido para fin"); }
                     if (finicio > ffin) throw new appException("Plazo inválido");
 
-                    foreach (nabu.plataforma.Accion a in acciones)
+                    foreach (nabu.plataforma.Seguimiento a in seguimientos)
                         if (a.EID == EID)
                         {
-                            nabu.plataforma.Accion.Estado e = new plataforma.Accion.Estado();
+                            nabu.plataforma.Seguimiento.Estado e = new plataforma.Seguimiento.Estado();
                             e.EID = getEID();
                             e.estado = Tools.HtmlEncode(estado);
                             e.avance = favance;
@@ -80,6 +81,7 @@ namespace nabu.organizaciones
                             e.fin = ffin;
                             e.descrip = descrip;
                             e.email = email;
+                            if (usuario != null) e.nombreUsuario = usuario.nombre;
                             a.estados.Add(e);
 
                             //guardo todo el grupo
@@ -160,10 +162,10 @@ namespace nabu.organizaciones
                             break;
                         }
                 }
-                else if (accion == "accionFinalizar")
+                else if (accion == "seguimientoFinalizar")
                 {
                     int EID = int.Parse(req["EID"]);
-                    foreach (nabu.plataforma.Accion a in acciones)
+                    foreach (nabu.plataforma.Seguimiento a in seguimientos)
                         if (a.EID == EID)
                         {
                             //creo documento de resultado
@@ -171,17 +173,16 @@ namespace nabu.organizaciones
                             g.logResultados.Add(ld);
 
                             //quito accion
-                            acciones.Remove(a);
+                            seguimientos.Remove(a);
 
                             //alertas
                             foreach (Usuario u in g.getUsuariosHabilitados())
                                 if (u.email != email)
                                     u.alertas.Add(new Alerta(Tools.tr("Accion finalizada [%1]", a.nombre, g.idioma)));
-
                             //guardo todo el grupo
                             g.save(Tools.server.MapPath("grupos/" + g.nombre));
 
-                            ret = "{\"accion\":\"accionFinalizar\",\"resultado\":\"ok\",\"operativo\":" + getOperativo(g) + "}";
+                            ret = "{\"accion\":\"seguimientoFinalizar\",\"resultado\":\"ok\",\"operativo\":" + getOperativo(g) + "}";
                             break;
                         }
                 }
@@ -189,7 +190,7 @@ namespace nabu.organizaciones
             return ret;
         }
 
-        public LogDocumento crearResultado(Grupo gr, nabu.plataforma.Accion ac, string email)
+        public LogDocumento crearResultado(Grupo gr, nabu.plataforma.Seguimiento ac, string email)
         {
             int docID = 0;
             lock (gr.arbol)
@@ -207,16 +208,16 @@ namespace nabu.organizaciones
             //creo documento json
             Documento doc = new Documento();
             doc.fecha = DateTime.Now;
-            doc.nombre = "Resultado de Accion";
+            doc.nombre = ac.nombre;
             doc.fname = fname;
             doc.modeloID = "";
             doc.path = gr.path + "\\" + docPath + "\\" + fname + ".json";
             doc.URLPath = URL;
-            doc.titulo = "Resultado de Accion: " + ac.nombre;
+            doc.titulo = "Resultado de: " + ac.nombre;
 
             Propuesta prop = new Propuesta();
             prop.bag["fecha"] = DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString();
-            prop.bag["Accion"] = ac.nombre;
+            prop.bag["Seguimiento"] = ac.nombre;
             prop.bag["Nacido"] = ac.born;
             prop.bag["Decision"] = ac.docURL;
             prop.bag["Objetivo"] = ac.objetivo;
@@ -227,7 +228,7 @@ namespace nabu.organizaciones
             int q = 1;
             for (int i = ac.estados.Count - 1; i >= 0; i--)
             {
-                nabu.plataforma.Accion.Estado es = ac.estados[i];
+                nabu.plataforma.Seguimiento.Estado es = ac.estados[i];
                 prop.bag["Estado" + i] = es.estado;
                 prop.bag["Email" + i] = es.email;
                 prop.bag["EstadoTs" + i] = es.estadoTs.ToString("dd/MM/yy") + " " + es.estadoTs.ToShortTimeString();
@@ -241,7 +242,7 @@ namespace nabu.organizaciones
             string html = "<html><head></head>";
             //firma Decision
             html = "<body>";
-            html += "<h1>Resultado de Accion: " + ac.nombre + "</h1>";
+            html += "<h1>Resultado de: " + ac.nombre + "</h1>";
             html += "<h2>Fecha: " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</h2><br>";
             html += "<b>" + Tools.tr("Accion", gr.idioma) + ":</b> " + ac.nombre + "<br>";
             html += "<b>" + Tools.tr("Nacido", gr.idioma) + ":</b> " + ac.born + "<br>";
@@ -254,7 +255,7 @@ namespace nabu.organizaciones
             html += "<b>Estados:</b><br>";
             for (int i = ac.estados.Count - 1; i >=0; i--) 
             {
-                nabu.plataforma.Accion.Estado es = ac.estados[i];
+                nabu.plataforma.Seguimiento.Estado es = ac.estados[i];
                 html += "<hr>";
                 html += "Estado: " + es.estado + " " + es.email + " " + es.estadoTs.ToString("dd/MM/yy") + " " + es.estadoTs.ToShortTimeString() + "<br>";
                 html += es.descrip;
@@ -274,12 +275,12 @@ namespace nabu.organizaciones
             //retorno meta data
             LogDocumento ld = new LogDocumento();
             ld.fecha = DateTime.Now;
-            ld.titulo = "Resultado de Accion: " + ac.nombre;
+            ld.titulo = "Resultado de: " + ac.nombre;
             ld.documentoNombre = ac.nombre;
-            ld.icono = "res/documentos/accion.png";
+            ld.icono = ac.icono;
             if (ld.titulo.Length > 70) ld.titulo = ld.titulo.Substring(0, 70);
-            ld.modeloNombre = "Accion";
-            ld.modeloID = "Accion";
+            ld.modeloNombre = ac.modeloNombre;
+            ld.modeloID = ac.modeloID;
             ld.x = 0;
             ld.docID = docID;
             ld.fname = fname;
@@ -301,19 +302,19 @@ namespace nabu.organizaciones
 
             Usuario admin = grupo.getAdmin();
             if (admin != null)
-                ret += "\"admin\":{\"nombre\":\"" + admin.nombre + "\",\"email\":\"" + admin.email + "\"},";
+                ret += "\"admin\":{\"nombre\":\"" + admin.nombre + "\",\"email\":\"" + admin.email + "\",\"funcion\":\"" + admin.funcion + "\"},";
             else
                 ret += "\"admin\":null,";
 
             Usuario secretaria = grupo.getSecretaria();
             if (secretaria != null)
-                ret += "\"secretaria\":{\"nombre\":\"" + secretaria.nombre + "\",\"email\":\"" + secretaria.email + "\"},";
+                ret += "\"secretaria\":{\"nombre\":\"" + secretaria.nombre + "\",\"email\":\"" + secretaria.email + "\",\"funcion\":\"" + secretaria.funcion + "\"},";
             else
                 ret += "\"secretaria\":null,";
 
             Usuario facilitador = grupo.getFacilitador();
             if (facilitador != null)
-                ret += "\"facilitador\":{\"nombre\":\"" + facilitador.nombre + "\",\"email\":\"" + facilitador.email + "\"},";
+                ret += "\"facilitador\":{\"nombre\":\"" + facilitador.nombre + "\",\"email\":\"" + facilitador.email + "\",\"funcion\":\"" + facilitador.funcion + "\"},";
             else
                 ret += "\"facilitador\":null,";
 
@@ -324,7 +325,7 @@ namespace nabu.organizaciones
             {
                 ret += "\"representantes\":[";
                 foreach(Usuario rep in reps)
-                    ret += "{\"nombre\":\"" + rep.nombre + "\",\"email\":\"" + rep.email + "\"},";
+                    ret += "{\"nombre\":\"" + rep.nombre + "\",\"email\":\"" + rep.email + "\",\"funcion\":\"" + rep.funcion + "\"},";
                 if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
                 ret += "],";
             }
@@ -344,7 +345,9 @@ namespace nabu.organizaciones
                 ret += "\"grupoIdioma\":\"" + gt.grupoIdioma + "\",";
                 ret += "\"grupoOrganizacion\":\"" + gt.grupoOrganizacion + "\",";
                 ret += "\"revision\":\"" + gt.revision + "\",";
-                ret += "\"objetivo\":" + Tools.toJson(gt.objetivo) + ",";
+
+                string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(gt.objetivo.Replace("\n", "<br>")));
+                ret += "\"objetivo\":" + Tools.toJson(HTMLText) + ",";
 
                 //usuarios
                 ret += "\"usuarios\":[";
@@ -356,7 +359,8 @@ namespace nabu.organizaciones
                         ret += "\"estado\":\"NoExiste\"";
                     else
                     {
-                        ret += "\"nombre\":\"" + u.nombre + "\"";
+                        ret += "\"nombre\":\"" + u.nombre + "\",";
+                        ret += "\"funcion\":\"" + u.funcion + "\"";
                     }
                     ret += "},";
                 }
@@ -373,8 +377,12 @@ namespace nabu.organizaciones
                     ret += "\"docURL\":\"" + pr.docURL + "\",";
                     ret += "\"docTs\":\"" + pr.docTs.ToString("dd/MM/yy") + " " + pr.docTs.ToShortTimeString() + "\",";
                     ret += "\"revision\":\"" + pr.revision + "\",";
-                    ret += "\"definicion\":\"" + pr.definicion + "\",";
-                    ret += "\"objetivo\":" + Tools.toJson(pr.objetivo);
+
+                    HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(pr.definicion.Replace("\n", "<br>")));
+                    ret += "\"definicion\":" + Tools.toJson(HTMLText) + ",";
+
+                    HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(pr.objetivo.Replace("\n", "<br>")));
+                    ret += "\"objetivo\":" + Tools.toJson(HTMLText);
                     ret += "},";
                 }
                 if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
@@ -384,9 +392,9 @@ namespace nabu.organizaciones
             if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
             ret += "],";
 
-            //acciones
-            ret += "\"acciones\":[";
-            foreach (nabu.plataforma.Accion ac in acciones)
+            //seguimientos
+            ret += "\"seguimientos\":[";
+            foreach (nabu.plataforma.Seguimiento ac in seguimientos)
             {
 
                 ret += "{\"nombre\":\"" + ac.nombre + "\",";
@@ -397,12 +405,14 @@ namespace nabu.organizaciones
                 ret += "\"estado\":" + Tools.toJson(ac.estado) + ",";
                 ret += "\"estadoTs\":\"" + ac.estado.estadoTs.ToString("dd/MM/yy") + " " + ac.estado.estadoTs.ToShortTimeString() + "\",";
                 ret += "\"estadoEmail\":\"" + ac.estadoEmail + "\",";
-                ret += "\"objetivo\":" + Tools.toJson(ac.objetivo) + ",";
+
+                string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(ac.objetivo.Replace("\n", "<br>")));
+                ret += "\"objetivo\":" + Tools.toJson(HTMLText) + ",";
                 ret += "\"responsable\":\"" + ac.responsable + "\",";
 
                 //estados
                 ret += "\"estados\":[";
-                foreach (nabu.plataforma.Accion.Estado es in ac.estados)
+                foreach (nabu.plataforma.Seguimiento.Estado es in ac.estados)
                 {
                     ret += Tools.toJson(es) + ",";
                 }
@@ -417,6 +427,14 @@ namespace nabu.organizaciones
             return ret;
         }
 
+        public override List<object> getSeriealizableObjects()
+        {
+            List<object> ret = new List<object>();
+            ret.Add(new plataforma.Accion());
+            ret.Add(new plataforma.Evento());
+            return ret;
+        }
+
         public override List<Modelo> getModelosDocumento()
         {
             List<Modelo> ret = new List<Modelo>();
@@ -424,8 +442,10 @@ namespace nabu.organizaciones
             ret.Add(new plataforma.modelos.GrupoTrabajo());
             ret.Add(new plataforma.modelos.Estrategia());
             ret.Add(new plataforma.modelos.Accion());
+            ret.Add(new plataforma.modelos.Evento());
             ret.Add(new plataforma.modelos.AlPadre());
             ret.Add(new plataforma.modelos.AlHijo());
+            ret.Add(new plataforma.modelos.Acta());
             //ret.Add(new plataforma.modelos.Proceso());
             return ret;
         }
@@ -434,6 +454,7 @@ namespace nabu.organizaciones
         {
             List<ModeloEvaluacion> ret = new List<ModeloEvaluacion>();
             ret.Add(new plataforma.modelosEvaluacion.Accion());
+            ret.Add(new plataforma.modelosEvaluacion.Evento());
             ret.Add(new plataforma.modelosEvaluacion.Enlace());
             ret.Add(new plataforma.modelosEvaluacion.AlPadre());
             ret.Add(new plataforma.modelosEvaluacion.AlHijo());

@@ -395,8 +395,8 @@ namespace nabu
                         foreach (Usuario u in grupo.usuarios)
                             if (u.email != email)
                             {
-                                Tools.encolarMailNuevoConsenso(u.email, n.flores, n.negados, URL);
-                                u.alertas.Add(new Alerta(Tools.tr("Nueva decision [%1]", doc.titulo, grupo.idioma)));
+                                Tools.encolarMailNuevoConsenso(grupo, u.email, n.flores, n.negados, URL);
+                                u.alertas.Add(new Alerta(Tools.tr("Nueva decision [%1]", doc.nombre + ": " + doc.titulo, grupo.idioma)));
                             }
                     }
 
@@ -549,36 +549,6 @@ namespace nabu
             System.IO.File.WriteAllText(grupo.path + "\\" + docPath + "\\" + fname + ".html", html, System.Text.Encoding.UTF8);
         }
 
-        //private string JSON_decode(string s) {
-        //    //esta funcion esta reptida del lado del cliente
-        //    s = s.Replace("[euro]", "€");
-        //    s = s.Replace("[pound]", "&pound;");
-        //    s = s.Replace("[mayor]", "&gt;");
-        //    s = s.Replace("[menor]","&lt;");
-        //    s = s.Replace("[amp]","&");
-        //    s = s.Replace("[deg]", "&deg;");
-        //    s = s.Replace("[ordf]", "&ordf;");
-        //    s = s.Replace("[h64]", "&#64;");
-        //    s = s.Replace("[Ntilde]", "&Ntilde;");
-        //    s = s.Replace("[ntilde]", "&ntilde;");
-        //    s = s.Replace("[ccedil]", "&ccedil;");
-        //    s = s.Replace("[h43]", "&#43;");
-        //    s = s.Replace("[h45]", "&#45;");
-        //    s = s.Replace("[iquest]", "&iquest;");
-        //    s = s.Replace("[h63]", "&#63;");
-        //    s = s.Replace("[h35]", "&#35;");
-        //    s = s.Replace("[frasl]","/");
-        //    s = s.Replace("[h92]","\\");
-        //    s = s.Replace("[h61]", "&#61;");
-        //    s = s.Replace("[h36]","$");
-        //    s = s.Replace("[h124]","|");
-        //    s = s.Replace("[lsquo]","\"");
-        //    s = s.Replace("[ldquo]", "\"");
-        //    s = s.Replace("\\n", "<br>");
-        //    return s;
-        //}
-
-
         private int getNegados(Nodo n)
         {
             int ret = 0;
@@ -600,51 +570,6 @@ namespace nabu
             return ret;
         }
 
-        //public void setModelosDocumentoDefault()
-        //{
-        //    //creo modelos de documentos default
-
-        //    d = new ModeloDocumento();
-        //    d.id = 2;
-        //    d.nombre = "Comision";
-        //    d.crear(0, "Resumen y motivacion", "&iquest;porque neceistamos una nueva comision? &iquest;Que actividades realizara?", 2000);
-        //    d.crear(1, "Objetivo de la comision", "&iquest;Que debe lograr la nueva comision?", 3500);
-        //    d.crear(1, "Descripcion de actividades de la comision", "Detalla las actividades a realizar", 3500);
-        //    d.crear(1, "A quien van dirigidas sus actuaciones", "", 3500);
-        //    d.crear(2, "Capacidades necesarias", "", 3500);
-        //    d.crear(3, "Composicion de la comision", "", 3500);
-        //    d.crear(4, "Como medir su eficiencia", "", 3500);
-        //    modelosDocumento.Add(d);
-
-        //    d = new ModeloDocumento();
-        //    d.id = 3;
-        //    d.nombre = "Evento";
-        //    d.crear(0, "Resumen y motivacion", "&iquest;Como sera el evento?", 3500);
-        //    d.crear(1, "Objetivo del evento", "", 3500);
-        //    d.crear(1, "Descripcion", "", 3500);
-        //    d.crear(1, "A quien va dirigido el evento", "", 3500);
-        //    d.crear(2, "Lugar", "", 3500);
-        //    d.crear(2, "Materiles", "", 3500);
-        //    d.crear(2, "Transporte", "", 3500);
-        //    d.crear(3, "Organizacion del evento", "", 3500);
-        //    d.crear(4, "Como medir su eficiencia", "", 3500);
-        //    modelosDocumento.Add(d);
-
-        //    d = new ModeloDocumento();
-        //    d.id = 4;
-        //    d.nombre = "Metodologia";
-        //    d.crear(0, "Resumen y motivacion", "&iquest;Como sera la metodologia?", 3500);
-        //    d.crear(1, "Para que sirve", "", 3500);
-        //    d.crear(1, "Descripcion", "", 3500);
-        //    d.crear(1, "A quien va dirigida", "", 3500);
-        //    d.crear(2, "Definicion de la metodologia", "", 4500);
-        //    d.crear(3, "Como medir su eficiencia", "", 3500);
-        //    d.crear(3, "Como implantarla", "", 3500);
-        //    d.crear(4, "Fases del desarrollo", "", 3500);
-        //    d.crear(4, "Tiempo de desarrollo", "", 3500);
-        //    modelosDocumento.Add(d);
-        //}
-
         public ArbolPersonal getArbolPersonal(string email)
         {
             return getArbolPersonal(email, 0);
@@ -659,7 +584,7 @@ namespace nabu
                 {
                     //notifico por mail al usuario
                     Usuario admin = grupo.getAdmin();
-                    Tools.encolarMailCaido(grupo.nombre, u.email, admin.email, Tools.MapPath("mails/modelos/" + grupo.idioma));
+                    Tools.encolarMailCaido(grupo, u.email, admin.email, Tools.MapPath("mails/modelos/" + grupo.idioma));
                     u.alertas.Add(new Alerta(Tools.tr("Tus floras han caido", grupo.idioma)));
                     //app.addLog("verifyFloresCaducadas", "", grupo.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
                 }

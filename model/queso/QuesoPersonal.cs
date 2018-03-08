@@ -26,6 +26,7 @@ namespace nabu
 {
     public class QuesoPersonal
     {
+        public string nombre = "";
         public List<Tema> temas = new List<Tema>();
         public int caducaDias = 30; 
         public string msg = "";

@@ -17,63 +17,6 @@
 ///////////////////////////////////////////////////////////////////////////
 
 
-//function JSON_encode(s) {
-//    s = s.replace('&', '[amp]');  //este va primero
-//    s = s.replace('€', '[euro]'); //uso codigo particular porque si no falla al enviarlo  al servidor
-//    s = s.replace('£', '[pound]');
-//    s = s.replace('>', '[mayor]'); //uso codigo particular porque si no falla al enviarlo  al servidor
-//    s = s.replace('<', '[menor]'); //uso codigo particular porque si no falla al enviarlo  al servidor
-//    s = s.replace('º', '[deg]');
-//    s = s.replace('ª', '[ordf]');
-//    s = s.replace('@', '[h64]');
-//    s = s.replace('Ñ', '[Ntilde]');
-//    s = s.replace('ñ', '[ntilde]');
-//    s = s.replace('ç', '[ccedil]');
-//    s = s.replace('+', '[h43]');
-//    s = s.replace('-', '[h45]');
-//    s = s.replace('¿', '[iquest]');
-//    s = s.replace('?', '[h63]');
-//    s = s.replace('#', '[h35]');
-//    s = s.replace('/', '[frasl]');
-//    s = s.replace('\\', '[h92]');
-//    s = s.replace('=', '[h61]');
-//    s = s.replace('$', '[h36]');
-//    s = s.replace('|', '[h124]');
-//    s = s.replace('\'', '[lsquo]');
-//    s = s.replace('\"', '[ldquo]');
-//    s = s.replace(/\n/g, "\\n");
-//    return s;
-//}
-
-//function JSON_decode(s) {
-//    //esta funcion esta reptida del lado del servidor para poder generar decisiones
-//    s = s.replace('[euro]', '€');
-//    s = s.replace('[pound]','£');
-//    s = s.replace('[mayor]','>');
-//    s = s.replace('[menor]','<');
-//    s = s.replace('[amp]','&');
-//    s = s.replace('[deg]','º');
-//    s = s.replace('[ordf]','ª');
-//    s = s.replace('[h64]', '@');
-//    s = s.replace('[Ntilde]', 'Ñ');
-//    s = s.replace('[ntilde]', 'ñ');
-//    s = s.replace('[ccedil]', 'ç');
-//    s = s.replace('[h43]','+');
-//    s = s.replace('[h45]','-');
-//    s = s.replace('[iquest]','¿');
-//    s = s.replace('[h63]','?');
-//    s = s.replace('[h35]','#');
-//    s = s.replace('[frasl]','/');
-//    s = s.replace('[h92]','\\');
-//    s = s.replace('[h61]','=');
-//    s = s.replace('[h36]','$');
-//    s = s.replace('[h124]','|');
-//    s = s.replace('[lsquo]','\'');
-//    s = s.replace('[ldquo]', '\"');
-//    s = s.replace("\\n", "<br>");
-//    return s;
-//}
-
 function HTMLColor(v) {
     //el color de una celda del queso segun su valor (entre 0 y 10)
     return "rgba(" + (100 - v * 10) + "%, " + (v * 10) + "%, 50%, 0.8)";
@@ -308,6 +251,7 @@ function actualizarDatosGrupo() {
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Decisiones") + ":" + ap.documentos + "</nobr></div>";
     //ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Comunes:0</nobr></div>";
     panel.innerHTML = ret;
+    panel.style.top = (170 * scaley) + 'px';
     panel.style.visibility = 'visible';
 }
 
@@ -345,6 +289,17 @@ function URIEncode(s) {
     return (s);
 }
 
+function URIDencode(s) {
+    while (s.indexOf("&lt;") >= 0)
+        s = s.replace("&lt;", "<");
+
+    while (s.indexOf("&gt;") >= 0)
+        s = s.replace("&gt;", ">");
+
+    s = dencodeURIComponent(s);
+    return (s);
+}
+
 function getURLName(s) {
     while (s.indexOf('/') >= 0)
         s = s.substring(s.indexOf('/') + 1);
@@ -368,3 +323,12 @@ function HTMLDecode(value) {
 
 }
 
+function activarStyleEditor() {
+    var areas = $(".editarrtf");
+    for (var j = 0; j < areas.length; j++)
+        //new Simditor({ textarea: areas[j] });
+        new Simditor({
+            textarea: areas[j], defaultImage: '', pasteImage: false, toolbar:
+            ['bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'link', 'indent', 'outdent', 'alignment']
+        });
+}

@@ -73,11 +73,11 @@ namespace nabu
                             app.addLog("doComentar", Request.UserHostAddress, Request["grupo"], "", Request["comentario"]);
                             break;
 
-                        case "crearacta":
-                            //devuelvo las propuestas de toda la rama
-                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            Response.Write(crearActa(Request["grupo"], Request["email"], Request));
-                            break;
+                        //case "crearacta":
+                        //    //devuelvo las propuestas de toda la rama
+                        //    VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                        //    Response.Write(crearActa(Request["grupo"], Request["email"], Request));
+                        //    break;
 
                         case "htmldocumento":
                             //devuelvo las propuestas de toda la rama
@@ -862,176 +862,176 @@ namespace nabu
         //    }
         //}
 
-        string crearActa(string grupo, string email, HttpRequest req)
-        {
-            string ret;
-            List<Propuesta> l = new List<Propuesta>();
-            Grupo g = app.getGrupo(grupo);
-            lock (g)
-            {
-                try
-                {
-                    int docID = g.arbol.lastDocID++;
-                    ret = Tools.tr("Acta creada", g.idioma);
-                    string fname = "Acta_" + docID.ToString("0000");
-                    string docPath = "documentos\\Acta\\" + docID.ToString("0000");
-                    string URL = g.URL + "/grupos/" + g.nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
-                    string fecha = DateTime.Now.ToString("dd/MM/yy");
+        //string crearActa(string grupo, string email, HttpRequest req)
+        //{
+        //    string ret;
+        //    List<Propuesta> l = new List<Propuesta>();
+        //    Grupo g = app.getGrupo(grupo);
+        //    lock (g)
+        //    {
+        //        try
+        //        {
+        //            int docID = g.arbol.lastDocID++;
+        //            ret = Tools.tr("Acta creada", g.idioma);
+        //            string fname = "Acta_" + docID.ToString("0000");
+        //            string docPath = "documentos\\Acta\\" + docID.ToString("0000");
+        //            string URL = g.URL + "/grupos/" + g.nombre + "/" + docPath.Replace('\\', '/') + "/" + fname + ".html";
+        //            string fecha = DateTime.Now.ToString("dd/MM/yy");
 
-                    string carpeta = g.path + "\\" + docPath;
-                    if (!System.IO.Directory.Exists(carpeta))
-                    {
-                        System.IO.Directory.CreateDirectory(carpeta);
-                        System.IO.File.Copy(g.path + "\\..\\..\\styles.css", g.path + "\\" + docPath + "\\styles.css");
-                    }
+        //            string carpeta = g.path + "\\" + docPath;
+        //            if (!System.IO.Directory.Exists(carpeta))
+        //            {
+        //                System.IO.Directory.CreateDirectory(carpeta);
+        //                System.IO.File.Copy(g.path + "\\..\\..\\styles.css", g.path + "\\" + docPath + "\\styles.css");
+        //            }
 
 
-                    //creo documento json
-                    Documento doc = new Documento();
-                    doc.fecha = DateTime.Now;
-                    doc.nombre = "Acta";
-                    doc.fname = fname;
-                    doc.modeloID = "";
-                    doc.path = g.path + "\\" + docPath + "\\" + fname + ".json";
-                    doc.URLPath = URL;
-                    doc.titulo = "Acta";
+        //            //creo documento json
+        //            Documento doc = new Documento();
+        //            doc.fecha = DateTime.Now;
+        //            doc.nombre = "Acta";
+        //            doc.fname = fname;
+        //            doc.modeloID = "";
+        //            doc.path = g.path + "\\" + docPath + "\\" + fname + ".json";
+        //            doc.URLPath = URL;
+        //            doc.titulo = "Acta";
 
-                    Propuesta prop = new Propuesta();
-                    prop.bag["fecha"] = fecha;
-                    prop.bag["apertura"] = req["s.apertura"];
-                    prop.bag["logisticos"] = req["s.logisticos"];
-                    prop.bag["ordendeldia"] = req["s.ordendeldia"];
-                    prop.bag["evaluacion"] = req["s.evaluacion"];
-                    prop.bag["lugar"] = req["s.lugar"];
-                    prop.bag["inicio"] = req["s.inicio"];
-                    prop.bag["fin"] = req["s.fin"];
-                    prop.bag["participan"] = req["s.participan"];
+        //            Propuesta prop = new Propuesta();
+        //            prop.bag["fecha"] = fecha;
+        //            prop.bag["apertura"] = req["s.apertura"];
+        //            prop.bag["logisticos"] = req["s.logisticos"];
+        //            prop.bag["ordendeldia"] = req["s.ordendeldia"];
+        //            prop.bag["evaluacion"] = req["s.evaluacion"];
+        //            prop.bag["lugar"] = req["s.lugar"];
+        //            prop.bag["inicio"] = req["s.inicio"];
+        //            prop.bag["fin"] = req["s.fin"];
+        //            prop.bag["participan"] = req["s.participan"];
 
-                    int q = 0;
-                    while (req.Form.AllKeys.Contains("s.tituloTema" + q))
-                    {
-                        prop.bag["tituloTema" + q] = req["s.tituloTema" + q];
-                        prop.bag["textoTema" + q] = req["s.textoTema" + q];
-                        q++;
-                    }
+        //            int q = 0;
+        //            while (req.Form.AllKeys.Contains("s.tituloTema" + q))
+        //            {
+        //                prop.bag["tituloTema" + q] = req["s.tituloTema" + q];
+        //                prop.bag["textoTema" + q] = req["s.textoTema" + q];
+        //                q++;
+        //            }
 
-                    List<Propuesta> props = new List<Propuesta>();
-                    props.Add(prop);
-                    doc.propuestas = props;
-                    doc.save();
+        //            List<Propuesta> props = new List<Propuesta>();
+        //            props.Add(prop);
+        //            doc.propuestas = props;
+        //            doc.save();
 
-                    //creo documento HTML
-                    string html = "<html><head><link rel='stylesheet' type='text/css' href='styles.css'></head><body>";
-                    html += "<div class='titulo1'>";
-                    html += "<nobr>Acta de reuni&oacute;n</nobr>";
-                    html += "</div>";
-                    html += "<table>";
-                    html += "    <tr>";
-                    html += "        <td style='width:120px'>Fecha:</td><td id='fecha' style='width:220px' class='texto'>" + fecha + "</td>";
-                    string coordina = "";
-                    if (g.getAdmin() != null) coordina = g.getAdmin().nombre;
-                    html += "        <td style='width:120px'>Coordina:</td><td class='texto'>" + coordina + "</td>";
-                    html += "    </tr>";
-                    html += "    <tr>";
-                    html += "        <td>Lugar:</td><td class='texto'>" + req["s.lugar"] + "</td>";
-                    string facilita = "";
-                    if (g.getFacilitador() != null) facilita = g.getFacilitador().nombre;
-                    html += "        <td>Facilita:</td><td class='texto'>" + facilita + "</td>";
-                    html += "    </tr>";
-                    html += "    <tr>";
-                    html += "        <td>Inicio:</td><td class='texto'>" + req["s.inicio"] + "</td>";
+        //            //creo documento HTML
+        //            string html = "<html><head><link rel='stylesheet' type='text/css' href='styles.css'></head><body>";
+        //            html += "<div class='titulo1'>";
+        //            html += "<nobr>Acta de reuni&oacute;n</nobr>";
+        //            html += "</div>";
+        //            html += "<table>";
+        //            html += "    <tr>";
+        //            html += "        <td style='width:120px'>Fecha:</td><td id='fecha' style='width:220px' class='texto'>" + fecha + "</td>";
+        //            string coordina = "";
+        //            if (g.getAdmin() != null) coordina = g.getAdmin().nombre;
+        //            html += "        <td style='width:120px'>Coordina:</td><td class='texto'>" + coordina + "</td>";
+        //            html += "    </tr>";
+        //            html += "    <tr>";
+        //            html += "        <td>Lugar:</td><td class='texto'>" + req["s.lugar"] + "</td>";
+        //            string facilita = "";
+        //            if (g.getFacilitador() != null) facilita = g.getFacilitador().nombre;
+        //            html += "        <td>Facilita:</td><td class='texto'>" + facilita + "</td>";
+        //            html += "    </tr>";
+        //            html += "    <tr>";
+        //            html += "        <td>Inicio:</td><td class='texto'>" + req["s.inicio"] + "</td>";
                     
-                    //reprsenta
-                    ret += "<td>Representa:</td><td class='texto'>";
-                    foreach (Usuario rep in g.getRepresentantes())
-                    {
-                        ret += rep.nombre + ",";
-                    }
-                    if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
-                    ret += "</td>";
-                    html += "    </tr>";
-                    html += "    <tr>";
-                    html += "        <td>Fin:</td><td class='texto'>" + req["s.fin"] + "</td>";
-                    string secretaria = "";
-                    if (g.getSecretaria() != null) secretaria = g.getSecretaria().nombre;
-                    html += "        <td>Secretar&iacute;a:</td><td class='texto'>" + secretaria + "</td>";
-                    html += "    </tr>";
-                    html += "    <tr>";
-                    html += "        <td style='vertical-align:top'>Participan:</td><td colspan='3' class='texto'>" + req["s.participan"] + "</td>";
-                    html += "    </tr>";
-                    html += "</table>";
+        //            //reprsenta
+        //            ret += "<td>Representa:</td><td class='texto'>";
+        //            foreach (Usuario rep in g.getRepresentantes())
+        //            {
+        //                ret += rep.nombre + ",";
+        //            }
+        //            if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
+        //            ret += "</td>";
+        //            html += "    </tr>";
+        //            html += "    <tr>";
+        //            html += "        <td>Fin:</td><td class='texto'>" + req["s.fin"] + "</td>";
+        //            string secretaria = "";
+        //            if (g.getSecretaria() != null) secretaria = g.getSecretaria().nombre;
+        //            html += "        <td>Secretar&iacute;a:</td><td class='texto'>" + secretaria + "</td>";
+        //            html += "    </tr>";
+        //            html += "    <tr>";
+        //            html += "        <td style='vertical-align:top'>Participan:</td><td colspan='3' class='texto'>" + req["s.participan"] + "</td>";
+        //            html += "    </tr>";
+        //            html += "</table>";
 
-                    html += "<div class='tema'>Ronda de apertura</div>";
-                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.apertura"])) + "</div>";
-                    html += "<br>";
+        //            html += "<div class='tema'>Ronda de apertura</div>";
+        //            html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.apertura"])) + "</div>";
+        //            html += "<br>";
 
-                    html += "<div class='tema'>Aspectos log&iacute;sticos</div>";
-                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.logisticos"])) + "</div>";
-                    html += "<br>";
+        //            html += "<div class='tema'>Aspectos log&iacute;sticos</div>";
+        //            html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.logisticos"])) + "</div>";
+        //            html += "<br>";
 
-                    html += "<div class='tema'>Orden del d&iacute;a</div>";
-                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.ordendeldia"])) + "</div>";
-                    html += "<br>";
+        //            html += "<div class='tema'>Orden del d&iacute;a</div>";
+        //            html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.ordendeldia"])) + "</div>";
+        //            html += "<br>";
 
-                    q = 0;
-                    while (req.Form.AllKeys.Contains("s.tituloTema" + q))
-                    {
-                        html += "<div class='tema'>Tema " + (q + 1) + ":" + req["s.tituloTema" + q] + "</div>";
-                        html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.textoTema" + q])) + "</div>";
-                        html += "<br>";
-                        q++;
-                    }
-                    html += "<br>";
+        //            q = 0;
+        //            while (req.Form.AllKeys.Contains("s.tituloTema" + q))
+        //            {
+        //                html += "<div class='tema'>Tema " + (q + 1) + ":" + req["s.tituloTema" + q] + "</div>";
+        //                html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.textoTema" + q])) + "</div>";
+        //                html += "<br>";
+        //                q++;
+        //            }
+        //            html += "<br>";
 
-                    html += "<div class='tema'>Evaluaci&oacute;n</div>";
-                    html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.evaluacion"])) + "</div>";
-                    html += "<br>";
+        //            html += "<div class='tema'>Evaluaci&oacute;n</div>";
+        //            html += "<div class='texto'>" + Tools.HTMLLinksBR(Tools.HtmlEncode(req["s.evaluacion"])) + "</div>";
+        //            html += "<br>";
 
-                    html += "<hr>";
-                    html += "Documento escrito por secretaria: " + email + "<br>";
-                    html += "Grupo: " + g.nombre + "<br>";
-                    html += "Documento ID:" + fname + "<br>";
-                    html += "Fecha de creaci&oacute;n: " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "<br>";
-                    html += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
-                    html += "Objetivo: " + g.objetivo + "<br>";
-                    html += "Usuarios: " + g.getUsuariosHabilitados().Count + "<br>";
-                    html += "Activos: " + g.activos + "<br>";
-                    html += "</body></html>";
-                    System.IO.File.WriteAllText(g.path + "\\" + docPath + "\\" + fname + ".html", html, System.Text.Encoding.UTF8);
+        //            html += "<hr>";
+        //            html += "Documento escrito por secretaria: " + email + "<br>";
+        //            html += "Grupo: " + g.nombre + "<br>";
+        //            html += "Documento ID:" + fname + "<br>";
+        //            html += "Fecha de creaci&oacute;n: " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "<br>";
+        //            html += "Ubicaci&oacute;n: <a target='_blank' href='" + URL + "'>" + URL + "</a><br>";
+        //            html += "Objetivo: " + g.objetivo + "<br>";
+        //            html += "Usuarios: " + g.getUsuariosHabilitados().Count + "<br>";
+        //            html += "Activos: " + g.activos + "<br>";
+        //            html += "</body></html>";
+        //            System.IO.File.WriteAllText(g.path + "\\" + docPath + "\\" + fname + ".html", html, System.Text.Encoding.UTF8);
 
-                    //creo logDocumentos
-                    LogDocumento ld = new LogDocumento();
-                    ld.fecha = doc.fecha;
-                    ld.titulo = doc.titulo;
-                    ld.icono = "res/documentos/acta.png";
-                    if (ld.titulo.Length > 50) ld.titulo = ld.titulo.Substring(0, 50);
-                    ld.modeloNombre = "Acta";
-                    ld.modeloID = "";
-                    ld.x = 90;
-                    ld.docID = docID;
-                    ld.fname = fname;
-                    ld.arbol = g.nombre;
-                    ld.objetivo = g.objetivo;
-                    ld.flores = 0;
-                    ld.negados = 0;
-                    ld.carpeta = "Acta";
-                    ld.URL = URL;
-                    g.logDecisiones.Add(ld);
+        //            //creo logDocumentos
+        //            LogDocumento ld = new LogDocumento();
+        //            ld.fecha = doc.fecha;
+        //            ld.titulo = doc.titulo;
+        //            ld.icono = "res/documentos/acta.png";
+        //            if (ld.titulo.Length > 50) ld.titulo = ld.titulo.Substring(0, 50);
+        //            ld.modeloNombre = "Acta";
+        //            ld.modeloID = "";
+        //            ld.x = 90;
+        //            ld.docID = docID;
+        //            ld.fname = fname;
+        //            ld.arbol = g.nombre;
+        //            ld.objetivo = g.objetivo;
+        //            ld.flores = 0;
+        //            ld.negados = 0;
+        //            ld.carpeta = "Acta";
+        //            ld.URL = URL;
+        //            g.logDecisiones.Add(ld);
 
-                    //alertas
-                    foreach (Usuario u in g.getUsuariosHabilitados())
-                        if (u.email != email)
-                            u.alertas.Add(new Alerta(Tools.tr("Nueva Acta publicada", g.idioma)));
+        //            //alertas
+        //            foreach (Usuario u in g.getUsuariosHabilitados())
+        //                if (u.email != email)
+        //                    u.alertas.Add(new Alerta(Tools.tr("Nueva Acta publicada", g.idioma)));
 
-                    g.save(g.path + "\\" + docPath); //guardo copia del arbol
-                }
-                catch (Exception ex)
-                {
-                    ret = "Error=" + ex.Message;
-                }
-            }
-            return ret;
-        }
+        //            g.save(g.path + "\\" + docPath); //guardo copia del arbol
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ret = "Error=" + ex.Message;
+        //        }
+        //    }
+        //    return ret;
+        //}
         
         string HTMLDocumento(int id, string modeloID, string grupo, string email, int width)
         {

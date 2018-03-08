@@ -29,11 +29,19 @@ function doDecidimos() {
     document.getElementById("panelGrupo").style.visibility = 'hidden';
 
     //panel consenso
+    document.getElementById("panelConsenso").style.top = (190 * scaley) + 'px';
     document.getElementById("panelConsenso").style.visibility = 'visible';
+
+    //tituloArbol
+    document.getElementById("tituloArbol").style.top = (30 * scaley) + 'px';
+    document.getElementById("tituloArbol").style.left = (50 + 100 * scalex) + 'px';
+    document.getElementById("tituloArbol").style.fontSize = (30 * scalex).toFixed(0) + 'px';
+    document.getElementById("tituloArbol").innerHTML = arbolPersonal.nombre + " - " + tr("Decisiones");
+    document.getElementById("tituloArbol").style.visibility = 'visible';
 
     //joystick
     document.getElementById("joystickArbol").style.visibility = 'visible';
-    document.getElementById("joystickArbol").style.top = (window.innerHeight - 160) + 'px';
+    document.getElementById("joystickArbol").style.top = (window.innerHeight - 180 * scaley) + 'px';
 
     //objetivo
     var objetivo = document.getElementById("objetivo");
@@ -57,9 +65,20 @@ function doDecidimos() {
 
     //fijo intervalo de actualizacion del arbol
     timerArbol = setInterval(pedirArbol, refreshInterval);
+    clearInterval(timerQueso);
+    clearInterval(timerGrupo);
 
     estado = 'decidimos';
     clearInterval(timerCiclo);
+}
+
+function cumplePermisos(modelo) {
+    if (modelo.permisos == "")
+        return true;
+    else if (modelo.permisos == "isSecretaria" && arbolPersonal.usuario.isSecretaria)
+        return true;
+    else
+        return false;
 }
 
 function seleccionarModelo() {
@@ -77,22 +96,22 @@ function seleccionarModelo() {
             if (modelo.activo && 
                 ((arbolPersonal.URLEstatuto == "" && modelo.id.indexOf('Manifiesto')>=0) || arbolPersonal.URLEstatuto != ""))
             {
-                if (modelo.tipo == "estructura") {
+                if (modelo.tipo == "estructura" && cumplePermisos(modelo)) {
                     listE += "<tr>";
                     listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
-                    listE += "<td style='text-align: left;margin:5px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listE += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                     listE += "</tr>";
                 }
-                else if (modelo.tipo == "intergrupal") {
+                else if (modelo.tipo == "intergrupal" && cumplePermisos(modelo)) {
                     listI += "<tr>";
                     listI += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
-                    listI += "<td style='text-align: left;margin:5px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listI += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                     listI += "</tr>";
                 }
-                else {
+                else if (cumplePermisos(modelo)) {
                     listS += "<tr>";
                     listS += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
-                    listS += "<td style='text-align: left;margin:5px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                    listS += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                     listS += "</tr>";
                 }
             }
@@ -111,6 +130,12 @@ function seleccionarModelo() {
         list += "<td style='vertical-align:top;'>" + listS + "</td>";
         list += "<td style='vertical-align:top;'>" + listI + "</td>";
         list += "</tr>";
+
+        //cartel sociocracia.net
+        list += "<tr>";
+        list += "<td style='vertical-align:top;font-size:12px' colspan=3>" + tr("nuevos modelos")+ "</td>";
+        list += "</tr>";
+
         list += "</table>";
 
         document.getElementById("modelosContent").innerHTML = list;
@@ -237,6 +262,9 @@ function doRevisar() {
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
         });
 }
 
@@ -307,6 +335,9 @@ function doVerDocumento() {
             //muestro
             document.getElementById("documento").innerHTML = data;
 
+            //activo editores de estilo
+            activarStyleEditor();
+
             document.getElementById("documento").style.visibility = 'visible';
             document.getElementById("documento").style.left = (10) + 'px';
             document.getElementById("documento").style.width = (window.innerWidth - 60) + 'px';
@@ -346,6 +377,9 @@ function doVariante(id) {
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
         }
     );
 
@@ -388,7 +422,7 @@ function getFloresDisponibles() {
 }
 
 function pedirArbol() {
-    if (arbolPersonal) {
+    if (arbolPersonal && !preguntarAlSalir) {
         var now = (new Date()).getTime();
         if (now - lastArbolRecibidoTs > refreshInterval)
             getHttp("doDecidimos.aspx?actn=getArbolPersonal&email=" + arbolPersonal.usuario.email
@@ -422,5 +456,8 @@ function documentSubmit(accion, parametro) {
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
         });
 }

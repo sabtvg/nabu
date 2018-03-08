@@ -22,12 +22,11 @@
 var quesoPersonal;
 var quesoInicio = 60;
 var selCeldaID;
-var quesoScale = 1;
+var quesoScale = 1.2;
 var quesoy = -400;
 var quesox = 0;
 var quesoCeldah = 10;
 var minHeight = 60;
-var quesoInterval;
 var HTMLSelectedCelda;
 
 function doAprendemos() {
@@ -41,8 +40,8 @@ function doAprendemos() {
     document.getElementById("panelUsuario").style.visibility = 'hidden';
 
     //joystick
+    document.getElementById("joystickQueso").style.top = (window.innerHeight - 190 * scaley) + 'px';
     document.getElementById("joystickQueso").style.visibility = 'visible';
-    document.getElementById("joystickQueso").style.top = (window.innerHeight - 160) + 'px';
 
     //activo el aprendemos
     setTimeout(function () {
@@ -66,7 +65,11 @@ function doAprendemos() {
 
     }, 500);
 
-    quesoInterval = setInterval(getQuesoPersonal, refreshInterval);
+    timerQueso = setInterval(getQuesoPersonal, refreshInterval);
+    clearInterval(timerArbol);
+    clearInterval(timerGrupo);
+
+
 }
 
 function translateQueso(x, y) {
@@ -74,21 +77,23 @@ function translateQueso(x, y) {
 }
 
 function getQuesoPersonal() {
-    getHttp("doAprendemos.aspx?actn=getQuesoPersonal&email=" + arbolPersonal.usuario.email
-    + "&grupo=" + arbolPersonal.nombre
-    + "&clave=" + arbolPersonal.usuario.clave,
-     function (data) {
-         //atrapo el error si es que hay
-         if (data.substring(0, 6) == "Error=") {
-             //ha habido un error
-             document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
-         }
-         else {
-             //tengo el bosque
-             //document.getElementById("todo").innerHTML = data;
-             recibirQuesoPersonal(data);
-         }
-     });
+    if (!preguntarAlSalir) {
+        getHttp("doAprendemos.aspx?actn=getQuesoPersonal&email=" + arbolPersonal.usuario.email
+        + "&grupo=" + arbolPersonal.nombre
+        + "&clave=" + arbolPersonal.usuario.clave,
+         function (data) {
+             //atrapo el error si es que hay
+             if (data.substring(0, 6) == "Error=") {
+                 //ha habido un error
+                 document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
+             }
+             else {
+                 //tengo el bosque
+                 //document.getElementById("todo").innerHTML = data;
+                 recibirQuesoPersonal(data);
+             }
+         });
+    }
 }
 
 function recibirQuesoPersonal(data) {
@@ -155,7 +160,10 @@ function dibujarQueso() {
     var ret = "";
 
     ret += "<svg id='svgAprendemos' width='" + window.innerWidth + "' height='" + window.innerHeight + "' xmlns='http://www.w3.org/2000/svg' version='1.1'>";
-    //ret += "<rect x='1' y='1' width='100%' height='100%' fill='none' stroke='blue' stroke-width='2' />";
+
+    //titulo
+    ret += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 90 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>" + quesoPersonal.nombre + " - " + tr("Evaluamos") + "</text>";
+
     ret += "<g transform='translate(" + (window.innerWidth / 2 + quesox).toFixed(0) + "," + (window.innerHeight / 2 + quesoy).toFixed(0) + ")'>";
 
     //dinujo columnas 
@@ -169,7 +177,7 @@ function dibujarQueso() {
         ret += HTMLSelectedCelda;
 
     //circle
-    ret += "<circle cx='0' cy='0' r='5' stroke='blue' stroke-width='3' fill='white' />";
+    //ret += "<circle cx='0' cy='0' r='5' stroke='blue' stroke-width='3' fill='white' />";
 
     ret += "</g>";
     ret += "</svg>";
@@ -186,6 +194,7 @@ function dibujarQueso() {
     pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Evaluaciones") + ":" + totalEvaluaciones + "</nobr></div>";
     pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Promedio") + ": <span style='border:1px solid gray;background-color:" + HTMLColorPromedio + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></nobr></div>";
     panel.innerHTML = pan; 
+    panel.style.top = (190 * scaley) + 'px';
     panel.style.visibility = 'visible';
 
     quesoDiv.innerHTML = ret;
@@ -270,6 +279,10 @@ function doSelectCelda(celdaid) {
              else {
                  //enseño info
                  document.getElementById("documento").innerHTML = data;
+
+                 //activo editores de estilo
+                 activarStyleEditor();
+
                  document.getElementById("documento").style.visibility = 'visible';
                  document.getElementById("documento").style.left = (10) + 'px';
                  document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
@@ -356,6 +369,10 @@ function doEvaluarTema(idTema) {
 
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
+
             document.getElementById("documento").style.visibility = 'visible';
             document.getElementById("documento").style.left = (10) + 'px';
             document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
@@ -380,6 +397,10 @@ function doVerEvaluacion(modeloID) {
 
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
+
             document.getElementById("documento").style.visibility = 'visible';
             document.getElementById("documento").style.left = (10) + 'px';
             document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
@@ -399,6 +420,9 @@ function doRevisarEvaluacion(modeloID) {
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
         });
 }
 
@@ -416,6 +440,9 @@ function doPrevistaEvaluacion(modeloID) {
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
         });
 }
 
@@ -453,6 +480,9 @@ function evaluacionSubmit(accion, parametro, modeloID) {
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
+
+            //activo editores de estilo
+            activarStyleEditor();
         });
 }
 

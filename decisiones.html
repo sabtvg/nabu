@@ -134,6 +134,7 @@
                     document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
                     //background
                     document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+                    document.body.style.backgroundImage = "url('res/background.jpg')";
 
                     //fondo segun timeline
                     if (historico)
@@ -298,7 +299,7 @@
                     var sdt = formatShortDate(toDate(ld.fecha));
                     s += "<text x='" + (x + dif + 32) + "' y='" + (y + 90) + "' fill='blue' style='font-size:10px;cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
-                xant = x;
+                xant = x + dif;
                 dif = 0;
             }
 

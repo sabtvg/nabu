@@ -32,5 +32,10 @@ namespace nabu.organizaciones
             return "no implementado";
         }
 
+        public override List<object> getSeriealizableObjects()
+        {
+            List<object> ret = new List<object>();
+            return ret;
+        }
     }
 }

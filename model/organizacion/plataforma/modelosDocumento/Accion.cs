@@ -329,7 +329,7 @@ namespace nabu.plataforma.modelos
                 accion.docTs = DateTime.Now;
                 accion.responsable = doc.getText("s.responsable");
 
-                plataforma.acciones.Add(accion);
+                plataforma.seguimientos.Add(accion);
 
                 doc.addLog(Tools.tr("accion.creada", doc.grupo.idioma));
             }

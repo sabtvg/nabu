@@ -35,6 +35,10 @@
     <script src="js/common.js"></script>
     <script src="js/tween.min.js"></script>
     <script src="js/dictionary.js"></script>
+    <script src="js/module.js"></script>
+    <script src="js/hotkeys.js"></script>    
+    <script src="js/simditor.js"></script>    
+    <link rel="stylesheet" type="text/css" href="simditor.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
@@ -124,45 +128,41 @@
     </div>
 
     <!--joystick--------------------------------------------------------------------------------------------------->
-    <div id="joystickQueso" style="visibility:hidden; padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
-        <table>
-            <tr>
-                <td><img src="res/jzm.png" style='cursor:pointer;' onclick="quesoScale*=1.1;dibujarQueso();"  /></td>
-                <td><img src="res/ju.png" style='cursor:pointer;' onmousedown="quesoy-=5;dibujarQueso();" /></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><img src="res/jl.png" style='cursor:pointer;' onmousedown="quesox-=5;dibujarQueso();" /></td>
-                <td><img src="res/j00.png" style='cursor:pointer;' onclick="translateQueso(quesox = 0, quesoy = 0)" /></td>
-                <td><img src="res/jr.png" style='cursor:pointer;' onmousedown="quesox+=5;dibujarQueso();" /></td>
-            </tr>
-            <tr>
-                <td><img src="res/jzl.png" style='cursor:pointer;' onclick="quesoScale*=0.9;dibujarQueso();" /></td>
-                <td><img src="res/jd.png" style='cursor:pointer;' onmousedown="quesoy+=5;dibujarQueso();"  /></td>
-                <td></td>
-            </tr>
-        </table>
+    <div id="joystickQueso" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:0px;">
+        <nobr>
+            <img src="res/jzm.png" style='cursor:pointer;' onclick="quesoScale*=1.1;dibujarQueso();" class="img" />
+            <img src="res/ju.png" style='cursor:pointer;' onmousedown="quesoy-=5;dibujarQueso();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" style='cursor:pointer;' onmousedown="quesox-=5;dibujarQueso();" class="img" />
+            <img src="res/j00.png" style='cursor:pointer;' onclick="translateQueso(quesox = 0, quesoy = 0)" class="img" />
+            <img src="res/jr.png" style='cursor:pointer;' onmousedown="quesox+=5;dibujarQueso();" class="img"/>
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" style='cursor:pointer;' onclick="quesoScale*=0.9;dibujarQueso();" class="img" />
+            <img src="res/jd.png" style='cursor:pointer;' onmousedown="quesoy+=5;dibujarQueso();" class="img"  />
+        </nobr>           
     </div>
 
     <!--joystick--------------------------------------------------------------------------------------------------->
-    <div id="joystickArbol" style="visibility:hidden; padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
-        <table>
-            <tr>
-                <td><img src="res/jzm.png" style='cursor:pointer;' onclick="zoom(10);"  /></td>
-                <td><img src="res/ju.png" style='cursor:pointer;' onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" /></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><img src="res/jl.png" style='cursor:pointer;' onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" /></td>
-                <td><img src="res/j00.png" style='cursor:pointer;' onclick="translateArbol(translatex = 0, translatey = 0)" /></td>
-                <td><img src="res/jr.png" style='cursor:pointer;' onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" /></td>
-            </tr>
-            <tr>
-                <td><img src="res/jzl.png" style='cursor:pointer;' onclick="zoom(-10);" /></td>
-                <td><img src="res/jd.png" style='cursor:pointer;' onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" /></td>
-                <td></td>
-            </tr>
-        </table>
+    <div id="joystickArbol" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:0px;">
+        <nobr>
+            <img src="res/jzm.png" style='cursor:pointer;' onclick="zoom(10);"  class="img" />
+            <img src="res/ju.png" style='cursor:pointer;' onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" style='cursor:pointer;' onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" class="img" />
+            <img src="res/j00.png" style='cursor:pointer;' onclick="translateArbol(translatex = 0, translatey = 0)" class="img" />
+            <img src="res/jr.png" style='cursor:pointer;' onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" style='cursor:pointer;' onclick="zoom(-10);" class="img" />
+            <img src="res/jd.png" style='cursor:pointer;' onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" class="img" />
+        </nobr>           
     </div>
 
     <!--timePanel--------------------------------------------------------------------------------------------------->
@@ -205,15 +205,15 @@
     </div>
 
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
+    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
     </div>
 
     <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelGrupo"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
+    <div id="panelGrupo"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
     </div>
 
     <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelQueso"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
+    <div id="panelQueso"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
     </div>
 
     <!--menuppal--------------------------------------------------------------------------------------------------->
@@ -242,14 +242,12 @@
 
 
     <!--panel flores--------------------------------------------------------------------------------------------------->
-    <div id="panelUsuario" style="visibility: hidden; position: absolute; left: 10px; top: 120px;">
+    <div id="panelUsuario" style="visibility: hidden; position: absolute; left: 5px; top: 120px;">
         <table>
             <tr>
-                <td id="usuario" colspan="2" style="font-size: 25px; font-weight: bold;"></td>
-            </tr>
-            <tr>
-                <td style="width: 25px;"><img src="res/icono2.png" /></td>
-                <td id="floresDisponibles" style="font-size: 25px; font-weight: bold;">5</td>
+                <td id="usuario" colspan="2" class="titulo2"></td>
+                <td><img src="res/icono2.png" style="width:20px;height:19px;"/></td>
+                <td id="floresDisponibles" style="font-size: 20px; font-weight: bold;">5</td>
             </tr>
         </table>      
     </div>
@@ -266,7 +264,7 @@
     </div>
 
     <!--alta usuario--------------------------------------------------------------------------------------------------->
-    <div id="altaUsuario" class="ventana" style="position: absolute; width: 330px; height: 330px; text-align:center; visibility: hidden; opacity: 1;">
+    <div id="altaUsuario" class="ventana" style="position: absolute; width: 330px; height: 360px; text-align:center; visibility: hidden; opacity: 1;">
         <span id="auTit1" class="titulo2">Alta de usuario</span>
         <span id="auTit2">
         <br /><br />
@@ -276,10 +274,11 @@
         </span>
         <select id="altaUsuarioGrupos" class="editar" style="width: 200px;"></select><br />
         <input id="altaUsuarioNombre" type="text" class="editar" placeholder="Nombre completo" value="" /><br />
-        <input id="altaUsuarioEmail" type="text" class="editar" placeholder="Email" value="" /><br />
+        <input id="altaUsuarioEmail" type="text" class="editar" placeholder="Email" value="" /><br /><br />
         <input id="auEnviar" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
         <input id="auCerrar" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, window.innerHeight / 2 - 330 / 2, -380, TWEEN.Easing.Cubic.Out);" /><br />
         <div id="altaUsuarioMsg"></div>
+        <br /><br />
     </div>
         
     <!--lista consensos--------------------------------------------------------------------------------------------------->
@@ -287,14 +286,14 @@
     </div>
 
     <!--panel alertas--------------------------------------------------------------------------------------------------->
-    <div id="alertas"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:330px; color: gray; border: 1px solid gray; margin: 0px;width:200px;height:300px;overflow: auto;">
+    <div id="alertas"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:330px; color: gray; border: 1px solid gray; margin: 0px;width:200px;height:300px;overflow: auto;">
     </div>
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="panelDer" class="panel" style="visibility: hidden;">
         <table style="width: 95%;">
             <tr>
-                <td style="text-align: right;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="hidePanelDer();" /></td>
+                <td style="text-align: left;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="hidePanelDer();" /></td>
             </tr>
             <tr>
                 <td id="panelDer2">
@@ -305,7 +304,7 @@
     <div id="panelIzq" class="panel" style="visibility: hidden;">
         <table style="width: 95%;">
             <tr>
-                <td style="text-align: right;"><img id="Img2" style="cursor: pointer;" src="res/close.png" onclick="hidePanelIzq();" /></td>
+                <td style="text-align: left;"><img id="Img2" style="cursor: pointer;" src="res/close.png" onclick="hidePanelIzq();" /></td>
             </tr>
             <tr>
                 <td id="panelIzq2">
@@ -337,6 +336,9 @@
         </table>
     </div>
 
+    <!--tituloArbol--------------------------------------------------------------------------------------------------->
+    <div id="tituloArbol" class="titulo1" style="position:absolute;left:130px;"></div>
+
     <!--documento--------------------------------------------------------------------------------------------------->
     <div id="documento" class="documento" style="top: -1000px;">
     </div>
@@ -344,9 +346,11 @@
     <!--help--------------------------------------------------------------------------------------------------->
     <div id="help" class="documento" style="opacity: 1; width: 800px; height: 650px;">
         <table style="width: 100%;">
-            <tr><td style="text-align: right;"><img style="cursor: pointer;" src="res/close.png" onclick="doCloseHelp();" /></td></tr>
+            <tr><td style="text-align: left;"><img style="cursor: pointer;" src="res/close.png" onclick="doCloseHelp();" /></td></tr>
             <tr><td id="helpContent"></td></tr>
         </table>
     </div>
+
+
 </body>
 </html>

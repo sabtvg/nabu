@@ -151,7 +151,7 @@
             document.getElementById("todo").style.left = '0px';
             document.getElementById("todo").style.width = window.innerWidth + 'px';
             document.getElementById("todo").style.height = window.innerHeight + 'px';
-            document.getElementById("joystick").style.top = (window.innerHeight - 190) + 'px';
+            document.getElementById("joystick").style.top = (window.innerHeight - 190 * scaley) + 'px';
 
             //titulo
             document.getElementById("titulo1").innerHTML = tr("Sociocracia");
@@ -166,6 +166,8 @@
             document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
             //background
             document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+            document.body.style.backgroundImage = "url('res/background.jpg')";
+
         }
 
         function dibujarTodo() {
@@ -325,11 +327,15 @@
                     s += "<b>" + tr("Integrantes") + ":</b><br>";
                     for (j in GT.usuarios) {
                         var u = GT.usuarios[j];
-                        s += "&nbsp;&nbsp;&nbsp;" + u.email + " - ";
+                        s += "&nbsp;&nbsp;&nbsp;";
+                        if (u.nombre) {
+                            s += u.nombre + " (";
+                            s += u.funcion + ") - ";
+                        }
+                        s += "<a href='mailto:" + u.email + "'>" + u.email + "</a>";
                         if (u.estado)
-                            s += "<font color='red'>" + u.estado + "</font><br>";
-                        else
-                            s += u.nombre + "<br>";
+                            s += "&nbsp;<font color='red'>" + u.estado + "</font><br>";
+                        s += "<br>";
                     }
                     s += "<br>";
 
@@ -340,7 +346,7 @@
             s += "<b>" + tr("Arbol") + ":</b><br>";
             if (GT.grupoNombre == "") {
                 //no tiene grupo creado
-                if (usuario.isAdmin) {
+                if (usuarioPertenece(GT)){
                     //se puede crear un nuevo grupo
                     s += "<div class='cuadro' style='width:620px;border-radius: 4px;'>";
                     s += tr("Crear arbol") + "<br>";
@@ -361,7 +367,7 @@
             else {
                 //ya tiene un grupo
                 s += "<a href='" + GT.grupoURL + "?grupo=" + GT.grupoNombre + "'>" + GT.grupoNombre + "</a>";
-                if (usuario.isAdmin && !historico)
+                if (usuarioPertenece(GT) && !historico)
                     s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
             }
 
@@ -473,24 +479,22 @@
         <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     
         <!--joystick--------------------------------------------------------------------------------------------------->
-        <div id="joystick" style="padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
-            <table>
-                <tr>
-                    <td><img src="res/jzm.png" style='cursor:pointer;' onclick="zoom *= 1.1; dibujarTodo();"  /></td>
-                    <td><img src="res/ju.png" style='cursor:pointer;' onclick="offsetY -= 30; dibujarTodo();" /></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><img src="res/jl.png" style='cursor:pointer;' onclick="offsetX -= 30; dibujarTodo();" /></td>
-                    <td><img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" /></td>
-                    <td><img src="res/jr.png" style='cursor:pointer;' onclick="offsetX += 30; dibujarTodo();" /></td>
-                </tr>
-                <tr>
-                    <td><img src="res/jzl.png" style='cursor:pointer;' onclick="if (zoom > 0.6) zoom *= 0.9; dibujarTodo();" /></td>
-                    <td><img src="res/jd.png" style='cursor:pointer;' onclick="offsetY += 30; dibujarTodo();" /></td>
-                    <td></td>
-                </tr>
-            </table>
+        <div id="joystick" style="padding: 5px;position: absolute; left:5px; top:0px;">
+            <nobr>
+                <img src="res/jzm.png" style='cursor:pointer;' onclick="zoom *= 1.1; dibujarTodo();" class="img" />
+                <img src="res/ju.png" style='cursor:pointer;' onclick="offsetY -= 30; dibujarTodo();" class="img" />
+            </nobr>
+            <br />
+            <nobr>
+                <img src="res/jl.png" style='cursor:pointer;' onclick="offsetX -= 30; dibujarTodo();" class="img" />
+                <img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" class="img" />
+                <img src="res/jr.png" style='cursor:pointer;' onclick="offsetX += 30; dibujarTodo();" class="img" />
+            </nobr>
+            <br />
+            <nobr>
+                <img src="res/jzl.png" style='cursor:pointer;' onclick="if (zoom > 0.6) zoom *= 0.9; dibujarTodo();" class="img" />
+                <img src="res/jd.png" style='cursor:pointer;' onclick="offsetY += 30; dibujarTodo();" class="img" />
+            </nobr>                    
         </div>
 
         <!--GT--------------------------------------------------------------------------------------------------->

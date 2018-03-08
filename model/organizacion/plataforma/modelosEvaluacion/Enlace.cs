@@ -36,6 +36,8 @@ namespace nabu.plataforma.modelosEvaluacion
             nombre = "Enlace";
             titulo = "Evalucion de Enlace";
             preguntas = 5;
+            icono = "res/enlace.png";
+
 
             crearVariables();
         }
@@ -61,6 +63,16 @@ namespace nabu.plataforma.modelosEvaluacion
                 p.pregunta = Tools.tr("enlace.evaluacion.p" + i, grupo.idioma);
                 p.respuesta = Convert.ToInt32((float)getValue("f.p" + i, prop));
                 p.texto = (string)getValue("s.t" + i, prop);
+                if (i == 3)
+                {
+                    p.minText = "No";
+                    p.maxText = "Si";
+                }
+                else
+                {
+                    p.minText = "Si";
+                    p.maxText = "No";
+                } 
                 ret.Add(p);
             }
             return ret;

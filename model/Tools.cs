@@ -103,7 +103,7 @@ namespace nabu
             "Documento simulado|es|Documento simulado", 
             "Simulacion|es|Simulacion!!!", 
             "Seleccione un nodo|es|Seleccione un nodo", 
-            "Este debate ya ha alcanzado el consenso|es|Este debate ya ha alcanzado el consenso", 
+            "Este debate ya ha alcanzado el consenso|es|Este debate ya ha alcanzado la decisi&oacute;n", 
             "Minimos usuarios implicados|es|M&iacute;nimos usuarios implicados debe estar entre 50 y 100", 
             "Maximos usuarios negados|es|M&aacute;ximos usuarios negados debe estar entre 0 y 50", 
             "Cantidad de flores|es|Cantidad de flores debe estar entre 1 y 20", 
@@ -111,7 +111,7 @@ namespace nabu
             "Etiqueta|es|Etiqueta", 
             "(Etiqueta en el arbol)|es|(Etiqueta en el &aacute;rbol)", 
             "Nivel en el arbol|es|Nivel en el &aacute;rbol", 
-            "Consenso alcanzado|es|Consenso alcanzado", 
+            "Consenso alcanzado|es|Decisi&oacute;n alcanzada", 
             "Cerrar|es|Cerrar", 
             "Prevista de propuesta|es|Prevista de propuesta", 
             "Cancelar|es|Cancelar", 
@@ -231,17 +231,17 @@ namespace nabu
             "enlace.evaluacion.p3|es|&iquest;Se esta tratando este tema en el grupo?",
             "enlace.evaluacion.p4|es|&iquest;Deberia tratarse este tema en el grupo?",
             "enlace.evaluacion.p5|es|&iquest;Crees que este tema deberia generar un ciclo de Accion?",
-            "accion.evaluacion.tip1|es|",
-            "accion.evaluacion.tip2|es|",
-            "accion.evaluacion.tip3|es|",
-            "accion.evaluacion.tip4|es|",
-            "accion.evaluacion.tip5|es|",
-            "accion.evaluacion.tip6|es|",
-            "enlace.evaluacion.tip1|es|",
-            "enlace.evaluacion.tip2|es|",
-            "enlace.evaluacion.tip3|es|",
-            "enlace.evaluacion.tip4|es|",
-            "enlace.evaluacion.tip5|es|",
+            "accion.evaluacion.tip1|es|Eval&uacute;a si la Accion era necesaria como se habia definido al tomar la decisi&oacute;n",
+            "accion.evaluacion.tip2|es|Eval&uacute;a si el objetivo definido en la Accion finalmente se corresponde con el resultado obtenido",
+            "accion.evaluacion.tip3|es|Eval&uacute;a si los recursos requeridos eran adecuados",
+            "accion.evaluacion.tip4|es|Eval&uacute;a si las fases definidas al tomar la decis&oacute;n eran adecuadas",
+            "accion.evaluacion.tip5|es|Eval&uacute;a si ha estimado correctamente el plazo y costo",
+            "accion.evaluacion.tip6|es|Eval&uacute;a si consideras necesario realizar otro ciclo de debate y Accion teniendo en cuenta el resultado obtenido",
+            "enlace.evaluacion.tip1|es|Eval&uacute;a si esta publicaci&oacute;n esta en la linea de los intereses del grupo y puede o no aportar informaci&oacute;n",
+            "enlace.evaluacion.tip2|es|Eval&uacute;a si esta publicaci&oacute;n se puede considerar solida y veraz",
+            "enlace.evaluacion.tip3|es|Eval&uacute;a si consideras que este tema ya se esta tratando en el grupo",
+            "enlace.evaluacion.tip4|es|Eval&uacute;a si consideras que este tema es importante y deber&iacute;a tratarse en el grupo",
+            "enlace.evaluacion.tip5|es|Eval&uacute;a si consideras que este tema deberia provocar acciones reales en el grupo",
             "alhijo.documento.introduccion.tip|es|",
             "alhijo.documento.situacionactual.tip|es|",
             "alhijo.documento.propuesta.tip|es|",
@@ -271,7 +271,7 @@ namespace nabu
             "alpadre.evaluacion.tip4|es|",
             "alpadre.evaluacion.tip5|es|",
             "Palabras clave|es|Palabras clave",
-            "Evaluación de comunicado intergrupal|es|Evaluación de comunicado intergrupal",
+            "Evaluacion de comunicado intergrupal|es|Evaluaci&oacute;n de comunicado intergrupal",
             "Documento de comunicado a evaluar|es|Documento de comunicado a evaluar",
             "Prevista de evaluacion|es|Prevista de evaluaci&oacute;n",
             "Revisar evaluacion|es|Revisar evaluaci&oacute;n",
@@ -286,7 +286,7 @@ namespace nabu
             "accion.revision|es|Revisi&oacute;n",
             "Responsable|es|Responsable",
             "accion.creada|es|Accion creada",
-            "Nueva decision [%1]|es|Nueva decisi&oacute;n [%1]",
+            "Nueva decision [%1]|es|[%1] Decisi&oacute;n alcanzada",
             "Recursos|es|Recursos",
             "Capacidaddes|es|Capacidaddes",
             "Integrantes|es|Integrantes",
@@ -296,8 +296,46 @@ namespace nabu
             "Prevista de evaluacion|es|Prevista de evaluaci&oacute;n",
             "Revisar evaluacion|es|Revisar evaluaci&oacute;n",
             "Crear evaluacion|es|Crear evaluaci&oacute;n",
-            "Evaluación de comunicado intergrupal|es|Evaluaci&oacute;n de comunicado intergrupal",     
-            "Nueva Acta publicada|es|Nueva Acta publicada",
+            "Nueva Acta publicada|es|Nueva Acta publicada",					
+			"evento.creado|es|Evento creado",
+            "evento.error|es|Error",
+            "accion.error|es|Error",
+            "Lugar|es|Lugar",
+            "transportes|es|Transportes",
+            "Valoracion del resultado|es|Valoraci&oacute;n del resultado",
+            "evento.evaluacion.p1|es|&iquest;El evento era necesario?",
+            "evento.evaluacion.p2|es|&iquest;El evento era adecuado para el objetivo?",
+            "evento.evaluacion.p3|es|&iquest;Se han destinado los recursos previstos?&iquest;La ubicaci&oacute;n ha sido adecuada?",
+            "evento.evaluacion.p4|es|&iquest;Se ha organizado seg&uacute;n el plan?",
+            "evento.evaluacion.p5|es|&iquest;El responsable se ha desempeñado correctamente?",
+            "evento.evaluacion.p6|es|&iquest;Valoraci&oacute;n global del evento?",
+            "evento.evaluacion.tip1|es|Eval&uacute;a si el Evento era necesario como se habia definido al tomar la decisi&oacute;n",
+            "evento.evaluacion.tip2|es|Eval&uacute;a si el objetivo definido para el Evento finalmente se corresponde con el resultado obtenido",
+            "evento.evaluacion.tip3|es|Eval&uacute;a si los recursos requeridos y la ubicaci&oacute;n del Evento eran adecuados",
+            "evento.evaluacion.tip4|es|Eval&uacute;a si las fases definidas al tomar la decis&oacute;n eran adecuadas",
+            "evento.evaluacion.tip5|es|Eval&uacute;a si el responsable se ha desempe&ntilde;ado seg&uacute;n las expectativas",
+            "evento.evaluacion.tip6|es|Eval&uacute;a el evento de manera global",
+            "Evaluacion de Accion|es|Evaluacion de Accion",
+            "Accion finalizada [%1]|es|Accion finalizada [%1]",
+            "La evaluacion anterior ha sido reemplazada|es|La evaluaci&oacute;n anterior ha sido reemplazada",
+            "La evaluacion anterior ha sido reemplazada|es|La evaluaci&oacute;n anterior ha sido reemplazada",
+            "Evaluacion caida para el tema [%1]|es|Evaluaci&oacute;n caida para el tema [%1]",
+            "Acta|es|Acta",
+            "Fecha celebracion|es|Fecha celebracion",
+            "Fecha proxima celebracion|es|Fecha proxima celebracion",
+            "Participantes|es|Participantes",
+            "Ronda de apertura|es|Ronda de apertura",
+            "Aspectos logisticos|es|Aspectos logisticos",
+            "Orden del dia|es|Orden del dia",
+            "Agregar tema|es|Agregar tema",
+            "Evaluacion|es|Evaluacion",
+            "acta.apertura|es|",
+            "acta.logisticos|es|",
+            "acta.ordendeldia|es|",
+            "acta.evaluacion|es|",
+            "tema|es|Tema",
+            "Evaluacion de Evento|es|Evaluaci&oacute;n de Evento",           
+            
 
             "El usuario no existe|ct|La usu&agrave;ria no existeix", 
             "La clave actual no corresponde|ct|La clau actual no correspon", 
@@ -830,31 +868,34 @@ namespace nabu
             return new Point((int)(Math.Cos(angRad) * mod), (int)(Math.Sin(angRad) * mod));
         }
 
-        public static string sendMailAlta(string grupo, string to, string nombre, string email, string basepath)
+        public static string sendMailAlta(Grupo grupo, string to, string nombre, string email, string basepath)
         {
-            string msg = System.IO.File.ReadAllText(basepath + "\\alta.html");
+            string msg = System.IO.File.ReadAllText(basepath + "\\" + grupo.idioma + "\\alta.html");
             msg = msg.Replace("%1", nombre);
             msg = msg.Replace("%2", email);
-            msg = msg.Replace("%3", grupo);
+            msg = msg.Replace("%3", grupo.nombre);
+            msg = msg.Replace("%4", "<a href='" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "' target='_blank'>" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "</a>");
 
-            return sendMail(to, "Solicitud de alta en [" + grupo + "]", msg);
+            return sendMail(to, "Solicitud de alta en [" + grupo.nombre + "]", msg);
         }
 
-        public static string encolarMailCaido(string grupo, string to, string mailAdmin, string basepath)
+        public static string encolarMailCaido(Grupo grupo, string to, string mailAdmin, string basepath)
         {
             string msg = System.IO.File.ReadAllText(basepath + "\\caido.html");
-            msg = msg.Replace("%1", grupo);
+            msg = msg.Replace("%1", grupo.nombre);
+            msg = msg.Replace("%2", "<a href='" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "' target='_blank'>" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "</a>");
 
             return encolarMail(to, "Flores caducadas", msg);
         }
 
-        public static string sendMailWelcome(string grupo, string to, string clave, string url, string basepath)
+        public static string sendMailWelcome(Grupo grupo, string to, string clave, string url, string basepath)
         {
             string msg = System.IO.File.ReadAllText(basepath + "\\welcome.html");
             msg = msg.Replace("%1", url);
             msg = msg.Replace("%2", to);
             msg = msg.Replace("%3", clave);
-            msg = msg.Replace("%4", grupo);
+            msg = msg.Replace("%4", grupo.nombre);
+            msg = msg.Replace("%5", "<a href='" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "' target='_blank'>" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "</a>");
 
             return sendMail(to, "Alta Nabú", msg);
         }
@@ -874,13 +915,13 @@ namespace nabu
                 try
                 {
                     msg.From = new System.Net.Mail.MailAddress(from, from);
-                    msg.Body = body;
                     msg.IsBodyHtml = true;
+                    msg.Body = body.Replace("\"", "'").Replace("\r", "").Replace("\n", "");
                     msg.Subject = subject;
                     msg.To.Add(new System.Net.Mail.MailAddress(to, to));
 
                     System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient(SMTPURL);
-                    //smtp.EnableSsl = true;                                                    //esto en la CIC no funciona
+                    smtp.EnableSsl = false;                                                    //esto en la CIC no funciona
                     smtp.UseDefaultCredentials = true;
                     smtp.Credentials = new System.Net.NetworkCredential(user, pass);
                     smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
@@ -900,21 +941,24 @@ namespace nabu
             return ret;
         }
 
-        public static string encolarMailInactivo(string to)
+        public static string encolarMailInactivo(Grupo grupo, string to)
         {
             string msg = System.IO.File.ReadAllText(startupPath + "\\mails\\modelos\\ES\\inactivo.html");
+            msg = msg.Replace("%1", "<a href='" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "' target='_blank'>" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "</a>");
+
             return encolarMail(to, "Inactivo en Nabu", msg);
         }
 
-        public static string encolarMailNuevoConsenso(string to, int si, int no, string link)
+        public static string encolarMailNuevoConsenso(Grupo grupo, string to, int si, int no, string link)
         {
             string msg = System.IO.File.ReadAllText(startupPath + "\\mails\\modelos\\ES\\nuevoConsenso.html");
             msg = msg.Replace("%1", si.ToString());
             msg = msg.Replace("%2", no.ToString());
             msg = msg.Replace("%3", link);
             msg = msg.Replace("%4", link);
+            msg = msg.Replace("%5", "<a href='" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "' target='_blank'>" + grupo.URL + "/default.html?grupo=" + grupo.nombre + "</a>");
 
-            return encolarMail(to, "Nuevo consenso", msg);
+            return encolarMail(to, "Nueva decisión", msg);
         }
 
         public static string encolarMail(string to, string subject, string body)

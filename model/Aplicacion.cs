@@ -183,6 +183,10 @@ namespace nabu
                     //modelos de evaluacion
                     foreach (ModeloEvaluacion mod in org.getModelosEvaluacion())
                         tipos.Add(mod.GetType());
+
+                    //otros objetos
+                    foreach (object mod in org.getSeriealizableObjects())
+                        tipos.Add(mod.GetType());
                 }
 
                 ret = Tools.fromJson<Grupo>(s, tipos);
@@ -203,8 +207,6 @@ namespace nabu
                 //actualizo modelos
                 ret.arbol.grupo = ret;  //padre del arbol, referencia ciclica, no se puede serializar
                 ret.queso.grupo = ret;  //padre del queso, referencia ciclica, no se puede serializar
-
-                ret.fileReadTs = DateTime.Now;
 
                 addLog("loadGrupo(): [" + ret.nombre + "] leido de disco");
 

@@ -33,6 +33,8 @@ namespace nabu.plataforma.modelosEvaluacion
             titulo = "Evalucion de documento generado por grupo hijo";
             preguntas = 5;
             activo = false;
+            icono = "res/documentos/alpadre.png";
+
 
             crearVariables();
         }
@@ -46,6 +48,8 @@ namespace nabu.plataforma.modelosEvaluacion
                 p.pregunta = Tools.tr("alpadre.evaluacion.p" + i, grupo.idioma);
                 p.respuesta = Convert.ToInt32((float)getValue("f.p" + i, prop));
                 p.texto = (string)getValue("s.t" + i, prop);
+                p.minText = "No";
+                p.maxText = "Si";
                 ret.Add(p);
             }
             return ret;

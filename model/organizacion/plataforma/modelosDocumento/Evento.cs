@@ -33,6 +33,7 @@ namespace nabu.plataforma.modelos
             niveles = 5;
             nombre = "Evento";
             descripcion = "Evento";
+            tipo = "seguimiento";
 
             crearVariables();
         }
@@ -61,6 +62,7 @@ namespace nabu.plataforma.modelos
 
             //nivel 4
             variables.Add(new Variable("s.organizacion", 3000, 4));
+            variables.Add(new Variable("s.responsable", 100, 4));
             variables.Add(new Variable("d.fecha", 0, 4));
 
             //nivel 5
@@ -110,13 +112,11 @@ namespace nabu.plataforma.modelos
                 else if (prop.nivel == 4)
                 {
                     if (getText("s.organizacion", prop) == "")
-                    {
                         addError(4, "Describe como organizar el evento");
-                    }
+                    if (getText("s.responsable", prop) == "")
+                        addError(4, "Debe definr un responsable");
                     if (getDate("d.fecha", prop) == Tools.minValue)
-                    {
                         addError(4, "Define una fecha para el evento");
-                    }
                 }
                 else if (prop.nivel == 5)
                 {
@@ -238,6 +238,21 @@ namespace nabu.plataforma.modelos
 
                 ret += HTMLArea("s.organizacion", prop, width, 120, tieneFlores, g.idioma);
 
+                //responsable lista de seleccion de usuarios
+                ret += "<div class='tema'>" + Tools.tr("Responsable", g.idioma) + "</div>";
+                if (editar)
+                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        + Tools.tr("accion.responsable", g.idioma)
+                        + "</div>";
+                string lista = "|";
+                foreach (Usuario u2 in g.usuarios)
+                    lista += u2.email + "#" + u2.nombre + "|";
+                lista = lista.Substring(0, lista.Length - 1);
+                ret += HTMLLista("s.responsable", lista, prop, 250, tieneFlores, g.idioma);
+                ret += "<br>";
+                ret += "<br>";
+
+                //fecha
                 ret += "<div class='tema'>";
                 ret += Tools.tr("Fecha", g.idioma);
                 ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
@@ -253,7 +268,7 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + Tools.tr("Valoraci&oacute;n del resultado", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("Valoracion del resultado", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip' style='width:" + width + "px'>"
                         + Tools.tr("evento.valoracion", g.idioma) 
@@ -286,7 +301,26 @@ namespace nabu.plataforma.modelos
 
         public override void ejecutarConsenso(Documento doc)
         {
-            //nada que hacer
+            try
+            {
+                nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
+                nabu.plataforma.Evento evento = new nabu.plataforma.Evento();
+                evento.EID = plataforma.getEID();
+                evento.nombre = doc.titulo;
+                evento.objetivo = doc.getText("s.objetivo");
+                evento.docURL = doc.URLPath;
+                evento.docTs = DateTime.Now;
+                evento.responsable = doc.getText("s.responsable");
+                evento.inicio = (DateTime)doc.getValor("d.fecha");
+
+                plataforma.seguimientos.Add(evento);
+
+                doc.addLog(Tools.tr("evento.creado", doc.grupo.idioma));
+            }
+            catch (Exception ex)
+            {
+                doc.addLog(Tools.tr("evento.error", doc.grupo.idioma) + ": " + ex.Message);
+            }
         }
 
 

@@ -36,6 +36,7 @@ namespace nabu
         public string titulo = ""; //esto es parte del documento
         public string etiqueta = ""; //esto es parte del documento
         public string firmaConsenso = ""; //solo se usa para generar el consenso
+        public string permisos = "";
 
         protected int niveles = 0;
         protected List<Variable> variables = new List<Variable>();
@@ -124,7 +125,6 @@ namespace nabu
 
             //reinicio el modelo
             errores.Clear();
-            crearVariables();
             consensoAlcanzado = false;
 
             bool tieneFlores = false;
@@ -147,10 +147,11 @@ namespace nabu
             }
 
             //todo el documento
+            bool editar = false;
             for (int q = 1; q <= niveles; q++)
             {
                 Propuesta prop = getProp(q, props);
-                bool editar = (prop == null && tieneFlores && modo != eModo.prevista && modo != eModo.consenso)
+                editar = (prop == null && tieneFlores && modo != eModo.prevista && modo != eModo.consenso)
                     || (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar));
                 
                 if (prop != null && prop.consensoAlcanzado) consensoAlcanzado = true;
@@ -222,7 +223,7 @@ namespace nabu
 
                 ret += "<input type='button' class='btn' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
 
-                if (tieneFlores && !consensoAlcanzado)
+                if (tieneFlores && !consensoAlcanzado && editar)
                     ret += "<input type='button' class='btn' value='" + Tools.tr("Prevista de propuesta", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevista();' />";
 
             }
@@ -314,20 +315,20 @@ namespace nabu
         {
             string ret = s;
 
-            //reemplazo links
-            int ini = s.ToLower().IndexOf("http://");
-            int fin;
-            string link;
-            while (ini >= 0)
-            {
-                s = s.Substring(ini);
-                fin = getSeparadorIndex(s);
-                link = s.Substring(0, fin);
-                ret = ret.Replace(link, "<a href='" + link + "' target='_blank'>" + link + "</a>");
+            ////reemplazo links
+            //int ini = s.ToLower().IndexOf("http://");
+            //int fin;
+            //string link;
+            //while (ini >= 0)
+            //{
+            //    s = s.Substring(ini);
+            //    fin = getSeparadorIndex(s);
+            //    link = s.Substring(0, fin);
+            //    ret = ret.Replace(link, "<a href='" + link + "' target='_blank'>" + link + "</a>");
 
-                s = s.Substring(fin);
-                ini = s.ToLower().IndexOf("http://");
-            }
+            //    s = s.Substring(fin);
+            //    ini = s.ToLower().IndexOf("http://");
+            //}
 
             //reemplazo \n
             ret = ret.Replace("\n", "<br>");
@@ -424,7 +425,7 @@ namespace nabu
                 if (modo != eModo.prevista && !consensoAlcanzado)
                 {
                     ret += "<textarea id='" + id + "' ";
-                    ret += "class='" + v.editClassName + "' ";
+                    ret += "class='editarrtf' ";
                     ret += "maxlength='" + v.len + "' ";
                     ret += "style='width:" + width + "px;height:" + height + "px;'>";
                     ret += "</textarea>";
@@ -435,11 +436,13 @@ namespace nabu
             else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
             {
                 //revisar
+                string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(toHTMLText((string)getValue(id, prop))));
                 ret += "<textarea id='" + id + "' ";
-                ret += "class='" + v.editClassName + "' ";
+                ret += "class='editarrtf' ";
                 ret += "maxlength='" + v.len + "' ";
                 ret += "style='width:" + width + "px;height:" + height + "px;'>";
-                ret += getValue(id, prop);
+                ret += HTMLText;
+                //ret += getValue(id, prop);
                 ret += "</textarea>";
                 ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                 ret += "<br>";
@@ -447,14 +450,16 @@ namespace nabu
             else if (prop != null)
             {
                 //ver
+                string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(toHTMLText((string)getValue(id, prop))));
                 ret += "<div ";
                 ret += "class='" + v.className + "' ";
                 ret += "style='width:" + width + "px;'>";
                 if (prop.consensoAlcanzado)
-                    ret += toHTMLText((string)getValue(id, prop)) + "</div>";
+                    ret += HTMLText + "</div>";
+                    //ret += toHTMLText((string)getValue(id, prop)) + "</div>";
                 else
-
-                    ret += toHTMLText((string)getValueResaltado(id, prop)) + "</div>";
+                    ret += HTMLText + "</div>";
+                    //ret += Tools.HTMLDecode(Tools.HTMLDecode(toHTMLText((string)getValueResaltado(id, prop)))) + "</div>";
                 ret += "<br>";
             }
             else
@@ -488,31 +493,31 @@ namespace nabu
                     //seleccionados
                     ret += "<table style='width:" + width + "px;height:" + height + "px;'>";
                     ret += "<tr><td><b>" + pertenece + "</b></td><td><b>" + NoPertenece + "</b></td></tr>";
-                    ret += "<tr><td class='" + v.editClassName + "' style='overflow:scroll;width:" + (width / 2 - 10) + "px;vertical-align:top;'>";
+                    ret += "<tr><td class='" + v.editClassName + "' style='overflow:scroll;width:" + (width / 2 - 15) + "px;vertical-align:top;'>";
                     if (value != "" && value != "*")
                         foreach (string item in value.Split('|'))
                         {
-                            ret += "<nobr>";
+                            ret += "<span style='vertical-align:middle; padding:3px;'>";
                             ret += "<img src='res/quitar.png' ";
-                            ret += "onclick=\"documentSubmit('" + id + "_quitar','" + item + "')\" style='cursor:pointer;'>";
+                            ret += "onclick=\"documentSubmit('" + id + "_quitar','" + item + "')\" style='cursor:pointer;vertical-align:bottom;'>&nbsp;";
                             ret += item.Split(':')[1];
-                            ret += "</nobr>";
+                            ret += "</span>";
                             ret += "<br>";
                         }
                     ret += "</td>"; 
 
                     //disponibles
-                    ret += "<td class='" + v.editClassName + "' style='float:left;width:" + (width / 2 - 10) + "px;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
+                    ret += "<td class='" + v.editClassName + "' style='float:left;width:" + (width / 2 - 15) + "px;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
                     if (lista != "")
                         foreach (string item in lista.Split('|'))
                         {
                             if (value.IndexOf(item.Split(':')[0]) == -1)
                             {
-                                ret += "<nobr>";
+                                ret += "<span style='vertical-align:middle; padding:3px;'>";
                                 ret += "<img src='res/agregar.png' ";
-                                ret += "onclick=\"setNotEmpyList('" + id + "');documentSubmit('" + id + "_agregar','" + item + "')\" style='cursor:pointer;'>";
+                                ret += "onclick=\"setNotEmpyList('" + id + "');documentSubmit('" + id + "_agregar','" + item + "')\" style='cursor:pointer;vertical-align:bottom;'>&nbsp;";
                                 ret += item.Split(':')[1];
-                                ret += "</nobr>";
+                                ret += "</span>";
                                 ret += "<br>";
                             }
                         }
@@ -530,12 +535,12 @@ namespace nabu
                 ret += "<table style='width:" + width + "px;height:" + height + "px;'>";
                 ret += "<tr><td><b>" + pertenece + "</b></td><td><b>" + NoPertenece + "</b></td></tr>";
                 ret += "<tr><td class='" + v.editClassName + "' ";
-                ret += "style='overflow:scroll;width:" + (width / 2 - 10) + "px;vertical-align:top;'>";
+                ret += "style='overflow:scroll;width:" + (width / 2 - 15) + "px;vertical-align:top;'>";
                 if (value != "" && value != "*")
                     foreach (string item in value.Split('|'))
                     {
                         ret += "<nobr>";
-                        ret += "<img src='res/quitar.png' onclick=\"documentSubmit('" + id + "_quitar','" + item + "')\" style='cursor:pointer;'>";
+                        ret += "<img src='res/quitar.png' onclick=\"documentSubmit('" + id + "_quitar','" + item + "')\" style='cursor:pointer;vertical-align:bottom;'>&nbsp;";
                         ret += item.Split(':')[1];
                         ret += "</nobr>";
                         ret += "<br>";
@@ -543,7 +548,7 @@ namespace nabu
                 ret += "</td>";
 
                 //disponibles
-                ret += "<td class='" + v.editClassName + "' style='float:left;width:" + (width / 2 - 10) + "px;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
+                ret += "<td class='" + v.editClassName + "' style='float:left;width:" + (width / 2 - 15) + "px;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
                 if (lista != "")
                     foreach (string item in lista.Split('|'))
                     {
@@ -551,7 +556,7 @@ namespace nabu
                         {
                             ret += "<nobr>";
                             ret += "<img src='res/agregar.png' ";
-                            ret += "onclick=\"setNotEmpyList('" + id + "');documentSubmit('" + id + "_agregar','" + item + "')\" style='cursor:pointer;'>";
+                            ret += "onclick=\"setNotEmpyList('" + id + "');documentSubmit('" + id + "_agregar','" + item + "')\" style='cursor:pointer;vertical-align:bottom;'>&nbsp;";
                             ret += item.Split(':')[1];
                             ret += "</nobr>";
                             ret += "<br>";
@@ -613,7 +618,7 @@ namespace nabu
                 //ver
                 value = d.Day.ToString("00") + "/" + d.Month.ToString("00") + "/" + d.Year.ToString("0000");
              
-            return input(id, prop, 130, tieneFlores, "date", value, idioma);
+            return input(id, prop, 150, tieneFlores, "date", value, idioma);
         }
 
         public string HTMLText(string id, Propuesta prop, int width, bool tieneFlores, string idioma)

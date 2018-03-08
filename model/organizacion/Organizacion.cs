@@ -59,6 +59,7 @@ namespace nabu
 
         public abstract List<Modelo> getModelosDocumento();
         public abstract List<ModeloEvaluacion> getModelosEvaluacion();
+        public abstract List<object> getSeriealizableObjects();
 
         public abstract string getOperativo(Grupo g);
         public abstract string doAccion(Grupo g, string email, string accion, HttpRequest req);

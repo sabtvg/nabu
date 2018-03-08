@@ -188,13 +188,16 @@
     <Compile Include="model\Grupo\hijo.cs" />
     <Compile Include="model\organizacion\plataforma\Accion.cs" />
     <Compile Include="model\organizacion\plataforma\Estrategia.cs" />
+    <Compile Include="model\organizacion\plataforma\Evento.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\AlHijo.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\AlPadre.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Acta.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Estrategia.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Accion.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\AlHijo.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\AlPadre.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Enlace.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Evento.cs" />
     <Compile Include="model\organizacion\plataforma\Proceso.cs" />
     <Compile Include="model\organizacion\plataforma\GrupoTrabajo.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Accion.cs" />
@@ -222,6 +225,7 @@
     <Compile Include="model\organizacion\cooperativa\Cooperativa.cs" />
     <Compile Include="model\organizacion\colegio\Colegio.cs" />
     <Compile Include="model\organizacion\plataforma\Plataforma.cs" />
+    <Compile Include="model\organizacion\plataforma\Seguimiento.cs" />
     <Compile Include="model\queso\Evaluacion.cs" />
     <Compile Include="model\queso\ModeloEvaluacion.cs" />
     <Compile Include="model\queso\Pregunta.cs" />
