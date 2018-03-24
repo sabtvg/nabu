@@ -401,7 +401,7 @@ namespace nabu
                 s += "Form:" + Request.Form.ToString() + "<br>";
                 s += "Stack:" + ex.StackTrace;
 
-                Response.Write("Error=" + ex.Message);
+                Response.Write("Error=" + ex.Message + " [" + Tools.errordebug + "]");
                 app.addLog("server exception", "", "", "", s);
             }
             Response.End();
@@ -434,51 +434,6 @@ namespace nabu
             return g.organizacion.getOperativo(g);
         }
 
-        //public string getBosque(string grupo, string email, string padreURL, string padreNombre)
-        //{
-        //    //devuelvo el bosque de aqui hacia abajo
-        //    Grupo g = app.getGrupo(grupo);
-
-        //    string acceso;
-        //    Usuario u = g.getUsuario(email);
-        //    if (u == null)
-        //        acceso = "NoExiste";
-        //    else if (!u.habilitado)
-        //        acceso = "NoHabilitado";
-        //    else if (u.readOnly)
-        //        acceso = "readOnly";
-        //    else
-        //        acceso = "si";
-            
-        //    string ret = "{\"nombre\":\"" + g.nombre + "\","
-        //        + "\"URL\":\"" + g.URL + "\","
-        //        + "\"usuarios\":" + g.usuarios.Count + ","
-        //        + "\"acceso\":\"" + acceso + "\","
-        //        + "\"objetivo\":\"" + g.objetivo + "\","
-        //        + "\"padreVerificado\":\"" + (g.padreURL == padreURL && g.padreNombre == padreNombre ? "Ok" : "Error") + "\","
-        //        + "\"hijos\":[";
-        //    foreach (Tuple<string, string> hijo in g.hijos)
-        //    {
-        //        try
-        //        {
-        //            string ret2 = Tools.getHttp(hijo.Item1 + "/doMain.aspx?actn=getBosque2&grupo=" + hijo.Item2 + "&padreURL=" + g.URL + "&padreNombre=" + g.nombre + "&email=" + email);
-        //            if (ret2.ToLower().StartsWith("error="))
-        //                ret += "{\"grupo\":\"" + hijo.Item2 + "\", \"exception\":\"" + ret2.Substring(6) + "\"},";
-        //            else
-        //                ret += ret2 + ",";
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            //timeout
-        //            ret += "{\"grupo\":\"" + hijo.Item2 + "\", \"exception\":\"" + ex.Message + "\"},";
-        //        }
-        //    }
-        //    if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
-
-        //    ret += "]}";
-        //    return ret;
-        //}
-
         public void VerificarUsuario(string grupo, string email, string clave)
         {
             Grupo g = app.getGrupo(grupo);
@@ -491,39 +446,7 @@ namespace nabu
             throw new Exception("Usuario no existe o no habilitado, operacion registrada!");                  
         }
 
-        //Grupo doNewGrupoFromPadre(string grupo, string organizacion, string admins, string idioma, string padreURL, string padreNombre)
-        //{
-        //    string[] aadmins = admins.Split('|');
-        //    Grupo g = null;
-
-        //    foreach(string admin in aadmins)
-        //    {
-        //        string nombre = admin.Split(':')[0];
-        //        string email = admin.Split(':')[1];
-        //        string clave = admin.Split(':')[2];
-
-        //        if (grupo == null)
-        //        {
-        //            //creo el grupo
-        //            g = doNewGrupo(grupo, organizacion, nombre, email, clave, idioma);
-        //            g.padreURL = padreURL;
-        //            g.padreNombre = padreNombre;
-        //        }
-        //        else
-        //        {
-        //            //agrego admins
-        //            Usuario u = new Usuario();
-        //            u.nombre = nombre;
-        //            u.isAdmin = true;
-        //            u.email = email;
-        //            u.clave = clave;
-        //            g.usuarios.Add(u);
-        //        }
-        //    }
-        //    return g;
-        //}
-
-        private string getSimName()
+       private string getSimName()
         {
             int index = 1;
             while (System.IO.Directory.Exists(Server.MapPath("grupos/__Sim" + index)))
@@ -633,8 +556,8 @@ namespace nabu
 
                 //envio mails a usuarios inactivos
                 verifyInactivos(g);
+                return ret;
             }
-            return ret;
         }
 
         Usuario removeUsuario(string email, string grupo)

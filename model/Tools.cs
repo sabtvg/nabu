@@ -65,6 +65,7 @@ namespace nabu
         private static StreamWriter logFile;
         public static DateTime minValue = new DateTime(2000, 1, 1);
         public static System.Web.HttpServerUtility server = null;
+        public static string errordebug = ""; //para depuracion
 
         public static string getURLName(string s)
         {
@@ -334,7 +335,15 @@ namespace nabu
             "acta.ordendeldia|es|",
             "acta.evaluacion|es|",
             "tema|es|Tema",
-            "Evaluacion de Evento|es|Evaluaci&oacute;n de Evento",           
+            "Evaluacion de Evento|es|Evaluaci&oacute;n de Evento",     
+            "Representantes|es|Representantes",
+            "Situacion actual|es|Situaci&oacute;n actual",
+            "Propuesta|es|Propuesta",
+            "Situacion deseada|es|Situaci&oacute;n deseada",
+            "No hay grupos hijos en este grupo|es|No hay grupos hijos en este grupo",
+            "tema|es|Tema",
+            "tema|es|Tema",
+            "tema|es|Tema",
             
 
             "El usuario no existe|ct|La usu&agrave;ria no existeix", 

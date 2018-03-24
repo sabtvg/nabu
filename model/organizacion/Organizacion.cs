@@ -64,7 +64,7 @@ namespace nabu
         public abstract string getOperativo(Grupo g);
         public abstract string doAccion(Grupo g, string email, string accion, HttpRequest req);
 
-        private int lastEID = 0;
+        public int lastEID = 0;
 
         public int getEID()
         {

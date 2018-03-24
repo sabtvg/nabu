@@ -126,7 +126,7 @@ namespace nabu.plataforma.modelosEvaluacion
 
             //documento de Accon a evaluar
             string valores = getListaResultados();
-            ret += "<div>" + Tools.tr("Documento de comunicado a evaluar", g.idioma) + "</div>";
+            ret += "<div class='titulo3'>" + Tools.tr("Documento de comunicado a evaluar", g.idioma) + "</div>";
             if (getText("s.basadoEnTemaExistente", prop) == "")
                 ret += HTMLLista("f.evaluadoID", valores, prop, 450, g.idioma, true);
             ret += "<br>";
@@ -138,7 +138,7 @@ namespace nabu.plataforma.modelosEvaluacion
             if (evaluadoID != "" && getLD(Convert.ToInt32(evaluadoID)) != null)
             {
                 LogDocumento ld = getLD(Convert.ToInt32(evaluadoID));
-                ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;'>";
+                ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;width:200px;'>";
                 ret += "<tr><td>";
                 ret += "<img src='" + ld.icono + "' style='width:32px;height:40px'></td>";
                 ret += "<td style='text-align:left;'>";
@@ -148,32 +148,26 @@ namespace nabu.plataforma.modelosEvaluacion
                 ret += "</tr></table>";
             }
 
-
             //preguntas
-            ret += "<table style='width:" + width + "px'>";
-            //preguntas
-            for (var q = 1; q <= 5; q++ )
+            for (var q = 1; q <= 5; q++)
             {
-                ret += "<tr>";
-                ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("alpadre.evaluacion.p" + q, g.idioma) + "</b>";
-                if (Tools.tr("alpadre.evaluacion.tip" + q, g.idioma) != "")
-                    ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("alpadre.evaluacion.tip" + q, g.idioma) + "</div>";
-                ret += "</td>";
-                ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p" + q, prop, "No", "Si") + "</td>";
-                ret += "</tr>";
-                //texto
-                ret += "<tr><td colspan='2'>";
-                ret += HTMLArea("s.t" + q, prop, width, 70, g.idioma);
-                ret += "</td></tr>";
-            }        
-            ret += "</table>";
+                ret += "<div class='tema' style='clear:left;float:left;vertical-align:top'><b>" + Tools.tr("alpadre.evaluacion.p" + q, g.idioma) + "</b></div>";
+                ret += "<div style='float:right;vertical-align:middle;text-align:right;margin:0.1vw;margin-right:1vw;'>";
+                ret += HTMLBarra("f.p" + q, prop, "No", "Si");
+                ret += "</div>";
 
+                if (modo != eModo.prevista && Tools.tr("alpadre.evaluacion.tip" + q, g.idioma) != "")
+                    ret += "<div class='smalltip' style='float:left;width:-webkit-fill-available;margin: auto'>" + Tools.tr("alpadre.evaluacion.tip" + q, g.idioma) + "</div>";
+                //texto
+                ret += "<div style='float:left;width:-webkit-fill-available'>" + HTMLArea("s.t" + q, prop, 0, 120, g.idioma) + "</div>";
+            }
 
             //mensajes de error
             if (errores.ContainsKey(1))
             {
-                ret += "<div class='error' style='width:" + (width - 4) + "px'>" + errores[1] + "</div>";
+                ret += "<div class='error'>" + errores[1] + "</div>";
             }
+
             return ret;
         }
 

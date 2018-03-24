@@ -7,6 +7,9 @@
     <script src="js/three.min.js"></script>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/OrbitControls.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/dictionary.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         var gl; // Un variable global para el contexto WebGL
         var camera;
@@ -15,7 +18,11 @@
         var firefoxWhich = 0;
         var lastMouse = null;
         var controls;
-        var imgs = [];
+        var cache = [];
+        var bosque;
+        var font;
+        var scale = window.innerWidth / 1920;
+        var generando = false;
 
 
         $(document).mouseup(function (event) {
@@ -33,14 +40,18 @@
             if (firefoxWhich == 1 && !event.ctrlKey) {
                 //scroll
                 if (lastMouse) {
-                    var offsetY = lastMouse.clientY - event.clientY;
-                    var offsetX = lastMouse.clientX - event.clientX;
-                    event.preventDefault();
-                    //camera.rotation.y -= offsetX / window.innerWidth;
-                    //camera.rotation.x -= offsetY / window.innerHeight;
-                    camera.position.x += offsetX;
-                    camera.position.y += offsetY;
-                    controls.update();
+                    if (ver == '3D') {
+                        var offsetY = lastMouse.clientY - event.clientY;
+                        var offsetX = lastMouse.clientX - event.clientX;
+                        event.preventDefault();
+                        //camera.rotation.y -= offsetX / window.innerWidth;
+                        //camera.rotation.x -= offsetY / window.innerHeight;
+                        camera.position.x += offsetX;
+                        camera.position.y += offsetY;
+                        controls.update();
+                    }
+                    else {
+                    }
                 }
                 lastMouse = { clientX: event.clientX, clientY: event.clientY };
             }
@@ -49,13 +60,74 @@
                     event.preventDefault(); //fin
                 lastMouse = null;
             }
-            document.getElementById("msg").innerHTML = event.which + ", " + event.ctrlKey;
+            //document.getElementById("msg").innerHTML = event.which + ", " + event.ctrlKey;
         });
 
         function doLoad() {
-            loadImg('res/secretaria.png'); 
+            //cargo recursos
+            loadImg('res/secretaria.png');
+            loadImg('res/doc.png');
             loadImg('res/seguimiento.png');
-            setTimeout(start, 1000);
+            loadFont('fonts/helvetiker_regular.typeface.json');
+
+            //wait
+            document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
+            document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
+            document.getElementById("florWait").style.visibility = "visible";
+
+            //espero carga de recursos
+            load2();
+        }
+
+        function load2() {
+            if (cache.length < 4)
+                setTimeout(load2, 300);
+            else {
+                //recursos cargados
+                //idioma
+                idioma = getParameterByName('idioma');
+                if (idioma == null) idioma = 'es';
+
+                //obtengo datos de los parametros
+                grupoParam = getParameterByName('grupo');
+                if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                    //leo cookie
+                    var cookie = getCookie("nabu-" + grupoParam);
+                    if (cookie == "")
+                        //login normal
+                        document.location = 'default.html?grupo=' + grupoParam;
+                    else {
+                        var scalex = window.innerWidth / 1920;
+                        var scaley = window.innerHeight / 1080;
+
+                        //atras
+                        document.getElementById("atras").style.width = (100 * scalex) + 'px';
+                        document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
+                        //background
+                        document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+                        document.body.style.backgroundImage = "url('res/background.jpg')";
+
+
+                        //cargo datos iniciales
+                        var vals = cookie.split("|");
+                        usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                        idioma = vals[5]; //para el tradcutor
+
+                        if (!usuario) {
+                            //login normal
+                            document.location = 'default.html?grupo=' + grupoParam;
+                        }
+                        else {
+                            iniciar3D();
+                            actualizarBosque();
+                        }
+                    }
+                }
+                else
+                    //login normal
+                    document.location = 'default.html?grupo=' + grupoParam;
+            }
         }
 
         function loadImg(src) {
@@ -66,7 +138,44 @@
                 });
         }
 
-        function start() {
+        function loadFont(src) {
+            var loader = new THREE.FontLoader();
+            loader.load(src + '?' + performance.now(), function (font) {
+                pushCache(src, font);
+            });
+        }
+
+        function actualizarBosque() {
+            getBosque("getBosque");
+        }
+
+        function generarBosque() {
+            getBosque("clearBosque");
+        }
+
+        function getBosque(accion) {
+            getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
+                + "&grupo=" + usuario.grupo
+                + "&clave=" + usuario.clave,
+                 function (data) {
+                     //atrapo el error si es que hay
+                     document.getElementById("florWait").style.visibility = "hidden";
+                     if (data.substring(0, 6) == "Error=") {
+                         //ha habido un error
+                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                     }
+                     else {
+                         //tengo el bosque
+                         //document.getElementById("todo").innerHTML = data;
+                         bosque = JSON.parse(data);
+
+                         //dibujo
+                         dibujar3D();
+                     }
+                 });
+        }
+
+        function iniciar3D() {
             renderer = new THREE.WebGLRenderer({ alpha: true });
             renderer.setSize(window.innerWidth - 30, window.innerHeight - 40);
             document.body.appendChild(renderer.domElement);
@@ -78,16 +187,40 @@
             controls.update();
             paint();
 
+        }
+
+        function dibujar3D() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+
+            generando = false;
+
+            //limpio escena
+            while (scene.children.length > 0) {
+                scene.remove(scene.children[0]);
+            }
+
             //light
             var pointLight = new THREE.PointLight(0xFFFFFF);
             pointLight.position.x = 0;
             pointLight.position.y = 800;
             pointLight.position.z = 830;
-            pointLight.lookAt(0,0,0);
+            pointLight.lookAt(0, 0, 0);
             scene.add(pointLight);
 
             var AmbientLight = new THREE.AmbientLight(0x404040); // soft white light
             scene.add(AmbientLight);
+
+            //panelgrupo
+            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + 0 + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + 0 + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + 0 + "%</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
+            var panel = document.getElementById("panelGrupo");
+            panel.innerHTML = s;
+            panel.style.top = (170 * scale) + 'px';
+            panel.style.visibility = 'visible';
 
             //plano
             //var geometry = new THREE.PlaneGeometry(3000, 3000);
@@ -125,50 +258,65 @@
             //scene.add(line);
 
             //torus
-            var grupo = {
-                usuarios: 30, seguimientos: 20, hijos: [
-                    { usuarios: 30, seguimientos: 20, hijos: [] },
-                    { usuarios: 30, seguimientos: 20, hijos: [] },
-                    { usuarios: 30, seguimientos: 20, hijos: [] }
-                ]
-            };
-            grupo3D(0, 0, 0, 150, grupo, 0);
+            //var grupo = {
+            //    usuarios: 30, seguimientos: 20, hijos: [
+            //        { usuarios: 30, seguimientos: 20, hijos: [] },
+            //        { usuarios: 30, seguimientos: 20, hijos: [] },
+            //        { usuarios: 30, seguimientos: 20, hijos: [] }
+            //    ]
+            //};
+            grupo3D(0, 0, 0, 150, bosque, 0);
 
-
+            if (generando)
+                setTimeout(actualizarBosque, 1000);
         }
 
-        function grupo3D(x, y, z, radio, grupo, nivel) {
-            //usuarios
-            torus(x, y, z, radio, grupo.usuarios, "blue", "res/secretaria.png");
+        function grupo3D(x, y, z, radio, nodo, nivel) {
+            if (!nodo.descargado)
+                generando = true;
+            else {
+                //usuarios
+                torus(x, y, z, radio, nodo.usuarios, 0, "blue", "res/secretaria.png");
 
-            //seguimientos
-            torus(x, y, z, radio * 2, grupo.seguimientos, "red", "res/seguimiento.png");
+                //seguimientos
+                torus(x, y, z, radio * 2, nodo.seguimientos, 0, "red", "res/doc.png");
 
-            //hijos
-            torus(x, y, z, radio * 3, grupo.hijos.length, "green", "");
-            var Cini = new THREE.Vector3(x, y, z);
-            var Prot = new THREE.Vector3(0, 0, radio * 6);
-            for (var q = 0; q < grupo.hijos.length; q++) {
-                if (nivel == 0)
-                    Prot.y += 360 / grupo.hijos.length;
-                else
-                    Prot.y += 180 / grupo.hijos.length;
-                var Chijo = VAdd(Cini, VPolToCar(Prot));
-                grupo3D(Chijo.x, Chijo.y, Chijo.z, radio * 0.4, grupo.hijos[q], nivel + 1);
+                //hijos
+                torus(x, y, z, radio * 3, nodo.hijos, nivel, "green", "");
+                var Cini = new THREE.Vector3(x, y, z);
+                var Prot = new THREE.Vector3(0, 0, radio * 6);
+                for (var q = 0; q < nodo.hijos.length; q++) {
+                    if (nivel == 0)
+                        Prot.y += 360 / nodo.hijos.length;
+                    else
+                        Prot.y += 180 / nodo.hijos.length;
+                    var Chijo = VAdd(Cini, VPolToCar(Prot));
+                    grupo3D(Chijo.x, Chijo.y, Chijo.z, radio * 0.4, nodo.hijos[q], nivel + 1);
+                }
             }
         }
 
-        function torus(x, y, z, radio, gajos, color, src) {
-
+        function torus(x, y, z, radio, gajos, nivel, color, src) {
             //circle
-            var gajos = gajos;
             var lineMaterial = new THREE.LineDashedMaterial({ color: color, opacity: 1, linewidth: 1 });
             var geometry = new THREE.Geometry();
             var Pini = new THREE.Vector3(0, 0, radio)
             var Prot = new THREE.Vector3(0, 0, -radio)
             var Cimg;
-            for (var g = 0; g < gajos; g++) {
+            for (var g = 0; g < gajos.length; g++) {
                 Cimg = null;
+
+                //incremento gajos
+                if (nivel == 0) {
+                    Prot.y += 360 / gajos.length;
+                    Pini.y += 360 / gajos.length;
+                }
+                else {
+                    Prot.y += 180 / gajos.length;
+                    Pini.y += 180 / gajos.length;
+                }
+
+                //dibujo gajo
                 for (var q = 0; q < 360; q += 4) {
                     var Crot = VPolToCar(Prot);
                     var Cini = VPolToCar(Pini);
@@ -177,11 +325,11 @@
                     if (q == 180)
                         Cimg = VAdd(Cini, Crot); //guardo el centro para la imagen
                 }
-                Prot.y += 360 / gajos;
-                Pini.y += 360 / gajos;
-                //image
+
+                //image (si hay)
                 if (src && Cimg) {
                     img(src, x + Cimg.x, y + Cimg.y, z + Cimg.z);
+                    text(gajos[g].nombre, 20, x + Cimg.x, y + Cimg.y + 25, z + Cimg.z);
                 }
             }
             var torus = new THREE.Line(geometry, lineMaterial);
@@ -191,22 +339,29 @@
             scene.add(torus);
         }
 
-        function img(src, x, y, z) {
-            var oimg = getCache(src);
-            if (oimg)
-                img2(oimg, x, y, z);
-            else {
-                new THREE.ImageLoader()
-                    .setCrossOrigin('*')
-                    .load('res/secretaria.png?' + performance.now(), function (image) {
-                        img2(image, x, y, z);
-                    });
-            }
+        function text(s, size, x, y, z) {
+            var font = getCache('fonts/helvetiker_regular.typeface.json');
+            var shapes = font.generateShapes(s, size, 2);
+            var geometry = new THREE.ShapeGeometry(shapes);
+            var material = new THREE.MeshBasicMaterial({
+                color: "black",
+                transparent: true,
+                opacity: 0.8,
+                side: THREE.DoubleSide
+            });
+            geometry.computeBoundingBox();
+            var bb = geometry.boundingBox;
+            var text = new THREE.Mesh(geometry, material);
+            text.position.x = x - (bb.max.x - bb.min.x) / 2;
+            text.position.y = y;
+            text.position.z = z;
+            scene.add(text);
         }
 
-        function img2(image, x, y, z) {
+        function img(src, x, y, z) {
+            var image = getCache(src);
             var texture = new THREE.CanvasTexture(image);
-            var material = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, color: "transparent", map: texture });
+            var material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, color: "transparent", map: texture });
             var geometry = new THREE.BoxBufferGeometry(image.width, image.height, 1);
             var mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(x, y, z);
@@ -215,14 +370,14 @@
         }
 
         function getCache(id) {
-            for (i in imgs)
-                if (imgs[i].id == id)
-                    return imgs[i].image;
+            for (i in cache)
+                if (cache[i].id == id)
+                    return cache[i].res;
             return null;
         }
 
-        function pushCache(id, image) {
-            imgs.push({id: id, image: image});
+        function pushCache(id, res) {
+            cache.push({id: id, res: res});
         }
 
         function VAdd(v1, v2) {
@@ -264,12 +419,22 @@
             renderer.render(scene, camera);
             //controls.update();
         }
+
+        function doAtras() {
+            document.location = "default.html?grupo=" + grupoParam;
+        }
     </script>
 </head>
 <body onload="doLoad()">
-  <canvas id="glcanvas" width="100" height="100">
-   Tu navegador parece no soportar el elemento HTML5 <code>&lt;canvas&gt;</code>.
-  </canvas>
-    <div id="msg"></div>
+        <img id="florWait" src="res/florWait.gif" style="visibility: hidden;position:absolute;" />
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
+        <!--panel grupo--------------------------------------------------------------------------------------------------->
+        <div id="panelGrupo"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:10px; top:110px; width:110px; color: gray; border: 1px solid gray; margin: 0px;">
+        </div>
+        <canvas id="glcanvas" width="100" height="100">
+        Tu navegador parece no soportar el elemento HTML5 <code>&lt;canvas&gt;</code>.
+        </canvas>
+        <div id="msg"></div>
 </body>
 </html>

@@ -80,7 +80,7 @@ var dictionary = [
     { key: 'Acceso', idioma: 'es', txt: 'Acceso' },
     { key: 'Sin acceso', idioma: 'es', txt: 'Sin acceso' },
     { key: 'Modificar usuarios', idioma: 'es', txt: 'Modificar usuarios' },
-    { key: 'Datos del arbol', idioma: 'es', txt: 'Datos del &aacute;rbol' },
+    { key: 'Datos del arbol', idioma: 'es', txt: 'Datos del grupo' },
     { key: 'Nombre', idioma: 'es', txt: 'Nombre' },
     { key: 'Idioma', idioma: 'es', txt: 'Idioma' },
     { key: 'Organizacion', idioma: 'es', txt: 'Organizaci&oacute;n' },
@@ -184,6 +184,11 @@ var dictionary = [
     { key: 'nuevos modelos', idioma: 'es', txt: 'Se pueden crear nuevos modelos expecificos.<br>Contacte con <a href=\"sociocracia.net\" target=\"_blank\">Sociocracia.net</a> para analizar sus necesidades' },
     { key: 'Evaluamos', idioma: 'es', txt: 'Evaluamos' },
     { key: 'norecognition', idioma: 'es', txt: 'Este navegador no soporta reconocimiento de voz' },
+    { key: 'Ver 3D', idioma: 'es', txt: 'Ver 3D' },
+    { key: 'Clave actual', idioma: 'es', txt: 'Clave actual' },
+    { key: 'Nueva clave', idioma: 'es', txt: 'Nueva clave' },
+    { key: 'Repitela', idioma: 'es', txt: 'Repitela' },
+    { key: 'Cambiar', idioma: 'es', txt: 'Cambiar' },
 
     
 

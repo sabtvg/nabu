@@ -22,12 +22,14 @@
 var quesoPersonal;
 var quesoInicio = 60;
 var selCeldaID;
-var quesoScale = 1.2;
+var quesoScale = 2;
 var quesoy = -400;
 var quesox = 0;
 var quesoCeldah = 10;
 var minHeight = 60;
 var HTMLSelectedCelda;
+var scalex = window.innerWidth / 1920;
+var scaley = window.innerHeight / 1080;
 
 function doAprendemos() {
     //menu ppal
@@ -36,26 +38,20 @@ function doAprendemos() {
     else
         efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Linear.None, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
 
-    document.getElementById("panelGrupo").style.visibility = 'hidden';
+    document.getElementById("panelGrupo").style.display = 'none';
     document.getElementById("panelUsuario").style.visibility = 'hidden';
 
+    //titulo
+    document.getElementById("titulo").innerHTML = arbolPersonal.nombre + " - " + tr("Evaluamos");
+    document.getElementById("titulo").style.visibility = 'visible';
+
     //joystick
-    document.getElementById("joystickQueso").style.top = (window.innerHeight - 190 * scaley) + 'px';
     document.getElementById("joystickQueso").style.visibility = 'visible';
 
     //activo el aprendemos
     setTimeout(function () {
-        if (visual.level == 1) {
-            document.getElementById("quesoDiv").style.visibility = "visible";
-        }
-        else {
-            //menu ppal
-            efectoOpacity(document.getElementById("quesoDiv"), 0, 0, 1, TWEEN.Easing.Linear.None);
-        }
-        document.getElementById("quesoDiv").style.display = "inline";
+        document.getElementById("quesoDiv").style.display = "block";
         //menu
-        document.getElementById("menuEvaluacion").style.top = (window.innerHeight - 100).toFixed(0) + 'px';
-        document.getElementById("menuEvaluacion").style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
         document.getElementById("menuEvaluacion").style.visibility = historico ? "hidden" : "visible";
 
         estado = 'aprendemos';
@@ -118,7 +114,8 @@ function autoScale() {
             if (acumh > maxAcumh) maxAcumh = acumh;
         }
         //fijo escala
-        quesoScale = (window.innerHeight * scaley - quesoy) / (maxAcumh * 4);
+        quesoScale = (window.innerHeight * 0.5) / maxAcumh;
+        quesoy = -maxAcumh * quesoScale;
     }
 }
 
@@ -161,9 +158,6 @@ function dibujarQueso() {
 
     ret += "<svg id='svgAprendemos' width='" + window.innerWidth + "' height='" + window.innerHeight + "' xmlns='http://www.w3.org/2000/svg' version='1.1'>";
 
-    //titulo
-    ret += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 90 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>" + quesoPersonal.nombre + " - " + tr("Evaluamos") + "</text>";
-
     ret += "<g transform='translate(" + (window.innerWidth / 2 + quesox).toFixed(0) + "," + (window.innerHeight / 2 + quesoy).toFixed(0) + ")'>";
 
     //dinujo columnas 
@@ -190,12 +184,10 @@ function dibujarQueso() {
     var pan = "";
     var HTMLColorPromedio = quesoPersonal.colorPromedio == 0 ? "transparent" : HTMLColor(quesoPersonal.colorPromedio);
 
-    pan = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>" + tr("Grupo") + "</b></nobr></div>";
-    pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Evaluaciones") + ":" + totalEvaluaciones + "</nobr></div>";
+    pan = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Evaluaciones") + ":" + totalEvaluaciones + "</nobr></div>";
     pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Promedio") + ": <span style='border:1px solid gray;background-color:" + HTMLColorPromedio + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></nobr></div>";
     panel.innerHTML = pan; 
-    panel.style.top = (190 * scaley) + 'px';
-    panel.style.visibility = 'visible';
+    panel.style.display = 'inline';
 
     quesoDiv.innerHTML = ret;
 }
@@ -283,11 +275,7 @@ function doSelectCelda(celdaid) {
                  //activo editores de estilo
                  activarStyleEditor();
 
-                 document.getElementById("documento").style.visibility = 'visible';
-                 document.getElementById("documento").style.left = (10) + 'px';
-                 document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
-                 document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
-                 efectoTop(document.getElementById("documento"), 0, -window.innerHeight, 20, TWEEN.Easing.Cubic.Out);
+                 document.getElementById("documento").style.display = 'block';
              }
          });
 }
@@ -331,7 +319,7 @@ function getSVGPoints(index, iniDeg, finDeg, celda) {
 
 function seleccionarModeloEvaluacion() {
     //opciones de modelos de documentos
-    var listE = "<table style='width:200px'>";
+    var listE = "<table style='margin:auto;'>";
 
     //si no hay manifiesto solo permito crear modelo Manifiesto
     for (var i in modelosEvaluacion) {
@@ -339,18 +327,23 @@ function seleccionarModeloEvaluacion() {
         if (modelo.activo) {
                 listE += "<tr>";
                 listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
-                listE += "<td class='btn' style='text-align: center;margin:10px;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+                listE += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                 listE += "</tr>";
         }
     }
+    listE += "<tr>";
+    listE += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan='2'>";
+    listE += "<input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelosEvaluacion\").style.display = \"none\";'/>";
+    listE += "</td>"
+    listE += "</tr>";
     listE += "</table>";
 
-    document.getElementById("modelosEvaluacionContent").innerHTML = listE;
-    document.getElementById("modelosEvaluacion").style.visibility = "visible";
+    document.getElementById("modelosEvaluacion").innerHTML = listE;
+    document.getElementById("modelosEvaluacion").style.display = "block";
 }
 
 function seleccionarModeloEvaluacionID(modeloID) {
-    document.getElementById("modelosEvaluacion").style.visibility = "hidden";
+    document.getElementById("modelosEvaluacion").style.display = "none";
     doVerEvaluacion(modeloID);
 }
 
@@ -373,11 +366,7 @@ function doEvaluarTema(idTema) {
             //activo editores de estilo
             activarStyleEditor();
 
-            document.getElementById("documento").style.visibility = 'visible';
-            document.getElementById("documento").style.left = (10) + 'px';
-            document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
-            document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
-            efectoTop(document.getElementById("documento"), 0, -window.innerHeight, 20, TWEEN.Easing.Cubic.Out);
+            document.getElementById("documento").style.display = 'block';
         }
     );
 }
@@ -401,11 +390,7 @@ function doVerEvaluacion(modeloID) {
             //activo editores de estilo
             activarStyleEditor();
 
-            document.getElementById("documento").style.visibility = 'visible';
-            document.getElementById("documento").style.left = (10) + 'px';
-            document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
-            document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
-            efectoTop(document.getElementById("documento"), 0, -window.innerHeight, 20, TWEEN.Easing.Cubic.Out);
+            document.getElementById("documento").style.display = 'block';
         }
     );
 }
@@ -460,7 +445,7 @@ function doCrearEvaluacion(modeloID) {
     }, 1500); //doy tiempo al documento a salir de pantalla
 
     //cierro documento
-    efectoTop(document.getElementById("documento"), 0, 20, -window.innerHeight, TWEEN.Easing.Cubic.In);
+    document.getElementById("documento").style.display = "none";
     preguntarAlSalir = false;
 }
 

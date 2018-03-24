@@ -76,7 +76,7 @@ namespace nabu
                     }
                 }
             }
-            if (cant == 0)
+            if (cant == 0)  
                 return 0;
             else
                 return total / cant;

@@ -24,6 +24,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/common.js"></script>
@@ -40,12 +42,11 @@
         var organizacion;
 
         function doLoad() {
+            //background
+            setBackgroundImage();
+
             idioma = getParameterByName('idioma');
             if (idioma == null) idioma = 'es';
-
-            //background
-            document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-            document.body.style.backgroundImage = "url('res/background.jpg')";
 
             document.getElementById("tit2").innerHTML = tr("Crear grupo");
             document.getElementById("datGrupo").innerHTML = tr("Datos del grupo");
@@ -102,61 +103,56 @@
                         }
                     });
         }
+
+        function doAtras() {
+            document.location = "default.html";
+        }
+
     </script>
 </head>
-<body style="overflow:hidden" onload="doLoad();">
+<body onload="doLoad();">
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
 
-       <div id="login" class="center" >
-        <table>
-            <tr>
-                <td>
-                    <img src="res/logo.png" />
-                </td>
-                <td align=center>
-                    <div class="ventana" style="text-align: left;">
-                        <span class="titulo1">Nab&uacute;</span><br />
-                        <span id="tit2" class="titulo2">Crear grupo</span><br />
+    <div id="login" class="ventanacrear" style="display:block" >
+        <span class="titulo1">Nab&uacute;</span><br />
+        <span id="tit2" class="titulo2">Crear grupo</span><br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span id="datGrupo" class="titulo3">Datos del grupo</span><br />
-                            <input id="nombreArbol" type="text" class="txt" style="width:300px" maxlength="20" placeholder="" /><br />
-                            <select id="idioma" class="txt"  style="width:300px">
-                                <option id="es">Espa&ntilde;ol</option>
-                                <option id="ct">Catal&aacute;n</option>
-                                <option id="en">English</option>
-                            </select><br />
-                            <select id="organizacion" class="txt"  style="width:300px">
-                                <option id="Plataforma">Plataforma social</option>
-                            </select>                        
-                        </div>
-                        <br />
+        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;width:-webkit-fill-available">
+            <span id="datGrupo" class="titulo3">Datos del grupo</span><br />
+            <input id="nombreArbol" type="text" class="txt" style="width:295px" maxlength="20" placeholder="" /><br />
+            <select id="idioma" class="txt"  style="width:300px">
+                <option id="es">Espa&ntilde;ol</option>
+                <option id="ct">Catal&aacute;n</option>
+                <option id="en">English</option>
+            </select><br />
+            <select id="organizacion" class="txt"  style="width:300px">
+                <option id="Plataforma">Plataforma social</option>
+            </select>                        
+        </div>
+        <br />
 
-                        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                            <span id="jarDat" class="titulo3">Datos del coordinador</span><br />
-                            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  style="width:300px"/><br />
-                            <input id="email" type="text" class="txt" placeholder="Email"  style="width:300px"/><br />
-                            <input id="clave" type="password" class="txt" placeholder="Clave"  style="width:300px"/><br />
-                            <input id="clave2" type="password" class="txt" placeholder="Repetir clave"  style="width:300px"/>
-                        </div>
-                        <br />
+        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;width:-webkit-fill-available">
+            <span id="jarDat" class="titulo3">Datos del coordinador</span><br />
+            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  style="width:300px"/><br />
+            <input id="email" type="text" class="txt" placeholder="Email"  style="width:300px"/><br />
+            <input id="clave" type="password" class="txt" placeholder="Clave"  style="width:300px"/><br />
+            <input id="clave2" type="password" class="txt" placeholder="Repetir clave"  style="width:300px"/>
+        </div>
+        <br />
 
-                        <div id="crearMsg" style="width: 300px;text-align:center"></div>
-                        <br />
-                        <table style="width:100%">
-                            <tr>
-                                <td style="text-align:center"><input type="button" class="btn" value="Crear" onclick="doCrearArbol();" /> </td>
-                            </tr>
-                        </table>                           
+        <div id="crearMsg" style="width: 100%;text-align:center"></div>
+        <br />
+        <div style="width:100%;text-align:center">
+            <input type="button" class="btn" value="Crear" onclick="doCrearArbol();" /> 
+            <input type="button" class="btn" value="Cancelar" onclick="doAtras();"  /> 
+        </div>
 
-                        <div id="response"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+
+        <div id="response"></div>
     </div>
 
-    <!--atras--------------------------------------------------------------------------------------------------->
-    <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+
 
     </body>
 </html>

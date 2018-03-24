@@ -508,7 +508,6 @@ namespace nabu
                     if (p.born < inicio) inicio = p.born;
                 }
             }
-           
             //firma consenso
             string ret = "";
             ret += "Documento escrito de forma cooperativa.<br>";
@@ -542,8 +541,16 @@ namespace nabu
             if (this.grupo.getFacilitador() != null) ret += "Facilitador: " + grupo.getFacilitador().nombre + "<br>";
 
             //armo HTML
-            m.firmaConsenso = ret;
-            string html = m.toHTML(props, this.grupo, "", 1024, Modelo.eModo.consenso);
+            string html = "";
+            try
+            {
+                m.firmaConsenso = ret;
+                html = m.toHTML(props, this.grupo, "", 1024, Modelo.eModo.consenso);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("generarDocumentoHTML():toHTML():" + m.nombre + ":" + ex.Message + " " + ex.StackTrace);
+            }
            
             //escribo
             System.IO.File.WriteAllText(grupo.path + "\\" + docPath + "\\" + fname + ".html", html, System.Text.Encoding.UTF8);
@@ -588,7 +595,6 @@ namespace nabu
                     u.alertas.Add(new Alerta(Tools.tr("Tus floras han caido", grupo.idioma)));
                     //app.addLog("verifyFloresCaducadas", "", grupo.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
                 }
-
                 comprobarConsenso(email);
 
                 ArbolPersonal ap = new ArbolPersonal();

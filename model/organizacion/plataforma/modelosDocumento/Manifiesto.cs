@@ -106,18 +106,19 @@ namespace nabu.plataforma.modelos
             etiqueta = "Manifiesto";
 
             //titulo
-            ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
-            ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
+            ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div><br><br>";
+
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "<br><span style='color:gray;font-size:12px;'>" + Tools.tr("(Aparece en el pie del arbol)", g.idioma);
             ret += "</nobr></div>";
 
             //etiqueta
-            ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Manifiesto", g.idioma);
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Manifiesto", g.idioma);
             etiqueta = Tools.tr("Manifiesto", g.idioma);
             if (prop == null)
                 ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
-            ret += "</nobr></div>";
+            ret += "</nobr></div><br>";
             return ret;
         }
 
@@ -150,7 +151,7 @@ namespace nabu.plataforma.modelos
                 }
                 if (anterior != null)
                 {
-                    ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;'><tr>";
+                    ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;width:200px'><tr>";
                     ret += "<td colspan=2 style='text-align:center;'><b>" + Tools.tr("Este manifiesto reemplaza al anterior", g.idioma) + "</b></td>";
                     ret += "<tr><td>";
                     ret += "<img src='" + anterior.icono + "' style='width:32px;height:40px'></td>";
@@ -168,7 +169,7 @@ namespace nabu.plataforma.modelos
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("Vision", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.vision", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.vision", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.vision", prop, width, 290, tieneFlores, g.idioma);
 
@@ -181,7 +182,7 @@ namespace nabu.plataforma.modelos
                 //Mision
                 ret += "<div class='tema'>" + Tools.tr("Mision", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.mision", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.mision", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.mision", prop, width, 290, tieneFlores, g.idioma);
 
@@ -195,7 +196,7 @@ namespace nabu.plataforma.modelos
                 //Objetivo
                 ret += "<div class='tema'>" + Tools.tr("Objetivos", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.objetivos", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.objetivos", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.objetivo", prop, width, 290, tieneFlores, g.idioma);
 
@@ -207,7 +208,7 @@ namespace nabu.plataforma.modelos
             {
                 ret += "<div class='tema'>" + Tools.tr("Servicios", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("manifiesto.servicios", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.servicios", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.servicios", prop, width, 550, tieneFlores, g.idioma);
 
@@ -229,7 +230,7 @@ namespace nabu.plataforma.modelos
             //mensajes de error
             if (errores.ContainsKey(nivel))
             {
-                ret += "<div class='error' style='width:" + (width-4) + "px'>" + errores[nivel] + "</div>";
+                ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
             return ret;
         }

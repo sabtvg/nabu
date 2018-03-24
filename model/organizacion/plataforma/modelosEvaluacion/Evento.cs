@@ -173,9 +173,10 @@ namespace nabu.plataforma.modelosEvaluacion
 
             //documento de Accon a evaluar
             string valores = getListaResultados();
-            ret += "<div>" + Tools.tr("Documento de resultado a evaluar", g.idioma) + "</div>";
+            ret += "<div class='titulo3'>" + Tools.tr("Documento de resultado a evaluar", g.idioma) + "</div>";
             if (getText("s.basadoEnTemaExistente", prop) == "")
                 ret += HTMLLista("f.evaluadoID", valores, prop, 450, g.idioma, true);
+            ret += "<br>";
             ret += "<br>";
 
             //defino valores internos
@@ -185,7 +186,7 @@ namespace nabu.plataforma.modelosEvaluacion
             if (evaluadoID != "" && getLD(Convert.ToInt32(evaluadoID)) != null)
             {
                 LogDocumento ld = getLD(Convert.ToInt32(evaluadoID));
-                ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;'>";
+                ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;width:200px;'>";
                 ret += "<tr><td>";
                 ret += "<img src='" + ld.icono + "' style='width:32px;height:40px'></td>";
                 ret += "<td style='text-align:left;'>";
@@ -193,96 +194,30 @@ namespace nabu.plataforma.modelosEvaluacion
                 ret += ld.fecha.ToString("dd/MM/yy") + "<br>";
                 ret += "<a href='" + ld.URL + "' target='_blank'>" + ld.titulo + "</a></td>";
                 ret += "</tr></table>";
+                ret += "<br><br>";
             }
 
-
             //preguntas
-            ret += "<table style='width:" + width + "px'>";
-            //pregunta 1
-            ret += "<tr>";
-            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("evento.evaluacion.p1", g.idioma) + "</b>";
-            if (Tools.tr("evento.evaluacion.tip1", g.idioma) != "")
-                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("evento.evaluacion.tip1", g.idioma) + "</div>";
-            ret += "</td>";
-            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p1", prop, "No", "Si") + "</td>";
-            ret += "</tr>";
-            //texto
-            ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t1", prop, width, 70, g.idioma);
-            ret += "</td></tr>";
+            for (var q = 1; q <= 6; q++)
+            {
+                ret += "<div class='tema' style='clear:left;float:left;vertical-align:top'><b>" + Tools.tr("evento.evaluacion.p" + q, g.idioma) + "</b></div>";
+                ret += "<div style='float:right;vertical-align:middle;text-align:right;margin:0.1vw;margin-right:1vw;'>";
+                if (q == 6)
+                    ret += HTMLBarra("f.p" + q, prop, "Malo", "Bueno");
+                else
+                    ret += HTMLBarra("f.p" + q, prop, "No", "Si");
+                ret += "</div>";
 
-            //pregunta 2
-            ret += "<tr>";
-            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("evento.evaluacion.p2", g.idioma) + "</b>";
-            if (Tools.tr("evento.evaluacion.tip2", g.idioma) != "")
-                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("evento.evaluacion.tip2", g.idioma) + "</div>";
-            ret += "</td>";
-            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p2", prop, "No", "Si") + "</td>";
-            ret += "</tr>";
-            //texto
-            ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t2", prop, width, 70, g.idioma);
-            ret += "</td></tr>";
-
-            //pregunta 3
-            ret += "<tr>";
-            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("evento.evaluacion.p3", g.idioma) + "</b>";
-            if (Tools.tr("evento.evaluacion.tip3", g.idioma) != "")
-                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("evento.evaluacion.tip3", g.idioma) + "</div>";
-            ret += "</td>";
-            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p3", prop, "No", "Si") + "</td>";
-            ret += "</tr>";
-            //texto
-            ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t3", prop, width, 70, g.idioma);
-            ret += "</td></tr>";
-
-            //pregunta 4
-            ret += "<tr>";
-            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("evento.evaluacion.p4", g.idioma) + "</b>";
-            if (Tools.tr("evento.evaluacion.tip4", g.idioma) != "")
-                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("evento.evaluacion.tip4", g.idioma) + "</div>";
-            ret += "</td>";
-            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p4", prop, "No", "Si") + "</td>";
-            ret += "</tr>";
-            //texto
-            ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t4", prop, width, 70, g.idioma);
-            ret += "</td></tr>";
-
-            //pregunta 5
-            ret += "<tr>";
-            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("evento.evaluacion.p5", g.idioma) + "</b>";
-            if (Tools.tr("evento.evaluacion.tip5", g.idioma) != "")
-                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("evento.evaluacion.tip5", g.idioma) + "</div>";
-            ret += "</td>";
-            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p5", prop, "No", "Si") + "</td>";
-            ret += "</tr>";
-            //texto
-            ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t5", prop, width, 70, g.idioma);
-            ret += "</td></tr>";
-
-            //pregunta 6
-            ret += "<tr>";
-            ret += "<td class='tema' style='vertical-align:top'><b>" + Tools.tr("evento.evaluacion.p6", g.idioma) + "</b>";
-            if (Tools.tr("evento.evaluacion.tip6", g.idioma) != "")
-                ret += "<div class='smalltip' style='width:90%'>" + Tools.tr("evento.evaluacion.tip6", g.idioma) + "</div>";
-            ret += "</td>";
-            ret += "<td style='width:200px;vertical-align:middle;text-align:right'>" + HTMLBarra("f.p6", prop, "Malo", "Bueno") + "</td>";
-            ret += "</tr>";
-            //texto
-            ret += "<tr><td colspan='2'>";
-            ret += HTMLArea("s.t6", prop, width, 70, g.idioma);
-            ret += "</td></tr>";
-
-            ret += "</table>";
-
+                if (modo != eModo.prevista && Tools.tr("evento.evaluacion.tip" + q, g.idioma) != "")
+                    ret += "<div class='smalltip' style='float:left;width:-webkit-fill-available;margin: auto'>" + Tools.tr("evento.evaluacion.tip" + q, g.idioma) + "</div>";
+                //texto
+                ret += "<div style='float:left;width:-webkit-fill-available'>" + HTMLArea("s.t" + q, prop, 0, 120, g.idioma) + "</div>";
+            }
 
             //mensajes de error
             if (errores.ContainsKey(1))
             {
-                ret += "<div class='error' style='width:" + (width - 4) + "px'>" + errores[1] + "</div>";
+                ret += "<div class='error'>" + errores[1] + "</div>";
             }
             return ret;
         }

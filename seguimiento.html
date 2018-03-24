@@ -23,6 +23,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
@@ -53,6 +55,7 @@
         var luz = "verde.png";
         var firefoxWhich = 0;
         var historico = historico || false;
+        var zoomy = window.innerWidth / 1920;
 
 
         $(document).mouseup(function (event) {
@@ -127,6 +130,9 @@
         }
 
         function doLoad() {
+            //background
+            setBackgroundImage();
+
             //idioma
             idioma = getParameterByName('idioma');
             if (idioma == null) idioma = 'es';
@@ -168,7 +174,9 @@
                                 }
                                 else {
                                     //tengo el bosque
-                                    //document.getElementById("todo").innerHTML = data;
+                                    //titulo
+                                    document.getElementById("titulo").innerHTML = usuario.grupo + " - " + tr("Seguimiento");
+
                                     operativo = JSON.parse(data);
                                     dibujarTodo();
                                 }
@@ -183,46 +191,17 @@
         function calcularResize() {
             var scalex = window.innerWidth / 1920;
             var scaley = window.innerHeight / 1080;
-            document.getElementById("todo").style.top = '0px';
-            document.getElementById("todo").style.left = '0px';
-            document.getElementById("todo").style.width = window.innerWidth + 'px';
-            document.getElementById("todo").style.height = window.innerHeight + 'px';
-            document.getElementById("joystick").style.top = (window.innerHeight - 190 * scaley) + 'px';
-
             //titulo
             document.getElementById("titulo1").innerHTML = tr("Sociocracia");
-            document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
-            document.getElementById("titulo0").style.fontSize = (50 * scaley).toFixed(0) + 'px';
-            document.getElementById("titulo1").style.fontSize = (30 * scaley).toFixed(0) + 'px';
-            //document.getElementById("titulo2").style.fontSize = (25 * scaley).toFixed(0) + 'px';
-            document.getElementById("titulo").style.visibility = "visible";
-
-            //atras
-            document.getElementById("atras").style.width = (100 * scalex) + 'px';
-            document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-            //background
-            document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-            document.body.style.backgroundImage = "url('res/background.jpg')";
-
+            document.getElementById("tituloNabu").style.visibility = "visible";
         }
 
         function dibujarTodo() {
-            var scalex = window.innerWidth / 1920;
-            var scaley = window.innerHeight / 1080;
+            row = window.innerWidth < 800 ? 70 : 35; //vista movil doble alto de barra
             var s = "";
-            s += "<defs>";
-            s += "<marker id='markerCircle' markerWidth='8' markerHeight='8' refX='5' refY='5'>";
-            s += "<circle cx='5' cy='5' r='3' style='stroke: none; fill:#000000;opacity:0.4;'/>";
-            s += "</marker>";
-            s += "<marker id='markerArrow' markerWidth='20' markerHeight='20' refX='2' refY='6' orient='auto'>";
-            s += "<path d='M2,2 L2,11 L10,6 L2,2' style='fill: #000000;opacity:0.4' />";
-            s += "</marker>";
-            s += "</defs>";
 
-            s += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 100 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>"
-                + usuario.grupo + " - " + tr("Seguimiento") + "</text>";
             s += "<g id='grupo'>";
-            s += dibujarSeguimiento(operativo, 120 + offsetY, zoom);
+            s += dibujarSeguimiento(operativo, 800 + offsetY, zoom);
             s += "</g>"
 
             document.getElementById("todo").innerHTML = s;
@@ -241,26 +220,24 @@
                 var index = operativo.seguimientos.length - i - 1;
                 var ac = operativo.seguimientos[index];
 
-                //var acX = x + i * zcol + 10;
                 var acX = x + zcol / 2;
-                var acY = y + i * zrow + 10;
+                var acY = y - row - i * row - 30;
                 s += caja(ac, acY, "openAC(" + index + ");");
             }
 
             //recta
-            y = y + window.innerHeight * 0.5;
             var x1 = viewLeft;
             var x2 = window.innerWidth - viewRight;
-            s += "<line x1='" + x1 + "' y1='" + y + "' x2='" + x2 + "' y2='" + y + "' style='stroke:gray;stroke-width:2' />";
+            s += "<line x1='" + x1 + "' y1='" + (y * zoomy) + "' x2='" + x2 + "' y2='" + (y * zoomy) + "' style='stroke:gray;stroke-width:" + (2 * zoom) + "' />";
 
             //inicio (derecha)
             var sdt = formatDate(inicio.addDays(-offsetDays));
-            s += "<text x='" + x1 + "' y='" + (y - 15) + "' fill='blue' style='font-size:12px' text-anchor='start'>" + sdt + "</text>";
+            s += "<text x='" + x1 + "' y='" + (y * zoomy - 15) + "' fill='blue' class='titulo4' text-anchor='start'>" + sdt + "</text>";
 
             //fin (izquierda)
             var final = inicio.addDays(-offsetDays).addDays(viewDays);
             sdt = formatDate(final);
-            s += "<text x='" + x2 + "' y='" + (y - 15) + "' fill='blue' style='font-size:12px' text-anchor='end'>" + sdt + "</text>";
+            s += "<text x='" + x2 + "' y='" + (y * zoomy - 15) + "' fill='blue' class='titulo4' text-anchor='end'>" + sdt + "</text>";
 
             //marcas
             var d = new Date();
@@ -269,27 +246,27 @@
                 var fecha = inicio.addDays(i - offsetDays);
                 if (fecha.getDate() == d.getDate() && fecha.getMonth() == d.getMonth() && fecha.getFullYear() == d.getFullYear()) {
                     //hoy
-                        s += "<line x1='" + x + "' y1='" + (y - 888) + "' x2='" + x + "' y2='" + (y + 58) + "' style='stroke:red;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + (y * zoomy - 888) + "' x2='" + x + "' y2='" + (y * zoomy + 58) + "' style='stroke:red;stroke-width:1' />";
                 }
                 else if (fecha.getDate() == 1) {
                     //1 del mes
-                    s += "<line x1='" + x + "' y1='" + (y - 10) + "' x2='" + x + "' y2='" + (y + 10) + "' style='stroke:blue;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + (y * zoomy - 10) + "' x2='" + x + "' y2='" + (y * zoomy + 10) + "' style='stroke:blue;stroke-width:1' />";
                     if (i > 4 && i < viewDays - 4) {
                         sdt = formatDate(fecha);
-                        s += "<text x='" + x + "' y='" + (y + 15) + "' fill='blue' style='font-size:12px' text-anchor='middle'>" + sdt + "</text>";
+                        s += "<text x='" + x + "' y='" + (y * zoomy + 15) + "' fill='blue' class='titulo4' text-anchor='middle'>" + sdt + "</text>";
                     }
                 }
                 else if (fecha.getDay() == 1) {
                     //lunes
-                    s += "<line x1='" + x + "' y1='" + (y - 8) + "' x2='" + x + "' y2='" + (y + 8) + "' style='stroke:green;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + (y * zoomy - 8) + "' x2='" + x + "' y2='" + (y * zoomy + 8) + "' style='stroke:green;stroke-width:1' />";
                     var labelX = i / viewDays * viewWidth;
                     if (labelX > viewLeft + 30 && labelX < viewLeft + viewWidth - viewRight) {
-                        s += "<text x='" + x + "' y='" + (y + 30) + "' fill='green' style='font-size:12px' text-anchor='middle'>" + tr("Lunes") + "</text>";
+                        s += "<text x='" + x + "' y='" + (y * zoomy + 30) + "' fill='green' class='titulo4' text-anchor='middle'>" + tr("Lunes") + "</text>";
                     }
                 }
                 else
                     //dias
-                    s += "<line x1='" + x + "' y1='" + (y - 5) + "' x2='" + x + "' y2='" + (y + 5) + "' style='stroke:gray;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + (y * zoomy - 5) + "' x2='" + x + "' y2='" + (y * zoomy + 5) + "' style='stroke:gray;stroke-width:1' />";
             }
 
             return s;
@@ -309,9 +286,9 @@
             if (nom.length * 10 > boxWidth)
                 nom = nom.substring(0, (boxWidth / 10).toFixed(0)) + "...";
 
-            var s = "<rect x='" + x.toFixed(0) + "' y='" + (y - boxHeight / 2).toFixed(0) + "' rx='5' ry='5' ";
+            var s = "<rect x='" + x.toFixed(0) + "' y='" + (y * zoom - boxHeight / 2).toFixed(0) + "' rx='" + (5 * zoom) + "' ry='" + (5 * zoom) + "' ";
             s += "width='" + boxWidth.toFixed(0) + "' height='" + boxHeight.toFixed(0) + "' ";
-            s += "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:2;opacity:0.4' ";
+            s += "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:" + (2 * zoom) + ";opacity:0.4' ";
             s += "onclick=\"" + onclick + "\"/></rect>";
 
             //avance
@@ -323,12 +300,12 @@
             else
                 avanceColor = "yellow";
 
-            s += "<rect x='" + (x + padding).toFixed(0) + "' y='" + (y - boxHeight / 2 + padding).toFixed(0) + "' rx='4' ry='4' ";
+            s += "<rect x='" + (x + padding).toFixed(0) + "' y='" + (y * zoom - boxHeight / 2 + padding).toFixed(0) + "' rx='" + (4 * zoom) + "' ry='" + (4 * zoom) + "' ";
             s += "width='" + (boxWidth * ac.estado.avance/100 - padding * 2).toFixed(0) + "' height='" + (boxHeight - padding * 2).toFixed(0) + "' ";
             s += "style='cursor:pointer;fill:" + avanceColor + ";stroke:black;stroke-width:1;opacity:0.4' ";
             s += "onclick=\"" + onclick + "\"/></rect>";
 
-            s += "<text x='" + (x + 5).toFixed(0) + "' y='" + (y + 5).toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (15 * zoom).toFixed(0) + "px' text-anchor='left' ";
+            s += "<text x='" + (x + 5).toFixed(0) + "' y='" + (y * zoom + 5 * zoom).toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (15 * zoom).toFixed(0) + "px' text-anchor='left' ";
             s += "onclick=\"" + onclick + "\">";
             s += nom + ' - ' + ac.estado.estado;
             s += "</text>";
@@ -354,10 +331,6 @@
             if (operativo.admin) adminEmail = operativo.admin.email;
 
             editando = true;
-            document.getElementById("AC").style.top = ((window.innerHeight - 600) / 2).toFixed(0) + 'px';
-            document.getElementById("AC").style.left = ((window.innerWidth - 800) / 2).toFixed(0) + 'px';
-            document.getElementById("AC").style.width = '800px';
-            document.getElementById("AC").style.height = '600px';
 
             var s = "";
             var AC = operativo.seguimientos[index];
@@ -422,7 +395,7 @@
                 s += "<div id='msg'></div>";
             }
             document.getElementById("AC").innerHTML = s;
-            document.getElementById("AC").style.visibility = "visible";
+            document.getElementById("AC").style.display = "block";
 
         }
           
@@ -514,7 +487,7 @@
         }
 
         function doCerrarDocumento() {
-            document.getElementById("AC").style.visibility = "hidden";
+            document.getElementById("AC").style.display = "none";
             editando = false;
         }
 
@@ -529,40 +502,49 @@
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
-        <svg id="todo"  style="position: absolute;">
+        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;">
         </svg>
         <!--titulo--------------------------------------------------------------------------------------------------->
-        <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
+        <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
             <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
                 <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
             </a>
-            <div id="titulo1" class="titulo1"><nobr>Sociocracia</nobr></div>
+        <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br />Digital</div>
             <div id="msgDiv" class="msg"></div>
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
+        <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
+
+        <!--titulo--------------------------------------------------------------------------------------------------->
+        <div id="titulo" class="tituloPagina"></div>       
     
         <!--joystick--------------------------------------------------------------------------------------------------->
-        <div id="joystick" style="padding: 5px; position: absolute; left:10px; top:0px;">
+        <div id="joystick" style="position:fixed;bottom:0vh;padding: 5px; left:0vw;">
             <nobr>
-                <img src="res/jzm.png" style='cursor:pointer;' onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/ju.png" style='cursor:pointer;' onclick="offsetY -= 30; transform();" class="img" />
+                <img src="res/jzm.png" onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();" class="img" />
+                <img src="res/ju.png" onclick="offsetY -= 30; transform();" class="img" />
             </nobr>
             <br />
             <nobr>
-                <img src="res/jl.png" style='cursor:pointer;' onclick="offsetDays -= 1; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/j00.png" style='cursor:pointer;' onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/jr.png" style='cursor:pointer;' onclick="offsetDays += 1; dibujarTodo(); saveSettings();" class="img" />
+                <img src="res/jl.png" onclick="offsetDays -= 1; dibujarTodo(); saveSettings();" class="img" />
+                <img src="res/j00.png" onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" class="img" />
+                <img src="res/jr.png" onclick="offsetDays += 1; dibujarTodo(); saveSettings();" class="img" />
             </nobr>
             <br />
             <nobr>
-                <img src="res/jzl.png" style='cursor:pointer;' onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/jd.png" style='cursor:pointer;' onclick="offsetY += 30; transform();" class="img" />
+                <img src="res/jzl.png" onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" class="img" />
+                <img src="res/jd.png" onclick="offsetY += 30; transform();" class="img" />
             </nobr> 
         </div>
 
         <!--GT--------------------------------------------------------------------------------------------------->
-        <div id="AC" class="documento" style="fill:#4169E1;stroke:black;stroke-width:5;visibility:hidden;position:absolute;"></div>
+        <div id="AC" class="popup"></div>
+
+        <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
+        </div>
     </body>
 </html>

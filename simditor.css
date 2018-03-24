@@ -9,14 +9,15 @@
   font-weight: normal;
   font-style: normal;
 }
+
 .simditor-icon {
-  display: inline-block;
-  font: normal normal normal 14px/1 'Simditor';
-  font-size: inherit;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transform: translate(0, 0);
+    display: inline-block;
+    font: normal normal normal 14px/1 'Simditor';
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translate(0, 0);
 }
 
 .simditor-icon-code:before {
@@ -281,16 +282,30 @@
 }
 .simditor .simditor-toolbar > ul > li > .toolbar-item {
   display: inline-block;
-  width: 46px;
-  height: 40px;
   outline: none;
   color: #333333;
   font-size: 15px;
-  line-height: 40px;
   vertical-align: middle;
   text-align: center;
   text-decoration: none;
 }
+
+@media only screen and (max-width: 2000px) {
+    .toolbar-item {
+      line-height: 40px;
+      width: 46px;
+      height: 40px;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .toolbar-item {
+      line-height: 20px;
+      width: 23px;
+      height: 20px;
+    }
+}
+
 .simditor .simditor-toolbar > ul > li > .toolbar-item span {
   opacity: 0.6;
 }

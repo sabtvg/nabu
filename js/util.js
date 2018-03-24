@@ -125,7 +125,7 @@ function getVisualizacion(config) {
     if ((visual.browser == "Chrome" && visual.version >= "40") ||
         (visual.browser == "InternetExplorer" && visual.version >= "10") ||
         (visual.browser == "Firefox" && visual.version >= "34") ||
-        (visual.browser == "Safari" && visual.version >= "6")) {
+        (visual.browser == "Safari" && (visual.version >= "6" || visual.version >= "0.0"))) {
         visual.level = 10; //completo
         //alert("v10");
     }
@@ -231,8 +231,7 @@ function actualizarDatosConsenso() {
     var ret = "";
     var ap = arbolPersonal;
 
-    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>" + tr("Decision") + "</b></nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "<br>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
+    ret = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "<br>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Si") + "&ge;" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("No") + "&le;" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
     panel.innerHTML = ret;
@@ -244,15 +243,13 @@ function actualizarDatosGrupo() {
     var ap = arbolPersonal;
     var born = new Date(ap.born.match(/\d+/)[0] * 1);
     var dias = Math.abs(new Date() - born) / (24 * 60 * 60 * 1000);
-    ret = "<div class='titulo2' style='margin: 0px;padding:0px;'><nobr><b>" + tr("Grupo") + "</b></nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Dias") + ":" + dias.toFixed(0) + "</nobr></div>";
+    ret = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Dias") + ":" + dias.toFixed(0) + "</nobr></div>";
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "</nobr></div>";
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
     ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Decisiones") + ":" + ap.documentos + "</nobr></div>";
     //ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Comunes:0</nobr></div>";
     panel.innerHTML = ret;
-    panel.style.top = (170 * scaley) + 'px';
-    panel.style.visibility = 'visible';
+    panel.style.display = 'inline';
 }
 
 function formatDate(d) {
@@ -331,4 +328,12 @@ function activarStyleEditor() {
             textarea: areas[j], defaultImage: '', pasteImage: false, toolbar:
             ['bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', 'ol', 'ul', 'link', 'indent', 'outdent', 'alignment']
         });
+}
+
+function setBackgroundImage() {
+    var screenFactor = 1920 / 974;
+    if (window.innerWidth / window.innerHeight > screenFactor)
+        document.body.style.backgroundSize = window.innerWidth + "px " + (window.innerWidth / screenFactor).toFixed(0) + "px";
+    else
+        document.body.style.backgroundSize = (window.innerHeight * screenFactor).toFixed(0) + "px " + window.innerHeight + "px";
 }

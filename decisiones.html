@@ -24,6 +24,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
@@ -43,7 +45,7 @@
         var inicio;
         var final;
         var viewWidth;
-        var viewLeft = 180;
+        var viewLeft = window.innerWidth <= 800 ? 110 : 180;
         var viewRight = 40;
         var viewTop = 200;
         var grupoParam;
@@ -51,6 +53,7 @@
         var lastMouse = null;
         var firefoxWhich = 0;
         var historico = historico || false;
+        var zoom = window.innerWidth / 1920;
 
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
@@ -103,10 +106,8 @@
         });
 
         function doLoad() {
-            //wait
-            document.getElementById("florWait").style.top = (window.innerHeight / 2 - 100).toFixed(0) + 'px';
-            document.getElementById("florWait").style.left = (window.innerWidth / 2 - 98).toFixed(0) + 'px';
-            document.getElementById("florWait").style.visibility = "visible";
+            //background
+            setBackgroundImage();
 
             //idioma
             idioma = getParameterByName('idioma');
@@ -123,18 +124,6 @@
                 else {
                     var scalex = window.innerWidth / 1920;
                     var scaley = window.innerHeight / 1080;
-                    document.getElementById("todo").style.top = '0px';
-                    document.getElementById("todo").style.left = '0px';
-                    document.getElementById("todo").style.width = window.innerWidth + 'px';
-                    document.getElementById("todo").style.height = window.innerHeight + 'px';
-                    document.getElementById("joystick").style.top = (window.innerHeight - 150 * scaley) + 'px';
-
-                    //atras
-                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
-                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-                    //background
-                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-                    document.body.style.backgroundImage = "url('res/background.jpg')";
 
                     //fondo segun timeline
                     if (historico)
@@ -174,9 +163,11 @@
                                  }
                                  else {
                                      //tengo el bosque
-                                     //document.getElementById("todo").innerHTML = data;
+                                     //titulo
+                                     document.getElementById("titulo").innerHTML = usuario.grupo + " - " + tr("Decisiones");
+
+                                     //tengo el bosque
                                      arbolPersonal = JSON.parse(data);
-                                     document.getElementById("florWait").style.visibility = "hidden";
 
                                      monthNames = [
                                           tr("ene"), tr("feb"), tr("mar"),
@@ -198,21 +189,6 @@
         function calcularResize() {
             scalex = window.innerWidth / 1920;
             scaley = window.innerHeight / 955; //1080-bordes de pantalla
-
-            document.getElementById("jl").style.width = 37 * scalex + 'px';
-            document.getElementById("jl").style.height = 37 * scalex + 'px';
-            document.getElementById("j00").style.width = 37 * scalex + 'px';
-            document.getElementById("j00").style.height = 37 * scalex + 'px';
-            document.getElementById("jr").style.width = 37 * scalex + 'px';
-            document.getElementById("jr").style.height = 37 * scalex + 'px';
-            document.getElementById("jzm").style.width = 37 * scalex + 'px';
-            document.getElementById("jzm").style.height = 37 * scalex + 'px';
-            document.getElementById("jzl").style.width = 37 * scalex + 'px';
-            document.getElementById("jzl").style.height = 37 * scalex + 'px';
-            document.getElementById("jd").style.width = 37 * scalex + 'px';
-            document.getElementById("jd").style.height = 37 * scalex + 'px';
-            document.getElementById("ju").style.width = 37 * scalex + 'px';
-            document.getElementById("ju").style.height = 37 * scalex + 'px';
         }
 
         function saveSettings() {
@@ -228,9 +204,6 @@
 
         function dibujarTodo() {
             var s = "";
-            s += "<text x='" + (40 + 90 * scale) + "' y='" + (20 + 50 * scale) + "' fill='black' style='font-size:" + (10 + 30 * scale) + "px'>"
-                + usuario.grupo + " - " + tr("Decisiones") + "</text>";
-
             s += dibujarFrutos(arbolPersonal.logDecisiones);
             document.getElementById("todo").innerHTML = s;
         }
@@ -251,8 +224,8 @@
 
             //modelos
             for (var h in modelos) {
-                var y = viewTop + h * stepY + 25;
-                s += "<text x='50' y='" + y + "' fill='black' style='font-size:18px'>" + modelos[h] + "</text>";
+                var y = viewTop * zoom + h * stepY * zoom + 25 * zoom;
+                s += "<text x='5' y='" + y + "' fill='black' class='titulo2'>" + modelos[h] + "</text>";
             }
 
             //marcas
@@ -262,22 +235,22 @@
                 var fecha = final.addDays(-i - offsetDays);
                 if (fecha.getDate() == 1) {
                     //1 del mes
-                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:CornflowerBlue;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:CornflowerBlue;stroke-width:1' />";
                     if (i > 4 && i < viewDays - 4) {
                         sdt = formatDate(fecha);
-                        s += "<text x='" + x + "' y='" + (y + 15) + "' fill='CornflowerBlue' style='font-size:12px' text-anchor='middle'>" + sdt + "</text>";
+                        s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo4' text-anchor='middle'>" + sdt + "</text>";
                     }
                 }
                 else if (fecha.getDay() == 1) {
                     //lunes
-                    s += "<line x1='" + x + "' y1='" + viewTop + "' x2='" + x + "' y2='" + (y + 6) + "' style='stroke:lightgray;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:lightgray;stroke-width:1' />";
                     var labelX = i / viewDays * viewWidth;
                     if (labelX > viewLeft + 30 && labelX < viewLeft + viewWidth - viewRight) {
-                        s += "<text x='" + x + "' y='" + (y + 30) + "' fill='green' style='font-size:12px' text-anchor='middle'>" + tr("Lunes") + "</text>";
+                        s += "<text x='" + x + "' y='" + (y * zoom + 30) + "' fill='green' class='titulo4' text-anchor='middle'>" + tr("Lunes") + "</text>";
                     }
                 } else
                     //dias
-                    s += "<line x1='" + x + "' y1='" + (y - 5) + "' x2='" + x + "' y2='" + (y + 5) + "' style='stroke:gray;stroke-width:1' />";
+                    s += "<line x1='" + x + "' y1='" + (y * zoom - 5 * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 5 * zoom) + "' style='stroke:gray;stroke-width:1' />";
             }
 
             //documentos
@@ -291,13 +264,13 @@
                 var y = viewTop + indexOf(ld.modeloNombre, modelos) * stepY;
                 if (x >= viewLeft) {
                     if (Math.abs(x - xant) < 5) dif = 10; //agrego una pequeña diferencia por si caen justo uno encima del otro
-                    s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + (x + dif) + "' y='" + y + "' ";
-                    s += "height='79px' width='64px' ";
+                    s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + (x + dif) + "' y='" + (y * zoom) + "' ";
+                    s += "height='" + (79 * zoom) + "px' width='" + (64 * zoom) + "px' ";
                     s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
 
                     //seguimiento
                     var sdt = formatShortDate(toDate(ld.fecha));
-                    s += "<text x='" + (x + dif + 32) + "' y='" + (y + 90) + "' fill='blue' style='font-size:10px;cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                    s += "<text x='" + (x + dif + 32 * zoom) + "' y='" + (y * zoom + 90 * zoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
                 xant = x + dif;
                 dif = 0;
@@ -307,15 +280,15 @@
             y = viewTop + modelos.length * stepY + 50;
             var x1 = viewLeft;
             var x2 = window.innerWidth - viewRight;
-            s += "<line x1='" + x1 + "' y1='" + y + "' x2='" + x2 + "' y2='" + y + "' style='stroke:gray;stroke-width:2' />";
+            s += "<line x1='" + x1 + "' y1='" + (y * zoom) + "' x2='" + x2 + "' y2='" + (y * zoom) + "' style='stroke:gray;stroke-width:2' />";
 
             //inicio (derecha)
             var sdt = formatDate(inicio.addDays(-offsetDays));
-            s += "<text x='" + x2 + "' y='" + (y + 45) + "' fill='gray' style='font-size:12px' text-anchor='end'>" + sdt + "</text>";
+            s += "<text x='" + x2 + "' y='" + (y + 45) + "' fill='gray' class='titulo4' text-anchor='end'>" + sdt + "</text>";
 
             //fin (izquierda)
             sdt = formatDate(final.addDays(-offsetDays));
-            s += "<text x='" + x1 + "' y='" + (y + 45) + "' fill='gray' style='font-size:12px' text-anchor='start'>" + sdt + "</text>";
+            s += "<text x='" + x1 + "' y='" + (y + 45) + "' fill='gray' class='titulo4' text-anchor='start'>" + sdt + "</text>";
 
 
             return s;
@@ -397,15 +370,8 @@
                     //muestro
                     document.getElementById("documento").innerHTML = data;
 
-                    document.getElementById("documento").style.visibility = 'visible';
-                    document.getElementById("documento").style.left = (10) + 'px';
-                    document.getElementById("documento").style.width = (window.innerWidth - 80) + 'px';
-                    document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
+                    document.getElementById("documento").style.display = 'block';
                 });
-        }
-
-        function doCerrarDocumento() {
-            document.getElementById("documento").style.visibility = 'hidden';
         }
 
         function doAtras() {
@@ -414,38 +380,45 @@
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
-        <!--florwait--------------------------------------------------------------------------------------------------->
-        <img id="florWait" src="res/florWait.gif" style="visibility: hidden;position:absolute;" />
-
-        <svg id="todo"  style="position: absolute;">
+        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1">
         </svg>
 
         <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
+        <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
     
+        <!--titulo--------------------------------------------------------------------------------------------------->
+        <div id="titulo" class="tituloPagina"></div>       
+
         <!--joystick--------------------------------------------------------------------------------------------------->
-        <div id="joystick" style="padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
+        <div id="joystick" style="position:fixed;bottom:0vh;padding: 5px; left:0vw;">
             <table>
                 <tr>
-                    <td><img id="jzm" src="res/jzm.png" style='cursor:pointer;' onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();"  /></td>
-                    <td><img id="ju" src="res/ju.png" style='cursor:pointer;' onclick="viewTop -= 30; dibujarTodo(); saveSettings();" /></td>
+                    <td><img id="jzm" src="res/jzm.png"  class="img" onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();"  /></td>
+                    <td><img id="ju" src="res/ju.png"  class="img" onclick="viewTop -= 30; dibujarTodo(); saveSettings();" /></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td><img id="jl" src="res/jl.png" style='cursor:pointer;' onclick="if (offsetDays > 0) {offsetDays -= 1; dibujarTodo(); saveSettings();}" /></td>
-                    <td><img id="j00" src="res/j00.png" style='cursor:pointer;' onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" /></td>
-                    <td><img id="jr" src="res/jr.png" style='cursor:pointer;' onclick="offsetDays += 1; dibujarTodo(); saveSettings();" /></td>
+                    <td><img id="jl" src="res/jl.png"  class="img" onclick="if (offsetDays > 0) {offsetDays -= 1; dibujarTodo(); saveSettings();}" /></td>
+                    <td><img id="j00" src="res/j00.png"  class="img" onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" /></td>
+                    <td><img id="jr" src="res/jr.png"  class="img" onclick="offsetDays += 1; dibujarTodo(); saveSettings();" /></td>
                 </tr>
                 <tr>
-                    <td><img id="jzl" src="res/jzl.png" style='cursor:pointer;' onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" /></td>
-                    <td><img id="jd" src="res/jd.png" style='cursor:pointer;' onclick="viewTop += 30; dibujarTodo(); saveSettings();" /></td>
+                    <td><img id="jzl" src="res/jzl.png"  class="img" onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" /></td>
+                    <td><img id="jd" src="res/jd.png"  class="img" onclick="viewTop += 30; dibujarTodo(); saveSettings();" /></td>
                     <td></td>
                 </tr>
             </table>
         </div>
 
         <!--documento--------------------------------------------------------------------------------------------------->
-        <div id="documento" class="documento" style="position: absolute;">
+        <div id="documento" class="documento">
         </div>
-    </body>
+
+        <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
+        </div>
+
+</body>
 </html>

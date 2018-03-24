@@ -515,6 +515,7 @@ namespace nabu
             {
                 ret += "<div class='titulo1'>#pregunta#</div>";
 
+                //NO SE PUEDEN ENSEÑAR PALABRAS CLAVE PROQUE TIENEN CODIGO HTML
                 //kyewords
                 ret += "<div>" + Tools.tr("Palabras clave", g.idioma) + ":</div>";
                 ret += "#keywords#<br><br>";
@@ -540,10 +541,10 @@ namespace nabu
                 Dictionary<string, int> pals = new Dictionary<string, int>();
                 string keywords = getPalabrasClave(textos, pals);
 
-                //resalto palarbas
-                foreach (KeyValuePair<string, int> e in pals)
-                    if (e.Value > 1)
-                        ret = ret.Replace(e.Key, "<span style='background-color:#CEE7FF'>" + e.Key + "</span>");
+                ////resalto palarbas
+                //foreach (KeyValuePair<string, int> e in pals)
+                //    if (e.Value > 1)
+                //        ret = ret.Replace(e.Key, "<span style='background-color:#CEE7FF'>" + e.Key + "</span>");
 
                 //agrego la pregunta
                 ret = ret.Replace("#pregunta#", textoPregunta);
@@ -557,9 +558,11 @@ namespace nabu
 
         string getPalabrasClave(List<string> textos, Dictionary<string, int> pals)
         {
+            //cuento palabras
             foreach (string s in textos)
             {
-                string[] textoPals = s.Split(' ');
+                string limpio = cleanHTML(Tools.HTMLDecode(Tools.HTMLDecode(s)));
+                string[] textoPals = limpio.Split(' ');
                 string pp;
                 foreach (string p in textoPals)
                 {
@@ -579,6 +582,7 @@ namespace nabu
                     }
                 }
             }
+
             //armo respuesta
             string ret = "";
             foreach (KeyValuePair<string, int> e in pals)
@@ -594,16 +598,35 @@ namespace nabu
             return ret;
         }
 
+        string cleanHTML(string s)
+        {
+            string ret = "";
+            bool inh = false;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '<')
+                    inh = true;
+                else if (s[i] == '>')
+                {
+                    inh = false;
+                    ret += ' ';
+                }
+                else if (!inh)
+                    ret += s[i];
+            }
+            return ret;
+        }
+
         string HTMLBarra(int value, string minText, string maxText)
         {
             string ret = "";
-            ret += "<table style='border-collapse: collapse; border-spacing: 0;'><tr>";
+            ret += "<table style='border-spacing: 0;'><tr>";
             string color = "";
             string border = "";
             for (int i = 1; i <= 10; i++)
             {
-                color = "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.6)";
-                border = value == i ? "border:3px solid blue;margin:0px" : "border:1px solid gray;margin:3px";
+                color = value != i ? "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.4)" : "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 1)";
+                border = value == i ? "border:3px solid blue;" : "border:3px solid transparent;";
                 ret += "<td style='" + border + ";width:20px;background-color:" + color + "' ";
                 ret += ">&nbsp;</td>";
             }

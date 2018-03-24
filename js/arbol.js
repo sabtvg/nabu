@@ -44,7 +44,7 @@ function crearArbol() {
 
     svgArbol = d3.select("body").append("svg")
         .attr("id", "arbol")
-        .attr("style", "width: " + (window.innerWidth - 40) + "px;height:" + (window.innerHeight - 50) + "px;top;0px;left0px;position:absolute;z-index:-1")
+        .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;z-index:-1")
         .on("mousedown", doMousedown)
         .on("mousemove", doMousemove)
         .on("mouseup", doMouseup)
@@ -125,9 +125,9 @@ function translateArbol(x, y) {
 
 function rotarFlores() {
     rotFlores++;
-
+    var offFlor = window.innerWidth <= 800 ? -39 : -19; //responsive
     svgArbol.selectAll(".florImage")
-        .attr("transform", "rotate(" + rotFlores.toFixed(0) + ")translate(" + (-19 * scale).toFixed(0) + "," + (-19 * scale).toFixed(0) + ")");
+        .attr("transform", "rotate(" + rotFlores.toFixed(0) + ")translate(" + (offFlor * scale).toFixed(0) + "," + (offFlor * scale).toFixed(0) + ")");
 }
 
 function dibujarArbol(referencia) {
@@ -172,8 +172,7 @@ function dibujarArbol(referencia) {
             if (useMaxWidth)
                 r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             if (r < 10) r = 10;
-            if (visual.level == 1)
-                r = r * 2;
+            if (window.innerWidth <= 800) r = r * 2;
             return r * scale;
         })
         .style("fill", function (d) {
@@ -185,11 +184,16 @@ function dibujarArbol(referencia) {
         .attr("id", function (d) {
             return 't1.' + d.id;
         })
+        .style("font-size", function (d) {
+            var i = window.innerWidth <= 800 ? 30 : 20;
+            var size = i * scale > 30 ? 30 : i * scale;
+            return size + 'px';
+        })
         .attr("x", function (d) {
             return 0;
         })
         .attr("dy", function (d) {
-            return -20;
+            return window.innerWidth <= 800 ? -10 : -25;
         })
         .attr("transform", function (d) {
                 return "rotate(90)";
@@ -206,11 +210,16 @@ function dibujarArbol(referencia) {
         .attr("id", function (d) {
             return 't2.' + d.id;
         })
+        .style("font-size", function (d) {
+            var i = window.innerWidth <= 800 ? 30 : 20;
+            var size = i * scale > 30 ? 30 : i * scale;
+            return size + 'px';
+        })
         .attr("x", function (d) {
             return 0;
         })
         .attr("dy", function (d) {
-            return -50 + 16 * scale;
+            return window.innerWidth <= 800 ? -20 : -45;
         })
         .attr("transform", function (d) {
             return "rotate(90)";
@@ -224,11 +233,16 @@ function dibujarArbol(referencia) {
         .attr("id", function (d) {
             return 't3.' + d.id;
         })
+        .style("font-size", function (d) {
+            var i = window.innerWidth <= 800 ? 30 : 20;
+            var size = i * scale > 30 ? 30 : i * scale;
+            return size + 'px';
+        })
         .attr("x", function (d) {
             return 0;
         })
         .attr("dy", function (d) {
-            return -65 + 16 * scale;
+            return window.innerWidth <= 800 ? -30 : -65;
         })
         .attr("transform", function (d) {
             return "rotate(90)";
@@ -250,6 +264,7 @@ function dibujarArbol(referencia) {
             if (useMaxWidth)
                 r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             if (r < 10) r = 10;
+            if (window.innerWidth <= 800) r = r * 2;
             if (selectedNode && d.id == selectedNode.id) r += 10;
             return r * scale;
         })
@@ -270,7 +285,8 @@ function dibujarArbol(referencia) {
 
     nodeUpdate.select("text")  //etiqueta
         .style("font-size", function (d) {
-            var size = 20 * scale > 30 ? 30 : 15 * scale;
+            var i = window.innerWidth <= 800 ? 25 : 20;
+            var size = i * scale > 30 ? 30 : i * scale;
             return size + 'px';
         })
         .text(function (d) {
@@ -334,15 +350,15 @@ function dibujarArbol(referencia) {
 
     florEnter.append("image")
         .attr("class", "florImage")
-        .attr("width", 37 * scale + "px")
-        .attr("height", 36 * scale + "px")
+        .attr("width", (window.innerWidth <= 800 ? 74 : 37) * scale + "px")
+        .attr("height", (window.innerWidth <= 800 ? 72 : 36) * scale + "px")
         .attr("transform", "translate(0)")
         .attr("xlink:href", "res/icono2.png");
 
     var florUpdate = flor.transition()
         .duration(duration)
-        .attr("width", 37 * scale + "px")
-        .attr("height", 36 * scale + "px")
+        .attr("width", (window.innerWidth <= 800 ? 74 : 37) * scale + "px")
+        .attr("height", (window.innerWidth <= 800 ? 72 : 36) * scale + "px")
         .attr("transform", function (d) {
             if (d.id == 0)
                 //flor disponible
@@ -358,8 +374,8 @@ function dibujarArbol(referencia) {
         });
 
     florUpdate.select("image")
-        .attr("width", 37 * scale + "px")
-        .attr("height", 36 * scale + "px")
+        .attr("width", (window.innerWidth <= 800 ? 74 : 37) * scale + "px")
+        .attr("height", (window.innerWidth <= 800 ? 72 : 36) * scale + "px")
         .attr("xlink:href", "res/icono2.png")
         .attr("visibility", !historico);
 
@@ -395,9 +411,12 @@ function dibujarArbol(referencia) {
         .attr("x", function (d) {
             return 0;
         })
-        .attr("dy", ".35em")
-        .attr("transform", "rotate(90)translate(-5, 20)")
-        .style("font-size", function (d) { return '12px'; })
+        .attr("transform", "rotate(90)translate(-5, " + (window.innerWidth <= 800 ? "10" : "20") + ")")
+        .style("font-size", function (d) {
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 30 ? 30 : i * scale;
+            return size + 'px';
+        })
         .attr("text-anchor", "middle ")
         .text(function (d) { return d.fname; });
 
@@ -405,9 +424,12 @@ function dibujarArbol(referencia) {
         .attr("x", function (d) {
             return 0;
         })
-        .attr("dy", ".35em")
-        .attr("transform", "rotate(90)translate(-5, 35)")
-        .style("font-size", function (d) { return '12px'; })
+        .attr("transform", "rotate(90)translate(-5, " + (window.innerWidth <= 800 ? "20" : "35") + ")")
+        .style("font-size", function (d) {
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 30 ? 30 : i * scale;
+            return size + 'px';
+        })
         .style("cursor", "pointer")
         .attr("text-anchor", "middle ")
         .text(function (d) { return txtCut(d.titulo); });
@@ -416,9 +438,12 @@ function dibujarArbol(referencia) {
         .attr("x", function (d) {
             return 0;
         })
-        .attr("dy", ".35em")
-        .attr("transform", "rotate(90)translate(-5, 50)")
-        .style("font-size", function (d) { return '12px'; })
+        .attr("transform", "rotate(90)translate(-5, " + (window.innerWidth <= 800 ? "30" : "50") + ")")
+        .style("font-size", function (d) {
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 30 ? 30 : i * scale;
+            return size + 'px';
+        })
         .style("cursor", "pointer")
         .attr("text-anchor", "middle ")
         .text(function (d) { return d.sFecha; });
@@ -646,7 +671,6 @@ function nodeClick(d) {
             }
             else {
                 menu = document.getElementById("menuNode");
-                menu.style.left = (window.innerWidth / 2 - 48).toFixed(0) + 'px';
                 menu.style.visibility = "visible";
             }
         }

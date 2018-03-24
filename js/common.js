@@ -69,42 +69,38 @@ function showPanel() {
 
 function showPanelIzq(data) {
     //activo el izq
-    var panelIzq = document.getElementById("panelIzq");
-    var panelIzq2 = document.getElementById("panelIzq2");
-    if (panelIzq.style.visibility == "hidden") {
-        panelIzq.style.visibility = "visible";
-        efectoLeft(panelIzq, 0, 750, -400 * scale, 20, TWEEN.Easing.Cubic.Out);
+    if (window.innerWidth > 800) {
+        var panelIzq = document.getElementById("panelIzq");
+        if (panelIzq.style.visibility == "hidden") {
+            panelIzq.style.visibility = "visible";
+            efectoLeft(panelIzq, 0, 750, -700 * scale, 5, TWEEN.Easing.Cubic.Out);
+        }
+        panelIzq.style.top = 100 * scaley + "px";
+        panelIzq.style.width = 700 * scalex + "px";
+        panelIzq.style.height = 800 * scaley + "px";
+        panelIzq.innerHTML = "<img style='cursor: pointer;' src='res/close.png' onclick='hidePanelDer();' /><br>" + data;
     }
-
-    panelIzq.style.top = "220px";
-    panelIzq.style.width = 400 * scale + "px";
-    panelIzq2.style.width = 390 * scale + "px";
-    panelIzq.style.height = 550 * scale + "px";
-
-    panelIzq2.innerHTML = data;
 }
 
 function showPanelDer(data) {
     //activo el derecho
-    var panelDer = document.getElementById("panelDer");
-    var panelDer2 = document.getElementById("panelDer2");
-    if (panelDer && panelDer.style.visibility == "hidden") {
-        panelDer.style.visibility = "visible";
-        efectoLeft(panelDer, 0, 750, window.innerWidth, window.innerWidth - 400 * scale - 40, TWEEN.Easing.Cubic.Out);
+    if (window.innerWidth > 800) {
+        var panelDer = document.getElementById("panelDer");
+        if (panelDer && panelDer.style.visibility == "hidden") {
+            panelDer.style.visibility = "visible";
+            efectoLeft(panelDer, 0, 750, window.innerWidth, window.innerWidth - 700 * scale - 25, TWEEN.Easing.Cubic.Out);
+        }
+        panelDer.style.top = 100 * scaley + "px";
+        panelDer.style.width = 700 * scalex + "px";
+        panelDer.style.height = 800 * scaley + "px";
+        panelDer.innerHTML = "<img style='cursor: pointer;' src='res/close.png' onclick='hidePanelDer();' /><br>" + data;
     }
-
-    panelDer.style.top = "220px";
-    panelDer.style.width = 400 * scale + "px";
-    panelDer2.style.width = 390 * scale + "px";
-    panelDer.style.height = 550 * scale + "px";
-
-    panelDer2.innerHTML = data;
 }
 
 function hidePanelIzq() {
     var panelIzq = document.getElementById("panelIzq");
     if (panelIzq && panelIzq.style.visibility == "visible") {
-        efectoLeft(panelIzq, 0, 750, 20, -450 * scale, TWEEN.Easing.Cubic.Out, function () {
+        efectoLeft(panelIzq, 0, 750, 5, -700 * scale, TWEEN.Easing.Cubic.Out, function () {
             document.getElementById("panelIzq").style.visibility = "hidden";
         });
     }
@@ -113,7 +109,7 @@ function hidePanelIzq() {
 function hidePanelDer() {
     var panelDer = document.getElementById("panelDer");
     if (panelDer.style.visibility == "visible") {
-        efectoLeft(panelDer, 0, 750, window.innerWidth - 400 * scale - 40, window.innerWidth, TWEEN.Easing.Cubic.Out, function () {
+        efectoLeft(panelDer, 0, 750, window.innerWidth - 700 * scale - 25, window.innerWidth, TWEEN.Easing.Cubic.Out, function () {
             document.getElementById("panelDer").style.visibility = "hidden";
             document.getElementById("panelDer").style.left = "0px"; //evita que aparezcan las barras de scroll
         });

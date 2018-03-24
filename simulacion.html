@@ -26,6 +26,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
@@ -56,21 +58,12 @@
         function doLoad() {
             var scalex = window.innerWidth / 1920;
             var scaley = window.innerHeight / 1080;
-            //atras
-            document.getElementById("atras").style.width = (100 * scalex) + 'px';
-            document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-
-            //titulo
-            document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
 
             //joystick
             document.getElementById("joystick").style.visibility = 'visible';
-            document.getElementById("joystick").style.top = (window.innerHeight - 160) + 'px';
 
             //background
-            document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-            document.body.style.backgroundImage = "url('res/background.jpg')";
-
+            setBackgroundImage();
 
             treeScale = window.innerWidth / 1920; //valor default
 
@@ -129,14 +122,14 @@
                 stopSim = true;
                 playing = false;
                 document.getElementById("startStop").value = tr("Play");
-                document.getElementById("startStop").className = "btnStop";
+                document.getElementById("startStop").className = "btn btnStop";
             }
             else {
                 stopSim = false;
                 playing = true;
                 live();
                 document.getElementById("startStop").value = tr("Pausa");
-                document.getElementById("startStop").className = "btnPlay";
+                document.getElementById("startStop").className = "btn";
             }
         }
 
@@ -202,9 +195,13 @@
             document.getElementById("help").style.visibility = "hidden";
         }
 
+        function doAtras() {
+            document.location = "default.html?grupo=" + grupoParam;
+        }
+
         function traducir() {
             document.getElementById("btnPaso").value = tr("Paso");
-            document.getElementById("tit2").innerHTML = tr("Sociocracia");
+            document.getElementById("titulo1").innerHTML = tr("Sociocracia");
             document.getElementById("tit4").innerHTML = tr("Simulacion");
             document.getElementById("divCon").innerHTML = tr("Consenso");
             document.getElementById("minSiPc").title = tr("conminSiPc");
@@ -214,24 +211,17 @@
 </head>
 <body onload="doLoad();">
 
-    <!--atras--------------------------------------------------------------------------------------------------->
-    <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="position: absolute; left:10px; top:10px;" onclick="document.location='default.html';" />
+        <!--atras--------------------------------------------------------------------------------------------------->
+        <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="panelDer" class="panel" style="visibility: hidden;">
         <table style="width: 95%;">
-            <tr>
-                <td style="text-align: right;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="doVerDocumentoMode();" /></td>
-            </tr>
-            <tr>
-                <td id="panelDer2">
-                </td>
-            </tr>
         </table>
     </div>
 
     <!--help--------------------------------------------------------------------------------------------------->
-    <div id="help" class="documento" style="opacity: 1; width: 700px; height: 350px;z-index:10;visibility: hidden;">
+    <div id="help" class="documento">
         <table style="width: 100%;">
             <tr><td style="text-align: right;"><img style="cursor: pointer;" src="res/close.png" onclick="doCloseHelp();" /></td></tr>
             <tr><td id="helpContent"></td></tr>
@@ -239,23 +229,25 @@
     </div>
 
     <!--panel--------------------------------------------------------------------------------------------------->
-    <div id="Div1" style="padding: 10px; position: absolute; left:110px; top:10px;">
-        <input id="btnNuevo" class="simtxt" type="button" value="Nuevo debate" onclick="nuevoDebate();" />
-        <input id="btnPaso" class="simtxt" type="button" value="Paso" onclick="live();" />
-        <input id="startStop" class="btnPlay" type="button" value="Play" onclick="startStop();" />
-        </nobr>
-        <div id="nodes" class="titulo1"></div>
+    <div id="Div1" style="padding: 10px; position: absolute; left:0.3vw; top:10vh;">
+        <input id="btnNuevo" class="btn" type="button" value="Nuevo debate" onclick="nuevoDebate();" style="margin-left:0px"/><br />
+        <input id="btnPaso" class="btn" type="button" value="Paso" onclick="live();"  style="margin-left:0px";/><br />
+        <input id="startStop" class="btn btnPlay" type="button" value="Play" onclick="startStop();"  style="margin-left:0px;"/>
+        <div id="nodes" class="titulo3"></div>
     </div>
 
     <!--titulo--------------------------------------------------------------------------------------------------->
-    <div id="titulo" style="padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
-        <div class="titulo0"><nobr>Nab&uacute;</nobr></div>
-        <div id="tit2" class="titulo1"><nobr>Sociocracia</nobr></div>
+        <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;text-align: right;">
+        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        </a>
+        <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br />Digital</div>
         <div id="tit4" class="titulo1" style="color:red;"><nobr>Simulacion</nobr></div>
     </div>
 
+
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="borde" style="padding: 10px; position: absolute; left:10px; top:280px; color: gray; border: 1px solid gray">
+    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; clear:left; float:left; color: gray;">
         <div id="divCon" class="titulo2"><nobr><b>Consenso</b></nobr></div>
         <div id = "usuarios" class="titulo3"></div>
         <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
@@ -273,24 +265,30 @@
     </div>
 
     <!--joystick--------------------------------------------------------------------------------------------------->
-    <div id="joystick" style="visibility:hidden; padding: 5px; text-align:right; position: absolute; left:10px; top:0px;">
+    <div id="joystick" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
         <table>
             <tr>
-                <td><img src="res/jzm.png" onclick="zoom(10);"  /></td>
-                <td><img src="res/ju.png" onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jzm.png" onclick="zoom(10);" class="img" /></td>
+                <td><img src="res/ju.png" onmousedown="pany(-5);" class="img" onmouseup="clearInterval(joyInterval);" /></td>
                 <td></td>
             </tr>
             <tr>
-                <td><img src="res/jl.png" onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" /></td>
-                <td><img src="res/j00.png" onclick="translateArbol(translatex = 0, translatey = 0)" /></td>
-                <td><img src="res/jr.png" onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jl.png" onmousedown="panx(-5);" class="img" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/j00.png" class="img" onclick="translateArbol(translatex = 0, translatey = 0)" /></td>
+                <td><img src="res/jr.png" onmousedown="panx(5);" class="img" onmouseup="clearInterval(joyInterval);" /></td>
             </tr>
             <tr>
-                <td><img src="res/jzl.png" onclick="zoom(-10);" /></td>
-                <td><img src="res/jd.png" onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" /></td>
+                <td><img src="res/jzl.png" onclick="zoom(-10);" class="img" /></td>
+                <td><img src="res/jd.png" onmousedown="pany(5);" class="img" onmouseup="clearInterval(joyInterval);" /></td>
                 <td></td>
             </tr>
         </table>
+    </div>
+
+    <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+    <div id="rotarpantalla" class="rotarpantalla">
+        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
+        <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
     </div>
 </body>
 </html>

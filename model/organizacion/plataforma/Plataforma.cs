@@ -247,7 +247,9 @@ namespace nabu.organizaciones
             html += "<b>" + Tools.tr("Accion", gr.idioma) + ":</b> " + ac.nombre + "<br>";
             html += "<b>" + Tools.tr("Nacido", gr.idioma) + ":</b> " + ac.born + "<br>";
             html += "<b>" + Tools.tr("Decision", gr.idioma) + ":</b> <a href='" + ac.docURL + "' target='_blank'>" + Tools.getURLName(ac.docURL) + "</a><br>";
-            html += "<b>" + Tools.tr("Objetivo", gr.idioma) + ":</b><br> " + ac.objetivo + "<br>";
+
+            string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(ac.objetivo.Replace("\n", "<br>")));
+            html += "<b>" + Tools.tr("Objetivo", gr.idioma) + ":</b><br> " + HTMLText + "<br>";
             html += "<b>" + Tools.tr("Estado final", gr.idioma) + ":</b> " + ac.estado.estado + "<br>";
             html += "<b>" + Tools.tr("Estado final fecha", gr.idioma) + ":</b> " + ac.estado.estadoTs + "<br><br>";
             html += "<b>" + Tools.tr("Autor", gr.idioma) + ":</b> " + email + "<br><br>";

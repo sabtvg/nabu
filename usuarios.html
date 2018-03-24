@@ -24,6 +24,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
@@ -37,6 +39,9 @@
         var grupoParam;
 
         function doLoad() {
+            //background
+            setBackgroundImage();
+
             //idioma
             idioma = getParameterByName('idioma');
             if (idioma == null) idioma = 'es';
@@ -53,18 +58,7 @@
                     var scalex = window.innerWidth / 1920;
                     var scaley = window.innerHeight / 1080;
                     //atras
-                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
-                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-                    document.getElementById("todo").style.top = '30px';
-                    document.getElementById("todo").style.height = (window.innerHeight - 90) + 'px';
                     document.getElementById("usuarios").style.height = (window.innerHeight - 270) + 'px';
-                    document.getElementById("todo").style.left = (100 * scalex) + 20 + 'px';
-                    document.getElementById("todo").style.width = window.innerWidth - 80 - (100 * scaley).toFixed(0) + 'px';
-
-                    //background
-                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-                    document.body.style.backgroundImage = "url('res/background.jpg')";
-
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -173,7 +167,7 @@
                     else {
                         //he recibido los usuarios
                         usuarios = JSON.parse(data);
-                        var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
+                        var s = "<table class='table'>";
                         s += "<tr>"
                         s += "<td style='width:20px;'></td>";
                         s += "<td style='width:180px;'><b>" + tr("Nombre") + "</b></td>";
@@ -287,7 +281,7 @@
 </head>
 <body onload="doLoad();" style="overflow:hidden">
 
-        <div id="todo" class="ventana" style="text-align: left;width:877px;top: 100px;position: absolute;">
+        <div id="todo" class="ventana">
         <table style="width: 100%;">
             <tr>
                 <td style="width: 80px;" class="titulo1">Nab&uacute;</td>
@@ -297,43 +291,44 @@
         </table>
             <span id="tit1" class="titulo2">Modificar usuarios</span><br />
 
-            <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;">
-                <table style="width:100%;">
+            <div style="border: 1px solid gray; border-radius: 10px;">
+                <table>
                     <tr>
-                        <td style="width:210px;padding:2px;">
-                            <input id="nombre" type="text" class="txt" size="20" placeholder="Nombre" style="margin:0px"/><br />
+                        <td>
+                            <input id="nombre" type="text" class="txt" size="16" placeholder="Nombre" style="margin:0px"/><br />
                         </td>
-                        <td style="width:210px;padding:2px;">
-                            <input id="email" type="text" class="txt" size="20" placeholder="Email"  style="margin:0px"/><br />
+                        <td>
+                            <input id="email" type="text" class="txt" size="16" placeholder="Email"  style="margin:0px"/><br />
                         </td>
-                        <td style="vertical-align:top;width:160px;padding:2px;">
-                            <input id="habilitado" type="checkbox" class="txt" /><span id="lHab">Habilitado</span><br />
+                        <td style="vertical-align:middle;">
+                            <input id="habilitado" type="checkbox" class="txt" /><span id="lHab" class="titulo4">Habilitado</span><br />
                         </td>
-                        <td style="vertical-align:top;width:160px;padding:2px;">   
-                            <input id="isAdmin" type="checkbox" class="txt" /><span id="ladmin" style="background-color:#0066CC;padding:3px;border-radius:3px">Admin</span><br />
+                        <td style="vertical-align:middle;">   
+                            <input id="isAdmin" type="checkbox" class="txt" /><span id="ladmin" class="titulo4" style="background-color:#0066CC;padding:3px;border-radius:3px">Admin</span><br />
                         </td>
-                        <td style="vertical-align:top;width:160px;padding:2px;">
-                            <input id="isRepresentante" type="checkbox" class="txt" /><span id="lrepre" style="background-color:#00CC99;padding:3px;border-radius:3px">Representative</span><br />
+                        <td style="vertical-align:middle;">
+                            <input id="isRepresentante" type="checkbox" class="txt" /><span id="lrepre"  class="titulo4" style="background-color:#00CC99;padding:3px;border-radius:3px">Representative</span><br />
                         </td>
                         <td style="vertical-align:top;text-align:right;padding:4px;" rowspan="2">
-                            <input id="btnActualizar" type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' />
+                            <input id="btnActualizar" type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' /><br /><br />
+                            <input id="btnCancelar" type='button' class='btn' value='Cancelar ' onclick='doAtras();' />
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:2px;">
-                            <input id="funcion" type="text" class="txt" size="20" placeholder="Funcion"  style="margin:0px"/><br />
+                            <input id="funcion" type="text" class="txt" size="16" placeholder="Funcion"  style="margin:0px"/><br />
                         </td>
                         <td style="padding:2px;">
-                            <input id="clave" type="password" class="txt" size="15" placeholder="Clave"  style="margin:0px"/>
+                            <input id="clave" type="password" class="txt" size="16" placeholder="Clave"  style="margin:0px"/>
                         </td>
-                        <td style="padding:2px;vertical-align:top">
-                            <input id="readOnly" type="checkbox" class="txt" /><span id="lsoloLec">Solo lectura</span>
+                        <td style="padding:2px;vertical-align:middle">
+                            <input id="readOnly" type="checkbox" class="txt" /><span id="lsoloLec" class="titulo4"><nobr>Solo lectura</nobr></span>
                         </td>
-                        <td style="padding:2px;vertical-align:top">
-                            <input id="isSecretaria" type="checkbox" class="txt" /><span id="lsecre" style="background-color:#FF66CC;padding:3px;border-radius:3px">Secretaria</span><br />
+                        <td style="padding:2px;vertical-align:middle">
+                            <input id="isSecretaria" type="checkbox" class="txt" /><span id="lsecre" class="titulo4" style="background-color:#FF66CC;padding:3px;border-radius:3px">Secretaria</span><br />
                         </td>
-                        <td style="padding:2px;vertical-align:top">
-                            <input id="isFacilitador" type="checkbox" class="txt" /><span id="lfacil" style="background-color:#FF9900;padding:3px;border-radius:3px">Facilitator</span>
+                        <td style="padding:2px;vertical-align:middle">
+                            <input id="isFacilitador" type="checkbox" class="txt" /><span id="lfacil" class="titulo4" style="background-color:#FF9900;padding:3px;border-radius:3px">Facilitator</span>
                         </td>
                     </tr>
                 </table>
@@ -343,8 +338,5 @@
             <div id="usuarios" style="overflow:scroll;"></div>
             <br />
         </div>
-
-        <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     </body>
 </html>

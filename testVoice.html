@@ -1,0 +1,45 @@
+<style>
+  .speech {border: 1px solid #DDD; width: 300px; padding: 0; margin: 0}
+  .speech input {border: 0; width: 240px; display: inline-block; height: 30px;}
+  .speech img {float: right; width: 40px }
+</style>
+
+<!-- Search Form -->
+<form >
+  <div class="speech">
+    <input type="text" name="q" id="transcript" placeholder="Speak" size="50"/>
+    <img onclick="startDictation()" src="//i.imgur.com/cHidSVu.gif" />
+      <div id="txt"></div>
+  </div>
+</form>
+
+<!-- HTML5 Speech Recognition API -->
+<script>
+    function startRecognition() {
+
+        if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+            var recognition = new webkitSpeechRecognition();
+
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.lang = "es-ES";
+            recognition.start();
+            acum = "";
+
+            recognition.onresult = function (e) {
+                acum = e.results[0][0].transcript + " ";
+                document.getElementById('txt').innerHTML = acum;
+
+                if (e.results[0].isFinal)
+                    recognition.stop();
+            };
+
+            recognition.onerror = function (e) {
+                recognition.stop();
+            }
+
+        }
+    }
+</script>

@@ -26,22 +26,17 @@ function doDecidimos() {
         efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Cubic.Out, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
 
     document.getElementById("menuppal").style.visibility = "hidden";
-    document.getElementById("panelGrupo").style.visibility = 'hidden';
+    document.getElementById("panelGrupo").style.display = 'none';
 
     //panel consenso
-    document.getElementById("panelConsenso").style.top = (190 * scaley) + 'px';
-    document.getElementById("panelConsenso").style.visibility = 'visible';
+    document.getElementById("panelConsenso").style.display = 'inline';
 
-    //tituloArbol
-    document.getElementById("tituloArbol").style.top = (30 * scaley) + 'px';
-    document.getElementById("tituloArbol").style.left = (50 + 100 * scalex) + 'px';
-    document.getElementById("tituloArbol").style.fontSize = (30 * scalex).toFixed(0) + 'px';
-    document.getElementById("tituloArbol").innerHTML = arbolPersonal.nombre + " - " + tr("Decisiones");
-    document.getElementById("tituloArbol").style.visibility = 'visible';
+    //titulo
+    document.getElementById("titulo").innerHTML = arbolPersonal.nombre + " - " + tr("Decisiones");
+    document.getElementById("titulo").style.visibility = 'visible';
 
     //joystick
     document.getElementById("joystickArbol").style.visibility = 'visible';
-    document.getElementById("joystickArbol").style.top = (window.innerHeight - 180 * scaley) + 'px';
 
     //objetivo
     var objetivo = document.getElementById("objetivo");
@@ -120,8 +115,8 @@ function seleccionarModelo() {
         listS += "</table>";
         listI += "</table>";
 
-        var list = "<table style='border-collapse: collapse; border-spacing: 0;'>";
-        list += "<tr><td style='text-align:center' class='titulo1' colspan='3'><b>" + tr("Modelos de debate") + "</b></td></tr>";
+        var list = "<table style='border-collapse: collapse; border-spacing: 5px;margin:auto;'>";
+        list += "<tr><td style='text-align:center;padding:15px;' class='titulo1' colspan='3'><b>" + tr("Modelos de debate") + "</b></td></tr>";
         list += "<tr><td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Estructura") + "</b></td>";
         list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Seguimiento") + "</b></td>";
         list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Intergrupal") + "</b></td></tr>";
@@ -133,18 +128,23 @@ function seleccionarModelo() {
 
         //cartel sociocracia.net
         list += "<tr>";
-        list += "<td style='vertical-align:top;font-size:12px' colspan=3>" + tr("nuevos modelos")+ "</td>";
+        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=3>" + tr("nuevos modelos") + "</td>";
         list += "</tr>";
-
+        list += "<tr>";
+        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=3>";
+        list += "<input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelos\").style.display = \"none\";' style='margin: 0 auto;'/>";
+        list += "</td>"
+        list += "</tr>";
         list += "</table>";
 
-        document.getElementById("modelosContent").innerHTML = list;
-        document.getElementById("modelos").style.visibility = "visible";
+
+        document.getElementById("modelos").innerHTML = list;
+        document.getElementById("modelos").style.display = "block";
     }
 }
 
 function seleccionarModelo2(modeloID) {
-    document.getElementById("modelos").style.visibility = "hidden";
+    document.getElementById("modelos").style.display = "none";
     selectedNode.modeloID = modeloID; //se lo pongo temporalmente a la raiz
     doVerDocumento();
 }
@@ -244,7 +244,7 @@ function doToggleFlor2() {
 }
 
 function doCerrarDocumento() {
-    efectoTop(document.getElementById("documento"), 0, 20, -window.innerHeight, TWEEN.Easing.Cubic.In);
+    document.getElementById("documento").style.display = "none";
     preguntarAlSalir = false;
 }
 
@@ -310,7 +310,7 @@ function doProponer() {
         recibirArbolPersonal);
 
     //cierro documento
-    efectoTop(document.getElementById("documento"), 0, 20, -window.innerHeight, TWEEN.Easing.Cubic.In);
+    document.getElementById("documento").style.display = "none";
     preguntarAlSalir = false;
 }
 
@@ -338,11 +338,7 @@ function doVerDocumento() {
             //activo editores de estilo
             activarStyleEditor();
 
-            document.getElementById("documento").style.visibility = 'visible';
-            document.getElementById("documento").style.left = (10) + 'px';
-            document.getElementById("documento").style.width = (window.innerWidth - 60) + 'px';
-            document.getElementById("documento").style.height = (window.innerHeight - 50) + 'px';
-            efectoTop(document.getElementById("documento"), 0, -window.innerHeight, 20, TWEEN.Easing.Cubic.Out);
+            document.getElementById("documento").style.display = 'block';
         }
     );
 }

@@ -42,6 +42,16 @@ namespace nabu
             public bool isActive = false;
         }
 
+        public class Seguimiento
+        {
+            public string nombre = "";
+            public int EID;
+            public DateTime born = DateTime.Now;
+            public string objetivo = "";
+            public string responsable = "";
+            public string icono = "";
+        }
+
         public class Nodo
         {
             public string URL = "";
@@ -57,7 +67,8 @@ namespace nabu
             public bool descargado = false;
             public float colorPromedio = 0;
             public double horizontalidad = 0; //cantidad representates / cantidad usuarios
-            public List<Usuario> usuarios = new List<Usuario>();   
+            public List<Usuario> usuarios = new List<Usuario>();
+            public List<Seguimiento> seguimientos = new List<Seguimiento>();
         }
 
         private Grupo grupo = null;
@@ -106,6 +117,19 @@ namespace nabu
                 p.grupoDesde = u.grupoDesde;
                 ret.usuarios.Add(p);
             }
+
+            ret.seguimientos.Clear();
+            foreach (Seguimiento u in modelo.seguimientos)
+            {
+                Seguimiento p = new Seguimiento();
+                p.nombre = u.nombre;
+                p.EID = u.EID;
+                p.born = u.born;
+                p.objetivo = u.objetivo;
+                p.responsable = u.responsable;
+                p.icono = u.icono;
+                ret.seguimientos.Add(p);
+            }
         }
 
         public static Nodo crearNodo(Grupo g)
@@ -141,6 +165,23 @@ namespace nabu
                     p.readOnly = u.readOnly;
                     p.grupoDesde = u.grupoDesde;
                     nodo.usuarios.Add(p);
+                }
+            }
+
+            if (g.organizacion.GetType().Name == "Plataforma")
+            {
+                organizaciones.Plataforma pl = (organizaciones.Plataforma)g.organizacion;
+
+                foreach (plataforma.Seguimiento u in pl.seguimientos)
+                {
+                    Seguimiento p = new Seguimiento();
+                    p.nombre = u.nombre;
+                    p.EID = u.EID;
+                    p.born = u.born;
+                    p.objetivo = u.objetivo;
+                    p.responsable = u.responsable;
+                    p.icono = u.icono;
+                    nodo.seguimientos.Add(p);
                 }
             }
 

@@ -147,112 +147,56 @@ namespace nabu.plataforma.modelos
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //tema
-                ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
-                if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.introduccion", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLSeccion("Introduccion", "accion.introduccion", "s.introduccion", editar, prop, tieneFlores, g);
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else if (nivel == 2)
             {
                 //Objetivo a lograr
-                ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
-                if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.objetivo", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLSeccion("Objetivo a lograr", "accion.objetivo", "s.objetivo", editar, prop, tieneFlores, g);
 
                 //Descripcion
-                ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
-                if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.descripcion", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLSeccion("Descripcion", "accion.descripcion", "s.descripcion", editar, prop, tieneFlores, g);
 
                 //A quien va dirigido
-                ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
-                if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.aquien", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLSeccion("A quien va dirigido", "accion.aquien", "s.aquien", editar, prop, tieneFlores, g);
 
                 //variante
-                if (puedeVariante) 
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
 
             }
             else if (nivel == 3)
             {
                 //Materiales
-                ret += "<div class='tema'>" + Tools.tr("Materiales", g.idioma) + "</div>";
-                if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.materiales", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.materiales", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLSeccion("Materiales", "accion.materiales", "s.materiales", editar, prop, tieneFlores, g);
 
                 //RRHH
-                ret += "<div class='tema'>" + Tools.tr("RRHH", g.idioma) + "</div>";
-                if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.rrhh", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.rrhh", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLSeccion("RRHH", "accion.rrhh", "s.rrhh", editar, prop, tieneFlores, g);
 
                 //Otros
-                ret += "<div class='tema'>" + Tools.tr("Software", g.idioma) + "</div>";
-                if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.software", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.otros", prop, width, 120, tieneFlores, g.idioma);
+                ret += HTMLSeccion("Software", "accion.software", "s.otros", editar, prop, tieneFlores, g);
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + Tools.tr("Fases", g.idioma) + "</div>";
-                if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.fases", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.fases", prop, width, 120, tieneFlores, g.idioma);
+                //fases
+                ret += HTMLSeccion("Fases", "accion.fases", "s.fases", editar, prop, tieneFlores, g);
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + Tools.tr("Presupuesto y plazo de entrega", g.idioma) + "</div>";
-                if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
-                        + Tools.tr("accion.presupuesto", g.idioma) 
-                        + "</div>";
-
-                ret += HTMLArea("s.presupuesto", prop, width, 120, tieneFlores, g.idioma);
+                //presupuesto
+                ret += HTMLSeccion("Presupuesto y plazo de entrega", "accion.presupuesto", "s.presupuesto", editar, prop, tieneFlores, g);
 
                 ret += "<div class='tema'>" + Tools.tr("Responsable", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("accion.responsable", g.idioma)
                         + "</div>";
 
@@ -263,16 +207,16 @@ namespace nabu.plataforma.modelos
                 lista = lista.Substring(0, lista.Length - 1);
                 ret += HTMLLista("s.responsable", lista, prop, 250, tieneFlores, g.idioma);
 
+                //revision
                 ret += "<div class='tema'>" + Tools.tr("Revision de valoracion del resultado", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("accion.revision", g.idioma)
                         + "</div>";
                 ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else
             {
@@ -288,7 +232,7 @@ namespace nabu.plataforma.modelos
             //mensajes de error
             if (errores.ContainsKey(nivel))
             {
-                ret += "<div class='error' style='width:" + (width-4) + "px'>" + errores[nivel] + "</div>";
+                ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
             return ret;
         }

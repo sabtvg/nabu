@@ -150,7 +150,7 @@ namespace nabu.plataforma.modelos
                     //tema
                     ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                     if (editar)
-                        ret += "<div class='smalltip' style='width:" + width + "px'>"
+                        ret += "<div class='smalltip'>"
                             + Tools.tr("alhijo.documento.introduccion.tip", g.idioma)
                             + "</div>";
 
@@ -168,7 +168,7 @@ namespace nabu.plataforma.modelos
                     //Mision
                     ret += "<div class='tema'>" + Tools.tr("Situacion actual", g.idioma) + "</div>";
                     if (editar)
-                        ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("alhijo.documento.situacionactual.tip", g.idioma) + "</div>";
+                        ret += "<div class='smalltip'>" + Tools.tr("alhijo.documento.situacionactual.tip", g.idioma) + "</div>";
 
                     ret += HTMLArea("s.situacionactual", prop, width, 290, tieneFlores, g.idioma);
 
@@ -185,7 +185,7 @@ namespace nabu.plataforma.modelos
                     //Objetivo
                     ret += "<div class='tema'>" + Tools.tr("Propuesta", g.idioma) + "</div>";
                     if (editar)
-                        ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("alhijo.documento.propuesta.tip", g.idioma) + "</div>";
+                        ret += "<div class='smalltip'>" + Tools.tr("alhijo.documento.propuesta.tip", g.idioma) + "</div>";
 
                     ret += HTMLArea("s.propuesta", prop, width, 290, tieneFlores, g.idioma);
 
@@ -200,7 +200,7 @@ namespace nabu.plataforma.modelos
                 {
                     ret += "<div class='tema'>" + Tools.tr("Situacion deseada", g.idioma) + "</div>";
                     if (editar)
-                        ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("alhijo.documento.situaciondeseada.tip", g.idioma) + "</div>";
+                        ret += "<div class='smalltip'>" + Tools.tr("alhijo.documento.situaciondeseada.tip", g.idioma) + "</div>";
 
                     ret += HTMLArea("s.situaciondeseada", prop, width, 550, tieneFlores, g.idioma);
 
@@ -223,7 +223,7 @@ namespace nabu.plataforma.modelos
             //mensajes de error
             if (errores.ContainsKey(nivel))
             {
-                ret += "<div class='error' style='width:" + (width-4) + "px'>" + errores[nivel] + "</div>";
+                ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
             return ret;
         }

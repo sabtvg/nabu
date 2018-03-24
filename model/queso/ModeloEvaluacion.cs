@@ -115,36 +115,29 @@ namespace nabu
             //}
 
             //contenido 
-            ret += "<table style='width: " + (width - 10) + "px;'>";
-            ret += "<tr>";
-            ret += "<td ";
-            ret += "style='width: " + width + "px;vertical-align:top;'>";
             ret += toHTMLContenido(prop, g, email, width);
-            ret += "</td>";
-            ret += "</tr>";
-            ret += "</table>";
 
             //botones de poantalla o firma de consenso
             ret += "<br>";
             if (modo == eModo.editar)
             {
                 //modo muestra
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btn' style='clear:left;float:left;' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
 
             }
             else if (modo == eModo.prevista)
             {
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Revisar evaluacion", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisarEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btn' style='clear:left;float:left;' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Revisar evaluacion", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisarEvaluacion(\"" + id + "\");' />";
                 if (!hayError())
-                    ret += "<input type='button' class='btn' value='" + Tools.tr("Crear evaluacion", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doCrearEvaluacion(\"" + id + "\");' />";
+                    ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Crear evaluacion", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doCrearEvaluacion(\"" + id + "\");' />";
             }
             else if (modo == eModo.revisar)
             {
                 //permito prevista
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btn' style='clear:left;float:left;' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
             }
 
             //ret += "<a id='btnDownload' href='' target='_blank'><font size='1'>Descargar esta versi&oacute;n</font></a>";
@@ -296,7 +289,7 @@ namespace nabu
             }
             else
                 //sin flores
-                ret += "<span style='color:gray;font-size:12px;float:left;'>" + Tools.tr("[No tiene flores para crear una propuesta]", idioma) + "</span>";
+                ret += "<div style='color:gray;font-size:12px;float:left;'>" + Tools.tr("No tiene flores para crear una propuesta", idioma) + "</div>";
 
             return ret;
         }
@@ -324,12 +317,12 @@ namespace nabu
                 //editar
                 if (modo != eModo.prevista)
                 {
-                    ret += "<table style='border-collapse: collapse; border-spacing: 0;'><tr>";
+                    ret += "<table style='border-spacing: 0;width:200px'><tr>";
                     string color = "";
                     for (int i = 1; i <= 10; i++)
                     {
-                        color = "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.6)";
-                        ret += "<td style='cursor:pointer;1px solid gray;width:20px;background-color:" + color + "' ";
+                        color = "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.4)";
+                        ret += "<td style='cursor:pointer;border: 3px solid transparent;width:20px;background-color:" + color + "' ";
                         ret += "onclick=\"evaluacionSubmit('" + id + "_set','" + i + "','" + GetType().FullName + "')\" ";
                         ret += ">&nbsp;</td>";
                     }
@@ -339,13 +332,13 @@ namespace nabu
             else if (prop != null && (modo == eModo.revisar || modo == eModo.editar))
             {
                 //revisar
-                ret += "<table style='border-collapse: collapse; border-spacing: 0;'><tr>";
+                ret += "<table style='border-spacing: 0;'><tr>";
                 string color = "";
                 string border = "";
                 for (int i = 1; i <= 10; i++)
                 {
-                    color = "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.6)";
-                    border = (float)getValue(id, prop) == i ? "border:3px solid blue" : "border:1px solid gray";
+                    color = (float)getValue(id, prop) != i ? "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.4)" : "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 1)";
+                    border = (float)getValue(id, prop) == i ? "border:3px solid blue;" : "border:3px solid transparent;";
                     ret += "<td style='cursor:pointer;" + border + ";width:20px;background-color:" + color + "' ";
                     ret += "onclick=\"evaluacionSubmit('" + id + "_set','" + i + "','" + GetType().FullName + "')\" ";
                     ret += ">&nbsp;</td>";
@@ -355,19 +348,19 @@ namespace nabu
             else if (prop != null)
             {
                 //ver
-                ret += "<table style='border-collapse: collapse; border-spacing: 0;'><tr>";
+                ret += "<table style='border-spacing: 0;'><tr>";
                 string color = "";
                 string border = "";
                 for (int i = 1; i <= 10; i++)
                 {
-                    color = "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.6)";
-                    border = (float)getValue(id, prop) == i ? "border:3px solid blue" : "border:1px solid gray";
+                    color = "rgba(" + (100 - i * 10 - 10) + "%, " + (i * 10 - 10) + "%, 50%, 0.4)";
+                    border = (float)getValue(id, prop) == i ? "border:3px solid blue;" : "border:3px solid transparent;";
                     ret += "<td style='" + border + ";width:20px;background-color:" + color + "' ";
                     ret += ">&nbsp;</td>";
                 }
                 ret += "</tr>";
             }
-            ret += "<tr><td colspan=5 style='text-align:left;font-size:12px'>" + minText + "</td><td colspan=5 style='text-align:right;font-size:12px'>" + maxText + "</td></tr>";
+            ret += "<tr><td colspan=5 class='titulo3' style='text-align:left;'>" + minText + "</td><td colspan=5 class='titulo3' style='text-align:right;'>" + maxText + "</td></tr>";
             ret += "</table>";
             ret += "<input type='hidden' id='" + id + "' value='" + getValue(id, prop) + "'>";
 
@@ -393,7 +386,7 @@ namespace nabu
                     //ret += "</td><td style='width:25px;vertical-align:top;'>";
                     //ret += "<img src='res/mic.png' style='cursor:pointer;' onclick='startRecognition(\"" + id + "\");'>";
                     //ret += "</td></tr></table>";
-                    ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
+                    ret += "<div style='text-align:right;width:100%;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                     ret += "<br>";
                 }
             }
@@ -411,7 +404,7 @@ namespace nabu
                 //ret += "</td><td style='width:25px;vertical-align:top;'>";
                 //ret += "<img src='res/mic.png' style='cursor:pointer;' onclick='startRecognition(\"" + id + "\");'>";
                 //ret += "</td></tr></table>";
-                ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
+                ret += "<div style='text-align:right;width:100%;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                 ret += "<br>";
             }
             else if (prop != null)
@@ -420,7 +413,7 @@ namespace nabu
                 string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(toHTMLText((string)getValue(id, prop))));
                 ret += "<div ";
                 ret += "class='" + v.className + "' ";
-                ret += "style='width:" + width + "px;'>";
+                ret += "style='width:100%;'>";
                 ret += HTMLText + "</div>";
                 ret += "<br>";
             }

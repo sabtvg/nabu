@@ -24,6 +24,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
@@ -36,6 +38,9 @@
         var grupoParam;
 
         function doLoad() {
+            //background
+            setBackgroundImage();
+
             //idioma
             idioma = getParameterByName('idioma');
             if (idioma == null) idioma = 'es';
@@ -51,18 +56,6 @@
                 else {
                     var scalex = window.innerWidth / 1920;
                     var scaley = window.innerHeight / 1080;
-                    //atras
-                    document.getElementById("atras").style.width = (100 * scalex) + 'px';
-                    document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-                    document.getElementById("todo").style.top = '30px';
-                    document.getElementById("todo").style.left = (window.innerWidth / 2 - 857 / 2 + 30).toFixed(0) + 'px';
-                    document.getElementById("todo").style.height = (window.innerHeight - 100).toFixed(0) + 'px';
-                    document.getElementById("usuarios").style.height = (window.innerHeight - 200).toFixed(0) + 'px';
-
-                    //background
-                    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-                    document.body.style.backgroundImage = "url('res/background.jpg')";
-
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -144,7 +137,7 @@
 </head>
 <body onload="doLoad();" style="overflow:hidden">
 
-        <div id="todo" class="ventana" style="text-align: left;width:877px;top: 100px;position: absolute;">
+        <div id="todo" class="ventana">
             <nobr>
                 <span class="titulo1">Nab&uacute;</span>
                 <img src="res/icono2.png" />
@@ -153,12 +146,9 @@
 
             <br />
 
-            <div id="usuarios" style="overflow:scroll;"></div>
+            <div id="usuarios" style="overflow:scroll;height:100%"></div>
             <br />
 
         </div>
-
-        <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
     </body>
 </html>

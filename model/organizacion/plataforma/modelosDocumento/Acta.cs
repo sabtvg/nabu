@@ -121,15 +121,20 @@ namespace nabu.plataforma.modelos
 
             //titulo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
-            ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
+            ret += "<br>";
+            ret += "<br>";
+
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
             ret += "</nobr></div>";
 
             //etiqueta
-            ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Acta", g.idioma);
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Acta", g.idioma);
             etiqueta = Tools.tr("Manifiesto", g.idioma);
             if (prop == null)
                 ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
+            ret += "<br>";
+            ret += "<br>";
             return ret;
         }
 
@@ -187,20 +192,20 @@ namespace nabu.plataforma.modelos
                 //apertura
                 ret += "<div class='tema'>" + Tools.tr("Ronda de apertura", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("acta.apertura", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.apertura", g.idioma) + "</div>";
                 ret += HTMLArea("s.apertura", prop, width, 290, tieneFlores, g.idioma);
 
                 //Aspectos logisticos
                 ret += "<div class='tema'>" + Tools.tr("Aspectos logisticos", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("acta.logisticos", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.logisticos", g.idioma) + "</div>";
                 ret += HTMLArea("s.logisticos", prop, width, 290, tieneFlores, g.idioma);
                 ret += "<br>";
 
                 //Orden del dia
                 ret += "<div class='tema'>" + Tools.tr("Orden del dia", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("acta.ordendeldia", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.ordendeldia", g.idioma) + "</div>";
                 ret += HTMLArea("s.ordendeldia", prop, width, 290, tieneFlores, g.idioma);
 
                 //temas
@@ -223,7 +228,7 @@ namespace nabu.plataforma.modelos
                 //Evaluacion
                 ret += "<div class='tema'>" + Tools.tr("Evaluacion", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>" + Tools.tr("acta.evaluacion", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.evaluacion", g.idioma) + "</div>";
                 ret += HTMLArea("s.evaluacion", prop, width, 290, tieneFlores, g.idioma);
                 ret += "<br>";
 
@@ -246,7 +251,7 @@ namespace nabu.plataforma.modelos
             //mensajes de error
             if (errores.ContainsKey(nivel))
             {
-                ret += "<div class='error' style='width:" + (width-4) + "px'>" + errores[nivel] + "</div>";
+                ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
             return ret;
         }

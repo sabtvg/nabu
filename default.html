@@ -24,6 +24,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/d3.min.js"></script>
@@ -47,47 +49,140 @@
     <meta name="keywords" content="democracia directa,democracia interactiva,democracia participativa,generador de consensos,cooperativa 2.0,cooperativa integral catalana" />
 </head>
 <body onload="doLoad();" style="overflow:hidden"  onresize="resize()">
+    <!--aprendemos--------------------------------------------------------------------------------------------------->
+    <div id="quesoDiv" style="display:none;position:absolute;left: 0px; top: 0px; width:100%; height:100%;"></div>
 
     <!--grupos--------------------------------------------------------------------------------------------------->
-    <div id="grupos" style="visibility:hidden;position:absolute; width: 800px; height: 500px; text-align:center;overflow:auto"></div>
+    <div id="grupos" class="grupos"></div>
 
     <!--login--------------------------------------------------------------------------------------------------->
-    <div id="loginGrupo" class="titulo0" style="visibility:hidden;position:absolute; width: 400px; height: 200px; text-align:center;"></div>
-    <img id="loginFlor" src="res/logo.png" style="visibility:hidden; position:absolute;cursor:pointer" onclick="document.location='default.html';"/>
-    <div id="loginIn" class="ventana" style="visibility:hidden;position:absolute; width: 400px; height: 160px; text-align:center;">
+    <div id="loginGrupo" class="titulo0" style="visibility:hidden;position:absolute; width: 500px; height: 60px; text-align:center;"></div>
+    <img id="loginFlor" src="res/logo.png" class="loginFlor" onclick="document.location='default.html';"/>
+    <div id="loginIn" class="ventanalogin" style="visibility:hidden;text-align:center;">
         <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
             <span class="titulo1" style="cursor: pointer;"><font color="blue" size="2">[?]</font>Nab&uacute;</span>
         </a><br />
         <input id="email" type="text" class="txt" placeholder="email" value="" /><br />
         <input id="clave" type="password" class="txt" placeholder="clave" value=""/><br />
         <input id="btnEntrar" type="button" class="btn" value="Entrar" onclick="doLogin();" /><br />
-        <div id="loginResponse">&nbsp;</div>
-        <div id="loginAltaUsuario" onclick="doAltaUsuario();" style="color:blue; cursor: pointer;">Alta de usuario</div>
+        <div id="loginResponse" class="titulo3">&nbsp;</div>
+        <div id="loginAltaUsuario" onclick="doAltaUsuario();" class="titulo3" style="color:blue; cursor: pointer;">Alta de usuario</div>
     </div>
-    <div id="tip" class="tip" style="visibility:hidden;position:absolute; text-align:center; display: table-cell; vertical-align: middle"></div>
+    <div id="tip" style="visibility:hidden;position:absolute;left:0px;width:100%;text-align:center;">
+        <div id="tipContent" class="tip" style="text-align:center; vertical-align: middle;width: fit-content;margin: auto;"></div>
+    </div>
+    
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id='atras' src="res/atras.png" class="atras" onclick="doAtras();" />
 
-    <!--modelos documento--------------------------------------------------------------------------------------------------->
-    <div id="modelos" class="center" style="visibility: hidden;" >
-        <div class="ventana" style="text-align:center;">
-            <div id="modelosContent"></div>
-            <input id="btnCancelar" type="button" value="Cancelar" class="btn" onclick="document.getElementById('modelos').style.visibility = 'hidden';" style="margin: 0 auto;" />
-        </div>             
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="titulo" class="tituloPagina"></div>       
+        
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
+        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        </a>
+        <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br />Digital</div>
+        <div id="mnuOptions"></div>
+        <div id="msgDiv" class="msg"></div>
+    </div>
+    
+        <!--joystick--------------------------------------------------------------------------------------------------->
+    <div id="joystickQueso" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
+        <nobr>
+            <img src="res/jzm.png" onclick="quesoScale*=1.1;dibujarQueso();" class="img" />
+            <img src="res/ju.png" onmousedown="quesoy-=5;dibujarQueso();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" onmousedown="quesox-=5;dibujarQueso();" class="img" />
+            <img src="res/j00.png" onclick="translateQueso(quesox = 0, quesoy = 0)" class="img" />
+            <img src="res/jr.png" onmousedown="quesox+=5;dibujarQueso();" class="img"/>
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" onclick="quesoScale*=0.9;dibujarQueso();" class="img" />
+            <img src="res/jd.png" onmousedown="quesoy+=5;dibujarQueso();" class="img"  />
+        </nobr>           
     </div>
 
-    <!--modelos evaluacion--------------------------------------------------------------------------------------------------->
-    <div id="modelosEvaluacion" class="center" style="visibility: hidden;" >
-        <div class="ventana" style="text-align:center;">
-            <div style="text-align:center" class="titulo1">Modelos de evaluacion</div>
-            <div id="modelosEvaluacionContent"></div>
-            <input type="button" value="Cancelar" class="btn" onclick="document.getElementById('modelosEvaluacion').style.visibility = 'hidden';" style="margin: 0 auto;" />
-        </div>             
+    <!--joystick--------------------------------------------------------------------------------------------------->
+    <div id="joystickArbol" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
+        <nobr>
+            <img src="res/jzm.png" onclick="zoom(10);"  class="img" />
+            <img src="res/ju.png" onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" class="img" />
+            <img src="res/j00.png" onclick="translateArbol(translatex = 0, translatey = 0)" class="img" />
+            <img src="res/jr.png" onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" onclick="zoom(-10);" class="img" />
+            <img src="res/jd.png" onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" class="img" />
+        </nobr>           
     </div>
 
-    <!--objetivo--------------------------------------------------------cr------------------------------------------->
+    <!--timePanel--------------------------------------------------------------------------------------------------->
+    <div id="timePanel"  style="position:fixed;bottom:0vh;padding: 5px; right:0vw;visibility:hidden">
+        <table style="border-collapse: collapse; border-spacing: 0;">
+            <tr>
+                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setDate(historicoFecha.getDate() + 1);showTimePanel();"  /></td>
+                <td></td>
+                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() + 1);showTimePanel();"/></td>
+                <td></td>
+                <td></td>
+                <td rowspan="3" style="vertical-align:middle;"><img src="res/timepresent.png" style='cursor:pointer;margin:0px;width:80%;height:auto;'  onclick="doTimePresent();"/></td>
+            </tr>
+            <tr>
+                <td id="timeDia" style="font-size:18px;text-align:center">00</td>
+                <td style="font-size:18px;text-align:center">/</td>
+                <td id="timeMes" style="font-size:18px;text-align:center">00</td>
+                <td style="font-size:18px;text-align:center">/</td>
+                <td id="timeYear" style="font-size:18px;text-align:center">2018</td>
+            </tr>
+            <tr>
+                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setDate(historicoFecha.getDate() - 1);showTimePanel();"  /></td>
+                <td></td>
+                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() - 1);showTimePanel();"/></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <img id="timeBack" src="res/timeback.png" onclick="doTimeBack();"  style="cursor:pointer;visibility:hidden; position:fixed;bottom:5vh;padding:5px;right:0vw;opacity:0.4" />
+           
+    <!--panel flores--------------------------------------------------------------------------------------------------->
+    <div id="panelUsuario" style="position:fixed;left:0.3vw;top:7vh;visibility: hidden; margin-top: 25px; margin-top:1vh;color: gray;">
+        <span id="usuario" class="titulo3" style="clear:left;float:left;margin:4px;"></span>
+        <img src="res/icono2.png" style="width:20%;height:auto;float:left;"/>
+        <span id="floresDisponibles" style="font-size: 1.2vw; font-weight: bold;float:left;margin:4px;"></span>
+    </div>
+
+    <!--panel grupo--------------------------------------------------------------------------------------------------->
+    <div id="panelGrupo"  class="borde" style="position:fixed;left:0.3vw;top:13vh;display:none; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    </div>
+    
+    <!--panel consenso--------------------------------------------------------------------------------------------------->
+    <div id="panelConsenso"  class="borde" style="position:fixed;left:0.3vw;top:13vh;display:none; padding: 5px; margin-top: 25px; margin-top:1vh;color: gray;">
+    </div>
+    
+    <!--panel queso--------------------------------------------------------------------------------------------------->
+    <div id="panelQueso" class="borde" style="position:fixed;left:0.3vw;top:13vh;display:none; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    </div>
+    
+    <!--panel alertas--------------------------------------------------------------------------------------------------->
+    <div id="alertas"  class="alertas">
+    </div>
+
+    <!--objetivo--------------------------------------------------------------------------------------------------->
     <div id="objetivo" class="objetivo"></div>
 
     <!--pie--------------------------------------------------------------------------------------------------->
-    <div id="pie" style="padding: 5px; position: absolute; font-size: 10px; visibility: hidden;">
+    <div id="pie" class="pie">
         <a id="lnkSim" href="simulacion.html">simulacion</a> - 
         <a href="http://sociocracia.net" target="_blank">Sociocracia.net</a> - 
         01/11/2015 - 
@@ -115,111 +210,10 @@
         </div>
     </div>
 
-    <!--node options--------------------------------------------------------------------------------------------------->
-    <div id="menuNode" class="menu">
-        <table>
-            <tr>  
-                <td class="menu2">
-                    <img class="btnimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
-                    <img class="btnimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();" />
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <!--joystick--------------------------------------------------------------------------------------------------->
-    <div id="joystickQueso" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:0px;">
-        <nobr>
-            <img src="res/jzm.png" style='cursor:pointer;' onclick="quesoScale*=1.1;dibujarQueso();" class="img" />
-            <img src="res/ju.png" style='cursor:pointer;' onmousedown="quesoy-=5;dibujarQueso();" class="img" />
-        </nobr>
-        <br />
-        <nobr>
-            <img src="res/jl.png" style='cursor:pointer;' onmousedown="quesox-=5;dibujarQueso();" class="img" />
-            <img src="res/j00.png" style='cursor:pointer;' onclick="translateQueso(quesox = 0, quesoy = 0)" class="img" />
-            <img src="res/jr.png" style='cursor:pointer;' onmousedown="quesox+=5;dibujarQueso();" class="img"/>
-        </nobr>
-        <br />
-        <nobr>
-            <img src="res/jzl.png" style='cursor:pointer;' onclick="quesoScale*=0.9;dibujarQueso();" class="img" />
-            <img src="res/jd.png" style='cursor:pointer;' onmousedown="quesoy+=5;dibujarQueso();" class="img"  />
-        </nobr>           
-    </div>
-
-    <!--joystick--------------------------------------------------------------------------------------------------->
-    <div id="joystickArbol" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:0px;">
-        <nobr>
-            <img src="res/jzm.png" style='cursor:pointer;' onclick="zoom(10);"  class="img" />
-            <img src="res/ju.png" style='cursor:pointer;' onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" class="img" />
-        </nobr>
-        <br />
-        <nobr>
-            <img src="res/jl.png" style='cursor:pointer;' onmousedown="panx(-5);" onmouseup="clearInterval(joyInterval);" class="img" />
-            <img src="res/j00.png" style='cursor:pointer;' onclick="translateArbol(translatex = 0, translatey = 0)" class="img" />
-            <img src="res/jr.png" style='cursor:pointer;' onmousedown="panx(5);" onmouseup="clearInterval(joyInterval);" class="img" />
-        </nobr>
-        <br />
-        <nobr>
-            <img src="res/jzl.png" style='cursor:pointer;' onclick="zoom(-10);" class="img" />
-            <img src="res/jd.png" style='cursor:pointer;' onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" class="img" />
-        </nobr>           
-    </div>
-
-    <!--timePanel--------------------------------------------------------------------------------------------------->
-    <div id="timePanel"  style="visibility:hidden; position: absolute; left:10px; top:0px;opacity:1">
-        <table style="border-collapse: collapse; border-spacing: 0;">
-            <tr>
-                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;' onclick="historicoFecha.setDate(historicoFecha.getDate() + 1);showTimePanel();"  /></td>
-                <td></td>
-                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() + 1);showTimePanel();"/></td>
-                <td></td>
-                <td></td>
-                <td rowspan="3" style="vertical-align:middle;"><img src="res/timepresent.png" style='cursor:pointer;margin:0px'  onclick="doTimePresent();"/></td>
-            </tr>
-            <tr>
-                <td id="timeDia" style="font-size:18px;text-align:center">00</td>
-                <td style="font-size:18px;text-align:center">/</td>
-                <td id="timeMes" style="font-size:18px;text-align:center">00</td>
-                <td style="font-size:18px;text-align:center">/</td>
-                <td id="timeYear" style="font-size:18px;text-align:center">2018</td>
-            </tr>
-            <tr>
-                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;' onclick="historicoFecha.setDate(historicoFecha.getDate() - 1);showTimePanel();"  /></td>
-                <td></td>
-                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() - 1);showTimePanel();"/></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
-    <img id="timeBack" src="res/timeback.png" onclick="doTimeBack();"  style="cursor:pointer;visibility:hidden; padding: 5px; position: absolute; left:10px; top:0px;opacity:0.4" />
-           
-    <!--titulo--------------------------------------------------------------------------------------------------->
-    <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
-        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
-            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
-        </a>
-        <div id="titulo1" class="titulo1">Sociocracia<br />Digital</div>
-        <div id="mnuOptions" class="titulo3"></div>
-        <div id="msgDiv" class="msg"></div>
-    </div>
-
-    <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
-    </div>
-
-    <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelGrupo"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
-    </div>
-
-    <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelQueso"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:210px; color: gray; border: 1px solid gray; margin: 0px;">
-    </div>
-
     <!--menuppal--------------------------------------------------------------------------------------------------->
     <div id="menuppal" style="position: absolute; visibility:hidden; width: 800px; height: 600px;">
-        <div id="padrenombre" style="position: inherit; width:800px; left:0px; top:-100px;text-align: center;" class="titulo1"></div>
-        <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-70px;text-align: center;" class="titulo0"></div>
+        <div id="padrenombre" style="position: inherit; width:800px; left:0px; top:-110px;text-align: center;" class="titulo2"></div>
+        <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-80px;text-align: center;font-weight:bold" class="titulo2"></div>
         <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;;cursor:default" />
         <img id="ppal1" class="btnimg" src="res/es/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doDecidimos();"/>
         <img id="ppal2" class="btnimg" src="res/es/noticias.png" style="position: inherit; left:15px; top:192px;" onclick="doAprendemos();"/>
@@ -231,29 +225,11 @@
         <img id="ppal9" class="btnimg" src="res/doc.png" style="position: inherit; left:120px; top:258px;" onclick="doManifiesto();"/>
         <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;cursor:default;"/>
         <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;cursor:default" />
-        <div id="hijos" style="position: inherit; width:800px; left:0px; top:480px;text-align: center;" class="titulo1"></div>
-    </div>
-
-    <!--atras--------------------------------------------------------------------------------------------------->
-    <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:hidden; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
-
-    <!--aprendemos--------------------------------------------------------------------------------------------------->
-    <div id="quesoDiv" style="left: 0px; top: 0px; width:100%; height:100%"></div>
-
-
-    <!--panel flores--------------------------------------------------------------------------------------------------->
-    <div id="panelUsuario" style="visibility: hidden; position: absolute; left: 5px; top: 120px;">
-        <table>
-            <tr>
-                <td id="usuario" colspan="2" class="titulo2"></td>
-                <td><img src="res/icono2.png" style="width:20px;height:19px;"/></td>
-                <td id="floresDisponibles" style="font-size: 20px; font-weight: bold;">5</td>
-            </tr>
-        </table>      
+        <div id="hijos" style="position: inherit; width:1600px; left:-400px; top:480px;text-align: center;" class="titulo2"></div>
     </div>
 
     <!--cambiar clave--------------------------------------------------------------------------------------------------->
-    <div id="cambiarClave" class="ventana" style="position: absolute; width: 230px; text-align:center; visibility: hidden;">
+    <div id="cambiarClave" class="ventanaclave" style="position: absolute; width: 230px; text-align:center; visibility: hidden;">
         <span class="titulo2">Cambio de clave</span><br />
         <input id="oldPass" type="password" class="editar" placeholder="Clave actual" value="" /><br />
         <input id="newPass" type="password" class="editar" placeholder="Nueva clave" value=""/><br />
@@ -264,7 +240,7 @@
     </div>
 
     <!--alta usuario--------------------------------------------------------------------------------------------------->
-    <div id="altaUsuario" class="ventana" style="position: absolute; width: 330px; height: 360px; text-align:center; visibility: hidden; opacity: 1;">
+    <div id="altaUsuario" class="ventanaltausuario">
         <span id="auTit1" class="titulo2">Alta de usuario</span>
         <span id="auTit2">
         <br /><br />
@@ -276,7 +252,7 @@
         <input id="altaUsuarioNombre" type="text" class="editar" placeholder="Nombre completo" value="" /><br />
         <input id="altaUsuarioEmail" type="text" class="editar" placeholder="Email" value="" /><br /><br />
         <input id="auEnviar" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
-        <input id="auCerrar" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, window.innerHeight / 2 - 330 / 2, -380, TWEEN.Easing.Cubic.Out);" /><br />
+        <input id="auCerrar" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);" /><br />
         <div id="altaUsuarioMsg"></div>
         <br /><br />
     </div>
@@ -285,72 +261,56 @@
     <div id="panelListaConsensos" style="visibility: hidden;position:absolute;width:1024px;overflow-x:auto;" >
     </div>
 
-    <!--panel alertas--------------------------------------------------------------------------------------------------->
-    <div id="alertas"  class="borde" style="visibility:hidden; padding: 5px; position: absolute; left:5px; top:330px; color: gray; border: 1px solid gray; margin: 0px;width:200px;height:300px;overflow: auto;">
-    </div>
-
-    <!--panel--------------------------------------------------------------------------------------------------->
-    <div id="panelDer" class="panel" style="visibility: hidden;">
-        <table style="width: 95%;">
-            <tr>
-                <td style="text-align: left;"><img id="Img1" style="cursor: pointer;" src="res/close.png" onclick="hidePanelDer();" /></td>
-            </tr>
-            <tr>
-                <td id="panelDer2">
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div id="panelIzq" class="panel" style="visibility: hidden;">
-        <table style="width: 95%;">
-            <tr>
-                <td style="text-align: left;"><img id="Img2" style="cursor: pointer;" src="res/close.png" onclick="hidePanelIzq();" /></td>
-            </tr>
-            <tr>
-                <td id="panelIzq2">
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <!--florwait--------------------------------------------------------------------------------------------------->
-    <img id="florWait" src="res/florWait.gif" style="visibility: hidden;position:absolute;" />
-
     <!--confirmar quitar ultima flor--------------------------------------------------------------------------------------------------->
     <div id="ultimaFlor" style="visibility: hidden;position:absolute;width:300px;" >
         <div class="ventana" style="text-align:center;">
-            <span id="ufTit1" class="titulo2">Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir</span><br /><br />
+            <span id="ufTit1" class="titulo3">Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir</span><br /><br />
             <input id="ufAceptar" type="button" value="Aceptar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
             <input id="ufCancelar" type="button" value="Cancelar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
         </div>             
     </div>
 
     <!--node options--------------------------------------------------------------------------------------------------->
-    <div id="menuEvaluacion" class="menu">
-        <table>
-            <tr>  
-                <td class="menu2">
-                    <img class="btnimg" title="Crear evaluacion" src="res/documento.png" onclick="seleccionarModeloEvaluacion();" />
-                </td>
-            </tr>
-        </table>
+    <div id="menuNode" class="menuarbol">
+        <img class="menuimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();"/>
+        <img class="menuimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();"/>
     </div>
 
-    <!--tituloArbol--------------------------------------------------------------------------------------------------->
-    <div id="tituloArbol" class="titulo1" style="position:absolute;left:130px;"></div>
+    <!--node options--------------------------------------------------------------------------------------------------->
+    <div id="menuEvaluacion" class="menuqueso">
+        <img class="menuimg" title="Crear evaluacion" src="res/documento.png" onclick="seleccionarModeloEvaluacion();" />
+    </div>
+
+    <!--panel--------------------------------------------------------------------------------------------------->
+    <div id="panelDer" class="panel" style="visibility: hidden;">
+    </div>
+    <div id="panelIzq" class="panel" style="visibility: hidden;">
+    </div>
 
     <!--documento--------------------------------------------------------------------------------------------------->
-    <div id="documento" class="documento" style="top: -1000px;">
+    <div id="documento" class="documento">
     </div>
 
     <!--help--------------------------------------------------------------------------------------------------->
-    <div id="help" class="documento" style="opacity: 1; width: 800px; height: 650px;">
+    <div id="help" class="documento">
         <table style="width: 100%;">
             <tr><td style="text-align: left;"><img style="cursor: pointer;" src="res/close.png" onclick="doCloseHelp();" /></td></tr>
             <tr><td id="helpContent"></td></tr>
         </table>
     </div>
 
+    <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+    <div id="rotarpantalla" class="rotarpantalla">
+        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
+        <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
+    </div>
 
+    <!--modelos documento--------------------------------------------------------------------------------------------------->
+    <div id="modelos" class="modelos" >
+    </div>
+
+    <!--modelos evaluacion--------------------------------------------------------------------------------------------------->
+    <div id="modelosEvaluacion" class="modelos" >
+    </div>
 </body>
 </html>

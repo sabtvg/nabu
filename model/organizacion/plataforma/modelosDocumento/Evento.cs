@@ -151,7 +151,7 @@ namespace nabu.plataforma.modelos
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.introduccion", g.idioma) 
                         + "</div>";
 
@@ -166,7 +166,7 @@ namespace nabu.plataforma.modelos
                 //Objetivo a lograr
                 ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.objetivo", g.idioma) 
                         + "</div>";
 
@@ -175,7 +175,7 @@ namespace nabu.plataforma.modelos
                 //Descripcion
                 ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.descripcion", g.idioma) 
                         + "</div>";
 
@@ -184,7 +184,7 @@ namespace nabu.plataforma.modelos
                 //A quien va dirigido
                 ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("event.aquien", g.idioma) 
                         + "</div>";
 
@@ -200,7 +200,7 @@ namespace nabu.plataforma.modelos
                 //Materiales
                 ret += "<div class='tema'>" + Tools.tr("Lugar", g.idioma) + "</div>";
                 if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.lugar", g.idioma) 
                         + "</div>";
 
@@ -209,7 +209,7 @@ namespace nabu.plataforma.modelos
                 //RRHH
                 ret += "<div class='tema'>" + Tools.tr("Materiales", g.idioma) + "</div>";
                 if (editar)  
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.materiales", g.idioma) 
                         + "</div>";
 
@@ -218,7 +218,7 @@ namespace nabu.plataforma.modelos
                 //Otros
                 ret += "<div class='tema'>" + Tools.tr("Transportes", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.transportes", g.idioma) 
                         + "</div>";
 
@@ -232,7 +232,7 @@ namespace nabu.plataforma.modelos
             {
                 ret += "<div class='tema'>" + Tools.tr("Organizacion", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.organizacion", g.idioma) 
                         + "</div>";
 
@@ -241,7 +241,7 @@ namespace nabu.plataforma.modelos
                 //responsable lista de seleccion de usuarios
                 ret += "<div class='tema'>" + Tools.tr("Responsable", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("accion.responsable", g.idioma)
                         + "</div>";
                 string lista = "|";
@@ -253,11 +253,11 @@ namespace nabu.plataforma.modelos
                 ret += "<br>";
 
                 //fecha
-                ret += "<div class='tema'>";
+                ret += "<div class='tema'></div>";
                 ret += Tools.tr("Fecha", g.idioma);
                 ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
                 if (editar)
-                    ret += "<span class='smalltip' style='margin:5px'>"
+                    ret += "<span class='smalltip'>"
                         + Tools.tr("evento.fecha", g.idioma)
                         + "</span>";
                 ret += "</div>";
@@ -270,7 +270,7 @@ namespace nabu.plataforma.modelos
             {
                 ret += "<div class='tema'>" + Tools.tr("Valoracion del resultado", g.idioma) + "</div>";
                 if (editar) 
-                    ret += "<div class='smalltip' style='width:" + width + "px'>"
+                    ret += "<div class='smalltip'>"
                         + Tools.tr("evento.valoracion", g.idioma) 
                         + "</div>";
 
@@ -294,7 +294,7 @@ namespace nabu.plataforma.modelos
             //mensajes de error
             if (errores.ContainsKey(nivel))
             {
-                ret += "<div class='error' style='width:" + (width-4) + "px'>" + errores[nivel] + "</div>";
+                ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
             return ret;
         }

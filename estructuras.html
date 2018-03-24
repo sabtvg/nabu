@@ -3,6 +3,8 @@
 <html>
 <head>
     <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
     <script src="js/util.js"></script>
     <script src="js/common.js"></script>
@@ -91,6 +93,9 @@
         }
 
         function doLoad() {
+            //background
+            setBackgroundImage();
+
             //idioma
             idioma = getParameterByName('idioma');
             if (idioma == null) idioma = 'es';
@@ -132,8 +137,10 @@
                                 }
                                 else {
                                     //tengo el bosque
-                                    //document.getElementById("todo").innerHTML = data;
+                                    //titulo
+                                    document.getElementById("titulo").innerHTML = usuario.grupo + " - " + tr("Estructuras organizativas");
                                     operativo = JSON.parse(data);
+                                    setZoom(operativo);
                                     dibujarTodo();
                                 }
                             });
@@ -147,26 +154,10 @@
         function calcularResize() {
             var scalex = window.innerWidth / 1920;
             var scaley = window.innerHeight / 1080;
-            document.getElementById("todo").style.top = '0px';
-            document.getElementById("todo").style.left = '0px';
-            document.getElementById("todo").style.width = window.innerWidth + 'px';
-            document.getElementById("todo").style.height = window.innerHeight + 'px';
-            document.getElementById("joystick").style.top = (window.innerHeight - 190 * scaley) + 'px';
 
             //titulo
             document.getElementById("titulo1").innerHTML = tr("Sociocracia");
-            document.getElementById("titulo").style.left = (window.innerWidth - 280) + 'px';
-            document.getElementById("titulo0").style.fontSize = (50 * scaley).toFixed(0) + 'px';
-            document.getElementById("titulo1").style.fontSize = (30 * scaley).toFixed(0) + 'px';
-            //document.getElementById("titulo2").style.fontSize = (25 * scaley).toFixed(0) + 'px';
-            document.getElementById("titulo").style.visibility = "visible";
-
-            //atras
-            document.getElementById("atras").style.width = (100 * scalex) + 'px';
-            document.getElementById("atras").style.height = (100 * scaley).toFixed(0) + 'px';
-            //background
-            document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
-            document.body.style.backgroundImage = "url('res/background.jpg')";
+            document.getElementById("tituloNabu").style.visibility = "visible";
 
         }
 
@@ -175,16 +166,14 @@
             var scaley = window.innerHeight / 1080;
             var s = "";
             s += "<defs>";
-            s += "<marker id='markerCircle' markerWidth='8' markerHeight='8' refX='5' refY='5'>";
-            s += "<circle cx='5' cy='5' r='3' style='stroke: none; fill:#000000;opacity:0.4;'/>";
+            s += "<marker id='markerCircle' markerWidth='" + (8 * zoom) + "' markerHeight='" + (8 * zoom) + "' refX='" + (5 * zoom) + "' refY='" + (5 * zoom) + "'>";
+            s += "<circle cx='" + (5 * zoom) + "' cy='" + (5 * zoom) + "' r='" + (3 * zoom) + "' style='stroke: none; fill:#000000;opacity:0.4;'/>";
             s += "</marker>";
-            s += "<marker id='markerArrow' markerWidth='" + 20 * zoom + "' markerHeight='" + 20 * zoom + "' refX='2' refY='6' orient='auto'>";
-            s += "<path d='M2,2 L2,11 L10,6 L2,2' style='fill: #000000;opacity:0.4' />";
+            s += "<marker id='markerArrow' markerWidth='" + (20 * zoom) + "' markerHeight='" + (20 * zoom) + "' refX='" + (2 * zoom) + "' refY='" + (6 * zoom) + "' orient='auto'>";
+            s += "<path d='M" + (2 * zoom) + "," + (2 * zoom) + " L" + (2 * zoom) + "," + (11 * zoom) + " L" + (10 * zoom) + "," + (6 * zoom) + " L" + (2 * zoom) + "," + (2 * zoom) + "' style='fill: #000000;opacity:0.4' />";
             s += "</marker>";
             s += "</defs>";
 
-            s += "<text x='" + (50 + 100 * scalex) + "' y='" + (10 + 100 * scaley / 2 + 10) + "' fill='black' style='font-size:30px'>"
-                + usuario.grupo + " - " + tr("Estructuras organizativas") + "</text>";
             s += "<g id='grupo'>";
             s += dibujarOperativo(operativo, window.innerWidth / 2 + offsetX, 100 + offsetY, zoom);
             s += "</g>"
@@ -199,6 +188,22 @@
             s += "marker-start: url(#markerCircle); ";
             s += "marker-end: url(#markerArrow);' />";
             return s;
+        }
+
+        function setZoom(operativo) {
+            //grupos de trabjo
+            var h = 2;
+            var w = operativo.gruposTrabajo.length + 1;
+            for (i in operativo.gruposTrabajo) {
+                var gt = operativo.gruposTrabajo[i];
+                var hg = gt.estrategias.length + 1;
+                h = hg > h ? hg: h;
+            }
+            if (h * row > w * col)
+                zoom = window.innerHeight / (h * row * 2);
+            else
+                zoom = window.innerWidth / (w * col * 2);
+            if (zoom > 0.8) zoom = 0.8;
         }
 
         function dibujarOperativo(operativo, x, y, zoom) {
@@ -260,7 +265,7 @@
             if (nom.length > 12)
                 nom = nom.substring(0, 12) + "...";
 
-            var s = "<rect x='" + (x - boxWidth / 2).toFixed(0) + "' y='" + (y - boxHeight / 2).toFixed(0) + "' rx='20' ry='20' "
+            var s = "<rect x='" + (x - boxWidth / 2).toFixed(0) + "' y='" + (y - boxHeight / 2).toFixed(0) + "' rx='" + (20 * zoom) + "' ry='" + (20 * zoom) + "' "
                 + "width='" + boxWidth.toFixed(0) + "' height='" + boxHeight.toFixed(0) + "' "
                 + "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:" + (5 * zoom).toFixed(0) + ";opacity:0.4' "
                 + "onclick=\"" + onclick + "\"/>"
@@ -277,11 +282,6 @@
 
         function openPR(EID) {
             editando = true;
-            document.getElementById("GT").style.top = ((window.innerHeight - 600) / 2).toFixed(0) + 'px';
-            document.getElementById("GT").style.left = ((window.innerWidth - 800) / 2).toFixed(0) + 'px';
-            document.getElementById("GT").style.width = '800px';
-            document.getElementById("GT").style.height = '600px';
-
             var s = "";
             for (var i in operativo.gruposTrabajo) {
                 var GT = operativo.gruposTrabajo[i];
@@ -302,16 +302,12 @@
             }
             s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
             document.getElementById("GT").innerHTML = s;
-            document.getElementById("GT").style.visibility = "visible";
+            document.getElementById("GT").style.display = "block";
 
         }
 
         function openGT(EID) {
             editando = true;
-            document.getElementById("GT").style.top = ((window.innerHeight - 600) / 2).toFixed(0) + 'px';
-            document.getElementById("GT").style.left = ((window.innerWidth - 800) / 2).toFixed(0) + 'px';
-            document.getElementById("GT").style.width = '800px';
-            document.getElementById("GT").style.height = '600px';
 
             var s = "";
             for (var i in operativo.gruposTrabajo) {
@@ -373,7 +369,7 @@
 
             s += "<br><br><input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
             document.getElementById("GT").innerHTML = s;
-            document.getElementById("GT").style.visibility = "visible";
+            document.getElementById("GT").style.display = "block";
 
         }
 
@@ -399,8 +395,10 @@
                                 operativo = respuesta.operativo;
                                 if (respuesta.resultado != 'ok')
                                     document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
-                                dibujarTodo();
-                                openGT(EID);
+                                else {
+                                    dibujarTodo();
+                                    openGT(EID);
+                                }
                             }
                         });
                     break;
@@ -453,7 +451,7 @@
         }
 
         function doCerrarDocumento() {
-            document.getElementById("GT").style.visibility = "hidden";
+            document.getElementById("GT").style.display = "none";
             editando = false;
         }
 
@@ -464,40 +462,49 @@
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
-        <svg id="todo"  style="position: absolute;">
+        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1">
         </svg>
         <!--titulo--------------------------------------------------------------------------------------------------->
-        <div id="titulo" style="visibility:hidden; padding: 10px; width: 250px; text-align:right; position: absolute; left:0px; top:0px;">
+        <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
             <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
                 <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
             </a>
-            <div id="titulo1" class="titulo1"><nobr>Sociocracia</nobr></div>
+            <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br />Digital</div>
             <div id="msgDiv" class="msg"></div>
         </div>
 
         <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" class="btnimg" title="Atras" src="res/atras.png" style="visibility:visible; position: absolute; left:10px; top:10px;" onclick="doAtras();" />
+        <img id="atras" title="Atras" src="res/atras.png" class="atras" onclick="doAtras();" />
     
+        <!--titulo--------------------------------------------------------------------------------------------------->
+        <div id="titulo" class="tituloPagina"></div>       
+
         <!--joystick--------------------------------------------------------------------------------------------------->
-        <div id="joystick" style="padding: 5px;position: absolute; left:5px; top:0px;">
+        <div id="joystick" style="position:fixed;bottom:0vh;padding: 5px; left:0vw;">
             <nobr>
-                <img src="res/jzm.png" style='cursor:pointer;' onclick="zoom *= 1.1; dibujarTodo();" class="img" />
-                <img src="res/ju.png" style='cursor:pointer;' onclick="offsetY -= 30; dibujarTodo();" class="img" />
+                <img src="res/jzm.png" onclick="zoom *= 1.1; dibujarTodo();" class="img" />
+                <img src="res/ju.png" onclick="offsetY -= 30; dibujarTodo();" class="img" />
             </nobr>
             <br />
             <nobr>
-                <img src="res/jl.png" style='cursor:pointer;' onclick="offsetX -= 30; dibujarTodo();" class="img" />
-                <img src="res/j00.png" style='cursor:pointer;' onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" class="img" />
-                <img src="res/jr.png" style='cursor:pointer;' onclick="offsetX += 30; dibujarTodo();" class="img" />
+                <img src="res/jl.png" onclick="offsetX -= 30; dibujarTodo();" class="img" />
+                <img src="res/j00.png" onclick="zoom = 1; offsetY = 0; offsetX = 0; dibujarTodo();" class="img" />
+                <img src="res/jr.png" onclick="offsetX += 30; dibujarTodo();" class="img" />
             </nobr>
             <br />
             <nobr>
-                <img src="res/jzl.png" style='cursor:pointer;' onclick="if (zoom > 0.6) zoom *= 0.9; dibujarTodo();" class="img" />
-                <img src="res/jd.png" style='cursor:pointer;' onclick="offsetY += 30; dibujarTodo();" class="img" />
+                <img src="res/jzl.png" onclick="if (zoom > 0.6) zoom *= 0.9; dibujarTodo();" class="img" />
+                <img src="res/jd.png" onclick="offsetY += 30; dibujarTodo();" class="img" />
             </nobr>                    
         </div>
 
         <!--GT--------------------------------------------------------------------------------------------------->
-        <div id="GT" class="documento" style="fill:#4169E1;stroke:black;stroke-width:5;visibility:hidden;position:absolute;"></div>
+        <div id="GT" class="popup" style="fill:#4169E1;stroke:black;stroke-width:5;"></div>
+
+        <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
+        </div>
     </body>
 </html>
