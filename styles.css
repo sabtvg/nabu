@@ -8,7 +8,14 @@
 }
 
 
-
+.keyword {
+    border: 1px solid black;
+    padding: 4px;
+    border-radius: 8px;
+    background-color: #C4F0FF;
+    margin: 4px;    
+    box-shadow: 3px 3px silver;
+}
 .node {
   cursor: pointer;
 }
@@ -34,11 +41,11 @@
 .objetivo {
     border: 1px solid #C0C0C0;
     padding: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: #FFFFFF;
     opacity: 0.6;
-    position: absolute;
-    top: 95%;
+    position: fixed;
+    bottom: 15px;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
@@ -63,7 +70,6 @@
     padding: 5px;
     border-radius: 10px;
 }
-
 .small {
     font-size: small;
 }
@@ -276,7 +282,7 @@
     border-radius: 10px;
     position:fixed;
     left:0.3vw;
-    top:24vh;
+    top:30vh;
     margin-top:1vh;
     color: gray;
     height:42vh;
@@ -484,6 +490,17 @@
     position: absolute;
     visibility: hidden;
     overflow: scroll;
+}
+.panelConsenso {
+    position:fixed;
+    top:12vh;
+    left:5px;
+    border: 1px solid gray;
+    padding: 5px;
+    border-radius: 10px;
+    padding: 5px;
+    color: gray;
+    display:none;
 }
 .seccion {
     padding: 2px;
@@ -1039,7 +1056,6 @@
         width: 100%;
         height: 100%;
         z-index: 10;
-        vertical-align:bottom;
         text-align:center;
         background-image: url('res/background.jpg');
     }

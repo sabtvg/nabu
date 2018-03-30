@@ -50,36 +50,8 @@
         //};
 
         $(document).mousemove(function (event) {
-            if (!editando) {
-                if (firefoxWhich == 1 && !event.ctrlKey) {
-                    //scroll
-                    if (lastMouse) {
-                        offsetX -= lastMouse.clientX - event.clientX;
-                        offsetY -= lastMouse.clientY - event.clientY;
-                        //document.body.style.cursor = "all-scroll";
-                        event.preventDefault();
-                        transform(offsetX, offsetY);
-                    }
-                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
-                }
-                else if (event.which == 1 && event.ctrlKey) {
-                    //zoom
-                    if (lastMouse) {
-                        zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
-                        //document.body.style.cursor = "w-resize";
-                        event.preventDefault();
-                        dibujarTodo();
-                    }
-                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
-                }
-                else {
-                    if (lastMouse)
-                        event.preventDefault(); //fin
-                    lastMouse = null;
-                    //document.getElementById("todo").style.cursor = "default";
-                }
-                //$("div").text(event.which + ", " + event.ctrlKey);
-            }
+            move(event);
+            event.preventDefault();
         });
 
         function transform(offsetX, offsetY) {
@@ -92,9 +64,50 @@
                 g.transform.baseVal.getItem(0).setMatrix(matrix0);
         }
 
+        function move(event) {
+            if (!editando) {
+                if (firefoxWhich == 1 && !event.ctrlKey) {
+                    //scroll
+                    if (lastMouse) {
+                        offsetX -= lastMouse.clientX - event.clientX;
+                        offsetY -= lastMouse.clientY - event.clientY;
+                        //document.body.style.cursor = "all-scroll";
+                        transform(offsetX, offsetY);
+                    }
+                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
+                }
+                else if (event.which == 1 && event.ctrlKey) {
+                    //zoom
+                    if (lastMouse) {
+                        zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                        //document.body.style.cursor = "w-resize";
+                        dibujarTodo();
+                    }
+                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
+                }
+                else {
+                    lastMouse = null;
+                    //document.getElementById("todo").style.cursor = "default";
+                }
+                //$("div").text(event.which + ", " + event.ctrlKey);
+            }
+        }
+
         function doLoad() {
             //background
             setBackgroundImage();
+
+            //eventos tactiles
+            document.body.addEventListener('touchmove', function (e) {
+                var touch = e.changedTouches[0] // reference first touch point for this event
+                firefoxWhich = 1;
+                touch.ctrlKey = false;
+                move(touch);
+            }, false)
+
+            document.body.addEventListener('touchend', function (e) {
+                lastMouse = null;
+            }, false)
 
             //idioma
             idioma = getParameterByName('idioma');
@@ -503,8 +516,8 @@
 
         <!--rotarpantalla--------------------------------------------------------------------------------------------------->
         <div id="rotarpantalla" class="rotarpantalla">
-            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
-            <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
         </div>
     </body>
 </html>

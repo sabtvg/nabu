@@ -1,0 +1,114 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/dictionary.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+
+        function HTMLEncode(str) {
+            var result = "";
+            var str = (arguments.length === 1) ? str : this;
+            for (var i = 0; i < str.length; i++) {
+                var chrcode = str.charCodeAt(i);
+                if (chrcode == 38) 
+                    result += "&amp;";
+                else if (chrcode == 60)
+                    result += "&lt;";
+                else if (chrcode == 62)
+                    result += "&gt;";
+                else if (chrcode == 27)
+                    result += "&#39;";
+                else
+                    result += str.substr(i, 1)
+            }
+            return result;
+        }
+
+
+        function doLoad() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+
+            //background            
+            setBackgroundImage();
+
+            //dictionary.js
+            var eskeys = [];
+            for (var i in dictionary) {
+                var item = dictionary[i];
+                if (item.idioma == "es")
+                    eskeys.push(item.key);
+            }
+            eskeys.sort();
+            var ret = "";
+            ret += fill("es", eskeys);
+            ret += fill("ct", eskeys);
+            ret += fill("en", eskeys);
+            ret += fill("fr", eskeys);
+            document.getElementById("todo1").innerHTML = "<h1>dictionary.js</h1><code><pre>" + ret + "</pre></code>";
+
+
+            getHttp("doMain.aspx?actn=dictionary",
+                function (data) {
+                    document.getElementById("todo2").innerHTML = "<h1>oTools.cs</h1><code><pre>" + data + "</pre></code>";
+                })
+        }
+
+        function fill(idioma, eskeys) {
+            var ret = "";
+            var found = false;
+            for (var l in eskeys) {
+                found = false;
+                for (var i in dictionary) {
+                    var item = dictionary[i];
+                    if (item.idioma == idioma && item.key == eskeys[l]) {
+                        ret += "{ key: '" + item.key + "', idioma: '" + idioma + "', txt: '"
+                            + HTMLEncode(item.txt) + "' },\r\n";
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    ret += "{ key: '" + eskeys[l] + "', idioma: '" + idioma + "', txt: '?' },\r\n";
+                }
+            }
+            ret += "\r\n";
+            return ret;
+        }
+
+    </script>
+</head>
+<body onload="doLoad();">
+    Tabla de traducciones ordenada y normalizada segun tabla ES<br />
+    <div id="todo1" style="width:100%;"></div>
+    <div id="todo2" style="width:100%;"></div>
+
+    </body>
+</html>

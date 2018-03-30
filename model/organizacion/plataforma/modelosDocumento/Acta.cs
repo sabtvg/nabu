@@ -190,22 +190,22 @@ namespace nabu.plataforma.modelos
                 ret += HTMLListaSeleccion("s.participan", prop, width - 150, 250, tieneFlores, lista, "Presente", "NO presente", g.idioma);
 
                 //apertura
-                ret += "<div class='tema'>" + Tools.tr("Ronda de apertura", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("acta.apertura.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.apertura", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.apertura.tip", g.idioma) + "</div>";
                 ret += HTMLArea("s.apertura", prop, width, 290, tieneFlores, g.idioma);
 
                 //Aspectos logisticos
-                ret += "<div class='tema'>" + Tools.tr("Aspectos logisticos", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("acta.logisticos.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.logisticos", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.logisticos.tip", g.idioma) + "</div>";
                 ret += HTMLArea("s.logisticos", prop, width, 290, tieneFlores, g.idioma);
                 ret += "<br>";
 
                 //Orden del dia
-                ret += "<div class='tema'>" + Tools.tr("Orden del dia", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("acta.ordendeldia.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.ordendeldia", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.ordendeldia.tip", g.idioma) + "</div>";
                 ret += HTMLArea("s.ordendeldia", prop, width, 290, tieneFlores, g.idioma);
 
                 //temas
@@ -226,9 +226,9 @@ namespace nabu.plataforma.modelos
                 ret += "<br>";
 
                 //Evaluacion
-                ret += "<div class='tema'>" + Tools.tr("Evaluacion", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("acta.evaluacion.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.evaluacion", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("acta.evaluacion.tip", g.idioma) + "</div>";
                 ret += HTMLArea("s.evaluacion", prop, width, 290, tieneFlores, g.idioma);
                 ret += "<br>";
 

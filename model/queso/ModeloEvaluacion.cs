@@ -317,7 +317,7 @@ namespace nabu
                 //editar
                 if (modo != eModo.prevista)
                 {
-                    ret += "<table style='border-spacing: 0;width:200px'><tr>";
+                    ret += "<table style='border-spacing: 0;'><tr>";
                     string color = "";
                     for (int i = 1; i <= 10; i++)
                     {

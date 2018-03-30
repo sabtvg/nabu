@@ -45,7 +45,7 @@ namespace nabu.plataforma.modelosEvaluacion
                 Pregunta p = new Pregunta();
                 p.pregunta = Tools.tr("accion.evaluacion.p" + i, grupo.idioma);
                 p.respuesta = Convert.ToInt32((float)getValue("f.p" + i, prop));
-                p.texto = (string)getValue("s.t1", prop);
+                p.texto = (string)getValue("s.t" + i, prop);
                 if (i == 6)
                 {
                     p.minText = "Si";

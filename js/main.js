@@ -62,6 +62,11 @@ var modelos;
 var modelosEvaluacion;
 
 $(document).mousemove(function (event) {
+    move(event);
+    event.preventDefault();
+});
+
+function move(event) {
     if (!preguntarAlSalir) {
         if (event.which == 1 && !event.ctrlKey) {
             //scroll
@@ -75,7 +80,6 @@ $(document).mousemove(function (event) {
                     translatex -= lastMouse.clientX - event.clientX;
                     translatey -= lastMouse.clientY - event.clientY;
                     //document.body.style.cursor = "all-scroll";
-                    event.preventDefault();
                     translateArbol(translatex, translatey);
                 }
             }
@@ -91,7 +95,6 @@ $(document).mousemove(function (event) {
                 else if (estado == "decidimos") {
                     treeScale += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
                     //document.body.style.cursor = "w-resize";
-                    event.preventDefault();
                     dibujarArbol(arbolPersonal.raiz);
                 }
             }
@@ -103,13 +106,25 @@ $(document).mousemove(function (event) {
         }
         //$("div").text(event.which + ", " + event.ctrlKey);
     }
-});
+}
 
 function doLoad() {
     //settings
     window.onbeforeunload = preguntar;
     //background
     setBackgroundImage();
+
+    //eventos tactiles
+    document.body.addEventListener('touchmove', function (e) {
+        var touch = e.changedTouches[0] // reference first touch point for this event
+        touch.which = 1;
+        touch.ctrlKey = false;
+        move(touch);
+    }, false)
+
+    document.body.addEventListener('touchend', function (e) {
+        lastMouse = null;
+    }, false)
 
     //busco arboles
     getHttp("doMain.aspx?actn=getConfig&width=" + window.innerWidth + "&height=" + window.innerHeight,
@@ -236,10 +251,10 @@ function gruposEffectIn() {
     s += "<div class='titulo1'><b>" + tr("Grupos") + "</b></div>";
     for (i in config.grupos) {
         var grupo = config.grupos[i];
-        s += " <span class='grupo'><a href='default.html?grupo=" + grupo;
+        s += " <a href='default.html?grupo=" + grupo;
         if (idioma)
             s += "&idioma=" + idioma;
-        s += "'>" + grupo + "</a></span>"
+        s += "' class='grupo'><nobr>" + grupo + "</nobr></a>"
     }
     s += "<br><br><input type='button' class='btn' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creararbol.html?idioma=" + idioma + "'\">";
 
@@ -611,7 +626,7 @@ function showAlertas(alertas) {
         }
         var div = document.getElementById("alertas");
         div.innerHTML = s;
-        div.style.visibility = "visible";
+        div.style.display = "block";
     }
 }
 
@@ -622,7 +637,7 @@ function doBorrarAlertas() {
         + "&clave=" + arbolPersonal.usuario.clave
         + "&grupo=" + arbolPersonal.nombre,
         function (data) {}); //no proceso respuesta
-    div.style.visibility = "hidden";
+    div.style.display = "none";
 }
 
 function doMenuppal() {

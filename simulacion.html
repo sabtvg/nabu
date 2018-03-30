@@ -229,10 +229,10 @@
     </div>
 
     <!--panel--------------------------------------------------------------------------------------------------->
-    <div id="Div1" style="padding: 10px; position: absolute; left:0.3vw; top:10vh;">
-        <input id="btnNuevo" class="btn" type="button" value="Nuevo debate" onclick="nuevoDebate();" style="margin-left:0px"/><br />
-        <input id="btnPaso" class="btn" type="button" value="Paso" onclick="live();"  style="margin-left:0px";/><br />
-        <input id="startStop" class="btn btnPlay" type="button" value="Play" onclick="startStop();"  style="margin-left:0px;"/>
+    <div id="Div1" style="padding: 10px; position: fixed; right:0vw; top:20vh;text-align:right;">
+        <input id="btnNuevo" class="btn" type="button" value="Nuevo debate" onclick="nuevoDebate();" style="margin-right:0px"/><br />
+        <input id="btnPaso" class="btn" type="button" value="Paso" onclick="live();"  style="margin-right:0px";/><br />
+        <input id="startStop" class="btn btnPlay" type="button" value="Play" onclick="startStop();"  style="margin-right:0px;"/>
         <div id="nodes" class="titulo3"></div>
     </div>
 
@@ -247,8 +247,8 @@
 
 
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="borde" style="visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; clear:left; float:left; color: gray;">
-        <div id="divCon" class="titulo2"><nobr><b>Consenso</b></nobr></div>
+    <div id="panelConsenso"  class="panelConsenso" style="display:block;">
+        <div id="divCon" class="titulo2" style="visibility:visible;"><nobr><b>Consenso</b></nobr></div>
         <div id = "usuarios" class="titulo3"></div>
         <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
         <div id = "maxNoPc" class="titulo3" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>
@@ -286,9 +286,9 @@
     </div>
 
     <!--rotarpantalla--------------------------------------------------------------------------------------------------->
-    <div id="rotarpantalla" class="rotarpantalla">
-        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
-        <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
-    </div>
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+        </div>
 </body>
 </html>

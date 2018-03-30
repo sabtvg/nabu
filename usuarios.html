@@ -37,6 +37,7 @@
         var usuarios;
         var usuario;
         var grupoParam;
+        var selected = "";
 
         function doLoad() {
             //background
@@ -57,8 +58,6 @@
                 else {
                     var scalex = window.innerWidth / 1920;
                     var scaley = window.innerHeight / 1080;
-                    //atras
-                    document.getElementById("usuarios").style.height = (window.innerHeight - 270) + 'px';
 
                     //cargo datos iniciales
                     var vals = cookie.split("|");
@@ -96,6 +95,9 @@
             var isFacilitador = document.getElementById("isFacilitador").checked;
 
             if (nombre != "") {
+
+                document.body.style.cursor = "pointer";
+
                 getHttp("doMain.aspx?actn=actualizarUsuario&nuevonombre=" + nombre
                     + "&email=" + usuario.email
                     + "&funcion=" + funcion
@@ -115,18 +117,18 @@
                         else {
                             document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
 
-                            //limpio valores
-                            document.getElementById("nombre").value = "";
-                            document.getElementById("funcion").value = "";
-                            document.getElementById("email").value = "";
-                            document.getElementById("clave").value = "";
+                            ////limpio valores
+                            //document.getElementById("nombre").value = "";
+                            //document.getElementById("funcion").value = "";
+                            //document.getElementById("email").value = "";
+                            //document.getElementById("clave").value = "";
 
-                            document.getElementById("habilitado").checked = false;
-                            document.getElementById("readOnly").checked = false;
-                            document.getElementById("isAdmin").checked = false;
-                            document.getElementById("isSecretaria").checked = false;
-                            document.getElementById("isRepresentante").checked = false;
-                            document.getElementById("isFacilitador").checked = false;
+                            //document.getElementById("habilitado").checked = false;
+                            //document.getElementById("readOnly").checked = false;
+                            //document.getElementById("isAdmin").checked = false;
+                            //document.getElementById("isSecretaria").checked = false;
+                            //document.getElementById("isRepresentante").checked = false;
+                            //document.getElementById("isFacilitador").checked = false;
 
                             //actualizo lista
                             getListaUsuarios();
@@ -136,6 +138,9 @@
         }
 
         function doSelect(email) {
+            if (selected != "")
+                doActualizarUsuario()
+
             for (q in usuarios) {
                 var u = usuarios[q];
                 if (u.email == email) {
@@ -150,6 +155,8 @@
                     document.getElementById("isSecretaria").checked = u.isSecretaria;
                     document.getElementById("isRepresentante").checked = u.isRepresentante;
                     document.getElementById("isFacilitador").checked = u.isFacilitador;
+
+                    selected = email;
                 }
             }
         }
@@ -210,6 +217,8 @@
                         }
                         s += "</table>";
 
+                        document.body.style.cursor = "default";
+
                         document.getElementById("usuarios").innerHTML = s;
                     }
                 });
@@ -258,6 +267,8 @@
         }
 
         function doAtras() {
+            if (selected != "")
+                doActualizarUsuario()
             document.location = "default.html?grupo=" + grupoParam;
         }
 
@@ -275,21 +286,21 @@
             document.getElementById("lrepre").innerHTML = tr("Representante");
             document.getElementById("lfacil").innerHTML = tr("Facilitador");
 
-            document.getElementById("btnActualizar").value = tr("Actualizar");
         }
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden">
 
         <div id="todo" class="ventana">
-        <table style="width: 100%;">
+        <table>
             <tr>
-                <td style="width: 80px;" class="titulo1">Nab&uacute;</td>
-                <td style="width: 60px;"><img src="res/icono2.png" /></td>
-                <td><div id="response" style="text-align:center; font-size:20px;"></div></td>
+                <td class="titulo1">Nab&uacute;</td>
+                <td><img src="res/icono2.png" /></td>
+                <td style="vertical-align:middle"><div id="tit1" class="titulo3">Modificar usuarios</div>
+                <div id="response" class="titulo3"></div></td>
             </tr>          
         </table>
-            <span id="tit1" class="titulo2">Modificar usuarios</span><br />
+            <input id="btnCancelar" type='button' class='btn' value='Volver ' onclick='doAtras();' style="margin:5px"/>
 
             <div style="border: 1px solid gray; border-radius: 10px;">
                 <table>
@@ -308,10 +319,6 @@
                         </td>
                         <td style="vertical-align:middle;">
                             <input id="isRepresentante" type="checkbox" class="txt" /><span id="lrepre"  class="titulo4" style="background-color:#00CC99;padding:3px;border-radius:3px">Representative</span><br />
-                        </td>
-                        <td style="vertical-align:top;text-align:right;padding:4px;" rowspan="2">
-                            <input id="btnActualizar" type='button' class='btn' value='Actualizar' onclick='doActualizarUsuario();' /><br /><br />
-                            <input id="btnCancelar" type='button' class='btn' value='Cancelar ' onclick='doAtras();' />
                         </td>
                     </tr>
                     <tr>
@@ -335,7 +342,7 @@
             </div>
             <br />
 
-            <div id="usuarios" style="overflow:scroll;"></div>
+            <div id="usuarios" style="overflow:scroll;height:fit-content"></div>
             <br />
         </div>
     </body>

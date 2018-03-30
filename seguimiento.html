@@ -78,39 +78,8 @@
         //};
 
         $(document).mousemove(function (event) {
-            if (!editando) {
-                if (firefoxWhich == 1 && !event.ctrlKey) {
-                    //scroll
-                    if (lastMouse) {
-                        var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
-                        offsetDays += ((event.clientX - lastMouse.clientX) / diaPixels);
-                        offsetY -= lastMouse.clientY - event.clientY;
-                        //document.body.style.cursor = "all-scroll";
-                        event.preventDefault();
-                        dibujarTodo();
-                        saveSettings();
-                    }
-                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
-                }
-                else if (firefoxWhich == 1 && event.ctrlKey) {
-                    //zoom
-                    if (lastMouse) {
-                        viewDays += (lastMouse.clientX - event.clientX) / 20;
-                        //document.body.style.cursor = "w-resize";
-                        event.preventDefault();
-                        dibujarTodo();
-                        saveSettings();
-                    }
-                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
-                }
-                else {
-                    if (lastMouse)
-                        event.preventDefault(); //fin
-                    lastMouse = null;
-                    //document.getElementById("todo").style.cursor = "default";
-                }
-                //$("div").text(event.which + ", " + event.ctrlKey);
-            }
+            move(event);
+            event.preventDefault();
         });
 
         Date.prototype.addDays = function (days) {
@@ -129,9 +98,52 @@
                 g.transform.baseVal.getItem(0).setMatrix(matrix0);
         }
 
+        function move(event) {
+            if (!editando) {
+                if (firefoxWhich == 1 && !event.ctrlKey) {
+                    //scroll
+                    if (lastMouse) {
+                        var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
+                        offsetDays += ((event.clientX - lastMouse.clientX) / diaPixels);
+                        offsetY -= lastMouse.clientY - event.clientY;
+                        //document.body.style.cursor = "all-scroll";
+                        dibujarTodo();
+                        saveSettings();
+                    }
+                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
+                }
+                else if (firefoxWhich == 1 && event.ctrlKey) {
+                    //zoom
+                    if (lastMouse) {
+                        viewDays += (lastMouse.clientX - event.clientX) / 20;
+                        //document.body.style.cursor = "w-resize";
+                        dibujarTodo();
+                        saveSettings();
+                    }
+                    lastMouse = { clientX: event.clientX, clientY: event.clientY };
+                }
+                else {
+                    lastMouse = null;
+                }
+                //$("div").text(event.which + ", " + event.ctrlKey);
+            }
+        }
+
         function doLoad() {
             //background
             setBackgroundImage();
+
+            //eventos tactiles
+            document.body.addEventListener('touchmove', function (e) {
+                var touch = e.changedTouches[0] // reference first touch point for this event
+                firefoxWhich = 1;
+                touch.ctrlKey = false;
+                move(touch);
+            }, false)
+
+            document.body.addEventListener('touchend', function (e) {
+                lastMouse = null;
+            }, false)
 
             //idioma
             idioma = getParameterByName('idioma');
@@ -539,12 +551,12 @@
         </div>
 
         <!--GT--------------------------------------------------------------------------------------------------->
-        <div id="AC" class="popup"></div>
+        <div id="AC" class="popup" style="overflow:auto;"></div>
 
         <!--rotarpantalla--------------------------------------------------------------------------------------------------->
         <div id="rotarpantalla" class="rotarpantalla">
-            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
-            <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
         </div>
     </body>
 </html>

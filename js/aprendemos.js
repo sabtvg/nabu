@@ -326,7 +326,7 @@ function seleccionarModeloEvaluacion() {
         var modelo = modelosEvaluacion[i];
         if (modelo.activo) {
                 listE += "<tr>";
-                listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px'></td>";
+                listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'></td>";
                 listE += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
                 listE += "</tr>";
         }

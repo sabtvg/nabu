@@ -137,10 +137,10 @@ namespace nabu.plataforma.modelos
                     }
 
                     //tema
-                    ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("alpadre.introduccion.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("alpadre.documento.introduccion.tip", g.idioma)
+                            + Tools.tr("alpadre.introduccion.tip", g.idioma)
                             + "</div>";
 
                     ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
@@ -155,9 +155,9 @@ namespace nabu.plataforma.modelos
                 if (g.padreNombre != "")
                 {
                     //Mision
-                    ret += "<div class='tema'>" + Tools.tr("Situacion actual", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("alpadre.situacionactual.titulo", g.idioma) + "</div>";
                     if (editar)
-                        ret += "<div class='smalltip'>" + Tools.tr("alpadre.documento.situacionactual.tip", g.idioma) + "</div>";
+                        ret += "<div class='smalltip'>" + Tools.tr("alpadre.situacionactual.tip", g.idioma) + "</div>";
 
                     ret += HTMLArea("s.situacionactual", prop, width, 290, tieneFlores, g.idioma);
 
@@ -172,9 +172,9 @@ namespace nabu.plataforma.modelos
                 if (g.padreNombre != "")
                 {
                     //Objetivo
-                    ret += "<div class='tema'>" + Tools.tr("Propuesta", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("alpadre.propuesta.titulo", g.idioma) + "</div>";
                     if (editar)
-                        ret += "<div class='smalltip'>" + Tools.tr("alpadre.documento.propuesta.tip", g.idioma) + "</div>";
+                        ret += "<div class='smalltip'>" + Tools.tr("alpadre.propuesta.tip", g.idioma) + "</div>";
 
                     ret += HTMLArea("s.propuesta", prop, width, 290, tieneFlores, g.idioma);
 
@@ -187,9 +187,9 @@ namespace nabu.plataforma.modelos
             {
                 if (g.padreNombre != "")
                 {
-                    ret += "<div class='tema'>" + Tools.tr("Situacion deseada", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("alpadre.situaciondeseada.titulo", g.idioma) + "</div>";
                     if (editar)
-                        ret += "<div class='smalltip'>" + Tools.tr("alpadre.documento.situaciondeseada.tip", g.idioma) + "</div>";
+                        ret += "<div class='smalltip'>" + Tools.tr("alpadre.situaciondeseada.tip", g.idioma) + "</div>";
 
                     ret += HTMLArea("s.situaciondeseada", prop, width, 550, tieneFlores, g.idioma);
 

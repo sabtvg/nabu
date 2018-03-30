@@ -167,9 +167,9 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
                 //tema
-                ret += "<div class='tema'>" + Tools.tr("Vision", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("manifiesto.vision.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.vision", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.vision.tip", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.vision", prop, width, 290, tieneFlores, g.idioma);
 
@@ -180,9 +180,9 @@ namespace nabu.plataforma.modelos
             else if (nivel == 2)
             {
                 //Mision
-                ret += "<div class='tema'>" + Tools.tr("Mision", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("manifiesto.mision.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.mision", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.mision.tip", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.mision", prop, width, 290, tieneFlores, g.idioma);
 
@@ -194,9 +194,9 @@ namespace nabu.plataforma.modelos
             else if (nivel == 3)
             {
                 //Objetivo
-                ret += "<div class='tema'>" + Tools.tr("Objetivos", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("manifiesto.objetivos.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.objetivos", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.objetivos.tip", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.objetivo", prop, width, 290, tieneFlores, g.idioma);
 
@@ -206,9 +206,9 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + Tools.tr("Servicios", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("manifiesto.servicios.titulo", g.idioma) + "</div>";
                 if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.servicios", g.idioma) + "</div>";
+                    ret += "<div class='smalltip'>" + Tools.tr("manifiesto.servicios.tip", g.idioma) + "</div>";
 
                 ret += HTMLArea("s.servicios", prop, width, 550, tieneFlores, g.idioma);
 

@@ -138,12 +138,15 @@
 <body onload="doLoad();" style="overflow:hidden">
 
         <div id="todo" class="ventana">
-            <nobr>
-                <span class="titulo1">Nab&uacute;</span>
-                <img src="res/icono2.png" />
-            </nobr><br />
-            <span id="usu" class="titulo2">Usuarios</span><br />
-
+        <table>
+            <tr>
+                <td class="titulo1">Nab&uacute;</td>
+                <td><img src="res/icono2.png" /></td>
+                <td style="vertical-align:middle"><div id="usu" class="titulo3">Ver usuarios</div>
+                <div id="response" class="titulo3"></div></td>
+            </tr>          
+        </table>
+            <input id="btnCancelar" type='button' class='btn' value='Volver ' onclick='doAtras();' style="margin:5px"/>
             <br />
 
             <div id="usuarios" style="overflow:scroll;height:100%"></div>

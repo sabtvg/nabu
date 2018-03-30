@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bosque.html" />
+    <Content Include="dictionary.html" />
+    <Content Include="simditor.css" />
     <Content Include="simulacion.html" />
     <Content Include="doAprendemos.aspx" />
     <Content Include="decisiones.html" />

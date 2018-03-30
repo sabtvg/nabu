@@ -517,7 +517,7 @@ namespace nabu
 
                 //NO SE PUEDEN ENSEÑAR PALABRAS CLAVE PROQUE TIENEN CODIGO HTML
                 //kyewords
-                ret += "<div>" + Tools.tr("Palabras clave", g.idioma) + ":</div>";
+                ret += "<div>" + Tools.tr("Palabras clave", g.idioma) + ":</div><br>";
                 ret += "#keywords#<br><br>";
 
                 //textos
@@ -591,7 +591,7 @@ namespace nabu
                 {
                     int size = 12 + 2 * e.Value;
                     if (size > 30) size = 30;
-                    ret += "<span style='font-size:" + (size) + "px'>" + e.Key + "</span>, ";
+                    ret += "<span class='keyword' style='font-size:" + (size) + "px'>" + e.Key + "</span> ";
                 }
             }
             if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);

@@ -247,10 +247,10 @@ namespace nabu.plataforma.modelos
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //tema
-                ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.introduccion.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("grupoTrabajo.introduccion", g.idioma) 
+                        + Tools.tr("grupoTrabajo.introduccion.tip", g.idioma) 
                         + "</div>";
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
@@ -262,36 +262,36 @@ namespace nabu.plataforma.modelos
             {
                 if (accion == "borrar")
                 {
-                    ret += "<div class='tema'>" + Tools.tr("Consecuencias", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.consecuencias.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("grupoTrabajo.consecuencias", g.idioma)
+                            + Tools.tr("grupoTrabajo.consecuencias.tip", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.consecuencias", prop, width, 120, tieneFlores, g.idioma);
                 }
                 else
                 {
                     //Objetivo a lograr
-                    ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.objetivo.titulo", g.idioma) + "</div>";
                     if (editar) 
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("grupoTrabajo.objetivo", g.idioma) 
+                            + Tools.tr("grupoTrabajo.objetivo.tip", g.idioma) 
                             + "</div>";
                     ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
 
                     //Descripcion
-                    ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.descripcion.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("grupoTrabajo.descripcion", g.idioma)
+                            + Tools.tr("grupoTrabajo.descripcion.tip", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
 
                     //A quien va dirigido
-                    ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.aquien.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("grupoTrabajo.aquien", g.idioma)
+                            + Tools.tr("grupoTrabajo.aquien.tip", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
                 }
@@ -305,28 +305,28 @@ namespace nabu.plataforma.modelos
             {
                 if (accion == "borrar")
                 {
-                    ret += "<div class='tema'>" + Tools.tr("Conclusiones", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.conclusiones.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("grupoTrabajo.conclusiones", g.idioma)
+                            + Tools.tr("grupoTrabajo.conclusiones.tip", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.conclusiones", prop, width, 120, tieneFlores, g.idioma);
                 }
                 else
                 {
                     //Recursos
-                    ret += "<div class='tema'>" + Tools.tr("Recursos", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.recursos.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("grupoTrabajo.recursos", g.idioma)
+                            + Tools.tr("grupoTrabajo.recursos.tip", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.recursos", prop, width, 120, tieneFlores, g.idioma);
 
                     //Capacidades
-                    ret += "<div class='tema'>" + Tools.tr("Capacidades", g.idioma) + "</div>";
+                    ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.capacidades.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("grupoTrabajo.capacidades", g.idioma)
+                            + Tools.tr("grupoTrabajo.capacidades.tip", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.capacidades", prop, width, 120, tieneFlores, g.idioma);
 
@@ -338,10 +338,10 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + Tools.tr("Integrantes", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.integrantes.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("grupoTrabajo.integrantes", g.idioma) 
+                        + Tools.tr("grupoTrabajo.integrantes.tip", g.idioma) 
                         + "</div>";
 
                 //lista de seleccion de usuarios
@@ -357,17 +357,17 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + Tools.tr("Valoracion del resultado", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.valoracion.titulo", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("grupoTrabajo.valoracion", g.idioma)
+                        + Tools.tr("grupoTrabajo.valoracion.tip", g.idioma)
                         + "</div>";
                 ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
 
-                ret += "<div class='tema'>" + Tools.tr("Revision de valoracion del resultado", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("grupoTrabajo.revision.titulo", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("grupoTrabajo.revision", g.idioma)
+                        + Tools.tr("grupoTrabajo.revision.tip", g.idioma)
                         + "</div>";
                 ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
 

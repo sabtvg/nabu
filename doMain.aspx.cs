@@ -379,8 +379,22 @@ namespace nabu
                             }
                             Response.Write(Tools.toJson(gp)); 
                             break;
-                            
 
+                        case "dictionary":
+                            List<string> eskeys = new List<string>();;
+                            foreach (string item in Tools.dictionary) {
+                                if (item.Split('|')[1] == "es")
+                                    eskeys.Add(item.Split('|')[0]);
+                            }
+                            eskeys.Sort();
+                            ret = "";
+                            ret += dictionaryFill("es", eskeys);
+                            ret += dictionaryFill("ct", eskeys);
+                            ret += dictionaryFill("en", eskeys);
+                            ret += dictionaryFill("fr", eskeys);
+                            Response.Write(ret);
+                            break;
+                            
                         default:
                             throw new appException("Peticion no reconocida");
                     }
@@ -405,6 +419,42 @@ namespace nabu
                 app.addLog("server exception", "", "", "", s);
             }
             Response.End();
+        }
+
+
+        public string dictionaryFill(string idioma, List<string> eskeys) {
+            string ret = "";
+            var found = false;
+            foreach (string l in eskeys) {
+                found = false;
+                foreach (string item in Tools.dictionary) {
+                    if (item.Split('|')[1] == idioma && item.Split('|')[0] == l) {
+                        ret += "\"" + l + "|" + idioma + "|" + DictionaryEncode(item.Split('|')[2]) + "\",\r\n";
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    ret += "\"" + l + "|" + idioma + "|?\",\r\n";
+                }
+            }
+            ret += "\r\n";
+            return ret;
+        }
+
+        string DictionaryEncode(string str) {
+            string result = "";
+            for (int i = 0; i < str.Length; i++) {
+                int chrcode = Convert.ToInt32(str[i]);
+                if (chrcode == 38)
+                    result += "&amp;";
+                else if (chrcode == 60)
+                    result += "&lt;";
+                else if (chrcode == 62)
+                    result += "&gt;";
+                else
+                    result += str.Substring(i, 1);
+            }
+            return result;
         }
 
         public void borrarCarpeta(string basePath)

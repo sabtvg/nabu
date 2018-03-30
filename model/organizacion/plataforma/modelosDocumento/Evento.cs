@@ -149,10 +149,10 @@ namespace nabu.plataforma.modelos
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //tema
-                ret += "<div class='tema'>" + Tools.tr("Introduccion", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.introduccion.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.introduccion", g.idioma) 
+                        + Tools.tr("evento.introduccion.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
@@ -164,28 +164,28 @@ namespace nabu.plataforma.modelos
             else if (nivel == 2)
             {
                 //Objetivo a lograr
-                ret += "<div class='tema'>" + Tools.tr("Objetivo a lograr", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.objetivo.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.objetivo", g.idioma) 
+                        + Tools.tr("evento.objetivo.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
 
                 //Descripcion
-                ret += "<div class='tema'>" + Tools.tr("Descripcion", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.descripcion.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.descripcion", g.idioma) 
+                        + Tools.tr("evento.descripcion.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
 
                 //A quien va dirigido
-                ret += "<div class='tema'>" + Tools.tr("A quien va dirigido", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.aquien.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("event.aquien", g.idioma) 
+                        + Tools.tr("event.aquien.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
@@ -198,28 +198,28 @@ namespace nabu.plataforma.modelos
             else if (nivel == 3)
             {
                 //Materiales
-                ret += "<div class='tema'>" + Tools.tr("Lugar", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.lugar.titulo", g.idioma) + "</div>";
                 if (editar)  
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.lugar", g.idioma) 
+                        + Tools.tr("evento.lugar.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.lugar", prop, width, 120, tieneFlores, g.idioma);
 
                 //RRHH
-                ret += "<div class='tema'>" + Tools.tr("Materiales", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.materiales.titulo", g.idioma) + "</div>";
                 if (editar)  
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.materiales", g.idioma) 
+                        + Tools.tr("evento.materiales.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.materiales", prop, width, 120, tieneFlores, g.idioma);
 
                 //Otros
-                ret += "<div class='tema'>" + Tools.tr("Transportes", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.transportes.titulo", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.transportes", g.idioma) 
+                        + Tools.tr("evento.transportes.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.transporte", prop, width, 120, tieneFlores, g.idioma);
@@ -230,19 +230,19 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + Tools.tr("Organizacion", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.organizacion", g.idioma) 
+                        + Tools.tr("evento.organizacion.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.organizacion", prop, width, 120, tieneFlores, g.idioma);
 
                 //responsable lista de seleccion de usuarios
-                ret += "<div class='tema'>" + Tools.tr("Responsable", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("accion.responsable", g.idioma)
+                        + Tools.tr("accion.responsable.tip", g.idioma)
                         + "</div>";
                 string lista = "|";
                 foreach (Usuario u2 in g.usuarios)
@@ -254,11 +254,11 @@ namespace nabu.plataforma.modelos
 
                 //fecha
                 ret += "<div class='tema'></div>";
-                ret += Tools.tr("Fecha", g.idioma);
+                ret += Tools.tr("evento.fecha.titulo", g.idioma);
                 ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
                 if (editar)
                     ret += "<span class='smalltip'>"
-                        + Tools.tr("evento.fecha", g.idioma)
+                        + Tools.tr("evento.fecha.tip", g.idioma)
                         + "</span>";
                 ret += "</div>";
 
@@ -268,10 +268,10 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 5)
             {
-                ret += "<div class='tema'>" + Tools.tr("Valoracion del resultado", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.valoracion.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("evento.valoracion", g.idioma) 
+                        + Tools.tr("evento.valoracion.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);

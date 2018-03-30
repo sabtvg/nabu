@@ -123,39 +123,8 @@
         });
 
         $(document).mousemove(function (event) {
-            if (firefoxWhich == 1 && !event.ctrlKey) {
-                //scroll
-                if (lastMouse) {
-                    if (ver == '3D') {
-                        //event.preventDefault();
-                        //camera.position.x += lastMouse.clientY - event.clientY;
-                        //camera.position.y += lastMouse.clientX - event.clientX;
-                    }
-                    else {
-                        offsetX -= lastMouse.clientX - event.clientX;
-                        offsetY -= lastMouse.clientY - event.clientY;
-                        event.preventDefault();
-                        transform(offsetX, offsetY);
-                    }
-                }
-                lastMouse = { clientX: event.clientX, clientY: event.clientY };
-            }
-            else if (firefoxWhich == 1 && event.ctrlKey) {
-                //zoom
-                if (lastMouse) {
-                    zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
-                    //document.body.style.cursor = "w-resize";
-                    event.preventDefault();
-                    dibujarTodo();
-                }
-                lastMouse = { clientX: event.clientX, clientY: event.clientY };
-            }
-            else {
-                if (lastMouse)
-                    event.preventDefault(); //fin
-                lastMouse = null;
-            }
-            //$("div").text(event.which + ", " + event.ctrlKey);
+            move(event);
+            event.preventDefault();
         });
 
         function transform(offsetX, offsetY) {
@@ -168,6 +137,38 @@
                 else
                     g.transform.baseVal.getItem(0).setMatrix(matrix0);
             }
+        }
+
+        function move(event) {
+            if (firefoxWhich == 1 && !event.ctrlKey) {
+                //scroll
+                if (lastMouse) {
+                    if (ver == '3D') {
+                        //event.preventDefault();
+                        //camera.position.x += lastMouse.clientY - event.clientY;
+                        //camera.position.y += lastMouse.clientX - event.clientX;
+                    }
+                    else {
+                        offsetX -= lastMouse.clientX - event.clientX;
+                        offsetY -= lastMouse.clientY - event.clientY;
+                        transform(offsetX, offsetY);
+                    }
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else if (firefoxWhich == 1 && event.ctrlKey) {
+                //zoom
+                if (lastMouse) {
+                    zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                    //document.body.style.cursor = "w-resize";
+                    dibujarTodo();
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else {
+                lastMouse = null;
+            }
+            //$("div").text(event.which + ", " + event.ctrlKey);        
         }
 
         function doLoad() {
@@ -196,6 +197,18 @@
             else {
                 //background
                 setBackgroundImage();
+
+                //eventos tactiles
+                document.body.addEventListener('touchmove', function (e) {
+                    var touch = e.changedTouches[0] // reference first touch point for this event
+                    firefoxWhich = 1;
+                    touch.ctrlKey = false;
+                    move(touch);
+                }, false)
+
+                document.body.addEventListener('touchend', function (e) {
+                    lastMouse = null;
+                }, false)
 
                 //idioma
                 idioma = getParameterByName('idioma');
@@ -275,6 +288,7 @@
             var s = "";
 
             generando = false;
+            lastMouse = null;
             var dims = getDimensiones(bosque, 0);
 
             s += "<g id='grupo'>";
@@ -348,8 +362,12 @@
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
             controls = new THREE.OrbitControls(camera);
-            camera.position.y = 1000;
-            camera.position.z = 1000;
+            var fa = 150 * 0.025; //factor imagenes
+            var sizex = 128 * fa;
+            var sizey = 64 * fa;
+            camera.position.z = sizex * 4;
+            camera.position.y = sizey * 2;
+
             paint();
 
         }
@@ -466,7 +484,7 @@
                 for (var q = 0; q < nodo.hijos.length; q++) {
                     if (nivel == 0) {
                         var paso = 360 / nodo.hijos.length;
-                        Prot.y = paso * q;
+                        Prot.y = 180 + paso * q;
                     }
                     else {
                         var paso = 180 / nodo.hijos.length;
@@ -493,7 +511,7 @@
                 //incremento gajos
                 if (nivel == 0) {
                     var paso = 360 / gajos.length;
-                    Pini.y = paso * g;
+                    Pini.y = 180 + paso * g;
                 }
                 else {
                     var paso = 180 / gajos.length;
@@ -1146,10 +1164,10 @@
     </div>
 
     <!--rotarpantalla--------------------------------------------------------------------------------------------------->
-    <div id="rotarpantalla" class="rotarpantalla">
-        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:90px;" />
-        <img src="res/logo.png" style="margin: 0 auto;padding:90px;" />
-    </div>
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+        </div>
 
 </body>
 </html>
