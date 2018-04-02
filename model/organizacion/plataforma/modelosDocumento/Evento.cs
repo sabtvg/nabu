@@ -158,8 +158,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else if (nivel == 2)
             {
@@ -191,8 +190,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) 
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
 
             }
             else if (nivel == 3)
@@ -225,8 +223,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.transporte", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else if (nivel == 4)
             {
@@ -263,8 +260,7 @@ namespace nabu.plataforma.modelos
                 ret += "</div>";
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else if (nivel == 5)
             {
@@ -277,8 +273,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }
             else
             {

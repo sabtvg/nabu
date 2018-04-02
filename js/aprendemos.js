@@ -413,7 +413,7 @@ function doRevisarEvaluacion(modeloID) {
 
 function doPrevistaEvaluacion(modeloID) {
     //leo los textos del documento y los envio al servidor
-    var post = getPost(document);
+    var post = getPost(document.getElementById("documento"));
 
     //envio
     postHttp("doAprendemos.aspx?actn=prevista&modelo=" + modeloID
@@ -452,7 +452,7 @@ function doCrearEvaluacion(modeloID) {
 function evaluacionSubmit(accion, parametro, modeloID) {
     //envio mensaje al documento y redibujo
     var node = selectedNode;
-    var post = getPost(document);
+    var post = getPost(document.getElementById("documento"));
 
     postHttp("doAprendemos.aspx?actn=evaluacionSubmit&modelo=" + modeloID
         + "&accion=" + accion

@@ -448,6 +448,7 @@ namespace nabu.organizaciones
             ret.Add(new plataforma.modelos.AlPadre());
             ret.Add(new plataforma.modelos.AlHijo());
             ret.Add(new plataforma.modelos.Acta());
+            ret.Add(new plataforma.modelos.Didactico());
             //ret.Add(new plataforma.modelos.Proceso());
             return ret;
         }

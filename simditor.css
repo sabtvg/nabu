@@ -290,12 +290,10 @@
   text-decoration: none;
 }
 
-@media only screen and (max-width: 2000px) {
-    .toolbar-item {
-      line-height: 40px;
-      width: 46px;
-      height: 40px;
-    }
+.toolbar-item {
+    line-height: 40px;
+    width: 46px;
+    height: 40px;
 }
 
 @media only screen and (max-width: 800px) {

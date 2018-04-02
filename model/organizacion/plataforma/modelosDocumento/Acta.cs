@@ -129,7 +129,7 @@ namespace nabu.plataforma.modelos
 
             //etiqueta
             ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Acta", g.idioma);
-            etiqueta = Tools.tr("Manifiesto", g.idioma);
+            etiqueta = Tools.tr("Acta", g.idioma);
             if (prop == null)
                 ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
@@ -148,7 +148,7 @@ namespace nabu.plataforma.modelos
             bool editar = (prop == null && tieneFlores && modo != eModo.prevista && modo != eModo.consenso)
                 || (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar));
             editar = editar && !consensoAlcanzado;
-            bool puedeVariante = prop != null && !prop.esPrevista() && modo == eModo.editar && tieneFlores && !consensoAlcanzado;
+            bool puedeVariante = prop != null && !prop.esPrevista() && modo == eModo.editar && tieneFlores && !consensoAlcanzado && u.isSecretaria;
 
 
             //validaciones de este nivel
@@ -213,13 +213,14 @@ namespace nabu.plataforma.modelos
                 if (prop != null)
                 {
                     temas = float.Parse(prop.bag["f.temas"].ToString());
+                    if (temas > 10) temas = 10;
                     for (int q = 0; q < temas; q++)
                     {
                         ret += "<div class='tema'>" + Tools.tr("Tema", g.idioma) + " " + (q + 1) + ":" + HTMLText("s.tituloTema" + q, prop, 70 * 8, tieneFlores, g.idioma) + "</div>";
                         ret += HTMLArea("s.textoTema" + q, prop, width, 220, tieneFlores, g.idioma);
                     }
                 }
-                if (editar)
+                if (editar && temas < 10)
                     ret += "<input type='button' class='btn' value='" + Tools.tr("Agregar tema", g.idioma) + "' onclick=\"documentSubmit('agregarTema','')\">";
                 ret += "<input type='hidden' id='f.temas' value='" + temas.ToString("0") + "'>"; //guardo valor de Temas en el propio documento
                 ret += "<br>";
@@ -233,9 +234,7 @@ namespace nabu.plataforma.modelos
                 ret += "<br>";
 
                 //variante
-                if (puedeVariante && u.isSecretaria)
-                    ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
-
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
             }          
             else
             {
@@ -262,7 +261,7 @@ namespace nabu.plataforma.modelos
             {
                 Propuesta p = props[0];
                 float temas = (float)p.bag["f.temas"];     
-                if (temas < 9)
+                if (temas < 10)
                     p.bag["f.temas"] = temas + 1.0;
             }
             else if (accion == "s.participan_agregar" && getVariable("s.participan").nivel <= props.Count)

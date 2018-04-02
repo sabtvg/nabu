@@ -78,7 +78,7 @@ namespace nabu
         protected string HTMLVariante(int nodoID, Grupo g)
         {
             string ret = "";
-            ret += "<div style='width:100%;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + nodoID + ")'></div>";
+            ret += "<div style='width:100%;text-align:right;padding-bottom:4px;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + nodoID + ")'></div>";
             return ret;
         }
 
@@ -445,7 +445,7 @@ namespace nabu
                     ret += "maxlength='" + v.len + "' ";
                     ret += "style='width:" + width + "px;height:" + height + "px;'>";
                     ret += "</textarea>";
-                    ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
+                    ret += "<div style='text-align:right;width:100%;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                     ret += "<br>";
                 }
             }
@@ -460,7 +460,7 @@ namespace nabu
                 ret += HTMLText;
                 //ret += getValue(id, prop);
                 ret += "</textarea>";
-                ret += "<div style='text-align:right;width:" + (width + 14) + "px;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
+                ret += "<div style='text-align:right;width:100%;font-size:10px;'>(" + Tools.tr("max", idioma) + ": " + v.len + ")</div>";
                 ret += "<br>";
             }
             else if (prop != null)
@@ -626,6 +626,14 @@ namespace nabu
             return ret;
         }
 
+        public string HTMLFloat(string id, Propuesta prop, bool tieneFlores, string idioma, string format)
+        {
+            float d = getFloat(id, prop);
+            string value = d.ToString(format);
+
+            return input(id, prop, 150, tieneFlores, "number", value, idioma);
+        }
+
         public string HTMLDate(string id, Propuesta prop,  bool tieneFlores, string idioma)
         {
             DateTime d = getDate(id, prop);
@@ -680,7 +688,7 @@ namespace nabu
                 ret += "<input type='radio' ";
                 ret += "class='" + v.editClassName + "' ";
                 if (value == getText(id, prop)) ret += "checked ";
-                ret += "value='" + value + "' disabled='true' style='cursor:pointer;width:2em;height:2em;'>";
+                ret += "value='" + value + "' disabled='true' style='width:2em;height:2em;'>";
             }
             else
                 //sin flores
@@ -711,6 +719,7 @@ namespace nabu
                 ret += "class='" + v.editClassName + "' ";
                 ret += "maxlength='" + v.len + "' ";
                 ret += "style='width:" + width + "px;' ";
+                if (tipo == "number") value = value.Replace(",", ".");
                 ret += "value='" + value + "'>";
             }
             else if (prop != null)
@@ -749,7 +758,8 @@ namespace nabu
             {
                 try
                 {
-                    ret = float.Parse(valor);
+                    //se asume formato español
+                    ret = float.Parse(valor.Replace(".",","));
                 }
                 catch(Exception ex)
                 {
@@ -830,6 +840,18 @@ namespace nabu
             catch (Exception)
             {
                 return Tools.minValue;
+            }
+        }
+
+        public float getFloat(string id, Propuesta prop)
+        {
+            try
+            {
+                return (float)getValue(id, prop);
+            }
+            catch (Exception)
+            {
+                return 0;
             }
         }
 

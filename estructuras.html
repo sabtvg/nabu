@@ -97,6 +97,10 @@
             //background
             setBackgroundImage();
 
+            //idioma
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
+
             //eventos tactiles
             document.body.addEventListener('touchmove', function (e) {
                 var touch = e.changedTouches[0] // reference first touch point for this event
@@ -109,10 +113,6 @@
                 lastMouse = null;
             }, false)
 
-            //idioma
-            idioma = getParameterByName('idioma');
-            if (idioma == null) idioma = 'es';
-
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
             if (grupoParam && grupoParam != "" && grupoParam != "null") {
@@ -122,8 +122,6 @@
                     //login normal
                     document.location = 'default.html?grupo=' + grupoParam;
                 else {
-                    calcularResize();
-
                     //fondo segun timeline
                     if (historico)
                         document.body.style.backgroundImage = "url('res/night.jpg')";
@@ -133,6 +131,8 @@
                     usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
                     idioma = vals[5]; //para el tradcutor
+
+                    calcularResize();
 
                     if (!usuario) {
                         //login normal

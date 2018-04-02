@@ -157,8 +157,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante)
-                        ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
                 }
             }
             else if (nivel == 2)
@@ -173,8 +172,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.situacionactual", prop, width, 290, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante)
-                        ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
                 }
 
             }
@@ -190,8 +188,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.propuesta", prop, width, 290, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante)
-                        ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
                 }
             }
             else if (nivel == 4)
@@ -205,8 +202,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.situaciondeseada", prop, width, 550, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante)
-                        ret += "<div style='width:" + width + "px;text-align:right;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + prop.nodoID + ")'></div>";
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
                 }
             }
             else

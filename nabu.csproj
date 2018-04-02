@@ -144,6 +144,7 @@
     <Content Include="res\save.png" />
     <Content Include="res\ver.png" />
     <Content Include="styles.css" />
+    <Content Include="web\proyecto.version1.html" />
     <Content Include="web\default.html" />
     <Content Include="web\favicon.ico" />
     <Content Include="web\res\icono.png" />
@@ -187,6 +188,7 @@
     <Compile Include="model\organizacion\plataforma\modelosDocumento\AlHijo.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\AlPadre.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Acta.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Didactico.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Estrategia.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Accion.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\AlHijo.cs" />

@@ -45,7 +45,7 @@
     background-color: #FFFFFF;
     opacity: 0.6;
     position: fixed;
-    bottom: 15px;
+    bottom: 1vh;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
@@ -384,6 +384,16 @@
     background-color: #C6ECFF;
     opacity: 0.9;
     width: 350px;
+}
+.ventanaultimaflor {
+    margin: auto;
+    padding: 5px;
+    border-style: solid;
+    border-width: 4px;
+    border-radius: 15px;
+    border-color: #403d3d;
+    background-color: #C6ECFF;
+    opacity: 0.8;
 }
 .loginFlor {
     visibility:hidden;
@@ -798,6 +808,16 @@
         width: 99vw;
         height: 100%;
         overflow: scroll;
+    }
+    .ventanaultimaflor {
+        margin: auto;
+        padding: 5px;
+        border-style: solid;
+        border-width: 4px;
+        border-radius: 15px;
+        border-color: #403d3d;
+        background-color: #C6ECFF;
+        opacity: 0.8;
     }
     .txt2 {
         margin: 4px;

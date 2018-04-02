@@ -90,32 +90,34 @@
                 var intersects = raycaster.intersectObjects(scene.children);
                 if (intersects.length > 0) {
                     selected = intersects[0].object;
-                    //obtengo tamaño del objeto seleccionado
-                    var bounds = new THREE.Box3();
-                    bounds.setFromObject(selected);
-                    var sizex = bounds.max.x - bounds.min.x;
-                    var sizey = bounds.max.y - bounds.min.y;
+                    if (selected.name != "plano") {
+                        //obtengo tamaño del objeto seleccionado
+                        var bounds = new THREE.Box3();
+                        bounds.setFromObject(selected);
+                        var sizex = bounds.max.x - bounds.min.x;
+                        var sizey = bounds.max.y - bounds.min.y;
 
-                    //apunto la camara
-                    //lookAt
-                    var tween = new TWEEN.Tween(controls.target)
-                        .to(selected.position, 1000)
-                        .easing(TWEEN.Easing.Cubic.Out)
-                        .onUpdate(function () {
-                            camera.lookAt(this.x, this.y, this.z);
-                        })
-                        .start();
-                    //position
-                    var finalPosition = selected.position.clone();
-                    finalPosition.z += sizex * 4;
-                    finalPosition.y += sizey * 2;
-                    var tween = new TWEEN.Tween(camera.position)
-                        .to(finalPosition, 1000)
-                        .easing(TWEEN.Easing.Cubic.Out)
-                        .onUpdate(function () {
-                            camera.position.set(this.x, this.y, this.z);
-                        })
-                        .start();
+                        //apunto la camara
+                        //lookAt
+                        var tween = new TWEEN.Tween(controls.target)
+                            .to(selected.position, 1000)
+                            .easing(TWEEN.Easing.Cubic.Out)
+                            .onUpdate(function () {
+                                camera.lookAt(this.x, this.y, this.z);
+                            })
+                            .start();
+                        //position
+                        var finalPosition = selected.position.clone();
+                        finalPosition.z += sizex * 4;
+                        finalPosition.y += sizey * 2;
+                        var tween = new TWEEN.Tween(camera.position)
+                            .to(finalPosition, 1000)
+                            .easing(TWEEN.Easing.Cubic.Out)
+                            .onUpdate(function () {
+                                camera.position.set(this.x, this.y, this.z);
+                            })
+                            .start();
+                    }
                 }
                 else
                     selected = null;
@@ -494,9 +496,21 @@
                     var Chijo = VAdd(Cini, VPolToCar(Prot));
                     grupo3D(Chijo.x, Chijo.y, Chijo.z, radio * 0.4, nodo.hijos[q], nivel + 1, Prot.y);
                 }
+
                 //arbol central
                 imgSize("res/3D/noticias.png", x, y - 64 * fa / 2, z, 128 * fa, 64 * fa);
                 imgSize("res/3D/debates.png", x, y + 64 * fa / 2, z, 128 * fa, 64 * fa);
+
+                //disco horizontal
+                var geometry = new THREE.CircleGeometry(6 * radio, 32);
+                var material = new THREE.LineBasicMaterial({ color: 0xffffff, transparent:true, opacity: 0.4, side: THREE.DoubleSide });
+                var circle = new THREE.Mesh(geometry, material);
+                circle.rotation.x = 3.14 / 2;
+                circle.position.x = x;
+                circle.position.y = y;
+                circle.position.z = z;
+                circle.name = "plano";
+                scene.add(circle);
             }
         }
 
@@ -538,6 +552,12 @@
                     }
                 }
             }
+            ////circulo personas
+            //for (var q = 0; q < 360; q += 4) {
+            //    var Cini = VPolToCar({ x: 0, y: q, z: radio });
+            //    geometry.vertices.push(Cini);
+            //}
+
             var torus = new THREE.Line(geometry, lineMaterial);
             torus.position.x = x;
             torus.position.y = y;

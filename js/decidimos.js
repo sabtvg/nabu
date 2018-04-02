@@ -271,7 +271,7 @@ function doRevisar() {
 function doPrevista() {
     //leo los textos del documento y los envio al servidor
     var node = selectedNode;
-    var post = getPost(document);
+    var post = getPost(document.getElementById("documento"));
 
     //envio
     postHttp("doDecidimos.aspx?actn=prevista&modelo=" + node.modeloID
@@ -438,7 +438,7 @@ function setNotEmpyList(id) {
 function documentSubmit(accion, parametro) {
     //envio mensaje al documento y redibujo
     var node = selectedNode;
-    var post = getPost(document);
+    var post = getPost(document.getElementById("documento"));
 
     postHttp("doDecidimos.aspx?actn=documentSubmit&modelo=" + node.modeloID
         + "&accion=" + accion

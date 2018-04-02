@@ -203,15 +203,15 @@
         function showHijos() {
             var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
             s += "<tr>"
-            s += "<td class='titulo3' style='width:200px;'><b>" + tr("URL") + "</b></td>";
-            s += "<td class='titulo3' style='width:220px;'><b>" + tr("Nombre") + "</b></td>";
-            s += "<td class='titulo3' style='width:70px;text-align:center;'><b>" + tr("Borrar") + "</b></td>";
+            s += "<td class='titulo4' style='width:200px;'><b>" + tr("URL") + "</b></td>";
+            s += "<td class='titulo4' style='width:220px;'><b>" + tr("Nombre") + "</b></td>";
+            s += "<td class='titulo4' style='width:70px;text-align:center;'><b>" + tr("Borrar") + "</b></td>";
             s += "</tr>"
             for (var i in hijos) {
                 var hijo = hijos[i];
                 s += "<tr>"
-                s += "<td class='titulo3'>" + hijo.URL + "</td>";
-                s += "<td class='titulo3'>" + hijo.nombre + "</td>";
+                s += "<td class='titulo4'>" + hijo.URL + "</td>";
+                s += "<td class='titulo4'>" + hijo.nombre + "</td>";
                 s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarHijo(" + i + ");'></td>";
                 s += "</tr>"
             }
@@ -266,6 +266,7 @@
             document.getElementById("conminSiPc").innerHTML = tr("conminSiPc");
             document.getElementById("conmaxNoPc").innerHTML = tr("conmaxNoPc");
             document.getElementById("jarDat").innerHTML = tr("Datos del coordinador");
+            document.getElementById("btnBorrar").innerHTML = tr("btnBorrarGrupo");
         }
 
         function doBorrarArbol() {
@@ -299,9 +300,9 @@
             </table>
 
             <div class="divborde">
-                <span id="datArb" class="titulo2">Datos del grupo</span><br />
+                <span id="datArb" class="titulo3">Datos del grupo</span><br />
                 <nobr>
-                <span id="nom" class="titulo3">Nombre</span>:<input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
+                <span id="nom" class="titulo4">Nombre</span>:<input id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
                 <span id="idi">Idioma</span>:
                     <select id="idioma" class="txt" style="width: 90px">
                         <option value="es">Espa&ntilde;ol</option>
@@ -314,20 +315,20 @@
             </div>
 
             <div class="divborde">
-                <span id="jarDat" class="titulo2">Datos del coordinador</span>
+                <span id="jarDat" class="titulo3">Datos del coordinador</span><br />
                 <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/>
                 <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
             </div>
 
             <div class="divborde">
-                <span id="pad" class="titulo2">Grupo padre</span><br />
+                <span id="pad" class="titulo3">Grupo padre</span><br />
                 <input id="padreURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo padre"/>
                 <input id="padreNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo padre"/><br />
                 <input id="btnCrearPadre" type="button" class="btn" value="Crear usuarios en grupo padre" onclick="doCrearUsuariosArbolPadre();" /> 
             </div>
 
             <div class="divborde">
-                <span id="hij" class="titulo2">Grupos hijos</span><br />
+                <span id="hij" class="titulo3">Grupos hijos</span><br />
                 <input id="hijoURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo hijo"/>
                 <input id="hijoNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo hijo"/>
                 <input id="btnCrearHijo" type="button" class="btn" value="Crear" onclick="doCrearHijo();" /> 
@@ -335,12 +336,12 @@
             </div>
 
             <div class="divborde">
-                <span id="flo" class="titulo2">Flores disponibles para todos los usuarios</span>
+                <span id="flo" class="titulo3">Flores disponibles para todos los usuarios</span>
                 <input id="cantidadFlores" type="text" class="txt" size="8" placeholder="Cantidad de flores"/><br />
             </div>
 
             <div class="divborde">
-                <span id="concon" class="titulo2">Condici&oacute;n de consenso</span><br />
+                <span id="concon" class="titulo3">Condici&oacute;n de consenso</span><br />
 
                 <div id="conminSiPc" class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
                 <input id="minSiPc" type="text" class="txt" size="8" />%<br />

@@ -381,7 +381,8 @@ function calcularResize() {
     showTimePanel();
 
     //resize del menuppal segun pantalla
-    var menuscale = scaley * 1;
+    var menuscale = scaley;
+    if (menuscale > 0.9) menuscale = 0.9;
     document.getElementById("padrenombre").style.width = 800 * menuscale + 'px';
     document.getElementById("padrenombre").style.top = -90 * menuscale + 'px';
 

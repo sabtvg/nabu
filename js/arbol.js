@@ -211,8 +211,8 @@ function dibujarArbol(referencia) {
             return 't2.' + d.id;
         })
         .style("font-size", function (d) {
-            var i = window.innerWidth <= 800 ? 30 : 20;
-            var size = i * scale > 30 ? 30 : i * scale;
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 25 ? 25 : i * scale;
             return size + 'px';
         })
         .attr("x", function (d) {
@@ -234,8 +234,8 @@ function dibujarArbol(referencia) {
             return 't3.' + d.id;
         })
         .style("font-size", function (d) {
-            var i = window.innerWidth <= 800 ? 30 : 20;
-            var size = i * scale > 30 ? 30 : i * scale;
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 25 ? 25 : i * scale;
             return size + 'px';
         })
         .attr("x", function (d) {
@@ -285,8 +285,8 @@ function dibujarArbol(referencia) {
 
     nodeUpdate.select("text")  //etiqueta
         .style("font-size", function (d) {
-            var i = window.innerWidth <= 800 ? 25 : 20;
-            var size = i * scale > 30 ? 30 : i * scale;
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 25 ? 25 : i * scale;
             return size + 'px';
         })
         .text(function (d) {
