@@ -34,6 +34,7 @@ function doDecidimos() {
     //titulo
     document.getElementById("titulo").innerHTML = arbolPersonal.nombre + " - " + tr("Decisiones");
     document.getElementById("titulo").style.visibility = 'visible';
+    document.getElementById("pie").style.display = "none";
 
     //joystick
     document.getElementById("joystickArbol").style.visibility = 'visible';
@@ -132,19 +133,19 @@ function seleccionarModelo() {
         list += "</tr>";
         list += "<tr>";
         list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=3>";
-        list += "<input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelos\").style.display = \"none\";' style='margin: 0 auto;'/>";
+        list += "<input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelosDebate\").style.display = \"none\";' style='margin: 0 auto;'/>";
         list += "</td>"
         list += "</tr>";
         list += "</table>";
 
 
-        document.getElementById("modelos").innerHTML = list;
-        document.getElementById("modelos").style.display = "block";
+        document.getElementById("modelosDebate").innerHTML = list;
+        document.getElementById("modelosDebate").style.display = "block";
     }
 }
 
 function seleccionarModelo2(modeloID) {
-    document.getElementById("modelos").style.display = "none";
+    document.getElementById("modelosDebate").style.display = "none";
     selectedNode.modeloID = modeloID; //se lo pongo temporalmente a la raiz
     doVerDocumento();
 }

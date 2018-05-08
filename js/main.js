@@ -36,6 +36,7 @@ var scaley = window.innerHeight / 955; //1080-bordes de pantalla
 var docsTimeScale = 15;
 var usuario;  ////creo que no se usa
 var grupoParam;
+var idiomaParam;
 var emailParam;
 var historico = false;
 var historicoFecha;
@@ -163,12 +164,13 @@ function doLoad2() {
         treeScale = scale; //valor default
 
         //idioma
-        idioma = getParameterByName('idioma');
-        if (idioma == null) idioma = 'es';
+        idiomaParam = getParameterByName('idioma');
+        if (idiomaParam == null || idiomaParam == '') idiomaParam = 'es';
 
         //obtengo datos de los parametros
         grupoParam = getParameterByName('grupo');
         emailParam = getParameterByName('email');
+        idioma = idiomaParam;  //para el dicionario
 
         //si hay cookie, login automatico si no login normal
         var cookie = "";
@@ -176,8 +178,8 @@ function doLoad2() {
             cookie = getCookie("nabu-" + grupoParam.replace(' ', ''));
             if (cookie == "") {
                 //login normal con el grupo parametro
+                doResize();
                 loginEffectIn();
-                calcularResize();
             }
             else {
                 //login automatico to server
@@ -185,8 +187,10 @@ function doLoad2() {
                 var vals = cookie.split("|");
                 var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                idioma = vals[5]; //para el tradcutor
-                traducir();
+                idiomaParam = vals[5]; //para el tradcutor
+                idioma = idiomaParam;  //para el dicionario
+
+                doResize();
 
                 if (emailParam && emailParam == usuario.email) {
                     //la cookie es de este usuario
@@ -197,7 +201,6 @@ function doLoad2() {
                     //no tengo la clave de este usuario
                     //login normal con el grupo parametro
                     loginEffectIn();
-                    calcularResize();
                 }
                 else {
                     //login con los datos de la cookie
@@ -208,41 +211,13 @@ function doLoad2() {
         else {
             //no hay parametro de grupo, enseño lista de grupos
             gruposEffectIn();
-            calcularResize();
+            doResize();
         }
     }
     catch (ex) {
         //envio al server
         sendException(ex, "doLoad2");
     }
-}
-
-function traducir() {
-    document.getElementById("loginAltaUsuario").innerHTML = tr("Alta de usuario");
-    document.getElementById("btnEntrar").value = tr("Entrar");
-    document.getElementById("email").placeholder = tr("email");
-    document.getElementById("clave").placeholder = tr("clave");
-    //document.getElementById("tit1").innerHTML = tr("Sociocracia");
-    document.getElementById("lnkSim").innerHTML = tr("simulacion");
-    document.getElementById("mejorVisto").innerHTML = tr("Mejor visto en");
-    document.getElementById("version").innerHTML = tr("version beta");
-    document.getElementById("lnkAyuda").innerHTML = tr("Ayuda");
-    document.getElementById("titulo1").innerHTML = tr("Sociocracia");
-    //document.getElementById("titulo2").innerHTML = tr("Democracia interactiva");
-    document.getElementById("oldPass").placeholder = tr("Clave actual");
-    document.getElementById("newPass").placeholder = tr("Nueva clave");
-    document.getElementById("repeat").placeholder = tr("Repitela");
-    document.getElementById("btnCCCambiar").value = tr("Cambiar");
-    document.getElementById("btnCCCancelar").value = tr("Cancelar");
-    document.getElementById("auTit1").innerHTML = tr("Alta de usuario");
-    document.getElementById("auTit2").innerHTML = tr("auTit2");
-    document.getElementById("altaUsuarioNombre").placeholder = tr("Nombre completo");
-    document.getElementById("altaUsuarioEmail").placeholder = tr("Email");
-    document.getElementById("auEnviar").value = tr("Enviar solicitud");
-    document.getElementById("auCerrar").innerHTML = tr("Cerrar");
-    document.getElementById("ufTit1").innerHTML = tr("ufTit1");
-    document.getElementById("ufAceptar").value = tr("Aceptar");
-    document.getElementById("ufCancelar").value = tr("Cancelar");
 }
 
 function gruposEffectIn() {
@@ -274,7 +249,7 @@ function loginAutomatico(email, clave, grupo) {
                 if (data.substring(0, 6) == "Error=") {
                     //ha habido un error
                     //login normal
-                    calcularResize();
+                    doResize();
                     loginEffectIn();
                 }
                 else {
@@ -302,7 +277,7 @@ function loginAutomatico(email, clave, grupo) {
                     //activo menuppal
                     doMenuppal();
 
-                    calcularResize();
+                    doResize();
                 }
             }
             catch (ex) {
@@ -354,12 +329,12 @@ function showTimePanel() {
     }
 }
 
-function calcularResize() {
+function doResize() {
     scalex = window.innerWidth / 1920;
     scaley = window.innerHeight / 955; //1080-bordes de pantalla
 
     //pie
-    document.getElementById("lnkSim").href = 'simulacion.html?grupo=' + grupoParam;
+    document.getElementById("lnkSim").href = 'simulacion.html?grupo=' + grupoParam + '&idioma=' + idiomaParam;
 
     //frase del dia
     //busco una no vista
@@ -375,25 +350,33 @@ function calcularResize() {
     frasesVistas.push(index);
 
     //background
-    document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
+    setBackgroundImage();
 
     //timePanel
     showTimePanel();
 
     //resize del menuppal segun pantalla
-    var menuscale = scaley;
-    if (menuscale > 0.9) menuscale = 0.9;
+    var scale = scalex < scaley ? scalex : scaley;
+    var menuscale = scale * 1.4;
+    if (menuscale > 0.8) menuscale = 0.8;
     document.getElementById("padrenombre").style.width = 800 * menuscale + 'px';
-    document.getElementById("padrenombre").style.top = -90 * menuscale + 'px';
+    document.getElementById("padrenombre").style.top = -5 - 5 * menuscale + 'px';
 
     document.getElementById("hijos").style.width = 1600 * menuscale + 'px';
     document.getElementById("hijos").style.left = -400 * menuscale + 'px';
-    document.getElementById("hijos").style.top = (600 * scaley) + "px";
+    document.getElementById("hijos").style.top = (590 * menuscale) + "px";
 
-    document.getElementById("tituloppal").style.top = -40 * menuscale + 'px';
-    document.getElementById("tituloppal").style.width = 800 * menuscale + 'px';
+    document.getElementById("tituloppal").style.top = 278 * menuscale + 'px';
+    document.getElementById("tituloppal").style.left = 250 * menuscale + 'px';
+    document.getElementById("tituloppal").style.width = 285 * menuscale + 'px';
+    if (arbolPersonal && arbolPersonal.nombre.length < 10)
+        document.getElementById("tituloppal").style.fontSize = 45 * menuscale + 'px';
+    else
+        document.getElementById("tituloppal").style.fontSize = 28 * menuscale + 'px';
 
-    document.getElementById("menuppal").style.top = (window.innerHeight / 2 - 600 * menuscale / 2).toFixed(0) + 'px';
+    var top = (window.innerHeight / 2 - 600 * menuscale / 2 - 10 * menuscale).toFixed(0);
+    if (top < 0) top = 5;
+    document.getElementById("menuppal").style.top = top + 'px';
     document.getElementById("menuppal").style.left = (window.innerWidth / 2 - 800 * menuscale / 2).toFixed(0) + 'px';
     document.getElementById("menuppal").style.width = 800 * menuscale + 'px';
     document.getElementById("menuppal").style.height = 600 * menuscale + 'px';
@@ -454,13 +437,6 @@ function calcularResize() {
     document.getElementById("ppal7").style.left = 285 * menuscale + 'px';
     document.getElementById("ppal7").style.top = 439 * menuscale + 'px';
 
-    document.getElementById("ppal8").src = "res/" + idioma + "/manifiesto.png";
-    document.getElementById("ppal8").title = tr("Manifiesto del grupo");
-    document.getElementById("ppal8").style.width = 130 * menuscale + 'px';
-    document.getElementById("ppal8").style.height = 50 * menuscale + 'px';
-    document.getElementById("ppal8").style.left = 210 * menuscale + 'px';
-    document.getElementById("ppal8").style.top = 268 * menuscale + 'px';
-
     document.getElementById("ppal9").style.width = 64 * 1.1 * menuscale + 'px';
     document.getElementById("ppal9").style.height = 79 * 1.1 * menuscale + 'px';
     document.getElementById("ppal9").style.left = 130 * menuscale + 'px';
@@ -477,6 +453,33 @@ function calcularResize() {
     document.getElementById("ppal11").style.height = 230 * menuscale + 'px';
     document.getElementById("ppal11").style.left = 800 * menuscale + 'px';
     document.getElementById("ppal11").style.top = 150 * menuscale + 'px';
+
+    //traducir
+    document.getElementById("loginAltaUsuario").innerHTML = tr("Alta de usuario");
+    document.getElementById("btnEntrar").value = tr("Entrar");
+    document.getElementById("email").placeholder = tr("email");
+    document.getElementById("clave").placeholder = tr("clave");
+    //document.getElementById("tit1").innerHTML = tr("Sociocracia");
+    document.getElementById("lnkSim").innerHTML = tr("simulacion");
+    document.getElementById("mejorVisto").innerHTML = tr("Mejor visto en");
+    document.getElementById("version").innerHTML = tr("version beta");
+    document.getElementById("lnkAyuda").innerHTML = tr("Ayuda");
+    document.getElementById("titulo1").innerHTML = tr("Sociocracia");
+    //document.getElementById("titulo2").innerHTML = tr("Democracia interactiva");
+    document.getElementById("oldPass").placeholder = tr("Clave actual");
+    document.getElementById("newPass").placeholder = tr("Nueva clave");
+    document.getElementById("repeat").placeholder = tr("Repitela");
+    document.getElementById("btnCCCambiar").value = tr("Cambiar");
+    document.getElementById("btnCCCancelar").value = tr("Cancelar");
+    document.getElementById("auTit1").innerHTML = tr("Alta de usuario");
+    document.getElementById("auTit2").innerHTML = tr("auTit2");
+    document.getElementById("altaUsuarioNombre").placeholder = tr("Nombre completo");
+    document.getElementById("altaUsuarioEmail").placeholder = tr("Email");
+    document.getElementById("auEnviar").value = tr("Enviar solicitud");
+    document.getElementById("auCerrar").innerHTML = tr("Cerrar");
+    document.getElementById("ufTit1").innerHTML = tr("ufTit1");
+    document.getElementById("ufAceptar").value = tr("Aceptar");
+    document.getElementById("ufCancelar").value = tr("Cancelar");
 
     //arbol
     translateArbol(translatex = 0, translatey = 0);
@@ -501,13 +504,14 @@ function loginEffectIn(){
         document.getElementById("tip").style.visibility = "hidden";
         document.getElementById("loginIn").style.visibility = "hidden";
         document.getElementById("loginFlor").style.visibility = "hidden";
+        document.getElementById("timeBack").style.visibility = "hidden";
 
         document.getElementById("loginIn").style.top = (window.innerHeight / 6) + 'px';
         document.getElementById("loginFlor").style.top = (window.innerHeight / 6) + 'px';
 
         efectoLeft(document.getElementById("loginIn"), 0, 750, window.innerWidth, window.innerWidth / 2 - 50, TWEEN.Easing.Cubic.Out);
         efectoLeft(document.getElementById("loginFlor"), 0, 750, -200, window.innerWidth / 2 - 230, TWEEN.Easing.Exponential.Out);
-        efectoTop(document.getElementById("tip"), 800, window.innerHeight, window.innerHeight / 4 + 160, TWEEN.Easing.Elastic.Out);
+        efectoTop(document.getElementById("tip"), 800, window.innerHeight, window.innerHeight / 4 + 200, TWEEN.Easing.Elastic.Out);
         timerFlores = setInterval(function () {
             rotFlores += 0.3;
             document.getElementById("loginFlor").style.transform = "rotate(" + rotFlores + "deg)";
@@ -647,12 +651,15 @@ function doMenuppal() {
     //menu ppal
     setTimeout(function () {
         //link al padre
-        var padreURL = arbolPersonal.padreURL + "/default.html?grupo=" + arbolPersonal.padreNombre + "&email=" + arbolPersonal.usuario.email;
+        var padreURL = arbolPersonal.padreURL + "/default.html?grupo=" + arbolPersonal.padreNombre + "&email=" + arbolPersonal.usuario.email + "&idioma=" + idiomaParam;
         document.getElementById("padrenombre").innerHTML = "<a href='" + padreURL + "'>" + arbolPersonal.padreNombre + "</a>";
 
         //nombre del arbol
         document.getElementById("tituloppal").innerHTML = arbolPersonal.nombre;
         document.getElementById("tituloNabu").style.visibility = "visible";
+
+        //timeback
+        document.getElementById("timeBack").style.visibility = "visible";
 
         //hijos
         var hijos = "<nobr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -667,6 +674,7 @@ function doMenuppal() {
 
         //atras
         document.getElementById("atras").style.visibility = "visible";
+        document.getElementById("pie").style.display = "block";
 
         //panel de usuario
         document.getElementById("usuario").innerHTML = "<div style='color:blue;cursor: pointer;' onclick='showCambiarClave();'>" + arbolPersonal.usuario.nombre + "</div>";
@@ -737,18 +745,18 @@ function getGrupoPersonal() {
 function menuOptions() {
     //opciiones de menu
     var mnu = "";
-    mnu += "<div class='menuItem'><a class='menuItem' href='bosque.html?grupo=" + grupoParam + "'>" + tr("El bosque") + "</a></div>";
+    mnu += "<div class='menuItem'><a class='menuItem' href='bosque.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El bosque") + "</a></div>";
     if (arbolPersonal.usuario.isAdmin) {
         //adminOptions
-        mnu += "<div class='menuItem'><a class='menuItem' href='modificararbol.html?grupo=" + grupoParam + "'>" + tr("El arbol") + "</a></div>";
-        mnu += "<div class='menuItem'><a class='menuItem' href='usuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a></div>";
+        mnu += "<div class='menuItem'><a class='menuItem' href='modificararbol.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El arbol") + "</a></div>";
+        mnu += "<div class='menuItem'><a class='menuItem' href='usuarios.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Usuarios") + "</a></div>";
     }
     else {
         //user options
-        mnu += "<div class='menuItem'><a class='menuItem' href='verusuarios.html?grupo=" + grupoParam + "'>" + tr("Usuarios") + "</a></div>";
+        mnu += "<div class='menuItem'><a class='menuItem' href='verusuarios.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Usuarios") + "</a></div>";
     }
     if (arbolPersonal.usuario.isFacilitador || arbolPersonal.usuario.isAdmin) {
-        mnu += "<div class='menuItem'><a class='menuItem' href='mailer.html?grupo=" + grupoParam + "'>" + tr("Mailer") + "</a></div>";
+        mnu += "<div class='menuItem'><a class='menuItem' href='mailer.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Mailer") + "</a></div>";
     }
     if (historico) mnu = "";
     document.getElementById("mnuOptions").innerHTML = mnu;
@@ -853,8 +861,9 @@ function doAtras() {
         //login voy a grupos
         loginEffectOut();
         setTimeout(gruposEffectIn, 600); //doy tiempo al login a irse
-        calcularResize();
+        doResize();
         document.getElementById("atras").style.visibility = "hidden";
+        document.getElementById("timeBack").style.visibility = "hidden";
     }
     else if (estado == 'aprendemos') {
         //aprendemos voy a menuppal
@@ -865,10 +874,11 @@ function doAtras() {
         document.getElementById("titulo").style.visibility = 'hidden';
         document.getElementById("panelUsuario").style.visibility = 'visible';
         document.getElementById("menuEvaluacion").style.visibility = 'hidden';
-        document.getElementById("modelos").style.display = "none";
+        document.getElementById("modelosDebate").style.display = "none";
         document.getElementById("modelosEvaluacion").style.display = "none";
         document.getElementById("joystickQueso").style.visibility = "hidden";
-       
+        document.getElementById("pie").style.display = "block";
+
         quesoPersonal = null;
         estado = 'menuppal';
         actualizarDatosGrupo();
@@ -901,8 +911,10 @@ function doAtras() {
         document.getElementById("panelUsuario").style.visibility = 'hidden';
 
         document.getElementById("alertas").style.visibility = 'hidden';
+        document.getElementById("pie").style.display = 'none';
 
         document.getElementById("atras").style.visibility = "hidden";
+        document.getElementById("timeBack").style.visibility = "hidden";
         root = { "name": "?" };
         clearInterval(timerFlores);
 
@@ -927,9 +939,10 @@ function doAtras() {
 
         document.getElementById("titulo").style.visibility = 'hidden';
         document.getElementById("joystickArbol").style.visibility = 'hidden';
-        document.getElementById("modelos").style.display = "none";
+        document.getElementById("modelosDebate").style.display = "none";
         document.getElementById("panelConsenso").style.display = 'none';
         document.getElementById("documento").style.display = 'none';
+        document.getElementById("pie").style.display = "block";
         if (menu) menu.style.visibility = "hidden";
         clearInterval(timerFlores);
         clearInterval(timerArbol);
@@ -960,24 +973,20 @@ function doAtras() {
     }
 }
 
-function resize() {
-    calcularResize();
-}
-
 function doDecisiones() {
-    document.location = "decisiones.html?grupo=" + grupoParam;
+    document.location = "decisiones.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
 }
 
 function doResultados() {
-    document.location = "resultados.html?grupo=" + grupoParam;
+    document.location = "resultados.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
 }
 
 function doEstructuras() {
-    document.location = "estructuras.html?grupo=" + grupoParam;
+    document.location = "estructuras.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
 }
 
 function doSeguimiento() {
-    document.location = "seguimiento.html?grupo=" + grupoParam;
+    document.location = "seguimiento.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
 }
 
 function startRecognition(id) {

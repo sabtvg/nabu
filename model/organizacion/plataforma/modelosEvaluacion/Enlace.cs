@@ -65,13 +65,13 @@ namespace nabu.plataforma.modelosEvaluacion
                 p.texto = (string)getValue("s.t" + i, prop);
                 if (i == 3)
                 {
-                    p.minText = "No";
-                    p.maxText = "Si";
+                    p.minText = Tools.tr("No", grupo.idioma);
+                    p.maxText = Tools.tr("Si", grupo.idioma);
                 }
                 else
                 {
-                    p.minText = "Si";
-                    p.maxText = "No";
+                    p.minText = Tools.tr("Si", grupo.idioma);
+                    p.maxText = Tools.tr("No", grupo.idioma);
                 } 
                 ret.Add(p);
             }

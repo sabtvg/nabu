@@ -37,11 +37,12 @@
         var usuarios;
         var errores;
         var grupoParam;
+        var idiomaParam;
 
         function doLoad() {
             //idioma
-            idioma = getParameterByName('idioma');
-            if (idioma == null) idioma = 'es';
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
 
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
@@ -50,7 +51,7 @@
                 var cookie = getCookie("nabu-" + grupoParam);
                 if (cookie == "")
                     //login normal
-                    document.location = 'default.html?grupo=' + grupoParam;
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                 else {
                     try
                     {
@@ -64,25 +65,27 @@
                         var vals = cookie.split("|");
                         usuario = { nombre: vals[0], email: vals[1], clave: vals[2], arbol: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                        idioma = vals[5]; //para el tradcutor
+                        idiomaParam = vals[5]; //para el tradcutor
+                        idioma = idiomaParam;  //para el dicionario
+
 
                         if (!usuario.isAdmin) {
                             alert("Solo disponible para el coordinador");
                             //login normal
-                            document.location = 'default.html';
+                            document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                         }
                         else
                             getListaUsuarios();
                     }
                     catch (e) {
                         //login normal
-                        document.location = 'default.html';
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                     }
                 }
             }
             else
             //login normal
-                    document.location = 'default.html?grupo=' + grupoParam;
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
         }
 
         function getListaUsuarios() {
@@ -149,7 +152,7 @@
         }
 
         function doAtras() {
-            document.location = "default.html?grupo=" + grupoParam;
+            document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
         }
     </script>
 </head>

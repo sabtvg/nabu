@@ -24,6 +24,7 @@
         var scale = window.innerWidth / 1920;
         var zoom = scale;
         var grupoParam;
+        var idiomaParam;
         var arbolPersonal;
         var lastMouse = null;
         var editando = false;
@@ -98,8 +99,8 @@
             setBackgroundImage();
 
             //idioma
-            idioma = getParameterByName('idioma');
-            if (idioma == null) idioma = 'es';
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
 
             //eventos tactiles
             document.body.addEventListener('touchmove', function (e) {
@@ -120,7 +121,7 @@
                 var cookie = getCookie("nabu-" + grupoParam);
                 if (cookie == "")
                     //login normal
-                    document.location = 'default.html?grupo=' + grupoParam;
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                 else {
                     //fondo segun timeline
                     if (historico)
@@ -130,13 +131,15 @@
                     var vals = cookie.split("|");
                     usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                    idioma = vals[5]; //para el tradcutor
+                    idiomaParam = vals[5]; //para el tradcutor
+                    idioma = idiomaParam;  //para el dicionario
+
 
                     calcularResize();
 
                     if (!usuario) {
                         //login normal
-                        document.location = 'default.html';
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                     }
                     else
                         getHttp("doMain.aspx?actn=getOperativo&email=" + usuario.email
@@ -161,7 +164,7 @@
             }
             else
                 //login normal
-                document.location = 'default.html?grupo=' + grupoParam;
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
         }
 
         function calcularResize() {
@@ -216,7 +219,7 @@
                 zoom = window.innerHeight / (h * row * 2);
             else
                 zoom = window.innerWidth / (w * col * 2);
-            if (zoom > 0.8) zoom = 0.8;
+            if (zoom > 0.6) zoom = 0.6;
         }
 
         function dibujarOperativo(operativo, x, y, zoom) {
@@ -469,7 +472,7 @@
         }
 
         function doAtras() {
-            document.location = "default.html?grupo=" + grupoParam;
+            document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
         }
 
     </script>

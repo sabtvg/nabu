@@ -1,5 +1,11 @@
-﻿body {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+﻿@font-face {
+  font-family: 'Wallie';
+  src: url('fonts/WallieFit.woff') format('woff'); /* Super Modern Browsers */
+ 
+}
+
+body {
+    font-family: Wallie, Verdana, Geneva, Tahoma, sans-serif;
     font-size: 14px;
     background-image: url('res/background.jpg');
     background-repeat: no-repeat;
@@ -19,7 +25,6 @@
 .node {
   cursor: pointer;
 }
-
 .center {
     position: absolute;
     top: 50%;
@@ -41,11 +46,11 @@
 .objetivo {
     border: 1px solid #C0C0C0;
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 3px;
     background-color: #FFFFFF;
     opacity: 0.6;
     position: fixed;
-    bottom: 1vh;
+    bottom: -14px;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
@@ -124,7 +129,7 @@
     border: 1px solid #C0C0C0;
     border-radius: 4px;
     background-color: #FFFFDD;
-    font-size: 10px;
+    font-size: 12px;
 }
 .error {
     border: 4px solid #FF5050;
@@ -194,7 +199,7 @@
 
 .msg {
     padding: 5px;
-    font-size: 20px;
+    font-size: 18px;
     color: red;
 }
 
@@ -274,16 +279,15 @@
     margin: 2px;
     width:-webkit-fill-available;
 }
-
-
 .alertas {
     border: 1px solid gray;
     padding: 5px;
     border-radius: 10px;
     position:fixed;
-    left:0.3vw;
-    top:30vh;
+    left:5px;
+    bottom:5px;
     margin-top:1vh;
+    max-width:25vw;
     color: gray;
     height:42vh;
     overflow: auto;
@@ -318,7 +322,7 @@
     right: 15vw;
     bottom: 20vh;
 }
-.modelos {
+.modelosDebate {
     position:absolute;
     border: 4px solid gray;
     padding: 5px 5px 5px 5px;
@@ -333,6 +337,22 @@
     margin-top: -200px;
     width: 600px;
     height: 400px;
+}
+.modelosEvaluacion {
+    position:absolute;
+    border: 4px solid gray;
+    padding: 5px 5px 5px 5px;
+    border-radius: 15px;
+    border-color: #403d3d;
+    background-color: #C6ECFF;
+    opacity: 0.9; 
+    display: none;
+    top: 50%;
+    left: 50%;
+    margin-left: -150px;
+    margin-top: -100px;
+    width: 300px;
+    height: 200px;
 }
 .rotarpantalla {
     display:none;
@@ -357,7 +377,7 @@
     border-color: #403d3d;
     background-color: #C6ECFF;
     opacity: 0.9;
-    width: 650px;
+    width: 730px;
 }
 .ventanaltausuario {
     position:absolute;
@@ -370,7 +390,7 @@
     border-color: #403d3d;
     background-color: #C6ECFF;
     opacity: 0.9;
-    width: 320px;
+    width: 380px;
     text-align:center;
     visibility:hidden;
 }
@@ -429,6 +449,7 @@
     border-color: gray;
     background-color: #CCCCCC;
     font-size: 15px;
+    font-family:inherit;
 }
 .txt {
     margin: 2px;
@@ -439,6 +460,7 @@
     border-color: gray;
     background-color: #FAF5F5;
     font-size: 15px;
+    font-family:inherit;
 }
 .btn {
     border: 2px solid #006666;
@@ -449,6 +471,7 @@
     cursor: pointer;
     margin-left: 4px;
     margin-top: 4px;
+    font-family:inherit;
 }
 .btnStop {
     background-color: #CC0000;
@@ -469,6 +492,7 @@
     border-radius: 16px;
     font-size: 15px;
     cursor: pointer;
+    font-family:inherit;
 }
 .btnDis2 {
     border: 2px solid #006666;
@@ -477,6 +501,7 @@
     border-radius: 16px;
     font-size: 11px;
     cursor: pointer;
+    font-family:inherit;
 }
 .table {
     border: 1px solid gray;
@@ -501,17 +526,6 @@
     visibility: hidden;
     overflow: scroll;
 }
-.panelConsenso {
-    position:fixed;
-    top:12vh;
-    left:5px;
-    border: 1px solid gray;
-    padding: 5px;
-    border-radius: 10px;
-    padding: 5px;
-    color: gray;
-    display:none;
-}
 .seccion {
     padding: 2px;
     padding-left: 7px;
@@ -530,8 +544,18 @@
     width: 20%;
     float:left;
 }
+.comentarios2 {
+    padding: 4px;
+    border: 1px solid #c0c0c0;
+    border-radius: 5px;
+    vertical-align:top;
+    width: 80%;
+    float:right;
+    clear:right;
+}
 .comentario {
     padding: 2px;
+    margin: 2px;
     border: 1px solid #009933;
     border-radius: 4px;
     background-color: #CCFFCC;
@@ -546,6 +570,8 @@
     vertical-align: middle;
     color: #999999;
     width: fit-content;
+    margin-top:2px;
+    margin-bottom:2px;
 }
 .grupos {
     display:none;
@@ -597,6 +623,7 @@
     bottom: 0vh;
     width: 100%;
     text-align: center;
+    display: none;
 }
 .atras {
     position: fixed;
@@ -616,6 +643,67 @@
     font-size: 1.4vw;
     padding-left: 1%;
     padding-top: 1%;
+}
+.panelUsuario {
+    position: fixed;
+    left: 0.3vw;
+    top: 7vh;
+    visibility: hidden;
+    margin-top: 25px;
+    margin-top: 1vh;
+    color: gray;
+}
+.panelConsenso {
+    position: fixed;
+    left: 0.3vw;
+    top: 13vh;
+    display: none;
+    padding: 5px;
+    margin-top: 25px;
+    margin-top: 1vh;
+    color: gray;
+    border: 1px solid gray;
+    padding: 5px;
+    border-radius: 10px;
+}
+.panelQueso {
+    position: fixed;
+    left: 0.3vw;
+    top: 13vh;
+    display: none;
+    padding: 5px;
+    margin-top: 25px;
+    margin-top: 1vh;
+    color: gray;
+    border: 1px solid gray;
+    padding: 5px;
+    border-radius: 10px;
+}
+.panelGrupo {
+    position: fixed;
+    left: 0.3vw;
+    top: 13vh;
+    display: none;
+    padding: 5px;
+    margin-top: 25px;
+    margin-top: 1vh;
+    color: gray;
+    border: 1px solid gray;
+    padding: 5px;
+    border-radius: 10px;
+}
+.info {
+    position:fixed;
+    bottom: 3px;
+    right:3px;
+    visibility: hidden;
+    padding: 5px;
+    margin-top: 5px;
+    color: gray;
+    overflow: auto;
+    border: 1px solid gray;
+    border-radius: 10px;
+    font-size: 18px;
 }
 
 @media only screen and (max-width: 1280px) {
@@ -709,10 +797,10 @@
         border: 1px solid gray;
         padding: 5px;
         border-radius: 10px;
-        max-width: 12vw;
+        max-width: 25vw;
         position:fixed;
-        left:0vw;
-        top:27vh;
+        left:3px;
+        bottom:20px;
         margin-top:1vh;
         color: gray;
         height:36vh;
@@ -749,7 +837,22 @@
         height: -webkit-fill-available;
         overflow: scroll;
     }
-    .modelos {
+    .modelosDebate {
+        margin: 0px;
+        border: none;
+        padding: 5px 5px 5px 5px;
+        border-radius: 0px;
+        background-color: #C6ECFF;
+        opacity: 0.9; 
+        display: none;
+        position: absolute;    
+        left: 0px;
+        top: 0px;
+        width: -webkit-fill-available;
+        height: -webkit-fill-available;
+        overflow: scroll;
+    }
+    .modelosEvaluacion {
         margin: 0px;
         border: none;
         padding: 5px 5px 5px 5px;
@@ -828,6 +931,7 @@
         border-color: gray;
         background-color: #CCCCCC;
         font-size: 12px;
+        font-family:inherit;
     }
     .txt {
         margin: 2px;
@@ -838,6 +942,7 @@
         border-color: gray;
         background-color: #FAF5F5;
         font-size: 12px;
+        font-family:inherit;
     }
     .btn {
         border: 1px solid #006666;
@@ -850,6 +955,7 @@
         margin-left: 5px;
         margin-top: 3px;
         margin-left: 3px;
+        font-family:inherit;
     }
 
     .btn2 {
@@ -860,6 +966,7 @@
         font-size: 12px;
         cursor: pointer;
         margin: 0px 0px 0px 5px;
+        font-family:inherit;
     }
     .btnDis {
         border: 1px solid #006666;
@@ -868,6 +975,7 @@
         border-radius: 8px;
         font-size: 12px;
         cursor: pointer;
+        font-family:inherit;
     }
 
     .btnDis2 {
@@ -877,6 +985,7 @@
         border-radius: 8px;
         font-size: 12px;
         cursor: pointer;
+        font-family:inherit;
     }
     .table {
         border-collapse:collapse;
@@ -919,13 +1028,14 @@
         border: 1px solid #c0c0c0;
         border-radius: 5px;
         vertical-align: top;
-        width: -webkit-fill-available;
-        clear: left;
-        float: left;
-        background-color: #E9E9E9;
+        width: 80%;
+        clear: right;
+        float: right;
+        background-color: #F2F2F2;
     }
     .comentario {
         padding: 2px;
+        margin:2px;
         border: 1px solid #009933;
         border-radius: 4px;
         background-color: #CCFFCC;
@@ -1042,6 +1152,7 @@
         bottom: 0vh;
         width: 100%;
         text-align: center;
+        display: none;
     }
     .atras {
         position: fixed;
@@ -1057,13 +1168,76 @@
         font-size: 16px;
         position: fixed;
         left: 7vw;
-        top: 2vh;
+        top: 3vh;
         font-size: 2vw;
     }
     .logo {
         width: 35px;
         height: auto;
         padding: 5px;
+    }
+    .panelUsuario {
+        position: fixed;
+        left: 0.3vw;
+        top: 9vh;
+        visibility: hidden;
+        margin-top: 25px;
+        margin-top: 1vh;
+        color: gray;
+    }
+    .panelConsenso {
+        position: fixed;
+        left: 0.3vw;
+        top: 16vh;
+        display: none;
+        padding: 5px;
+        margin-top: 25px;
+        margin-top: 1vh;
+        color: gray;
+        border: 1px solid gray;
+        padding: 5px;
+        border-radius: 10px;
+    }
+    .panelQueso {
+        position: fixed;
+        left: 0.3vw;
+        top: 16vh;
+        display: none;
+        padding: 5px;
+        margin-top: 25px;
+        margin-top: 1vh;
+        color: gray;
+        border: 1px solid gray;
+        padding: 5px;
+        border-radius: 10px;
+    }
+    .panelGrupo {
+        position: fixed;
+        left: 0.3vw;
+        top: 16vh;
+        display: none;
+        padding: 5px;
+        margin-top: 25px;
+        margin-top: 1vh;
+        color: gray;
+        border: 1px solid gray;
+        padding: 5px;
+        border-radius: 10px;
+    }
+    .info {
+        visibility: hidden;
+        padding: 5px;
+        margin-top: 5px;
+        color: gray;
+        overflow: auto;
+        border: 1px solid gray;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+    .msg {
+        padding: 2px;
+        font-size: 10px;
+        color: red;
     }
 }
 
@@ -1080,6 +1254,13 @@
         background-image: url('res/background.jpg');
     }
 }
+
+@media only screen and (max-height: 300px) {
+    .pie {
+        display: none;
+    }
+}
+
 
 p {
     display: block;

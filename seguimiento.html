@@ -43,6 +43,7 @@
         var scale = window.innerWidth / 1920;
         var zoom = scale;
         var grupoParam;
+        var idiomaParam;
         var arbolPersonal;
         var lastMouse = null;
         var editando = false;
@@ -146,8 +147,8 @@
             }, false)
 
             //idioma
-            idioma = getParameterByName('idioma');
-            if (idioma == null) idioma = 'es';
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
 
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
@@ -156,7 +157,7 @@
                 var cookie = getCookie("nabu-" + grupoParam);
                 if (cookie == "")
                     //login normal
-                    document.location = 'default.html?grupo=' + grupoParam;
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                 else {
                     calcularResize();
 
@@ -168,11 +169,13 @@
                     var vals = cookie.split("|");
                     usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                    idioma = vals[5]; //para el tradcutor
+                    idiomaParam = vals[5]; //para el tradcutor
+                    idioma = idiomaParam;  //para el dicionario
+
 
                     if (!usuario) {
                         //login normal
-                        document.location = 'default.html';
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                     }
                     else
                         getHttp("doMain.aspx?actn=getOperativo&email=" + usuario.email
@@ -197,7 +200,7 @@
             }
             else
                 //login normal
-                document.location = 'default.html?grupo=' + grupoParam;
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
         }
 
         function calcularResize() {
@@ -504,7 +507,7 @@
         }
 
         function doAtras() {
-            document.location = "default.html?grupo=" + grupoParam;
+            document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
         }
 
         function saveSettings() {

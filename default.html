@@ -48,7 +48,7 @@
     <meta name="robots" content="index,follow">
     <meta name="keywords" content="democracia directa,democracia interactiva,democracia participativa,generador de consensos,cooperativa 2.0,cooperativa integral catalana" />
 </head>
-<body onload="doLoad();" style="overflow:hidden"  onresize="resize()">
+<body onload="doLoad();" style="overflow:hidden"  onresize="doResize()">
     <!--objetivo--------------------------------------------------------------------------------------------------->
     <div id="objetivo" class="objetivo" style="z-index:-1;"></div>
 
@@ -91,7 +91,11 @@
         <div id="msgDiv" class="msg"></div>
     </div>
     
-        <!--joystick--------------------------------------------------------------------------------------------------->
+    <!--panel alertas--------------------------------------------------------------------------------------------------->
+    <div id="alertas"  class="alertas">
+    </div>
+
+    <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystickQueso" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
         <nobr>
             <img src="res/jzm.png" onclick="quesoScale*=1.1;dibujarQueso();" class="img" />
@@ -159,28 +163,26 @@
     <img id="timeBack" src="res/timeback.png" onclick="doTimeBack();"  style="cursor:pointer;visibility:hidden; position:fixed;bottom:5vh;padding:5px;right:0vw;opacity:0.4" />
            
     <!--panel flores--------------------------------------------------------------------------------------------------->
-    <div id="panelUsuario" style="position:fixed;left:0.3vw;top:7vh;visibility: hidden; margin-top: 25px; margin-top:1vh;color: gray;">
-        <span id="usuario" class="titulo3" style="clear:left;float:left;margin:4px;"></span>
-        <img src="res/icono2.png" style="width:20%;height:auto;float:left;"/>
-        <span id="floresDisponibles" style="font-size: 1.2vw; font-weight: bold;float:left;margin:4px;"></span>
-    </div>
+    <table id="panelUsuario" class="panelUsuario" border="0">
+        <tr>
+            <td id="usuario" class="titulo3" style="vertical-align:middle"></td>
+            <td style="width:1.7vw;"><img src="res/icono2.png" style="width:1.6vw;height:auto;vertical-align:middle;margin:auto;"/></td>
+            <td id="floresDisponibles" class="titulo3" style="width:15px;vertical-align:middle;text-align:left"></td>
+        </tr>
+    </table>
 
     <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelGrupo"  class="borde" style="position:fixed;left:0.3vw;top:13vh;display:none; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    <div id="panelGrupo"  class="panelGrupo">
     </div>
     
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="borde" style="position:fixed;left:0.3vw;top:13vh;display:none; padding: 5px; margin-top: 25px; margin-top:1vh;color: gray;">
+    <div id="panelConsenso"  class="panelConsenso">
     </div>
     
     <!--panel queso--------------------------------------------------------------------------------------------------->
-    <div id="panelQueso" class="borde" style="position:fixed;left:0.3vw;top:13vh;display:none; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    <div id="panelQueso" class="panelQueso">
     </div>
     
-    <!--panel alertas--------------------------------------------------------------------------------------------------->
-    <div id="alertas"  class="alertas">
-    </div>
-
     <!--pie--------------------------------------------------------------------------------------------------->
     <div id="pie" class="pie">
         <a id="lnkSim" href="simulacion.html">simulacion</a> - 
@@ -213,7 +215,7 @@
     <!--menuppal--------------------------------------------------------------------------------------------------->
     <div id="menuppal" style="position: absolute; visibility:hidden; width: 800px; height: 600px;">
         <div id="padrenombre" style="position: inherit; width:800px; left:0px; top:-110px;text-align: center;" class="titulo2"></div>
-        <div id="tituloppal" style="position: inherit; width:800px; left:0px; top:-80px;text-align: center;font-weight:bold" class="titulo2"></div>
+        <div id="tituloppal" style="position: inherit; left:190px; top:278px; width:285px; text-align: center;font-weight:bold;font-size:18px" class="titulo2"></div>
         <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;;cursor:default" />
         <img id="ppal1" class="btnimg" src="res/es/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doDecidimos();"/>
         <img id="ppal2" class="btnimg" src="res/es/noticias.png" style="position: inherit; left:15px; top:192px;" onclick="doAprendemos();"/>
@@ -221,7 +223,6 @@
         <img id="ppal4" class="btnimg" src="res/es/seguimiento.png" style="position: inherit; left:600px; top:329px;" onclick="doSeguimiento();"/>
         <img id="ppal5" class="btnimg" src="res/es/docConsensos.png" style="position: inherit; left:338px; top:31px;" onclick="doDecisiones();"/>
         <img id="ppal7" class="btnimg" src="res/es/docRealizacion.png" style="position: inherit; left:285px; top:439px;" onclick="doResultados();"/>
-        <img id="ppal8" class="btnimg" src="res/es/manifiesto.png" style="position: inherit; left:190px; top:278px;"/>
         <img id="ppal9" class="btnimg" src="res/doc.png" style="position: inherit; left:120px; top:258px;" onclick="doManifiesto();"/>
         <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;cursor:default;"/>
         <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;cursor:default" />
@@ -241,20 +242,18 @@
 
     <!--alta usuario--------------------------------------------------------------------------------------------------->
     <div id="altaUsuario" class="ventanaltausuario">
-        <span id="auTit1" class="titulo2">Alta de usuario</span>
-        <span id="auTit2">
-        <br /><br />
-        El alta de usuarios es administrada manualmente.<br /><br />
+        <div id="auTit1" class="titulo2">Alta de usuario</div>
+        <div id="auTit2">
+        El alta de usuarios es administrada manualmente.<br />
         Selecciona el grupo<br /> y completa tus datos.<br />
-        Recibiras un email con tus datos de acceso.<br /><br />
-        </span>
+        Recibiras un email con tus datos de acceso.<br />
+        </div>
         <select id="altaUsuarioGrupos" class="editar" style="width: 200px;"></select><br />
         <input id="altaUsuarioNombre" type="text" class="editar" placeholder="Nombre completo" value="" /><br />
-        <input id="altaUsuarioEmail" type="text" class="editar" placeholder="Email" value="" /><br /><br />
+        <input id="altaUsuarioEmail" type="text" class="editar" placeholder="Email" value="" /><br />
         <input id="auEnviar" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
         <input id="auCerrar" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);" /><br />
         <div id="altaUsuarioMsg"></div>
-        <br /><br />
     </div>
         
     <!--lista consensos--------------------------------------------------------------------------------------------------->
@@ -306,11 +305,11 @@
     </div>
 
     <!--modelos documento--------------------------------------------------------------------------------------------------->
-    <div id="modelos" class="modelos" >
+    <div id="modelosDebate" class="modelosDebate" >
     </div>
 
     <!--modelos evaluacion--------------------------------------------------------------------------------------------------->
-    <div id="modelosEvaluacion" class="modelos" >
+    <div id="modelosEvaluacion" class="modelosEvaluacion" >
     </div>
 </body>
 </html>

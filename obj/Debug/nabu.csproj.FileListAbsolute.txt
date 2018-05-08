@@ -7,3 +7,4 @@ F:\nabu\obj\Debug\nabu.dll
 F:\nabu\bin\nabu.dll
 F:\nabu\bin\nabu.pdb
 F:\nabu\obj\Debug\nabu.pdb
+C:\inetpub\wwwroot\nabu\obj\Debug\nabu.csprojResolveAssemblyReference.cache

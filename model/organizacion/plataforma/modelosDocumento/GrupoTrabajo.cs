@@ -346,7 +346,10 @@ namespace nabu.plataforma.modelos
                 foreach(Usuario u2 in g.usuarios) 
                     lista += u2.email + ":" + u2.nombre + "|";
                 lista = lista .Substring(0, lista.Length-1);
-                ret += HTMLListaSeleccion("s.integrantes", prop, width - 150, 250, tieneFlores, lista, "Pertenece al grupo", "NO pertenece al grupo", g.idioma);
+                ret += HTMLListaSeleccion("s.integrantes", prop, width - 150, 250, tieneFlores, lista, 
+                    Tools.tr("Pertenece al grupo", g.idioma), 
+                    Tools.tr("NO pertenece al grupo", g.idioma), 
+                    g.idioma);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);

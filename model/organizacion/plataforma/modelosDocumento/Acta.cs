@@ -187,7 +187,10 @@ namespace nabu.plataforma.modelos
                 foreach (Usuario u2 in g.usuarios)
                     lista += u2.email + ":" + u2.nombre + "|";
                 lista = lista.Substring(0, lista.Length - 1);
-                ret += HTMLListaSeleccion("s.participan", prop, width - 150, 250, tieneFlores, lista, "Presente", "NO presente", g.idioma);
+                ret += HTMLListaSeleccion("s.participan", prop, width - 150, 250, tieneFlores, lista, 
+                    Tools.tr("Presente", g.idioma), 
+                    Tools.tr("NO presente", g.idioma), 
+                    g.idioma);
 
                 //apertura
                 ret += "<div class='tema'>" + Tools.tr("acta.apertura.titulo", g.idioma) + "</div>";

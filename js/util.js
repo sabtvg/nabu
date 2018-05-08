@@ -232,8 +232,8 @@ function actualizarDatosConsenso() {
     var ap = arbolPersonal;
 
     ret = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "<br>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Si") + "&ge;" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("No") + "&le;" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Si") + "<span style='font-family:arial'> &ge; </span>" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
+    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("No") + "<span style='font-family:arial'> &le; </span>" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
     panel.innerHTML = ret;
 }
 

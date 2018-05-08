@@ -752,6 +752,12 @@ namespace nabu
                     c.texto = Server.HtmlEncode(comentario);
                     c.objecion = objecion;
                     p.comentarios.Add(c);
+
+                    if (objecion)
+                    {
+                        Nodo n = a.getNodo(id);
+                        n.objecion = true;
+                    }
                 }
                 //retorno el nuevo html de todos los comentarios de ese nodo
                 Modelo m = g.organizacion.getModeloDocumento(p.modeloID);

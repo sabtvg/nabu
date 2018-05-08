@@ -36,14 +36,15 @@
     <script>
         var usuario;
         var grupoParam;
+        var idiomaParam;
 
         function doLoad() {
             //background
             setBackgroundImage();
 
             //idioma
-            idioma = getParameterByName('idioma');
-            if (idioma == null) idioma = 'es';
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
 
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
@@ -61,7 +62,9 @@
                     var vals = cookie.split("|");
                     usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                    idioma = vals[5]; //para el tradcutor
+                    idiomaParam = vals[5]; //para el tradcutor
+                    idioma = idiomaParam;  //para el dicionario
+
 
                     traducir();
 
@@ -70,7 +73,7 @@
             }
             else
                 //login normal
-                document.location = 'default.html?grupo=' + grupoParam;
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;;
         }
 
         function getListaUsuarios() {
@@ -127,7 +130,7 @@
         }
 
         function doAtras() {
-            document.location = "default.html?grupo=" + grupoParam;
+            document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;;
         }
 
         function traducir() {

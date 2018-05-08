@@ -37,6 +37,7 @@
         var usuarios;
         var usuario;
         var grupoParam;
+        var idiomaParam;
         var selected = "";
 
         function doLoad() {
@@ -44,8 +45,8 @@
             setBackgroundImage();
 
             //idioma
-            idioma = getParameterByName('idioma');
-            if (idioma == null) idioma = 'es';
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
 
             //obtengo datos de los parametros
             grupoParam = getParameterByName('grupo');
@@ -54,7 +55,7 @@
                 var cookie = getCookie("nabu-" + grupoParam.replace(' ', ''));
                 if (cookie == "")
                     //login normal
-                    document.location = 'default.html?grupo=' + grupoParam;
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                 else {
                     var scalex = window.innerWidth / 1920;
                     var scaley = window.innerHeight / 1080;
@@ -63,12 +64,14 @@
                     var vals = cookie.split("|");
                     usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                    idioma = vals[5]; //para el tradcutor
+                    idiomaParam = vals[5]; //para el tradcutor
+                    idioma = idiomaParam;  //para el dicionario
+
 
                     if (!usuario.isAdmin) {
                         alert(tr("Solo disponible para el coordinador"));
                         //login normal
-                        document.location = 'default.html';
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                     }
                     else {
                         traducir();
@@ -78,7 +81,7 @@
             }
             else
                 //login normal
-                document.location = 'default.html?grupo=' + grupoParam;
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
         }
 
         function doActualizarUsuario() {
@@ -138,9 +141,6 @@
         }
 
         function doSelect(email) {
-            if (selected != "")
-                doActualizarUsuario()
-
             for (q in usuarios) {
                 var u = usuarios[q];
                 if (u.email == email) {
@@ -267,9 +267,7 @@
         }
 
         function doAtras() {
-            if (selected != "")
-                doActualizarUsuario()
-            document.location = "default.html?grupo=" + grupoParam;
+            document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;;
         }
 
         function traducir() {
@@ -286,6 +284,7 @@
             document.getElementById("lrepre").innerHTML = tr("Representante");
             document.getElementById("lfacil").innerHTML = tr("Facilitador");
             document.getElementById("btnCancelar").innerHTML = tr("btnCancelar");
+            document.getElementById("btnActualizar").innerHTML = tr("actualizar");
 
         }
     </script>
@@ -302,6 +301,7 @@
             </tr>          
         </table>
             <input id="btnCancelar" type='button' class='btn' value='Volver ' onclick='doAtras();' style="margin:5px"/>
+            <input id="btnActualizar" type='button' class='btn' value='Actualizar ' onclick='doActualizarUsuario();' style="margin:5px"/>
 
             <div style="border: 1px solid gray; border-radius: 10px;">
                 <table>

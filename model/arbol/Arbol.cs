@@ -744,8 +744,9 @@ namespace nabu
             bool caido = false;
             foreach (Flor f in u.flores)
             {
-                //if (f.id != 0 && DateTime.Now.Subtract(f.born).TotalDays > 60)
-                if (f.id != 0 && DateTime.Now.Subtract(u.lastLogin).TotalDays > 15) //13/04/2017
+                //15 dias sin entrar o 60 dias la flor
+                if (f.id != 0 && (DateTime.Now.Subtract(u.lastLogin).TotalDays > 15 ||
+                                  DateTime.Now.Subtract(f.born).TotalDays > 60)) 
                 {
                     Nodo n = getNodo(f.id);
                     if (n != null)

@@ -581,7 +581,6 @@ namespace nabu
                 {
                     //login correcto
                     //devuelvo el arbol personal con las flores de este usuario y sus modelos
-                    u.lastLogin = DateTime.Now;
                     a.actualizarModelosEnUso();
                     //knowtypes para modelos
                     List<Type> tipos = new List<Type>();
@@ -592,6 +591,7 @@ namespace nabu
                     ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(), tipos) + ", ";
                     ret += "\"modelosEvaluacion\":" + Tools.toJson(g.organizacion.getModelosEvaluacion(), tipos) + ", ";
                     ret += "\"arbolPersonal\":" + Tools.toJson(a.getArbolPersonal(u.email)) + "}";
+                    u.lastLogin = DateTime.Now;
                 }
                 else if (u != null && !u.habilitado)
                 {

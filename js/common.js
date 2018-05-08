@@ -72,13 +72,12 @@ function showPanelIzq(data) {
     if (window.innerWidth > 800) {
         var panelIzq = document.getElementById("panelIzq");
         if (panelIzq.style.visibility == "hidden") {
-            panelIzq.style.visibility = "visible";
             efectoLeft(panelIzq, 0, 750, -700 * scale, 5, TWEEN.Easing.Cubic.Out);
         }
         panelIzq.style.top = 100 * scaley + "px";
         panelIzq.style.width = 700 * scalex + "px";
         panelIzq.style.height = 800 * scaley + "px";
-        panelIzq.innerHTML = "<img style='cursor: pointer;' src='res/close.png' onclick='hidePanelDer();' /><br>" + data;
+        panelIzq.innerHTML = "<img style='cursor: pointer;' src='res/close.png' onclick='hidePanelIzq();' /><br>" + data;
     }
 }
 
@@ -87,7 +86,6 @@ function showPanelDer(data) {
     if (window.innerWidth > 800) {
         var panelDer = document.getElementById("panelDer");
         if (panelDer && panelDer.style.visibility == "hidden") {
-            panelDer.style.visibility = "visible";
             efectoLeft(panelDer, 0, 750, window.innerWidth, window.innerWidth - 700 * scale - 25, TWEEN.Easing.Cubic.Out);
         }
         panelDer.style.top = 100 * scaley + "px";
@@ -108,7 +106,7 @@ function hidePanelIzq() {
 
 function hidePanelDer() {
     var panelDer = document.getElementById("panelDer");
-    if (panelDer.style.visibility == "visible") {
+    if (panelDer && panelDer.style.visibility == "visible") {
         efectoLeft(panelDer, 0, 750, window.innerWidth - 700 * scale - 25, window.innerWidth, TWEEN.Easing.Cubic.Out, function () {
             document.getElementById("panelDer").style.visibility = "hidden";
             document.getElementById("panelDer").style.left = "0px"; //evita que aparezcan las barras de scroll

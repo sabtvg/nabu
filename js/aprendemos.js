@@ -44,6 +44,7 @@ function doAprendemos() {
     //titulo
     document.getElementById("titulo").innerHTML = arbolPersonal.nombre + " - " + tr("Evaluamos");
     document.getElementById("titulo").style.visibility = 'visible';
+    document.getElementById("pie").style.display = "none";
 
     //joystick
     document.getElementById("joystickQueso").style.visibility = 'visible';

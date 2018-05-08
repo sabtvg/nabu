@@ -44,6 +44,7 @@
         var stopSim = false;
         var selectedNode; //siempre nulo
         var playing = false;
+        var idiomaParam;
         //tipo de visualizacion
         var visual = {level: 10};  //Chrome, Zafari, InternetExplorer. Por ahora solo usa la visualizacion completa 10
         var joyInterval;
@@ -68,8 +69,8 @@
             treeScale = window.innerWidth / 1920; //valor default
 
             //idioma
-            idioma = getParameterByName('idioma');
-            if (idioma == null) idioma = 'es';
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
 
             //cargo idioma
             grupoParam = getParameterByName('grupo');
@@ -77,9 +78,10 @@
                 var cookie = getCookie("nabu-" + grupoParam);
                 if (cookie != "") {
                     var vals = cookie.split("|");
-                    idioma = vals[5]; //para el tradcutor
+                    idiomaParam = vals[5]; //para el tradcutor
                 }
             }
+            idioma = idiomaParam;  //para el dicionario
 
             setInterval(function () {
                 var sim = document.getElementById("tit4");
@@ -196,7 +198,7 @@
         }
 
         function doAtras() {
-            document.location = "default.html?grupo=" + grupoParam;
+            document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
         }
 
         function traducir() {

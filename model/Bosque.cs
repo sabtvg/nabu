@@ -66,7 +66,10 @@ namespace nabu
             public List<Nodo> hijos = new List<Nodo>();
             public bool descargado = false;
             public float colorPromedio = 0;
-            public double horizontalidad = 0; //cantidad representates / cantidad usuarios
+            public double horizontalidad = 0;
+            public float minSiPc = 0;
+            public float maxNoPc = 0;
+            public float bloqueo = 0;
             public List<Usuario> usuarios = new List<Usuario>();
             public List<Seguimiento> seguimientos = new List<Seguimiento>();
         }
@@ -98,6 +101,9 @@ namespace nabu
             ret.activos = modelo.activos;
             ret.colorPromedio = modelo.colorPromedio;
             ret.horizontalidad = modelo.horizontalidad;
+            ret.minSiPc = modelo.minSiPc;
+            ret.maxNoPc = modelo.maxNoPc;
+            ret.bloqueo = modelo.bloqueo;
 
             ret.usuarios.Clear();
             foreach (Usuario u in modelo.usuarios)
@@ -144,6 +150,9 @@ namespace nabu
             nodo.activos = g.getUsuariosHabilitadosActivos().Count;
             nodo.colorPromedio = g.queso.getColorPromedio();
             nodo.horizontalidad = g.getHorizontalidad();
+            nodo.bloqueo = Math.Min(g.arbol.minSiValue, g.arbol.maxNoValue);
+            nodo.minSiPc = g.arbol.minSiPc;
+            nodo.maxNoPc = g.arbol.maxNoPc;
 
             List<nabu.Usuario> usus = g.usuarios;
             usus.Sort(new nabu.Usuario.RolComparer());

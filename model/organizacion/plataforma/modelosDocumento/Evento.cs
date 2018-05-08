@@ -184,7 +184,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='tema'>" + Tools.tr("evento.aquien.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("event.aquien.tip", g.idioma) 
+                        + Tools.tr("evento.aquien.tip", g.idioma) 
                         + "</div>";
 
                 ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
@@ -227,7 +227,7 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 4)
             {
-                ret += "<div class='tema'>" + Tools.tr("", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.organizacion.titulo", g.idioma) + "</div>";
                 if (editar) 
                     ret += "<div class='smalltip'>"
                         + Tools.tr("evento.organizacion.tip", g.idioma) 
@@ -236,10 +236,10 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.organizacion", prop, width, 120, tieneFlores, g.idioma);
 
                 //responsable lista de seleccion de usuarios
-                ret += "<div class='tema'>" + Tools.tr("", g.idioma) + "</div>";
+                ret += "<div class='tema'>" + Tools.tr("evento.responsable.titulo", g.idioma) + "</div>";
                 if (editar)
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("accion.responsable.tip", g.idioma)
+                        + Tools.tr("evento.responsable.tip", g.idioma)
                         + "</div>";
                 string lista = "|";
                 foreach (Usuario u2 in g.usuarios)

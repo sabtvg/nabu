@@ -48,8 +48,8 @@ namespace nabu.plataforma.modelosEvaluacion
                 p.pregunta = Tools.tr("alpadre.evaluacion.p" + i, grupo.idioma);
                 p.respuesta = Convert.ToInt32((float)getValue("f.p" + i, prop));
                 p.texto = (string)getValue("s.t" + i, prop);
-                p.minText = "No";
-                p.maxText = "Si";
+                p.minText = Tools.tr("No", grupo.idioma);
+                p.maxText = Tools.tr("Si", grupo.idioma);
                 ret.Add(p);
             }
             return ret;

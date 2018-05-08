@@ -174,9 +174,6 @@ function dibujarArbol(referencia) {
             if (r < 10) r = 10;
             if (window.innerWidth <= 800) r = r * 2;
             return r * scale;
-        })
-        .style("fill", function (d) {
-            return d.consensoAlcanzado ? "gray" : "yellow";
         });
 
     //1ra linea de texto ETIQUETA
@@ -265,22 +262,28 @@ function dibujarArbol(referencia) {
                 r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             if (r < 10) r = 10;
             if (window.innerWidth <= 800) r = r * 2;
-            if (selectedNode && d.id == selectedNode.id) r += 10;
+            if (selectedNode && d.id == selectedNode.id) r += 8;
             return r * scale;
         })
         .style("stroke", function (d) {
             if (selectedNode)
-                return d.id == selectedNode.id ? "black" : "steelblue";
+                return d.id == selectedNode.id ? "blue" : "gray";
             else
-                return "black";
+                return "gray";
+        })
+        .style("stroke-width", function (d) {
+            if (selectedNode)
+                return d.id == selectedNode.id ? 8 : 2;
+            else
+                return 2;
         })
         .style("fill", function (d) {
             if (historico)
                 return "gray";
             else if (selectedNode)
-                return d.consensoAlcanzado ? "gray" : (d.id == selectedNode.id ? "blue" : "yellow");
+                return d.consensoAlcanzado ? "gray" : (d.objecion ? "red" : "yellow");
             else
-                return d.consensoAlcanzado ? "gray" : "yellow";
+                return d.consensoAlcanzado ? "gray" : (d.objecion ? "red" : "yellow");
         });   
 
     nodeUpdate.select("text")  //etiqueta
@@ -464,9 +467,9 @@ function dibujarArbol(referencia) {
         });
 
     docUpdate.select("image")
-        .attr("width", (64 * treeScale).toFixed(0) + "px")
-        .attr("height", (79 * treeScale).toFixed(0) + "px")
-        .attr("transform", "rotate(90) translate(" + (-32 * treeScale).toFixed(0) + "," + (-70 * treeScale).toFixed(0) + ")")
+        .attr("width", (64 * 0.6).toFixed(0) + "px")
+        .attr("height", (79 * 0.6).toFixed(0) + "px")
+        .attr("transform", "rotate(90) translate(" + (-32 * 0.6).toFixed(0) + "," + (-70 * 0.6).toFixed(0) + ")")
 
     var docExit = doc.exit().transition()
         .duration(duration)
@@ -678,15 +681,25 @@ function nodeClick(d) {
 }
 
 function pany(y) {
-    if (visual.level == 1)
+    //if (visual.level == 1)
         translateArbol(translatex, translatey += y * 3)  //paso a paso
-    else
-        clearInterval(joyInterval); joyInterval = setInterval(function () { translateArbol(translatex, translatey += y) }, 20); //continuo
+    //else {
+    //    clearInterval(joyInterval);
+    //    joyInterval = setInterval(function ()
+    //    {
+    //        translateArbol(translatex, translatey += y)
+    //    }, 20); //continuo
+    //}
 }
 
 function panx(x) {
-    if (visual.level == 1)
+    //if (visual.level == 1)
         translateArbol(translatex += x * 3, translatey)  //paso a paso
-    else
-        clearInterval(joyInterval); joyInterval = setInterval(function () { translateArbol(translatex += x, translatey) }, 20); //continuo
+    //else {
+    //    clearInterval(joyInterval);
+    //    joyInterval = setInterval(function ()
+    //    {
+    //        translateArbol(translatex += x, translatey)
+    //    }, 20); //continuo
+    //}
 }

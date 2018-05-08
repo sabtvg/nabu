@@ -134,10 +134,12 @@ namespace nabu
             ret += toHTMLContenido(prop.nivel, prop, g, email, width);
 
             //comentarios
-            if (prop != null && (modo == eModo.revisar || modo == eModo.editar))
+            if (prop != null && modo != eModo.consenso)
             {
-                ret += "<br>" + Tools.tr("Comentarios", g.idioma) + ":";
+                ret += "<br>";
+                ret += "<div style='vertical-align:top;' class='comentarios2'>";
                 ret += toHTMLComentarios(prop.nivel, prop, g, email, width, false);
+                ret += "</div>";
             }
             return ret;
         }
@@ -276,13 +278,15 @@ namespace nabu
                     else
                         ret += "<div class='comentario' style='background-color:#D6F5DB'>";
                     ret += toHTMLText(c.texto);
-                    ret += "</div>";
-                    //objecion
 
                     //fecha
                     ret += "<div style='text-align:right;color:gray;font-size:10px;'>";
                     ret += c.fecha.ToString("dd/MM/yy");
+                    ret += "</div>"; 
+                    
                     ret += "</div>";
+                    //objecion
+
                 }
 
                 //agregar

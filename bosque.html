@@ -45,6 +45,7 @@
         var bosque;
         var scale = window.innerWidth / 1920;
         var grupoParam;
+        var idiomaParam;
         var arbolPersonal;
         var grupos;
         var usuarios = "";
@@ -213,8 +214,8 @@
                 }, false)
 
                 //idioma
-                idioma = getParameterByName('idioma');
-                if (idioma == null) idioma = 'es';
+                idiomaParam = getParameterByName('idioma');
+                if (idiomaParam == null) idiomaParam = 'es';
 
                 //obtengo datos de los parametros
                 grupoParam = getParameterByName('grupo');
@@ -223,7 +224,7 @@
                     var cookie = getCookie("nabu-" + grupoParam);
                     if (cookie == "")
                         //login normal
-                        document.location = 'default.html?grupo=' + grupoParam;
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                     else {
                         var scalex = window.innerWidth / 1920;
                         var scaley = window.innerHeight / 1080;
@@ -232,11 +233,12 @@
                         var vals = cookie.split("|");
                         usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
 
-                        idioma = vals[5]; //para el tradcutor
+                        idiomaParam = vals[5]; //para el tradcutor
+                        idioma = idiomaParam;  //para el dicionario
 
                         if (!usuario) {
                             //login normal
-                            document.location = 'default.html?grupo=' + grupoParam;
+                            document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
                         }
                         else {
                             document.getElementById("titulo").innerHTML = usuario.grupo + " - " + tr("El bosque");
@@ -247,7 +249,7 @@
                 }
                 else
                     //login normal
-                    document.location = 'default.html?grupo=' + grupoParam;
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
             }
         }
 
@@ -545,9 +547,9 @@
                         if (imgs) {
                             var Cimg = VAdd(Cini, Crot); //centro para la imagen
                             if (imgIndex > imgs.length - 1) imgIndex = imgs.length - 1;
-                            imgSize(imgs[imgIndex], x + Cimg.x, y + Cimg.y, z + Cimg.z, w * fa, h * fa);
+                            imgSize(imgs[imgIndex], x + Cimg.x, y + Cimg.y + h * fa / 2, z + Cimg.z, w * fa, h * fa);
                             imgIndex++;
-                            text(gajos[g].nombre, 15 * fa, x + Cimg.x, y + Cimg.y + 25 * fa, z + Cimg.z);
+                            text(gajos[g].nombre, 15 * fa, x + Cimg.x, y + h * fa / 2 + Cimg.y + 25 * fa, z + Cimg.z);
                         }
                     }
                 }
@@ -706,7 +708,7 @@
                 var hijoLeft = margen / 2 - nodo.ancho / 2;
                 for (i in nodo.hijos) {
                     var hijo = nodo.hijos[i];
-                    var hijoCentro = { x: centro.x + hijoLeft * zoom + hijo.ancho / 2 * zoom, y: centro.y + getHijoAltura(hijo) };
+                    var hijoCentro = { x: centro.x + hijoLeft * zoom + hijo.ancho / 2 * zoom, y: centro.y + getHijoAltura(hijo, nodo) };
 
                     //hijo
                     s += doPersonas2(hijo, hijoCentro, nivel + 1, accion);
@@ -723,8 +725,21 @@
             return s;
         }
           
-        function getHijoAltura(nodo){
-            return altura * zoom + imgH - nodo.horizontalidad / 100 * zoom * altura + 50 * zoom;
+        function getHijoAltura(hijo, padre) {
+            //cuento representantes
+            var reps=0;
+            for(var i in hijo.usuarios)
+                if (hijo.usuarios[i].isRepresentante)
+                    reps++;
+
+            var horizontalidad;
+            if (padre.bloqueo == 0)
+                horizontalidad = 100;
+            else
+                horizontalidad = reps / padre.bloqueo * 100;
+            if (horizontalidad > 100) horizontalidad = 100;
+
+            return altura * zoom + imgH - horizontalidad / 100 * zoom * altura + 50 * zoom;
         }
 
         function doPersonasNodo(nodo, centro, nivel) {
@@ -733,7 +748,7 @@
             grupos += 1;
 
             //verifico fallo de defincion de padre
-            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre;
+            var url = nodo.URL + '/default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
             if (nodo.msg != "")
                 s += msg(nodo.msg, centro);
             else if (!nodo.descargado) {
@@ -872,7 +887,7 @@
             }
 
             //verifico fallo de defincion de padre
-            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre;
+            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
             if (nodo.msg != "") 
                 s += msg(nodo.msg, centro);
             else if (!nodo.descargado){ 
@@ -1037,7 +1052,7 @@
         }
 
         function doAtras() {
-            document.location = "default.html?grupo=" + grupoParam;
+            document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
         }
             
         function toRect(m, a)
@@ -1066,15 +1081,21 @@
                 if (dims.niveles > maxHijo) 
                     maxHijo = dims.niveles;
 
-                if (getHijoAltura(hijo) > hijosAlto)
-                    hijosAlto = getHijoAltura(hijo);
+                if (getHijoAltura(hijo, nodo) > hijosAlto)
+                    hijosAlto = getHijoAltura(hijo, nodo);
 
                 hijosAncho += hijo.ancho;
             }
             nodo.ancho = nodo.usuarios.length * imgW > hijosAncho ? nodo.usuarios.length * imgW : hijosAncho;
             nodo.ancho = nodo.nombre.length * 11 > nodo.ancho ? nodo.nombre.length * 11 : nodo.ancho;  //nombre de grupo largo
             nodo.ancho += margen; //margen
-            return { niveles: ret + maxHijo, ancho: nodo.ancho, alto: hijosAlto + getHijoAltura(nodo) };
+            //////////////////
+            return { niveles: ret + maxHijo, ancho: nodo.ancho, alto: hijosAlto };
+        }
+
+        function doResize(){
+            //background
+            setBackgroundImage();
         }
 
         function addPolar(p1, p2) {
@@ -1099,6 +1120,7 @@
             email = "";
             dibujarTodo();
             cleanInterval = null;
+            document.getElementById("info").style.visibility = "hidden";
         }
 
         function showInfo2(nodo, grupo, email) {
@@ -1144,7 +1166,7 @@
         }
     </script>
 </head>
-<body onload="doLoad();" style="overflow:hidden">
+<body onload="doLoad();" onresize="doResize()" style="overflow:hidden">
     <canvas id="canvasGL" style="left:0px;top:0px;width:100%;height:100%;z-index:-1"></canvas>
     <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1"></svg>
 
@@ -1160,7 +1182,8 @@
     <div id="panelGrupo" class="borde" style="visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
     </div>
     <!--panel info--------------------------------------------------------------------------------------------------->
-    <div id="info"  class="borde titulo3" style="visibility:hidden; padding: 5px; margin-top:5px; color: gray;overflow: auto;">
+
+    <div id="info"  class="info">
     </div>
     </div>
 
