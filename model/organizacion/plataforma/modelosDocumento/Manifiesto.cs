@@ -151,7 +151,7 @@ namespace nabu.plataforma.modelos
                 }
                 if (anterior != null)
                 {
-                    ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;width:200px'><tr>";
+                    ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;width:250px'><tr>";
                     ret += "<td colspan=2 style='text-align:center;'><b>" + Tools.tr("Este manifiesto reemplaza al anterior", g.idioma) + "</b></td>";
                     ret += "<tr><td>";
                     ret += "<img src='" + anterior.icono + "' style='width:32px;height:40px'></td>";

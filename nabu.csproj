@@ -106,8 +106,8 @@
     <Content Include="res\ponerflor.png" />
     <Content Include="res\quitarflor.png" />
     <Content Include="usuarios.html" />
-    <Content Include="modificararbol.html" />
-    <Content Include="creararbol.html" />
+    <Content Include="modificargrupo.html" />
+    <Content Include="creargrupo.html" />
     <Content Include="default.html" />
     <Content Include="doDecidimos.aspx" />
     <Content Include="help.html" />
@@ -263,15 +263,14 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>24679</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:17822/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost/nabu</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

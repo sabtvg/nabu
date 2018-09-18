@@ -304,8 +304,9 @@
                 for (var j in GT.estrategias) {
                     var PR = GT.estrategias[j];
                     if (PR.EID = EID) {
-                        s = "<b>" + tr("GrupoTrabajo") + ":</b> " + GT.nombre + "<br>";
+                        s = "<span class='titulo3'><b>" + tr("Estrategia") + "</b></span><br>";
                         s += "<b>" + tr("Estrategia") + ":</b> " + PR.nombre + "<br>";
+                        s += "<b>" + tr("GrupoTrabajo") + ":</b> " + GT.nombre + "<br>";
                         s += "<b>" + tr("Nacido") + ":</b> " + PR.born + "<br>";
                         s += "<b>" + tr("Decision fecha") + ":</b> " + PR.docTs + "<br>";
                         s += "<b>" + tr("Decision") + ":</b> <a href='" + PR.docURL + "' target='_blank'>" + getURLName(PR.docURL) + "</a><br>";
@@ -326,10 +327,12 @@
             editando = true;
 
             var s = "";
+            s += "<div style='clear:left;float:left'>";
             for (var i in operativo.gruposTrabajo) {
                 var GT = operativo.gruposTrabajo[i];
                 if (GT.EID == EID) {
-                    s = "<b>" + tr("Nombre") + ":</b> " + GT.nombre + "<br>";
+                    s = "<span class='titulo3'><b>" + tr("GrupoTrabajo") + "</b></span><br>";
+                    s += "<b>" + tr("Nombre") + ":</b> " + GT.nombre + "<br>";
                     s += "<b>" + tr("Nacido") + ":</b> " + GT.born + "<br>";
                     s += "<b>" + tr("Decision fecha") + ":</b> " + GT.docTs + "<br>";
                     s += "<b>" + tr("Decision") + ":</b> <a href='" + GT.docURL + "' target='_blank'>" + getURLName(GT.docURL) + "</a><br>";
@@ -339,22 +342,14 @@
                     s += "<b>" + tr("Integrantes") + ":</b><br>";
                     for (j in GT.usuarios) {
                         var u = GT.usuarios[j];
-                        s += "&nbsp;&nbsp;&nbsp;";
-                        if (u.nombre) {
-                            s += u.nombre + " (";
-                            s += u.funcion + ") - ";
-                        }
-                        s += "<a href='mailto:" + u.email + "'>" + u.email + "</a>";
-                        if (u.estado)
-                            s += "&nbsp;<font color='red'>" + u.estado + "</font><br>";
-                        s += "<br>";
+                        s += HTMLUsuario(u, grupoParam, "float:left");
                     }
-                    s += "<br>";
-
                 }
             }
+            s += "</div>";
 
             //grupo
+            s += "<div style='clear:left;float:left;margin-top:15px;border: 1px solid gray;border-radius:5px;width:98%;padding:5px;'>";
             s += "<b>" + tr("Arbol") + ":</b><br>";
             if (GT.grupoNombre == "") {
                 //no tiene grupo creado
@@ -382,8 +377,12 @@
                 if (usuarioPertenece(GT) && !historico)
                     s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
             }
+            s += "</div>";
 
-            s += "<br><br><input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
+            s += "<div style='clear:left;float:left;margin-top:15px;'>";
+            s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
+            s += "</div>";
+
             document.getElementById("GT").innerHTML = s;
             document.getElementById("GT").style.display = "block";
 
@@ -515,7 +514,7 @@
         </div>
 
         <!--GT--------------------------------------------------------------------------------------------------->
-        <div id="GT" class="popup" style="fill:#4169E1;stroke:black;stroke-width:5;"></div>
+        <div id="GT" class="popup" style="fill:#4169E1;stroke:black;stroke-width:5;overflow:auto;"></div>
 
         <!--rotarpantalla--------------------------------------------------------------------------------------------------->
         <div id="rotarpantalla" class="rotarpantalla">

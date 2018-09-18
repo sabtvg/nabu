@@ -109,7 +109,9 @@ namespace nabu
                     else
                         indexe++;
                 }
-                if (t.evaluaciones.Count == 0 && DateTime.Now.Subtract(t.born).TotalDays > caducaDias)
+                if (t.evaluaciones.Count == 0
+                    && indext < temas.Count
+                    && DateTime.Now.Subtract(t.born).TotalDays > caducaDias)
                     temas.RemoveAt(indext);
                 else
                     indext++;

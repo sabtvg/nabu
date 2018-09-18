@@ -137,7 +137,7 @@ namespace nabu
 
                         case "updatearbol":
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            a = updateArbol(Request["grupo"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]), Request["padreURL"], Request["padreNombre"], Request["idioma"]);
+                            a = updateArbol(Request["grupo"], int.Parse(Request["cantidadFlores"]), float.Parse(Request["minSiPc"]), float.Parse(Request["maxNoPc"]), Request["padreURL"], Request["padreNombre"], Request["idioma"], Request["tipoGrupo"]);
                             Response.Write("Arbol actualizado");
                             break;
 
@@ -753,9 +753,10 @@ namespace nabu
                     c.objecion = objecion;
                     p.comentarios.Add(c);
 
+                    Nodo n = a.getNodo(id);
+                    n.comentario = true;
                     if (objecion)
                     {
-                        Nodo n = a.getNodo(id);
                         n.objecion = true;
                     }
                 }
@@ -915,11 +916,13 @@ namespace nabu
                         if (nodo.nivel == 0)
                             p.etiqueta = u.prevista.etiqueta;
                         else
-                            p.etiqueta = a.getEtiqueta(u.prevista.etiqueta, debate);
+                            p.etiqueta = u.prevista.etiqueta + debate.lastEtiquetaID++;
 
                         p.titulo = u.prevista.titulo;
 
                         nodo = a.addNodo(nodo, p);
+                        
+                        if (nodo.nivel == 1) debate = nodo; //el nuveo nodo es el debate si es un debate nuevo
                     }
                 }
                 //devuelvo el arbolPersonal
@@ -963,7 +966,7 @@ namespace nabu
             }
         }
 
-        Arbol updateArbol(string grupo, int cantidadFlores, float minSiPc, float maxNoPc, string padreURL, string padreNombre, string idioma)
+        Arbol updateArbol(string grupo, int cantidadFlores, float minSiPc, float maxNoPc, string padreURL, string padreNombre, string idioma, string tipoGrupo)
         {
             Grupo g = app.getGrupo(grupo);
 
@@ -982,6 +985,7 @@ namespace nabu
                 g.padreURL = padreURL;
                 g.padreNombre = padreNombre;
                 g.idioma = idioma;
+                g.tipoGrupo = tipoGrupo;
                 a = g.arbol;
                 g.ts = DateTime.Now;
                 a.cantidadFlores = cantidadFlores;

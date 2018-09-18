@@ -510,6 +510,7 @@ namespace nabu
             }
             //firma consenso
             string ret = "";
+            ret += "<div style='clear:left;float:left'>";
             ret += "Documento escrito de forma cooperativa.<br>";
             ret += "Grupo: " + this.nombre + "<br>";
             ret += "Documento ID:" + fname + "<br>";
@@ -539,6 +540,8 @@ namespace nabu
             
             //facilitador
             if (this.grupo.getFacilitador() != null) ret += "Facilitador: " + grupo.getFacilitador().nombre + "<br>";
+
+            ret += "</div>";
 
             //armo HTML
             string html = "";
@@ -587,12 +590,12 @@ namespace nabu
             Usuario u = grupo.getUsuarioHabilitado(email);
             if (u != null)
             {
-                if (verificarFloresCaducadas(u))
+                if (verificarFloresCaducadas())
                 {
                     //notifico por mail al usuario
                     Usuario admin = grupo.getAdmin();
                     Tools.encolarMailCaido(grupo, u.email, admin.email, Tools.MapPath("mails/modelos/" + grupo.idioma));
-                    u.alertas.Add(new Alerta(Tools.tr("Tus floras han caido", grupo.idioma)));
+                    u.alertas.Add(new Alerta(Tools.tr("Tus flores han caido", grupo.idioma)));
                     //app.addLog("verifyFloresCaducadas", "", grupo.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
                 }
                 comprobarConsenso(email);
@@ -613,6 +616,7 @@ namespace nabu
                 ap.organizacion = grupo.organizacion.GetType().Name;
                 ap.padreNombre = grupo.padreNombre;
                 ap.padreURL = grupo.padreURL;
+                ap.tipoGrupo = grupo.tipoGrupo;
 
                 foreach(Hijo hijo in grupo.hijos)
                 {
@@ -736,6 +740,15 @@ namespace nabu
             else
                 throw new Exception("El nodo no tiene flores para quitar");
             return u;
+        }
+
+
+        public bool verificarFloresCaducadas()
+        {
+            bool ret = false;
+            foreach (Usuario u in grupo.usuarios)
+                ret = ret || verificarFloresCaducadas(u);
+            return ret;
         }
 
         public bool verificarFloresCaducadas(Usuario u)

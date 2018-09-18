@@ -349,23 +349,39 @@
 
             var s = "";
             var AC = operativo.seguimientos[index];
-            s = "<b>" + tr("Accion") + ":</b> " + AC.nombre + "<br>";
+            //datos
+            s += "<div style='clear:left;margin-top:15px;'>";
+            s += "<span class='titulo3'><b>" + tr("Accion") + "</b></span><br>";
+            s += "<b>" + tr("Accion") + ":</b> " + AC.nombre + "<br>";
             s += "<b>" + tr("Nacido") + ":</b> " + AC.born + "<br>";
             s += "<b>" + tr("Decision fecha") + ":</b> " + AC.docTs + "<br>";
             s += "<b>" + tr("Decision") + ":</b> <a href='" + AC.docURL + "' target='_blank'>" + getURLName(AC.docURL) + "</a><br>";
-            s += "<b>" + tr("Responsable") + ":</b> " + AC.responsable + "<br>";
+            s += "</div>";
+
+            if (AC.responsable != null) {
+                s += "<b>" + tr("Responsable") + ":</b><br>";
+                s += HTMLUsuario(AC.responsable, grupoParam, "float:left");
+            }
+
+            s += "<div style='clear:left;margin-top:15px;'>";
+            s += "<br>";
             s += "<b>" + tr("Objetivo") + ":</b><br> " + replacen(AC.objetivo) + "<br>";
             s += "<b>" + tr("Estado") + ":</b> " + AC.estado.estado + "<br>";
             s += "<b>" + tr("EstadoTs") + ":</b> " + formatDate(toDate(AC.estado.estadoTs)) + "<br>";
             s += "<br>";
+            s += "</div>";
 
             //cierre
+            s += "<div style='clear:left;float:left'>";
             s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
             if ((usuario.email == adminEmail || usuario.email == AC.responsable) && !historico) {
                 s += "<input type='button' class='btn' value='" + tr("Finalizar seguimiento") + "' onclick='doFinalizar(" + index + ");' style='float:right;background-color:lightcoral'>";
             }
-            s += "<br><br>";
+            s += "</div>";
+
             //estados
+            s += "<div style='clear:left;float:left'>";
+            s += "<br>";
             s += "<b>" + tr("Estados") + ":</b><br>"
             var einicio = formatDate(new Date());
             var efin = formatDate((new Date()).addDays(30));
@@ -373,8 +389,9 @@
                 var estado = AC.estados[AC.estados.length - j - 1];
                 einicio = formatDate(toDate(estado.inicio));
                 efin = formatDate(toDate(estado.fin));
-                s += "<div class='seguimientoEstado'>";
-                s += estado.nombreUsuario + " ";
+
+                s += HTMLUsuario(estado.usuario, grupoParam, "clear:left;float:left");
+                s += "<div class='seguimientoEstado' style='float:left;height:120px;'>";
                 s += formatDate(toDate(estado.estadoTs));
                 s += "&nbsp;&nbsp;<img src='res/" + estado.luz + "' style='vertical-align:bottom'><br>";
                 s += "<b>" + estado.estado + "</b>:" + estado.avance + "%";
@@ -382,9 +399,11 @@
                 s += estado.descrip + "<br>";
                 s += "</div>";
             }
-            s += "<br>";
+            s += "</div>";
 
             //agregar estado
+            s += "<div style='clear:left;float:left;width:880px;'>";
+            s += "<br>";
             if (usuario.email == operativo.admin || usuario.email == AC.responsable || usuario.email == adminEmail) {
                 //puede crear estados
                 einicio = formatDate(toDate(AC.estado.inicio));
@@ -409,6 +428,8 @@
                     s += "<input type='button' class='btn' value='" + tr("Agregar estado") + "' onclick='doAgregarEstado(" + index + ");'>";
                 s += "<div id='msg'></div>";
             }
+            s += "</div>";
+
             document.getElementById("AC").innerHTML = s;
             document.getElementById("AC").style.display = "block";
 
@@ -451,7 +472,7 @@
                      }
                      else {
                          document.getElementById("AC").innerHTML = "";
-                         document.getElementById("AC").style.visibility = "hidden";
+                         document.getElementById("AC").style.display = "none";
                          var respuesta = JSON.parse(data);
                          operativo = respuesta.operativo;
                          if (respuesta.resultado != 'ok')

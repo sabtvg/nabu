@@ -38,6 +38,8 @@ namespace nabu
         public string email = ""; //creador
         public int niveles = 0; //niveles del modelo en el momento de crear el nodo
         public bool objecion = false;
+        public bool comentario = false;
+        public int lastEtiquetaID = 1;
         
         public int getFloresTotales() {
             int ret=0;

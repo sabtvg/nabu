@@ -278,12 +278,17 @@ function dibujarArbol(referencia) {
                 return 2;
         })
         .style("fill", function (d) {
-            if (historico)
-                return "gray";
-            else if (selectedNode)
-                return d.consensoAlcanzado ? "gray" : (d.objecion ? "red" : "yellow");
+            var color = "";
+            if (d.consensoAlcanzado || historico)
+                color = "gray";
+            else if (d.objecion)
+                color = "#ffa6c8";
+            else if (d.comentario)
+                color = "#b0ffbd";
             else
-                return d.consensoAlcanzado ? "gray" : (d.objecion ? "red" : "yellow");
+                color = "yellow";
+
+            return color;
         });   
 
     nodeUpdate.select("text")  //etiqueta
@@ -668,7 +673,7 @@ function nodeClick(d) {
 
     //activo menu contextual 
     if (!historico) {
-        if (arbolPersonal.usuario.habilitado) {
+        if (arbolPersonal.usuario.habilitado && !arbolPersonal.usuario.readOnly) {
             if (selectedNode == arbolPersonal.raiz) {
                 seleccionarModelo();
             }

@@ -192,6 +192,8 @@ var dictionary = [
 
     { key: 'btnBorrar', idioma: 'es', txt: 'Borrar grupo y todos sus datos' },
     { key: 'btnCancelar', idioma: 'es', txt: 'Volver' },
+    { key: 'altaUsuarioLeido', idioma: 'es', txt: 'He leido el manifiesto<br />y deseo ser parte de este grupo' },
+    
 
 
     { key: 'Acceso', idioma: 'ct', txt: 'Acc&eacute;s' },

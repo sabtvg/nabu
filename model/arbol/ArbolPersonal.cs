@@ -39,6 +39,7 @@ namespace nabu
         public string organizacion = "";
         public string padreURL = "";
         public string padreNombre = "";
+        public string tipoGrupo = "";
         public List<Hijo> hijos = new List<Hijo>();
 
         //log de consensos alcanzados

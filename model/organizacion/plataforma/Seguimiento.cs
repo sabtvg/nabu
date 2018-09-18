@@ -34,7 +34,7 @@ namespace nabu.plataforma
             public string estado = "";
             public DateTime estadoTs = DateTime.Now;
             public string email = "";
-            public string nombreUsuario = "";
+            public Usuario usuario;
             public string descrip = "";
             public DateTime inicio = DateTime.Now.AddDays(15);
             public DateTime fin = DateTime.Now.AddMonths(2);

@@ -314,8 +314,9 @@ namespace nabu
                                 Request["organizacion"], 
                                 Request["nombreAdmin"], 
                                 Request["email"], 
-                                Request["clave"], 
+                                Request["clave"],
                                 Request["idioma"],
+                                Request["tipoGrupo"],
                                 Request.UrlReferrer.AbsoluteUri.Substring(0, Request.UrlReferrer.AbsoluteUri.LastIndexOf("/")));
                             lock (app.grupos)
                             {
@@ -341,6 +342,44 @@ namespace nabu
                                 null);
                             Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
                             app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
+                            break;
+
+                        case "actualizarperfilusuario":
+                            VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
+                            grupo = app.getGrupo(Request["grupo"]);
+                            u2 = grupo.getUsuario(Request["email"]);
+                            actualizarUsuario(Request["nombre"], u2.email, u2.clave, Request["grupo"],
+                                u2.habilitado,
+                                u2.readOnly,
+                                u2.isAdmin,
+                                u2.isSecretaria,
+                                u2.isRepresentante,
+                                u2.isFacilitador,
+                                Request["funcion"],
+                                null);
+                            Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
+                            app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
+                            break;
+
+                        case "crearusuarioabierto":
+                            grupo = app.getGrupo(Request["grupo"]);
+                            u2 = grupo.getUsuario(Request["email"]);
+                            if (u2 != null)
+                                Response.Write("Error=" + Tools.tr("Este email ya existe", u2.email, grupo.idioma));
+                            else
+                            {
+                                u2 = actualizarUsuario(Server.HtmlEncode(Request["nombre"]), Request["email"], Request["clave"], Request["grupo"],
+                                    true,
+                                    false,
+                                    false,
+                                    false,
+                                    false,
+                                    false,
+                                    "",
+                                    null);
+                                Response.Write(Tools.tr("Usuario [%1] creado", u2.email, grupo.idioma));
+                            }
+                            app.addLog("crearusuarioabierto", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
                             break;
 
                         case "removeusuario":
@@ -378,6 +417,56 @@ namespace nabu
                                 gp = grupo.getGrupoPersonal(Request["email"]);
                             }
                             Response.Write(Tools.toJson(gp)); 
+                            break;
+
+                        case "gettipogrupo":
+                            grupo = app.getGrupo(Request["grupo"]);
+                            string tipoGrupo = "";
+                            lock (grupo)
+                            {
+                                tipoGrupo = grupo.tipoGrupo + ";" + grupo.URLEstatuto;
+                            }
+                            Response.Write(tipoGrupo);
+                            break;
+
+                        case "upload":
+                            grupo = app.getGrupo(Request["grupo"]);
+                            email = Request["email"];
+                            string path = grupo.path + "\\usuarios\\" + email;
+                            string base64 = Request["base64"];
+                            base64 = base64.Split(',')[1];
+
+                            if (!System.IO.Directory.Exists(path))
+                                System.IO.Directory.CreateDirectory(path);
+
+                            //base64 to binary
+                            byte[] bytes = Convert.FromBase64String(base64);
+                            System.Drawing.Image img = System.Drawing.Bitmap.FromStream(new System.IO.MemoryStream(bytes), true);
+
+
+                            //resize
+                            float ratio = (float)img.Width / img.Height;
+                            int newWidth = 1, newHeight = 1;
+                            if (img.Width > 150 && img.Width > img.Height)
+                            {
+                                newWidth = 150;
+                                newHeight = (int)(newWidth / ratio);
+                            }
+                            else if (img.Height > 150 && img.Height > img.Width)
+                            {
+                                newHeight = 150;
+                                newWidth = (int)(newHeight * ratio);
+                            }
+
+                            //save
+                            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(newWidth, newHeight);
+                            bmp.SetResolution(img.HorizontalResolution, img.VerticalResolution);
+                            System.Drawing.Graphics grp = System.Drawing.Graphics.FromImage(bmp);
+                            System.Drawing.Rectangle rct = new System.Drawing.Rectangle(0, 0, newWidth, newHeight);
+                            grp.DrawImage(img, rct, 0, 0, img.Width, img.Height, System.Drawing.GraphicsUnit.Pixel);
+                            if (System.IO.File.Exists(path + "\\" + email + ".png"))
+                                System.IO.File.Delete(path + "\\" + email + ".png");
+                            bmp.Save(path + "\\" + email + ".png", System.Drawing.Imaging.ImageFormat.Png);  // Or Png
                             break;
 
                         case "dictionary":

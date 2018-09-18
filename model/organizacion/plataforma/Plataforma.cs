@@ -81,7 +81,7 @@ namespace nabu.organizaciones
                             e.fin = ffin;
                             e.descrip = descrip;
                             e.email = email;
-                            if (usuario != null) e.nombreUsuario = usuario.nombre;
+                            if (usuario != null) e.usuario = usuario;
                             a.estados.Add(e);
 
                             //guardo todo el grupo
@@ -102,8 +102,9 @@ namespace nabu.organizaciones
                                 req["organizacion"],
                                 usuarioActual.nombre,
                                 usuarioActual.email,
-                                usuarioActual.clave, 
+                                usuarioActual.clave,
                                 g.idioma,
+                                g.tipoGrupo,
                                 g.URL);
 
                             //creo los demas usuarios
@@ -410,7 +411,12 @@ namespace nabu.organizaciones
 
                 string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(ac.objetivo.Replace("\n", "<br>")));
                 ret += "\"objetivo\":" + Tools.toJson(HTMLText) + ",";
-                ret += "\"responsable\":\"" + ac.responsable + "\",";
+
+                Usuario responsable = grupo.getUsuario(ac.responsable);
+                if (responsable != null)
+                    ret += "\"responsable\":{\"nombre\":\"" + responsable.nombre + "\",\"email\":\"" + responsable.email + "\",\"funcion\":\"" + responsable.funcion + "\"},";
+                else
+                    ret += "\"responsable\":null,";
 
                 //estados
                 ret += "\"estados\":[";

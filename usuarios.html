@@ -177,6 +177,7 @@
                         var s = "<table class='table'>";
                         s += "<tr>"
                         s += "<td style='width:20px;'></td>";
+                        s += "<td style='width:60px;'></td>";
                         s += "<td style='width:180px;'><b>" + tr("Nombre") + "</b></td>";
                         s += "<td style='width:150px;'><b>" + tr("Funcion") + "</b></td>";
                         s += "<td style='width:180px;'><b>" + tr("Email") + "</b></td>";
@@ -196,18 +197,20 @@
                             var usu = usuarios[i];
                             s += "<tr>"
                             s += "<td><img src='res/ver.gif' onclick=\"doSelect('" + usu.email + "');\" style='cursor:pointer;'></td>";
+                            var d = new Date();
+                            s += "<td style='text-align:center'><img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" style='border-radius:5px;height:60px;width:auto;'></td>";
                             s += "<td>" + usu.nombre + "</td>";
                             s += "<td>" + usu.funcion + "</td>";
                             s += "<td>" + usu.email + "</td>";
-                            s += "<td style='text-align:center;'><div class='votos'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
-                            s += "<td>" + usu.sLastLogin + "</td>";
+                            s += "<td style='text-align:center;'><div class='votos' style='margin-left:20px;'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
+                            s += "<td style='text-align:center;'>" + usu.sLastLogin + "</td>";
                             s += "<td style='text-align:center;' title='" + tr("Activo") + "'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";
                             s += "<td style='text-align:center;' title='" + tr("Habilitado") + "'>" + (usu.habilitado ? "" : "<img src='res/luzroja.gif'>") + "</td>";
                             s += "<td style='text-align:center;' title='" + tr("Solo Lectura") + "'>" + (usu.readOnly ? "<img src='res/luzroja.gif'>" : "") + "</td>";
-                            s += "<td style='text-align:center;" + (usu.isAdmin ? "background-color:#0066CC" : "") + "' title='" + tr("abrCoordinador") + "'></td>";
-                            s += "<td style='text-align:center;" + (usu.isSecretaria ? "background-color:#FF66CC" : "") + "' title='" + tr("abrSecretaria") + "'></td>";
-                            s += "<td style='text-align:center;" + (usu.isRepresentante ? "background-color:#00CC99" : "") + "' title='" + tr("abrRepresentante") + "'></td>";
-                            s += "<td style='text-align:center;" + (usu.isFacilitador ? "background-color:#FF9900" : "") + "' title='" + tr("abrFacilitador") + "'></td>";
+                            s += "<td style='text-align:center;'>" + box(usu.isAdmin, "#0066CC", tr("abrCoordinador")) + "</td>";
+                            s += "<td style='text-align:center;'>" + box(usu.isSecretaria, "#FF66CC", tr("abrSecretaria")) + "</td>";
+                            s += "<td style='text-align:center;'>" + box(usu.isRepresentante, "#00CC99", tr("abrRepresentante")) + "</td>";
+                            s += "<td style='text-align:center;'>" + box(usu.isFacilitador, "#FF9900", tr("abrFacilitador")) + "</td>";
                             s += "<td style='text-align:center;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
                             if (!usu.isAdmin)
                                 s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
@@ -222,6 +225,13 @@
                         document.getElementById("usuarios").innerHTML = s;
                     }
                 });
+        }
+
+        function box(cond, color, title) {
+            if (cond)
+                return "<div style='height:16px;width:16px;border:1px gray solid;background-color:" + color + "' title='" + title + "'></div>";
+            else
+                return "";
         }
 
         function doEnviarMail(email) {

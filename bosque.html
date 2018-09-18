@@ -449,8 +449,8 @@
                 var fa = radio * 0.025; //factor imagenes
                 var offy = radio * 1.9;
                 if (offy < 50) offy = 50;
-                var fsize = 50 * radio / 150;
-                if (fsize < 35) fsize = 25;
+                var fsize = 5 * radio / 150;
+                if (fsize < 25) fsize = 25;
                 text(nodo.nombre, fsize * fa, x, y + offy, z);
 
                 //usuarios
@@ -472,17 +472,17 @@
                     else
                         imgs.push('res/3D/activo.png');
                 }
-                torus(x, y, z, radio, nodo.usuarios, 0, "blue", imgs, 16, 32, direccion);
+                torus(x, y, z, radio, nodo.usuarios, 0, "blue", imgs, 16, 32, direccion, radio);
 
                 //seguimientos
                 imgs = [];
                 for (var i in nodo.seguimientos) {
                     imgs.push(nodo.seguimientos[i].icono.replace("/documentos/","/3D/"));
                 }
-                torus(x, y, z, radio * 2, nodo.seguimientos, 0, "red", imgs, 19, 18, direccion);
+                torus(x, y, z, radio * 2, nodo.seguimientos, 0, "red", imgs, 19, 18, direccion, radio);
 
                 //hijos
-                torus(x, y, z, radio * 3, nodo.hijos, nivel, "green", null, 0, 0, direccion);
+                torus(x, y, z, radio * 3, nodo.hijos, nivel, "green", null, 0, 0, direccion, radio);
                 var Cini = new THREE.Vector3(x, y, z);
                 var Prot = new THREE.Vector3(0, 0, radio * 6);
                 for (var q = 0; q < nodo.hijos.length; q++) {
@@ -516,7 +516,7 @@
             }
         }
 
-        function torus(x, y, z, radio, gajos, nivel, color, imgs, w, h, direccion) {
+        function torus(x, y, z, radio, gajos, nivel, color, imgs, w, h, direccion, fsize) {
             //circle
             var lineMaterial = new THREE.LineDashedMaterial({ color: color, opacity: 1, linewidth: 1 });
             var geometry = new THREE.Geometry();
@@ -549,16 +549,11 @@
                             if (imgIndex > imgs.length - 1) imgIndex = imgs.length - 1;
                             imgSize(imgs[imgIndex], x + Cimg.x, y + Cimg.y + h * fa / 2, z + Cimg.z, w * fa, h * fa);
                             imgIndex++;
-                            text(gajos[g].nombre, 15 * fa, x + Cimg.x, y + h * fa / 2 + Cimg.y + 25 * fa, z + Cimg.z);
+                            text(gajos[g].nombre, 15 * fsize * 0.0165, x + Cimg.x, y + h * fa / 2 + Cimg.y + 25 * fa, z + Cimg.z);
                         }
                     }
                 }
             }
-            ////circulo personas
-            //for (var q = 0; q < 360; q += 4) {
-            //    var Cini = VPolToCar({ x: 0, y: q, z: radio });
-            //    geometry.vertices.push(Cini);
-            //}
 
             var torus = new THREE.Line(geometry, lineMaterial);
             torus.position.x = x;
@@ -1137,7 +1132,9 @@
                         var usu = nodo.usuarios[i];
                         if (usu.email == email) {
                             var div = document.getElementById("info");
-                            var info = "<span>" + nodo.nombre + "</span><br>"
+                            var info = "<img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png' style='clear:left;float:left;border-radius:15px;margin:15px;'>";
+                            info += "<div style='float:left;'>"
+                            info += "<span>" + nodo.nombre + "</span><br>"
                             info += "<b>" + usu.nombre + "</b><br>";
                             info += "<b>" + usu.funcion + "</b><br>";
                             info += "<a href='mailto:" + usu.email + "'>" + usu.email + "</a><br>";
@@ -1149,6 +1146,7 @@
                             info += usu.isAdmin ? "<span style='color:#0066CC'>Coordinador</span><br>" : "";
                             info += "Desde:" + usu.grupoDesde + "<br>";
                             info += "Nacido:" + formatDate(jsonToDate(usu.born)) + "<br>";
+                            info += "</div>"
 
                             div.innerHTML = info;
                             div.style.visibility = "visible";

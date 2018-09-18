@@ -81,11 +81,12 @@ body {
 
 .seguimientoEstado {
     border: 2px solid #CCCCCC;
-    padding: 5px;
-    margin: 0px;
+    padding: 2px;
+    margin: 2px;
     border-radius: 8px;
-    margin-top: 5px;
     background-color: #FFFFFF;
+    min-width: 400px;
+    max-width: 750px;
 }
 
 .cuadro {
@@ -317,10 +318,10 @@ body {
     background-color: #FFFFFF;
     opacity: 0.9; 
     display: none;
-    top: 20vh;
+    top: 15vh;
     left: 15vw;
     right: 15vw;
-    bottom: 20vh;
+    bottom: 10vh;
 }
 .modelosDebate {
     position:absolute;
@@ -366,7 +367,8 @@ body {
     border-color: #403d3d;
     background-color: #C6ECFF;
     opacity: 0.9;
-    width: 350px;
+    width:500px;
+;
 }
 .ventanagrupo {
     margin: auto;
@@ -444,7 +446,7 @@ body {
     margin: 5px;
     padding: 2px;
     border-style: solid;
-    border-width: 2px;
+    border-width: 1px;
     border-radius: 6px;
     border-color: gray;
     background-color: #CCCCCC;
@@ -455,7 +457,7 @@ body {
     margin: 2px;
     padding: 2px;
     border-style: solid;
-    border-width: 2px;
+    border-width: 1px;
     border-radius: 6px;
     border-color: gray;
     background-color: #FAF5F5;
@@ -1269,3 +1271,5 @@ p {
     -webkit-margin-start: 0px;
     -webkit-margin-end: 0px;
 }
+
+

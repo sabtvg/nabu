@@ -231,7 +231,7 @@ function gruposEffectIn() {
             s += "&idioma=" + idioma;
         s += "' class='grupo'><nobr>" + grupo + "</nobr></a>"
     }
-    s += "<br><br><input type='button' class='btn' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creararbol.html?idioma=" + idioma + "'\">";
+    s += "<br><br><input type='button' class='btn' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creargrupo.html?idioma=" + idioma + "'\">";
 
     document.getElementById("grupos").style.display = "block";
     document.getElementById("grupos").innerHTML = s;
@@ -360,7 +360,7 @@ function doResize() {
     var menuscale = scale * 1.4;
     if (menuscale > 0.8) menuscale = 0.8;
     document.getElementById("padrenombre").style.width = 800 * menuscale + 'px';
-    document.getElementById("padrenombre").style.top = -5 - 5 * menuscale + 'px';
+    document.getElementById("padrenombre").style.top = -15 - 5 * menuscale + 'px';
 
     document.getElementById("hijos").style.width = 1600 * menuscale + 'px';
     document.getElementById("hijos").style.left = -400 * menuscale + 'px';
@@ -471,12 +471,12 @@ function doResize() {
     document.getElementById("repeat").placeholder = tr("Repitela");
     document.getElementById("btnCCCambiar").value = tr("Cambiar");
     document.getElementById("btnCCCancelar").value = tr("Cancelar");
-    document.getElementById("auTit1").innerHTML = tr("Alta de usuario");
-    document.getElementById("auTit2").innerHTML = tr("auTit2");
-    document.getElementById("altaUsuarioNombre").placeholder = tr("Nombre completo");
-    document.getElementById("altaUsuarioEmail").placeholder = tr("Email");
-    document.getElementById("auEnviar").value = tr("Enviar solicitud");
-    document.getElementById("auCerrar").innerHTML = tr("Cerrar");
+    document.getElementById("auTit1C").innerHTML = tr("Alta de usuario");
+    document.getElementById("auTit2C").innerHTML = tr("auTit2");
+    document.getElementById("altaUsuarioNombreC").placeholder = tr("Nombre completo");
+    document.getElementById("altaUsuarioEmailC").placeholder = tr("Email");
+    document.getElementById("auEnviarC").value = tr("Enviar solicitud");
+    document.getElementById("auCerrarC").innerHTML = tr("Cerrar");
     document.getElementById("ufTit1").innerHTML = tr("ufTit1");
     document.getElementById("ufAceptar").value = tr("Aceptar");
     document.getElementById("ufCancelar").value = tr("Cancelar");
@@ -677,7 +677,7 @@ function doMenuppal() {
         document.getElementById("pie").style.display = "block";
 
         //panel de usuario
-        document.getElementById("usuario").innerHTML = "<div style='color:blue;cursor: pointer;' onclick='showCambiarClave();'>" + arbolPersonal.usuario.nombre + "</div>";
+        document.getElementById("usuario").innerHTML = "<div id='usuarioNombre' style='color:blue;cursor: pointer;' onclick='showPerfil();'>" + arbolPersonal.usuario.nombre + "</div>";
         document.getElementById("floresDisponibles").innerHTML = getFloresDisponibles().length;
 
         //panel consenso
@@ -748,7 +748,7 @@ function menuOptions() {
     mnu += "<div class='menuItem'><a class='menuItem' href='bosque.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El bosque") + "</a></div>";
     if (arbolPersonal.usuario.isAdmin) {
         //adminOptions
-        mnu += "<div class='menuItem'><a class='menuItem' href='modificararbol.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El arbol") + "</a></div>";
+        mnu += "<div class='menuItem'><a class='menuItem' href='modificargrupo.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El arbol") + "</a></div>";
         mnu += "<div class='menuItem'><a class='menuItem' href='usuarios.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Usuarios") + "</a></div>";
     }
     else {
@@ -766,9 +766,22 @@ function doCloseHelp() {
     document.getElementById("help").style.visibility = "hidden";
 }
 
+function showPerfil() {
+    document.getElementById("perfilEmail").value = arbolPersonal.usuario.email;
+    document.getElementById("perfilNombre").value = arbolPersonal.usuario.nombre;
+    document.getElementById("perfilFuncion").value = arbolPersonal.usuario.funcion;
+    document.getElementById("perfil").style.display = 'block';    
+    document.getElementById("cambiarClaveLink").value = tr("Cambiar clave");
+    var img = document.getElementById("perfilImg");
+    var d = new Date();
+    img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email + "/" + arbolPersonal.usuario.email + ".png?now=" + d.getTime();
+    efectoLeft(document.getElementById("perfil"), 0, 750, -430, 20, TWEEN.Easing.Cubic.Out);
+}
+
 function showCambiarClave() {
-    document.getElementById("altaUsuarioNombre").value = "";
-    document.getElementById("altaUsuarioEmail").value = "";
+    document.getElementById("oldPass").value = "";
+    document.getElementById("newPass").value = "";
+    document.getElementById("repeat").value = "";
     document.getElementById("cambiarClaveMsg").innerHTML = "";
     document.getElementById("cambiarClave").style.display = 'block';
     efectoLeft(document.getElementById("cambiarClave"), 0, 750, -230, 20, TWEEN.Easing.Cubic.Out);
@@ -777,37 +790,112 @@ function showCambiarClave() {
 function doAltaUsuario() {
     var list = config.grupos;
     var grupo = getParameterByName('grupo') + "";
-    var selected = false;
-    var grupos = document.getElementById("altaUsuarioGrupos");
-    for (var q in list) {
-        var option = document.createElement("option");
-        option.text = list[q];
-        if (list[q].toLowerCase() == grupo.toLowerCase()) {
-            option.selected = true;
-            selected = true;
-        }
-        grupos.add(option);
-    }
-    if (selected)
-        grupos.disabled = true;
 
-    document.getElementById("altaUsuarioMsg").innerHTML = "";
-    document.getElementById("altaUsuario").style.visibility = 'visible';
-    efectoTop(document.getElementById("altaUsuario"), 0, -600 * scale, 80 * scale, TWEEN.Easing.Cubic.Out);
+    getHttp("doMain.aspx?actn=gettipogrupo&grupo=" + grupo,
+    function (data) {
+        //atrapo el error si es que hay
+        if (data.substring(0, 6) == "Error=") {
+        }
+        else {
+            var tipoGrupo = data.split(';')[0];
+            var URLEstatuto = data.split(';')[1];
+            if (tipoGrupo == 'cerrado') {
+                document.getElementById("altaUsuarioMsgC").innerHTML = "";
+                document.getElementById("altaUsuarioC").style.visibility = 'visible';
+                efectoTop(document.getElementById("altaUsuarioC"), 0, -600 * scale, 80 * scale, TWEEN.Easing.Cubic.Out);
+            }
+            else {
+                if (URLEstatuto != "")
+                    document.getElementById("altaUsuarioURLEstatuto").innerHTML = "<a href='" + URLEstatuto + "' target='_blank'>" + tr("Ver manifiesto") + "</a>";
+                else
+                    document.getElementById("altaUsuarioURLEstatuto").innerHTML = "";
+
+                document.getElementById("altaUsuarioLeido").innerHTML = tr("altaUsuarioLeido");
+                document.getElementById("altaUsuarioMsgA").innerHTML = "";
+                document.getElementById("altaUsuarioA").style.visibility = 'visible';
+                efectoTop(document.getElementById("altaUsuarioA"), 0, -600 * scale, 80 * scale, TWEEN.Easing.Cubic.Out);
+            }
+        }
+    });
+}
+
+function doAltaUsuarioCrear() {
+    var grupo = getParameterByName('grupo') + "";
+    var nombre = document.getElementById("altaUsuarioNombreA");
+    var email = document.getElementById("altaUsuarioEmailA");
+    var msg = document.getElementById("altaUsuarioMsgA");
+    var clave1 = document.getElementById("altaUsuarioClave1A");
+    var clave2 = document.getElementById("altaUsuarioClave2A");
+    var altaUsuarioCheck = document.getElementById("altaUsuarioCheck");
+
+    if (nombre.value == "")
+        msg.innerHTML = "<font color=red>" + tr("Nombre no puede ser vacio") + "</font>";
+    else if (email.value == "")
+        msg.innerHTML = "<font color=red>" + tr("Email no puede ser vacio") + "</font>";
+    else if (clave1.value != clave2.value)
+        msg.innerHTML = "<font color=red>" + tr("Las claves no coinciden") + "</font>";
+    else if (!altaUsuarioCheck.checked)
+        msg.innerHTML = "<font color=red>" + tr("Debes aceptar el manifiesto actual para ingresar al grupo") + "</font>";
+    else {
+        getHttp("doMain.aspx?actn=crearusuarioabierto&grupo=" + grupo
+            + "&nombre=" + nombre.value
+            + "&clave=" + clave1.value
+            + "&email=" + email.value,
+            function (data) {
+                //atrapo el error si es que hay
+                if (data.substring(0, 6) == "Error=") {
+                    //ha habido un error
+                    msg.innerHTML = "<font color=red>" + data + "</font>";
+                }
+                else {
+                    loginEffectOut();
+                    efectoTop(document.getElementById('altaUsuarioA'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);
+                    loginAutomatico(email.value, clave1.value, grupo);
+                }
+            });
+    }
+}
+
+function previewFile(perfilFile) {
+    var perfilImg = document.getElementById('perfilImg'); //selects the query named img
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+        uploadToServer(reader.result, perfilFile.type);
+    }
+
+    if (perfilFile) {
+        reader.readAsDataURL(perfilFile); //reads the data as a URL
+    } else {
+        preview.src = "";
+    }
+}
+
+function uploadToServer(base64) {
+    //upload to server
+    var grupo = getParameterByName('grupo') + "";
+    postHttp("doMain.aspx?actn=upload&grupo=" + grupo
+        + "&email=" + arbolPersonal.usuario.email,
+        "base64=" + URIEncode(base64),
+        function (data) {
+            //muestro
+            var d = new Date();
+            var img = document.getElementById("perfilImg");
+            img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email + "/" + arbolPersonal.usuario.email + ".png?now=" + d.getTime();
+        });
 }
 
 function doAltaUsuarioEnviar() {
-    var nombre = document.getElementById("altaUsuarioNombre");
-    var email = document.getElementById("altaUsuarioEmail");
-    var grupos = document.getElementById("altaUsuarioGrupos");
-    var msg = document.getElementById("altaUsuarioMsg");
+    var nombre = document.getElementById("altaUsuarioNombreC");
+    var email = document.getElementById("altaUsuarioEmailC");
+    var msg = document.getElementById("altaUsuarioMsgC");
 
     if (nombre == "")
         msg.innerHTML = "<font color=green>" + tr("Nombre no puede ser vacio") + "</font>";
     else if (email == "")
         msg.innerHTML = "<font color=green>" + tr("Email no puede ser vacio") + "</font>";
     else {
-        getHttp("doMain.aspx?actn=sendMailAlta&grupo=" + grupos.value
+        getHttp("doMain.aspx?actn=sendMailAlta&grupo=" + grupoParam
             + "&nombre=" + nombre.value
             + "&usuarioemail=" + email.value,
             function (data) {
@@ -841,15 +929,40 @@ function doCambiarClave() {
                 if (data != '')
                     document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
                 else 
-                    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -260, TWEEN.Easing.Cubic.Out, function () {
+                    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -350, TWEEN.Easing.Cubic.Out, function () {
                         document.getElementById("cambiarClave").style.visibility = 'hidden';
                     });
             });
     }
 }
 
+function doCerrarPerfil() {
+    var perfilNombre = document.getElementById("perfilNombre").value;
+    var perfilFuncion = document.getElementById("perfilFuncion").value;
+
+    getHttp("doMain.aspx?actn=actualizarperfilusuario&grupo=" + arbolPersonal.nombre
+    + "&email=" + arbolPersonal.usuario.email
+    + "&clave=" + arbolPersonal.usuario.clave
+    + "&nombre=" + perfilNombre
+    + "&funcion=" + perfilFuncion,
+    function (data) {
+        if (data.substring(0, 6) == "Error=")
+            document.getElementById("perfilMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
+        else {
+            efectoLeft(document.getElementById("perfil"), 0, 750, 20, -480, TWEEN.Easing.Cubic.In, function () {
+                document.getElementById("perfil").style.visibility = 'hidden';
+            });
+
+            //local update
+            arbolPersonal.usuario.nombre = perfilNombre;
+            arbolPersonal.usuario.funcion = perfilFuncion;
+            document.getElementById("usuarioNombre").innerHTML = perfilNombre;
+        }
+    });
+}
+
 function doHideCambiarClave() {
-    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -260, TWEEN.Easing.Cubic.In, function () {
+    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -350, TWEEN.Easing.Cubic.In, function () {
             document.getElementById("cambiarClave").style.visibility = 'hidden';
         });
 }

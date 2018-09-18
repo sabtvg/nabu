@@ -1,0 +1,169 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/tween.min.js"></script>
+    <script src="js/dictionary.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var nombreArbol;
+        var nombreAdmin;
+        var email;
+        var clave;
+        var organizacion;
+
+        function doLoad() {
+            //background
+            setBackgroundImage();
+
+            idioma = getParameterByName('idioma');
+            if (idioma == null) idioma = 'es';
+
+            document.getElementById("tit2").innerHTML = tr("Crear grupo");
+            document.getElementById("datGrupo").innerHTML = tr("Datos del grupo");
+            document.getElementById("nombreArbol").placeholder = tr("Nombre de arbol");
+            document.getElementById("jarDat").innerHTML = tr("Datos del coordinador");
+            document.getElementById("nombreAdmin").placeholder = tr("Nombre");
+            document.getElementById("email").placeholder = tr("Email");
+            document.getElementById("clave").placeholder = tr("Clave");
+            document.getElementById("clave2").placeholder = tr("Repetir clave");
+            document.getElementById("crearMsg").innerHTML = tr("crearMsg");            
+        }
+
+        function comprobar(n) {
+            var cars = " /\u0008\u0009\u000A\u000B\u000C\u000D\u0020\u0022\u0027\u005C\u00A0\u2028\u2029\uFEFF\u00C1\u00E1\u00C9\u00E9\u00CD\u00ED\u00D3\u00F3\u00DA\u00FA\u00DC\u00FC\u00D1\u00F1";
+            var ret = true;
+            for(i in cars)
+                ret = ret && n.indexOf(cars.substring(parseInt(i), parseInt(i) + 1)) ==  -1;
+            return ret;
+        }
+
+        function doCrear() {
+            nombreArbol = document.getElementById("nombreArbol").value;
+            nombreAdmin = document.getElementById("nombreAdmin").value;
+            email = document.getElementById("email").value;
+            clave = document.getElementById("clave").value;
+            clave2 = document.getElementById("clave2").value;
+            idioma = getSelectedId(document.getElementById("idioma"));
+            organizacion = getSelectedId(document.getElementById("organizacion"));
+            var tipoGrupo = document.getElementById("tipoGrupoC").checked ? 'cerrado' : 'abierto';
+
+
+            if (clave != clave2) {
+                document.getElementById("response").innerHTML = "<font color=red>" + tr("Las claves no coinciden") + "</font>";
+            }
+            else if (!comprobar(nombreArbol)) {
+                document.getElementById("response").innerHTML = "<font color=red>" + tr("error nombre grupo") + "</font>";
+            }
+            else
+                getHttp("doMain.aspx?actn=newgrupo&grupo=" + nombreArbol
+                    + "&organizacion=" + organizacion
+                    + "&nombreAdmin=" + nombreAdmin
+                    + "&email=" + email
+                    + "&idioma=" + idioma
+                    + "&tipoGrupo=" + tipoGrupo
+                    + "&clave=" + clave,
+                    function (data) {
+                        if (data.substring(0, 6) == "Error=")
+                            document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        else {
+                            //document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
+
+                            //guardo cookie
+                            setCookie("nabu-" + nombreArbol, nombreAdmin + "|" + email + "|" + clave + "|" + nombreArbol + "|true", 7);
+
+                            //atras
+                            document.location = 'default.html?grupo=' + nombreArbol;
+                        }
+                    });
+        }
+
+        function doAtras() {
+            document.location = "default.html";
+        }
+
+    </script>
+</head>
+<body onload="doLoad();">
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
+
+    <div id="login" class="ventanacrear" style="display:block" >
+        <span class="titulo1">Nab&uacute;</span><br />
+        <span id="tit2" class="titulo2">Crear grupo</span><br />
+
+        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;width:-webkit-fill-available">
+            <span id="datGrupo" class="titulo3">Datos del grupo</span><br />
+            <input id="nombreArbol" type="text" class="txt" style="width:295px" maxlength="15" placeholder="" /><br />
+            <select id="idioma" class="txt"  style="width:200px">
+                <option id="es">Espa&ntilde;ol</option>
+                <option id="ct">Catal&aacute;n</option>
+                <option id="en">English</option>
+            </select>
+            <select id="organizacion" class="txt"  style="width:200px">
+                <option id="Plataforma">Plataforma social</option>
+            </select>     
+            <div class="divborde" style="background-color: #f5f4f5;">
+                <input id="tipoGrupoC" name="tipoGrupo" style="margin:15px;" type="radio" value="cerrado" />
+                <span>Grupo cerrado: Usuarios administrados por el coordinador</span>
+            </div>
+            <div class="divborde" style="background-color: #f5f4f5;">
+                <input id="tipoGrupoA" name="tipoGrupo" style="margin:15px;" type="radio" value="abierto" />
+                <span>Grupo abierto: Los usuarios se dan de alta libremente</span>
+            </div>                   
+        </div>
+        <br />
+
+        <div style="border: 1px solid gray; padding: 5px; border-radius: 10px;width:-webkit-fill-available">
+            <span id="jarDat" class="titulo3">Datos del coordinador</span><br />
+            <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre"  style="width:200px"/>
+            <input id="email" type="text" class="txt" placeholder="Email"  style="width:200px"/><br />
+            <input id="clave" type="password" class="txt" placeholder="Clave"  style="width:200px"/>
+            <input id="clave2" type="password" class="txt" placeholder="Repetir clave"  style="width:200px"/>
+        </div>
+        <br />
+
+        <div id="crearMsg" style="width: 100%;text-align:center"></div>
+        <br />
+        <div style="width:100%;text-align:center">
+            <input type="button" class="btn" value="Crear" onclick="doCrear();" /> 
+            <input type="button" class="btn" value="Cancelar" onclick="doAtras();"  /> 
+        </div>
+
+
+        <div id="response"></div>
+    </div>
+
+
+
+    </body>
+</html>

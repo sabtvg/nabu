@@ -229,31 +229,66 @@
         <div id="hijos" style="position: inherit; width:1600px; left:-400px; top:480px;text-align: center;" class="titulo2"></div>
     </div>
 
+    <!--perfil--------------------------------------------------------------------------------------------------->
+    <div id="perfil" class="ventanaclave" style="position: absolute; width: 480px; text-align:center; visibility: hidden;">
+        <span class="titulo2" id="perfilTit">Perfil de usuario</span><br />
+        <div style="clear:left;float:left;text-align:left">
+            <input id="perfilEmail" type="text" class="txt2" placeholder="Email" value=""  style="width: 250px;margin:3px;" disabled/><br />
+            <input id="perfilNombre" type="text" class="txt" placeholder="Nombre" value=""  style="width: 250px;margin:3px;" /><br />
+            <input id="perfilFuncion" type="text" class="txt" placeholder="Funcion" value=""  style="width: 250px;margin:3px;" /><br />
+            <input type="file" id="perfilFile1" onchange="previewFile(this.files[0])" style="display:none;">
+            <label for="perfilFile1"><img src="res/upload.png" style="cursor:pointer;margin:5px;"/></label><br />
+            <div id="cambiarClaveLink" onclick="doCerrarPerfil();showCambiarClave();" style="text-decoration:underline;color:blue;cursor:pointer">Cambiar clave</div>
+        </div>
+
+        <div style="float:left;margin-left:15px;width:160px;height:160px;margin:auto;vertical-align:middle;">
+            <input type="file" id="perfilFile2" onchange="previewFile(this.files[0])" style="display:none;">
+            <label for="perfilFile2"><img src="" id="perfilImg" style="border-radius:15px;cursor:pointer;" onerror="this.src='res/perfilDefault.jpg'"></label>
+        </div>
+
+        <div style="width:100%;clear:left;float:left">
+            <input id="perfilBtn1" type="button" class="btn" value="Cerrar" onclick="doCerrarPerfil();" />
+            <div id="perfilMsg"></div>
+        </div>
+    </div>
+
     <!--cambiar clave--------------------------------------------------------------------------------------------------->
-    <div id="cambiarClave" class="ventanaclave" style="position: absolute; width: 230px; text-align:center; visibility: hidden;">
+    <div id="cambiarClave" class="ventanaclave" style="position: absolute; width: 280px; text-align:center; visibility: hidden;">
         <span class="titulo2">Cambio de clave</span><br />
-        <input id="oldPass" type="password" class="editar" placeholder="Clave actual" value="" /><br />
-        <input id="newPass" type="password" class="editar" placeholder="Nueva clave" value=""/><br />
-        <input id="repeat" type="password" class="editar" placeholder="Repitela" value=""/><br />
+        <input id="oldPass" type="password" class="txt" placeholder="Clave actual" value=""  style="width: 250px;margin:3px;"/><br />
+        <input id="newPass" type="password" class="txt" placeholder="Nueva clave" value="" style="width: 250px;margin:3px;"/><br />
+        <input id="repeat" type="password" class="txt" placeholder="Repitela" value="" style="width: 250px;margin:3px;"/><br /><br />
         <input id="btnCCCambiar" type="button" class="btn" value="Cambiar" onclick="doCambiarClave();" />
         <input id="btnCCCancelar" type="button" class="btn" value="Cancelar" onclick="doHideCambiarClave();" /><br />
         <div id="cambiarClaveMsg"></div>
     </div>
 
     <!--alta usuario--------------------------------------------------------------------------------------------------->
-    <div id="altaUsuario" class="ventanaltausuario">
-        <div id="auTit1" class="titulo2">Alta de usuario</div>
-        <div id="auTit2">
+    <div id="altaUsuarioC" class="ventanaltausuario">
+        <div id="auTit1C" class="titulo2">Alta de usuario</div>
+        <div id="auTit2C">
         El alta de usuarios es administrada manualmente.<br />
-        Selecciona el grupo<br /> y completa tus datos.<br />
-        Recibiras un email con tus datos de acceso.<br />
+        Completa tus datos y recibiras un email con tus datos de acceso.<br />
         </div>
-        <select id="altaUsuarioGrupos" class="editar" style="width: 200px;"></select><br />
-        <input id="altaUsuarioNombre" type="text" class="editar" placeholder="Nombre completo" value="" /><br />
-        <input id="altaUsuarioEmail" type="text" class="editar" placeholder="Email" value="" /><br />
-        <input id="auEnviar" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" />
-        <input id="auCerrar" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuario'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);" /><br />
-        <div id="altaUsuarioMsg"></div>
+        <input id="altaUsuarioNombreC" type="text" class="txt" placeholder="Nombre completo" value=""  style="width: 200px;margin:3px;"/><br />
+        <input id="altaUsuarioEmailC" type="text" class="txt" placeholder="Email" value=""  style="width: 200px;margin:3px;"/><br />
+        <input id="auEnviarC" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();"   style="margin:5px;"/>
+        <input id="auCerrarC" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuarioC'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);"   style="margin:5px;"/><br />
+        <div id="altaUsuarioMsgC"></div>
+    </div>
+
+    <div id="altaUsuarioA" class="ventanaltausuario">
+        <div id="auTit1A" class="titulo2">Alta de usuario</div>
+        <input id="altaUsuarioNombreA" type="text" class="txt" placeholder="Nombre completo" value=""  style="width: 200px;margin:3px;"/><br />
+        <input id="altaUsuarioEmailA" type="text" class="txt" placeholder="Email" value=""  style="width: 200px;margin:3px;"/><br />
+        <input id="altaUsuarioClave1A" type="password" class="txt" placeholder="Clave" value=""  style="width: 200px;margin:3px;"/><br />
+        <input id="altaUsuarioClave2A" type="password" class="txt" placeholder="Repetir clave" value=""  style="width: 200px;margin:3px;"/><br />
+        <div id="altaUsuarioURLEstatuto">manifiesto</div>
+        <input id="altaUsuarioCheck" type="checkbox" style="margin-left:30px;margin-top:25px;clear:left;float:left"/>
+        <div id="altaUsuarioLeido" style="margin:10px;width:260px;text-align:left;float:left">He leido el manifiesto<br />y deseo ser parte de este grupo</div>
+        <input id="auEnviarA" type="button" class="btn" value="Crear" onclick="doAltaUsuarioCrear();"   style="margin:5px;margin-top:15px;"/>
+        <input id="auCerrarA" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuarioA'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);"   style="margin:5px;margin-top:15px;"/><br />
+        <div id="altaUsuarioMsgA"></div>
     </div>
         
     <!--lista consensos--------------------------------------------------------------------------------------------------->

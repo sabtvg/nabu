@@ -16,6 +16,23 @@
 //  
 ///////////////////////////////////////////////////////////////////////////
 
+function HTMLUsuario(u, grupoParam, style) {
+    var d = new Date();
+    var s = "<div style='" + style + ";border: 2px solid #cccccc;border-radius:8px;text-align:center;margin:2px;padding:2px;'>";
+    if (u != null) {
+        s += "<img src='grupos/" + grupoParam + "/usuarios/" + u.email + "/" + u.email + ".png?now=" + d.getTime() + "' " +
+            "style='border-radius:5px;height:60px;width:auto;' " +
+            "onerror=\"this.src='res/perfilDefault.jpg'\">" +
+            "<br>";
+        s += u.nombre + "<br>";
+        s += u.funcion + "<br>";
+        s += "<a href='mailto:" + u.email + "'>" + u.email + "</a>";
+        if (u.estado)
+            s += "<br><font color='red'>" + u.estado + "</font>";
+    }
+    s += "</div>";
+    return s;
+}
 
 function HTMLColor(v) {
     //el color de una celda del queso segun su valor (entre 0 y 10)

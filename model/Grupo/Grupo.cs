@@ -44,11 +44,12 @@ namespace nabu
         public List<LogDocumento> logDecisiones = new List<LogDocumento>();
         public List<LogDocumento> logResultados = new List<LogDocumento>();
         public Queso queso = new Queso();
+        public string tipoGrupo = "cerrado";
 
         [IgnoreDataMember]
         public Bosque bosque = null;
 
-        public static Grupo newGrupo(string grupo, string organizacion, string nombreAdmin, string email, string clave, string idioma, string URL)
+        public static Grupo newGrupo(string grupo, string organizacion, string nombreAdmin, string email, string clave, string idioma, string tipoGrupo, string URL)
         {
             if (grupo == "")
                 throw new appException("Nombre de grupo no puede ser vacio");
@@ -81,6 +82,7 @@ namespace nabu
             g.path = Tools.MapPath("grupos/" + g.nombre);
             g.URL = URL;
             g.idioma = idioma;
+            g.tipoGrupo = tipoGrupo;
 
             //organizacion
             switch (organizacion)
