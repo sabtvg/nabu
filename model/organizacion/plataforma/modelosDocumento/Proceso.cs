@@ -225,14 +225,14 @@ namespace nabu.plataforma.modelos
             ret += "</table><br>";
 
             //etiqueta
-            ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
             return ret;
         }
 
-        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width)
+        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal)
         {
             string ret = "";
             Usuario u = g.getUsuario(email);
@@ -274,7 +274,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 2)
             {
@@ -314,7 +314,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
                 }
             }
             else if (nivel == 3)
@@ -349,7 +349,7 @@ namespace nabu.plataforma.modelos
                 }
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 4)
             {
@@ -379,7 +379,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.implantacion", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 5)
             {
@@ -398,7 +398,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else
             {

@@ -201,7 +201,7 @@
                             s += "<td style='text-align:center'><img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" style='border-radius:5px;height:60px;width:auto;'></td>";
                             s += "<td>" + usu.nombre + "</td>";
                             s += "<td>" + usu.funcion + "</td>";
-                            s += "<td>" + usu.email + "</td>";
+                            s += "<td><a href='mailto:" + usu.email + "'>" + usu.email + "</a></td>";
                             s += "<td style='text-align:center;'><div class='votos' style='margin-left:20px;'><img src='res/icono.png'>&nbsp;" + usu.apoyos + "</div></td>";
                             s += "<td style='text-align:center;'>" + usu.sLastLogin + "</td>";
                             s += "<td style='text-align:center;' title='" + tr("Activo") + "'>" + (usu.isActive ? "<img src='res/luzverde.gif'>" : "<img src='res/luzroja.gif'>") + "</td>";

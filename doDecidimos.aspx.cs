@@ -105,7 +105,7 @@ namespace nabu
 
                         case "variante":
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            Response.Write(doVariante(int.Parse(Request["id"]), Request["modeloID"], Request["grupo"], Request["email"], int.Parse(Request["width"])));
+                            Response.Write(doVariante(int.Parse(Request["id"]), Request["modeloID"], Request["grupo"], Request["email"], int.Parse(Request["width"]), int.Parse(Request["finalID"])));
                             break;
 
                         case "prevista":
@@ -809,7 +809,7 @@ namespace nabu
             return ret;
         }
 
-        string doVariante(int id, string modeloID, string grupo, string email, int width)
+        string doVariante(int id, string modeloID, string grupo, string email, int width, int finalID)
         {
             string ret = "";
             List<Propuesta> props = new List<Propuesta>();
@@ -818,7 +818,8 @@ namespace nabu
             {
                 //preparo propuestas de nodos ancestros
                 Arbol a = g.arbol;
-                List<Nodo> path = a.getPath(id);
+                List<Nodo> path = a.getPath(finalID);
+                Nodo nodo = a.getNodo(id); 
                 Modelo m = g.organizacion.getModeloDocumento(modeloID);
                 g.ts = DateTime.Now;
                 foreach (Nodo n in path)
@@ -826,14 +827,17 @@ namespace nabu
                     Propuesta op = a.getPropuesta(n); //comparo textox con hermanos y resalto palarbas nuevas
                     if (n.nivel > 0 && op != null)
                     {
+                        if (n.nivel >= nodo.nivel)
+                        {
+                            //marco la propuesta de id como prevista
+                            op = op.clone(); //nueva propuesta
+                            op.email = email;
+                            op.nodoID = 0;  //nodoID=0 determina propuesta prevista, porque esta propuesta aun no tiene nodo       
+                        }
+
                         props.Add(op);
                     }
                 }
-
-                //marco la propuesta de id como prevista
-                props[0] = props[0].clone(); //nueva propuesta
-                props[0].email = email;
-                props[0].nodoID = 0;  //nodoID=0 determina propuesta prevista, porque esta propuesta aun no tiene nodo       
 
                 //muestro documento
                 ret = m.toHTML(props, g, email, width, Modelo.eModo.editar); //las propuesta debe ir en orden de nivel

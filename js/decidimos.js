@@ -77,6 +77,14 @@ function cumplePermisos(modelo) {
         return false;
 }
 
+function getModeloIcon(modelo) {
+    var ret = "<tr>";
+    ret += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
+    ret += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
+    ret += "</tr>";
+    return ret;
+}
+
 function seleccionarModelo() {
     //opciones de modelos de documentos
     if (getFloresDisponibles().length == 0)
@@ -85,6 +93,7 @@ function seleccionarModelo() {
         var listE = "<table style='border-collapse: collapse; border-spacing: 0;'>";
         var listS = "<table style='border-collapse: collapse; border-spacing: 0;'>";
         var listI = "<table style='border-collapse: collapse; border-spacing: 0;'>";
+        var listO = "<table style='border-collapse: collapse; border-spacing: 0;'>";
 
         //si no hay manifiesto solo permito crear modelo Manifiesto
         for (var i in modelos) {
@@ -93,46 +102,46 @@ function seleccionarModelo() {
                 ((arbolPersonal.URLEstatuto == "" && modelo.id.indexOf('Manifiesto')>=0) || arbolPersonal.URLEstatuto != ""))
             {
                 if (modelo.tipo == "estructura" && cumplePermisos(modelo)) {
-                    listE += "<tr>";
-                    listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
-                    listE += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
-                    listE += "</tr>";
+                    listE += getModeloIcon(modelo);
                 }
-                else if (modelo.tipo == "intergrupal" && cumplePermisos(modelo)) {
-                    listI += "<tr>";
-                    listI += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
-                    listI += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
-                    listI += "</tr>";
+                else if (modelo.tipo == "padre" && arbolPersonal.padreNombre != '' && cumplePermisos(modelo)) {
+                    listI += getModeloIcon(modelo);
                 }
-                else if (cumplePermisos(modelo)) {
-                    listS += "<tr>";
-                    listS += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
-                    listS += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
-                    listS += "</tr>";
+                else if (modelo.tipo == "hijo" && arbolPersonal.hijos.length > 0 && cumplePermisos(modelo)) {
+                    listI += getModeloIcon(modelo);
+                }
+                else if (modelo.tipo == "seguimiento" && cumplePermisos(modelo)) {
+                    listS += getModeloIcon(modelo);
+                }
+                else if (modelo.tipo == "otro" && cumplePermisos(modelo)) {
+                    listO += getModeloIcon(modelo);
                 }
             }
         }
         listE += "</table>";
         listS += "</table>";
         listI += "</table>";
+        listO += "</table>";
 
         var list = "<table style='border-collapse: collapse; border-spacing: 5px;margin:auto;'>";
-        list += "<tr><td style='text-align:center;padding:15px;' class='titulo1' colspan='3'><b>" + tr("Modelos de debate") + "</b></td></tr>";
+        list += "<tr><td style='text-align:center;padding:15px;' class='titulo1' colspan='4'><b>" + tr("Modelos de debate") + "</b></td></tr>";
         list += "<tr><td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Estructura") + "</b></td>";
         list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Seguimiento") + "</b></td>";
-        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Intergrupal") + "</b></td></tr>";
+        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Intergrupal") + "</b></td>";
+        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Others") + "</b></td></tr>";
         list += "<tr>";
         list += "<td style='vertical-align:top;'>" + listE + "</td>";
         list += "<td style='vertical-align:top;'>" + listS + "</td>";
         list += "<td style='vertical-align:top;'>" + listI + "</td>";
+        list += "<td style='vertical-align:top;'>" + listO + "</td>";
         list += "</tr>";
 
         //cartel sociocracia.net
         list += "<tr>";
-        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=3>" + tr("nuevos modelos") + "</td>";
+        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=4>" + tr("nuevos modelos") + "</td>";
         list += "</tr>";
         list += "<tr>";
-        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=3>";
+        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=4>";
         list += "<input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelosDebate\").style.display = \"none\";' style='margin: 0 auto;'/>";
         list += "</td>"
         list += "</tr>";
@@ -359,13 +368,14 @@ function doComentar(id) {
     );
 }
 
-function doVariante(id) {
+function doVariante(id, finalID) {
     var n = getNodo(id);
     selectedNode = n.parent;
     selectedNode.modeloID = n.modeloID; //se lo pongo temporalmente al padre (por si es la raiz)
 
     //pido propuestas al servidor sin resaltar
     getHttp("doDecidimos.aspx?actn=variante&id=" + id
+        + "&finalID=" + finalID
         + "&modeloID=" + n.modeloID
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email

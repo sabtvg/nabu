@@ -128,7 +128,7 @@ namespace nabu.plataforma.modelos
             }
         }
 
-        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width)
+        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal)
         {
             string ret = "";
             Usuario u = g.getUsuarioHabilitado(email);
@@ -158,7 +158,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 2)
             {
@@ -190,7 +190,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.aquien", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
 
             }
             else if (nivel == 3)
@@ -223,7 +223,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.transporte", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 4)
             {
@@ -260,7 +260,7 @@ namespace nabu.plataforma.modelos
                 ret += "</div>";
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 5)
             {
@@ -273,7 +273,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.eficiencia", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else
             {

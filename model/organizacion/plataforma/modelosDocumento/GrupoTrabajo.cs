@@ -35,6 +35,8 @@ namespace nabu.plataforma.modelos
             niveles = 5;
             nombre = "GrupoTrabajo";
             descripcion = "Grupo de trabajo";
+            tipo = "estructura";
+            versionar = "titulo";
 
             crearVariables();
         }
@@ -155,6 +157,9 @@ namespace nabu.plataforma.modelos
 
             //titulo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
+            //fecha
+            if (modo == eModo.consenso)
+                ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             //nombre nuevo o existente o borrar
             //nuevo
@@ -206,14 +211,14 @@ namespace nabu.plataforma.modelos
             ret += "</table><br>";
 
             //etiqueta
-            ret += "<div class='titulo2'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
             return ret;
         }
 
-        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width)
+        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal)
         {
             string ret = "";
             Usuario u = g.getUsuario(email);
@@ -238,7 +243,6 @@ namespace nabu.plataforma.modelos
             else
                 niveles = 5;
 
-
             //validaciones de este nivel
             if (modo == eModo.prevista) validar(prop);
 
@@ -255,7 +259,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 2)
             {
@@ -296,7 +300,7 @@ namespace nabu.plataforma.modelos
                 }
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
 
             }
             else if (nivel == 3)
@@ -331,7 +335,7 @@ namespace nabu.plataforma.modelos
                 }
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 4)
             {
@@ -352,7 +356,7 @@ namespace nabu.plataforma.modelos
                     g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 5)
             {
@@ -371,7 +375,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else
             {
@@ -381,7 +385,7 @@ namespace nabu.plataforma.modelos
             if (prop != null) prop.niveles = niveles; //esto es importante si cambian los niveles para que se traspase luego al nodo
 
             //fin nivel
-            if (prop != null && prop.nodoID != 0 && modo != eModo.consenso)
+            if (prop != null && prop.nodoID != 0 && modo != eModo.consenso && g.arbol.getNodo(prop.nodoID) != null)
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
@@ -505,6 +509,8 @@ namespace nabu.plataforma.modelos
 
         public override string documentSubmit(string accion, string parametro, List<Propuesta> props, Grupo g, string email, int width, Modelo.eModo modo)
         {
+            this.grupo = g;
+
             if (accion == "s.integrantes_agregar" && getVariable("s.integrantes").nivel <= props.Count)
             {
                 Variable v = getVariable("s.integrantes");
@@ -542,20 +548,46 @@ namespace nabu.plataforma.modelos
                     prop.bag["s.integrantes"] = ret;
                 }
             }
+            else if (accion == "r.accion_click" && parametro == "existente" && props.Count == 1)
+            {
+                //traer datos del coumento seleccionado si es una modificaicon
+                string nombre;
+                if (props[0].bag.ContainsKey("s.nombreGrupoTrabajo"))
+                    nombre = (string)props[0].bag["s.nombreGrupoTrabajo"];
+                else
+                    nombre = getPrimerGT();
+                    
+                getContenidoDocumentoPrevio(nombre, props, g);
+            }
+            else if (accion == "s.nombreGrupoTrabajo_click")
+            {
+                //traer datos si es una modificaicon
+                string nombre = (string)props[0].bag["s.nombreGrupoTrabajo"];
+                getContenidoDocumentoPrevio(nombre, props, g);
+            }
 
             return toHTML(props, g, email, width, modo);
         }
 
         private string getListaGTs()
         {
-            string ret = ":";
+            string ret = "";
             nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
             foreach (plataforma.GrupoTrabajo gt in pl.gruposTrabajo)
             {
-                ret += gt.nombre + ":";
+                ret += gt.nombre + "|";
             }
-            if (ret.EndsWith(":")) ret = ret.Substring(0, ret.Length - 1);
+            if (ret.EndsWith("|")) ret = ret.Substring(0, ret.Length - 1);
             return ret;
+        }
+
+        private string getPrimerGT()
+        {
+            nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
+            if (pl.gruposTrabajo.Count > 0)
+                return pl.gruposTrabajo[0].nombre;
+            else
+                return "";
         }
     }
 

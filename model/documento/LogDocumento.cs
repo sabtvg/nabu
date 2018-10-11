@@ -43,6 +43,8 @@ namespace nabu
         public string carpeta = "";
         public string autor = "";
         public int revisionDias = 0; //por si el documento tiene revision periodica
+        public int version = 0;
+        public string path = "";
 
 
         public string sFecha

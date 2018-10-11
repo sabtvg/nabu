@@ -369,11 +369,27 @@ namespace nabu
                         }
                     }
 
-                    //guardo HTML
-                    generarDocumentoHTML(n, fdate, fname, docPath, URL);
+                    //titulo
+                    Propuesta p = getPropuesta(n.id);  //obtengo el titulo del debate de cualquiera de las propuestas 
+                    string titulo = p.titulo;
 
-                    //guardo documento
+                    //version
+                    //cuento los documentos historicos con mismo modelo y mismo titulo
+                    int version = 1;
+                    foreach (LogDocumento ldi in grupo.logDecisiones)
+                    {
+                        if (m.versionar=="titulo" && ldi.modeloNombre == m.nombre && ldi.titulo == titulo)
+                            version++;
+                        else if (m.versionar == "modelo" && ldi.modeloNombre == m.nombre)
+                            version++;
+                    }
+
+                    //guardo HTML
+                    generarDocumentoHTML(n, fdate, fname, docPath, URL, version, titulo);
+
+                    //creo documento
                     Documento doc = crearDocumento(n, fdate, fname, docPath, URL);
+                    doc.version = version;
 
                     //ejecuto proceso de consenso alcanzado
                     try
@@ -401,7 +417,6 @@ namespace nabu
                     }
 
                     //cruzo modelo con valores
-                    Propuesta p;
                     List<Propuesta> props = new List<Propuesta>();
                     foreach (Nodo n1 in pathn)
                     {
@@ -411,10 +426,9 @@ namespace nabu
                     }
 
                     //guardo el log historico en el arbol
-                    p = getPropuesta(n.id);  //obtengo el titulo del debate de cualquiera de las propuestas 
                     LogDocumento ld = new LogDocumento();
                     ld.fecha = fdate;
-                    ld.titulo = p.titulo;
+                    ld.titulo = titulo;
                     ld.icono = grupo.organizacion.getModeloDocumento(n.modeloID).icono;
                     if (ld.titulo.Length > 50) ld.titulo = ld.titulo.Substring(0, 50);
                     ld.modeloNombre = grupo.organizacion.getModeloDocumento(n.modeloID).nombre;
@@ -429,6 +443,8 @@ namespace nabu
                     ld.carpeta = m.carpeta();
                     ld.URL = URL;
                     ld.revisionDias = m.getRevisionDias(props);
+                    ld.version = doc.version;
+                    ld.path = doc.path;
                     grupo.logDecisiones.Add(ld);
 
                     //marco a todos los nodos del debate y sus propuestas
@@ -491,7 +507,7 @@ namespace nabu
             return doc;
         }
 
-        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL)
+        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL, int version, string titulo)
         {
             List<Nodo> pathn = getPath(n.id);
             Modelo m = grupo.organizacion.getModeloDocumento(n.modeloID);
@@ -512,6 +528,9 @@ namespace nabu
             string ret = "";
             ret += "<div style='clear:left;float:left'>";
             ret += "Documento escrito de forma cooperativa.<br>";
+            ret += "Titulo: " + titulo + "<br>";
+            if (m.versionar != "")
+                ret += "Version: " + version + "<br>";
             ret += "Grupo: " + this.nombre + "<br>";
             ret += "Documento ID:" + fname + "<br>";
             ret += "Inicio de debate: " + inicio.ToString("dd/MM/yy") + "<br>";

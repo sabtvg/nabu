@@ -29,7 +29,7 @@ namespace nabu
 
         public string nombre = "";
         public string descripcion = "";
-        public string tipo = "estructura";
+        public string tipo = "otro";
         public string icono = "res/doc.png";
         public bool enUso = false;
         public bool activo = true;
@@ -37,6 +37,7 @@ namespace nabu
         public string etiqueta = ""; //esto es parte del documento
         public string firmaConsenso = ""; //solo se usa para generar el consenso
         public string permisos = "";
+        public string versionar = ""; //modelo o titulo
 
         protected int niveles = 0;
         protected List<Variable> variables = new List<Variable>();
@@ -44,7 +45,7 @@ namespace nabu
         protected bool consensoAlcanzado = false;
         protected Grupo grupo;
 
-        protected abstract string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width);
+        protected abstract string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal);
         protected abstract void crearVariables();
 
         public abstract string carpeta();
@@ -75,10 +76,10 @@ namespace nabu
             set { }
         }
 
-        protected string HTMLVariante(int nodoID, Grupo g)
+        protected string HTMLVariante(int nodoID, Grupo g, int nodoFinalID)
         {
             string ret = "";
-            ret += "<div style='width:100%;text-align:right;padding-bottom:4px;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + nodoID + ")'></div>";
+            ret += "<div style='width:100%;text-align:right;padding-bottom:4px;'><input type='button' class='btn' value='" + Tools.tr("Proponer variante", g.idioma) + "' onclick='doVariante(" + nodoID + "," + nodoFinalID + ")'></div>";
             return ret;
         }
 
@@ -103,18 +104,18 @@ namespace nabu
 
             //titulo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div><br><br>";
+            
+            //fecha
+            if (modo == eModo.consenso)
+                ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores, g.idioma) + "</nobr></div>";
 
             //etiqueta
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
+            ret += "<div class='titulo4'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div>";
-
-            //fecha
-            if (modo == eModo.consenso)
-                ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             ret += "<br>";
             ret += "<br>";
@@ -131,7 +132,7 @@ namespace nabu
                 ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
             
             //contenido
-            ret += toHTMLContenido(prop.nivel, prop, g, email, width);
+            ret += toHTMLContenido(prop.nivel, prop, g, email, width, prop);
 
             //comentarios
             if (prop != null && modo != eModo.consenso)
@@ -178,6 +179,8 @@ namespace nabu
             for (int q = 1; q <= niveles; q++)
             {
                 Propuesta prop = getProp(q, props);
+                Propuesta propFinal = props.Count > 0 ? props[props.Count - 1] : null; //el ultimo nodo de la version seleccionada
+
                 editar = (prop == null && tieneFlores && modo != eModo.prevista && modo != eModo.consenso)
                     || (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar));
                 
@@ -205,7 +208,7 @@ namespace nabu
                 //    ret += "class='seccion'";
                 //contenido de la propuesta
                 ret += "<div class='seccion'>";
-                ret += toHTMLContenido(q, prop, g, email, 500);
+                ret += toHTMLContenido(q, prop, g, email, 500, propFinal);
                 ret += "</div>";
 
                 //comentarios
@@ -219,8 +222,7 @@ namespace nabu
             }
 
             //botones de poantalla o firma de consenso
-            ret += "<br>";
-            ret += "<br>";
+            ret += "<div style='clear:left;float:left;margin-top:15px;'></div>"; //separador
 
             if (modo == eModo.consenso)
             {
@@ -294,7 +296,7 @@ namespace nabu
                 {
                     ret += "<textarea id='comentario" + prop.nodoID + "' maxlength='300' class='editarComentario' style='height: 50px;width:-webkit-fill-available'>";
                     ret += "</textarea><br>";
-                    ret += "<input type='button' class='btn2' value='" + Tools.tr("Enviar", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ");'>";
+                    ret += "<input type='button' class='btn2' style='margin:0px;' value='" + Tools.tr("Enviar", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ");'>";
                     ret += "&nbsp;<font size='1'>(max: 300)</font>";
                     ret += "&nbsp;<input type='checkbox' id='objecion" + prop.nodoID + "'><span style='font-size:10px'>" + Tools.tr("Objecion", g.idioma) + "</span>";
                 }
@@ -374,6 +376,7 @@ namespace nabu
                     //editar en blanco
                     ret += "<select id='" + id + "'  ";
                     ret += "class='" + v.editClassName + "' ";
+                    ret += "onchange=\"documentSubmit('" + id + "_click','')\" ";
                     ret += "style='width:" + width + "px;'>";
                     foreach (string l in valores.Split('|'))
                     {
@@ -392,6 +395,7 @@ namespace nabu
                 string value = (string)getValue(id, prop);
                 ret += "<select id='" + id + "' ";
                 ret += "class='" + v.editClassName + "' ";
+                ret += "onchange=\"documentSubmit('" + id + "_click','" + value + "')\" ";
                 ret += "style='width:" + width + "px;'>";
                 foreach (string l in valores.Split('|'))
                 {
@@ -674,7 +678,7 @@ namespace nabu
                     ret += "<input id='" + id + index + "' name='" + id + "' type='radio' ";
                     ret += "class='" + v.editClassName + "' ";
                     ret += "value='" + value + "' ";
-                    ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:2em;height:2em;'>";
+                    ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:20px;height:20px;'>";
                 }
             }
             else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
@@ -684,7 +688,7 @@ namespace nabu
                 ret += "class='" + v.editClassName + "' ";
                 ret += "value='" + value + "' ";
                 if (getText(id, prop) == value) ret += "checked ";
-                ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:2em;height:2em;'>";
+                ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:20px;height:20px;'>";
             }
             else if (prop != null)
             {
@@ -692,7 +696,7 @@ namespace nabu
                 ret += "<input type='radio' ";
                 ret += "class='" + v.editClassName + "' ";
                 if (value == getText(id, prop)) ret += "checked ";
-                ret += "value='" + value + "' disabled='true' style='width:2em;height:2em;'>";
+                ret += "value='" + value + "' disabled='true' style='width:20px;height:20px;'>";
             }
             else
                 //sin flores
@@ -891,6 +895,35 @@ namespace nabu
                 }
                 else
                     return "";
+            }
+        }
+
+        public void getContenidoDocumentoPrevio(string titulo, List<Propuesta> props, Grupo grupo)
+        {
+            //si es una modificaicon y el primero nivel esta vacio entonces traigo los datos del documento a modificar
+            //busco en el logDocumentos
+            LogDocumento versionAnterior = null;
+            foreach (LogDocumento ldi in grupo.logDecisiones)
+                if (ldi.modeloNombre == nombre && ldi.titulo == titulo)
+                    versionAnterior = ldi; //me quedo con el utlimo
+
+            if (versionAnterior != null)
+            {
+                //traigo datos de este doc
+                if (System.IO.File.Exists(versionAnterior.path))
+                {
+                    string json = System.IO.File.ReadAllText(versionAnterior.path);
+                    Documento doc = Tools.fromJson<Documento>(json);
+                    //agrego contenido
+                    props.Clear();
+                    foreach (Propuesta prop in doc.propuestas)
+                    {
+                        prop.nodoID = 0;
+                        props.Add(prop);
+                    }
+                    if (props.Count >0) 
+                        props[0].bag["r.accion"] = "existente"; //este valor permanece
+                }
             }
         }
 

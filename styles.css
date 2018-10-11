@@ -102,7 +102,7 @@ body {
     border: 2px solid #C0C0C0;
     border-radius: 15px;
     background-color: #FFFFCC;
-    font-size: 20px;    
+    font-size: 18px;    
 }
 
 .editarrtf {
@@ -159,7 +159,7 @@ body {
 .textoBig {
     padding: 5px;
     margin: 2px;
-    font-size: 20px;
+    font-size: 18px;
     overflow: auto;
     border:0px;
 }

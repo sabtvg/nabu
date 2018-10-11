@@ -138,7 +138,7 @@ namespace nabu.plataforma.modelos
             return ret;
         }
 
-        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width)
+        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal)
         {
             string ret = "";
             Usuario u = g.getUsuario(email);
@@ -237,7 +237,7 @@ namespace nabu.plataforma.modelos
                 ret += "<br>";
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }          
             else
             {

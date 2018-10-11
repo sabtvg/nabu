@@ -1,0 +1,487 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <script src="js/util.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/tween.min.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var offsetX = 0;
+        var offsetY = 0;
+        var zoom = 1;
+        var bosques;
+        //var scale = window.innerWidth / 1920;
+        var grupos;
+        var lastMouse = null;
+        var generando = false;
+        var torsionInterval;
+        var firefoxWhich = 0;
+        var imgW = 17 * zoom; //imagen personita
+        var imgH = 42 * zoom; //imagen personita
+        var margen = 16;
+
+        $(document).mouseup(function (event) {
+            //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
+            firefoxWhich = 0;
+        });
+
+        $(document).mousedown(function (event) {
+            //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
+            firefoxWhich = 1;
+        });
+
+        $(document).mousemove(function (event) {
+            move(event);
+            event.preventDefault();
+        });
+
+        function transform(offsetX, offsetY) {
+            var g = document.getElementById("grupos");
+            if (g) {
+                var matrix0 = document.getElementById("todo").createSVGMatrix();
+                matrix0 = matrix0.translate(offsetX, offsetY);
+                if (g.transform.baseVal.numberOfItems == 0)
+                    g.transform.baseVal.appendItem(g.transform.baseVal.createSVGTransformFromMatrix(matrix0));
+                else
+                    g.transform.baseVal.getItem(0).setMatrix(matrix0);
+            }
+        }
+
+        function move(event) {
+            if (firefoxWhich == 1 && !event.ctrlKey) {
+                //scroll
+                if (lastMouse) {
+                    offsetX -= lastMouse.clientX - event.clientX;
+                    offsetY -= lastMouse.clientY - event.clientY;
+                    transform(offsetX, offsetY);
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else if (firefoxWhich == 1 && event.ctrlKey) {
+                //zoom
+                if (lastMouse) {
+                    zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                    //document.body.style.cursor = "w-resize";
+                    dibujarTodo();
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else {
+                lastMouse = null;
+            }
+            //$("div").text(event.which + ", " + event.ctrlKey);        
+        }
+
+        function doLoad() {
+            //background
+            setBackgroundImage();
+
+            //eventos tactiles
+            document.body.addEventListener('touchmove', function (e) {
+                var touch = e.changedTouches[0] // reference first touch point for this event
+                firefoxWhich = 1;
+                touch.ctrlKey = false;
+                move(touch);
+            }, false)
+
+            document.body.addEventListener('touchend', function (e) {
+                lastMouse = null;
+            }, false)
+
+            //idioma
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
+
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+
+            getBosques();
+            torsionInterval = setInterval(doTorsion, 100);
+        }
+
+        function getBosques() {
+            getHttp("doMain.aspx?actn=getBosques",
+                 function (data) {
+                     //atrapo el error si es que hay
+                     if (data.substring(0, 6) == "Error=") {
+                         //ha habido un error
+                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                     }
+                     else {
+                         //tengo los bosques
+                         bosques = JSON.parse(data);
+                         dibujarTodo();
+                     }
+                 });
+        }
+
+        function dibujarTodo() {
+            generando = false;
+            lastMouse = null;
+            var s = "";
+            var bosqueid = 1;
+            var x = 0;
+            var y = 0;
+
+            s += "<g id='grupos'>";
+            for (var i in bosques) {
+                s += dibujarBosque(bosques[i].padre, bosqueid++, x, y);
+                x += 500 * zoom;
+            }
+            s += "</g>"
+
+
+            document.getElementById("todo").innerHTML = s;
+            transform(offsetX, offsetY);
+
+            if (generando)
+                setTimeout(getBosques, 1000);
+        }
+
+        function dibujarBosque(padre, bosqueid, x, y) {
+            var s = "";
+
+            s += "<g id='bosque" + bosqueid + "' transform='translate(" + x + "," + y + ")'>";
+            s += doGrupos(padre, 0, 0, window.innerWidth / 8 * zoom, doGrupoNodo);
+            s += "</g>"
+
+            return s;
+        }
+
+        function VAdd(v1, v2) {
+            return new THREE.Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+        }
+
+        function VPolToCar(vector) {
+            var ret = PolToCar(vector.x, vector.y, vector.z);
+            return new THREE.Vector3(ret.x, ret.y, ret.z);
+        }
+
+        function VCarToPol(vector) {
+            var ret = CarToPol(vector.x, vector.y, vector.z);
+            return new THREE.Vector3(ret.x, ret.y, ret.z);
+        }
+
+        function PolToCar(lat, lon, radius) {
+            var DEG2RAD = Math.PI / 180;
+            var phi = (90 - lat) * DEG2RAD;
+            var theta = (lon + 180) * DEG2RAD;
+
+            return {
+                x: -(radius * Math.sin(phi) * Math.sin(theta)),
+                y: radius * Math.cos(phi),
+                z: radius * Math.sin(phi) * Math.cos(theta),
+            }
+        }
+
+        function CarToPol(x, y, z, radius) {
+            var RAD2DEG = 180 / Math.PI;
+            var lon = Math.atan2(x, -z) * RAD2DEG;
+            var radius = Math.sqrt(x * x + z * z);
+            var lat = Math.atan2(y, radius) * RAD2DEG;
+            return { lon: lon, lat: lat, radius: radius };
+        }
+
+        //grupos
+        function doGrupos(padre, x, y, radioInicial, accion) {
+            grupos = 0;
+
+            var centro = toPolar(x, y);
+            return doGrupos2(padre, centro, radioInicial, 0, 360, 90, accion);
+        }
+
+        function doGrupos2(nodo, centro, radio, nivel, apertura, direccion, accion) {
+            var s = '';
+
+            if (nodo.exception) {
+                var rect = toRect(centro.m, centro.a);
+                s += msg(nodo.exception, centro)
+            }
+            else {
+                if (radio > 5) {
+                    //hijos
+                    if (nodo.hijos.length > 0) {
+                        var paso = apertura / nodo.hijos.length;
+                        var hijoRadio;
+                        if (nivel == 0)
+                            hijoRadio = Math.PI * 2 * radio * 360 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
+                        else
+                            hijoRadio = Math.PI * 2 * radio / 2 * 180 / apertura / nodo.hijos.length / 2 * 0.9; //radio - radio / niveles;
+
+                        if (hijoRadio > radio * 0.7)
+                            hijoRadio = radio * 0.7;
+
+                        for (i in nodo.hijos) {
+                            var hijo = nodo.hijos[i];
+                            var angulo = direccion - paso * (nodo.hijos.length - 1) / 2 + paso * i; //centrado en la direccion
+                            var hijoCentro = addPolar(centro, { m: radio, a: angulo });
+                            s += doGrupos2(hijo, hijoCentro, hijoRadio, nivel + 1, 180, angulo, accion);
+                        }
+                    }
+
+                    //accion
+                    s += accion(nodo, centro, radio, nivel);
+                }
+            }
+            return s;
+        }
+
+        function doGrupoNodo(nodo, centro, radio) {
+            var s = "";
+
+            grupos += 1;
+            nodo.id = grupos; //id dinamico en la estructura SVG
+            nodo.torsion = 0;
+
+            //verifico fallo de defincion de padre
+            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
+            if (nodo.msg != "") 
+                s += msg(nodo.msg, centro);
+            else if (!nodo.descargado){ 
+                s += msg("[?]", centro);
+                generando = true;
+            }
+            else if (!nodo.padreVerificado)
+                s += msg(nodo.nombre + " [" + tr("Grupo padre no corresponde") + "]", centro);
+            else
+                s += doGrupoNodoCirculo(nodo.nombre,
+                    cut(nodo.objetivo, 25),
+                    nodo.activos + "/" + nodo.usuarios.length + " " + tr("Activos"),
+                    centro,
+                    radio,
+                    url,
+                    nodo);
+            return s;
+        }
+
+        function doGrupoNodoCirculo(t1, t2, t3, centro, r, url, nodo) {
+            var rect = toRect(centro.m, centro.a);
+            var x = rect.x;
+            var y = rect.y;
+            var fontSize1 = (4 + r / 5) * zoom;
+            var fontSize2 = (4 + r / 5) * zoom - 8 * zoom;
+            var fontSize3 = (4 + r / 5) * zoom - 16 * zoom;
+            if (fontSize1 > 30) fontSize1 = 30;
+            if (fontSize2 > 30 - 8) fontSize2 = 30 - 8;
+            if (fontSize3 > 30 - 16) fontSize3 = 30 - 16;
+            var colorb = nodo.colorPromedio == 0 ? "transparent" : HTMLColor(nodo.colorPromedio);
+
+
+            //var s = "<circle cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+            var s = "<g id='" + nodo.id + "' transform='translate(" + x.toFixed(0) + "," + y.toFixed(0) + ")'>";
+            s += doGrupoNodoEngranaje(x, y, r, colorb, 1, nodo, url);
+
+            if (r > 30) {
+                //dibujo textos
+                //nombre de grupo
+                if (t1 != "" && fontSize1 > 8)
+                    s += "<text x='0' y='" + (-fontSize1 / 2).toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
+                if (t2 != "" && fontSize2 > 8)
+                    s += "<text x='0' y='" + (fontSize1 + 2).toFixed(0) + "' fill='gray' style='font-size:" + (fontSize2).toFixed(0) + "px' text-anchor='middle'>" + t2 + "</text>";
+                if (t3 != "" && fontSize3 > 8)
+                    s += "<text x='0' y='" + (fontSize1 + fontSize2 + 2).toFixed(0) + "' fill='gray' style='font-size:" + (fontSize3).toFixed(0) + "px' text-anchor='middle'>" + t3 + "</text>";
+            }
+
+            //centro
+            s += "<circle cx='0' cy='0' r='5' stroke='" + colorb + "' stroke-width='1' fill='white' fill-opacity='0.6' />";
+
+            s += "</g>";
+
+            return s;
+        }
+
+        function doGrupoNodoEngranaje(x, y, r, colorb, width, nodo, url) {
+            var s = "";
+            //s += "<line x1='0' y1='0' x2='" + r.toFixed(0) + "' y2='0' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";         
+
+            //engranaje
+            var lastp;
+            var points = "";
+            for (var a = 0; a < 361; a+=0.5) {
+                var p2 = toRect(diente(r, a), a);
+                if (lastp)
+                    points += p2.x.toFixed(0) + "," + p2.y.toFixed(0) + " ";
+			
+               lastp = { x: p2.x, y : p2.y};
+            }
+            s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;cursor:pointer;' onClick=\"document.location='" + url + "'\"/>";
+
+            return s;
+        }
+
+        function doTorsion() {
+            //recorro el bosque
+            //for (var i in bosques) {
+            //    doGrupos(bosques[i].padre, 0, 0, window.innerWidth / 8 * zoom, doTorsionNodo);
+            //}
+        }
+
+        function doTorsionNodo(nodo, centro, radio, nivel) {
+            if (nodo.id && nodo.usuarios.length > 0) {
+                var elem = document.getElementById(nodo.id);
+                if (elem) {
+                    var r = toRect(centro.m, centro.a);
+                    elem.setAttribute('transform', "translate(" + r.x.toFixed(0) + "," + r.y.toFixed(0) + ") rotate(" + nodo.torsion + ")");
+                    var step = nodo.activos / nodo.usuarios.length;
+                    if (nivel % 2 == 1)
+                        nodo.torsion += step;
+                    else
+                        nodo.torsion -= step;
+                }
+            }
+            return "";
+        }
+
+
+        //tools
+        function diente(r, a) {
+            var sin = Math.sin(a * 2 * 3.1415 / 180 / (0.1));
+            var rect;
+            if (sin > 0) rect = 0; else rect = -10;
+            return r + rect * r / 150;
+        }
+
+        function msg(s, centro) {
+            var rect = toRect(centro.m, centro.a);
+            var x = rect.x;
+            var y = rect.y;
+            var fontSize1 = 20 * zoom;
+            s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' \">" + s + "</text>";
+            return s;
+        }
+             
+        function toPolar(x, y){
+            var ret = { m: 0, a: 0 };
+            ret.m = Math.sqrt(x * x + y * y);
+            if (x == 0)
+                if (y > 0) ret.a = 90; else ret.a = 270;
+            else if (y == 0)
+                if (x > 0) ret.a = 0; else ret.a = 180;
+            else
+            {
+                if (y >= 0 && x >= 0) ret.a = Math.atan(y / x) * 180 / Math.PI;
+                if (y >= 0 && x <= 0) ret.a = Math.atan(y / -x) * 180 / Math.PI + 90;
+                if (y <= 0 && x <= 0) ret.a = Math.atan(y / x) * 180 / Math.PI + 180;
+                if (y <= 0 && x >= 0) ret.a = Math.atan(-y / x) * 180 / Math.PI + 270;
+            }
+            return ret;
+        }
+
+        function doAtras() {
+            document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+        }
+            
+        function toRect(m, a)
+        {
+            //en grados
+            return { x: Math.cos(a * Math.PI / 180) * m, y: Math.sin(a * Math.PI / 180) * m };
+        }
+
+        function cut(s, len) {
+            if (s.length <= len)
+                return s;
+            else
+                return s.substring(0, 25) + "...";
+        }
+
+        function getDimensiones(nodo, nivel) {
+            //calculo profundiadd de la estructura y ancho por niveles
+            var ret = 1;
+            var maxHijo = 0;
+            var hijosAncho = 0;
+            var hijosAlto = 50;
+            for (i in nodo.hijos) {
+                var hijo = nodo.hijos[i];
+                var dims = getDimensiones(hijo, nivel + 1);
+
+                if (dims.niveles > maxHijo) 
+                    maxHijo = dims.niveles;
+
+                if (getHijoAltura(hijo, nodo) > hijosAlto)
+                    hijosAlto = getHijoAltura(hijo, nodo);
+
+                hijosAncho += hijo.ancho;
+            }
+            nodo.ancho = nodo.usuarios.length * imgW > hijosAncho ? nodo.usuarios.length * imgW : hijosAncho;
+            nodo.ancho = nodo.nombre.length * 11 > nodo.ancho ? nodo.nombre.length * 11 : nodo.ancho;  //nombre de grupo largo
+            nodo.ancho += margen; //margen
+            //////////////////
+            return { niveles: ret + maxHijo, ancho: nodo.ancho, alto: hijosAlto };
+        }
+
+        function doResize(){
+            //background
+            setBackgroundImage();
+        }
+
+        function addPolar(p1, p2) {
+            var r1 = toRect(p1.m, p1.a);
+            var r2 = toRect(p2.m, p2.a);
+            return toPolar(r1.x + r2.x, r1.y + r2.y);
+        }
+
+    </script>
+</head>
+<body onload="doLoad();" onresize="doResize()" style="overflow:hidden">
+    <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1"></svg>
+
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="titulo" class="tituloPagina"></div>       
+    <div id="msg" style="position:fixed;left:5vw;top:10vh;float:left;"></div>
+    
+    <!--joystick--------------------------------------------------------------------------------------------------->
+    <div id="joystick" style="position:fixed;bottom: 5px;padding: 5px;left:5px; ">
+        <nobr>
+            <img src="res/jzm.png" onclick="zoom *= 1.1; dibujarTodo();" class="img" />
+            <img src="res/ju.png" onclick="offsetY -= 30; dibujarTodo();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" onclick="offsetX -= 30; dibujarTodo();" class="img" />
+            <img src="res/j00.png" onclick="zoom = 1; transform(0,0); dibujarTodo();" class="img" />
+            <img src="res/jr.png" onclick="offsetX += 30; dibujarTodo();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" onclick="zoom *= 0.9; dibujarTodo();" class="img" />
+            <img src="res/jd.png" onclick="offsetY += 30; dibujarTodo();" class="img" />
+        </nobr>
+    </div>
+
+    <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+    <div id="rotarpantalla" class="rotarpantalla">
+        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+        <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+    </div>
+
+</body>
+</html>

@@ -190,7 +190,9 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", function (d) {
-            return window.innerWidth <= 800 ? -10 : -25;
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 25 ? 25 : i * scale;
+            return window.innerWidth <= 800 ? -size : -size * 2;
         })
         .attr("transform", function (d) {
                 return "rotate(90)";
@@ -216,7 +218,9 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", function (d) {
-            return window.innerWidth <= 800 ? -20 : -45;
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 25 ? 25 : i * scale;
+            return window.innerWidth <= 800 ? -size * 2 : -size * 3;
         })
         .attr("transform", function (d) {
             return "rotate(90)";
@@ -239,7 +243,9 @@ function dibujarArbol(referencia) {
             return 0;
         })
         .attr("dy", function (d) {
-            return window.innerWidth <= 800 ? -30 : -65;
+            var i = window.innerWidth <= 800 ? 25 : 15;
+            var size = i * scale > 25 ? 25 : i * scale;
+            return window.innerWidth <= 800 ? -size * 3 : -size * 4;
         })
         .attr("transform", function (d) {
             return "rotate(90)";

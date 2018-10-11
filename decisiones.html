@@ -59,16 +59,30 @@
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
             firefoxWhich = 0;
+            event.cancelBubble = true;
+            event.returnValue = false;
+            event.stopPropagation();
+            event.preventDefault();
+            return true;
         });
 
         $(document).mousedown(function (event) {
             //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
             firefoxWhich = 1;
+            event.cancelBubble = true;
+            event.returnValue = false;
+            event.stopPropagation();
+            event.preventDefault();
+            return true;
         });
 
         $(document).mousemove(function (event) {
             move(event);
+            event.cancelBubble = true;
+            event.returnValue = false;
+            event.stopPropagation();
             event.preventDefault();
+            return true;
         });
 
         function move(event) {
@@ -202,6 +216,11 @@
                 document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
         }
 
+        function doCerrarDocumento() {
+            document.getElementById("documento").style.display = "none";
+            editando = false;
+        }
+
         function calcularResize() {
             scalex = window.innerWidth / 1920;
             scaley = window.innerHeight / 955; //1080-bordes de pantalla
@@ -241,7 +260,7 @@
             //modelos
             for (var h in modelos) {
                 var y = viewTop * zoom + h * stepY * zoom + 25 * zoom;
-                s += "<text x='5' y='" + y + "' fill='black' class='titulo2'>" + modelos[h] + "</text>";
+                s += "<text x='5' y='" + y + "' fill='black' class='titulo3'>" + modelos[h] + "</text>";
             }
 
             //marcas

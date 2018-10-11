@@ -42,6 +42,7 @@ namespace nabu
         public Grupo grupo;
         public List<Propuesta> propuestas = new List<Propuesta>();
         public List<Log> logs = new List<Log>();
+        public int version = 1;
 
         //anulacion
         public DateTime anuladoTs = Tools.minValue; //no anulado

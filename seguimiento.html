@@ -61,12 +61,26 @@
 
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
-            firefoxWhich = 0;
+            if (!editando && event.target && event.target.id == 'todo') {
+                firefoxWhich = 0;
+                event.cancelBubble = true;
+                event.returnValue = false;
+                event.stopPropagation();
+                event.preventDefault();
+                return true;
+            }
         });
 
         $(document).mousedown(function (event) {
             //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
-            firefoxWhich = 1;
+            if (!editando && event.target && event.target.id == 'todo') {
+                firefoxWhich = 1;
+                event.cancelBubble = true;
+                event.returnValue = false;
+                event.stopPropagation();
+                event.preventDefault();
+                return true;
+            }
         });
 
         //var operativo = {
@@ -80,7 +94,11 @@
 
         $(document).mousemove(function (event) {
             move(event);
+            event.cancelBubble = true;
+            event.returnValue = false;
+            event.stopPropagation();
             event.preventDefault();
+            return true;
         });
 
         Date.prototype.addDays = function (days) {
@@ -100,7 +118,7 @@
         }
 
         function move(event) {
-            if (!editando) {
+            if (!editando && event.target && event.target.id == 'todo') {
                 if (firefoxWhich == 1 && !event.ctrlKey) {
                     //scroll
                     if (lastMouse) {
@@ -372,12 +390,10 @@
             s += "</div>";
 
             //cierre
-            s += "<div style='clear:left;float:left'>";
-            s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
+            s += "<input style='clear:left;float:left' type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
             if ((usuario.email == adminEmail || usuario.email == AC.responsable) && !historico) {
                 s += "<input type='button' class='btn' value='" + tr("Finalizar seguimiento") + "' onclick='doFinalizar(" + index + ");' style='float:right;background-color:lightcoral'>";
             }
-            s += "</div>";
 
             //estados
             s += "<div style='clear:left;float:left'>";
@@ -477,8 +493,9 @@
                          operativo = respuesta.operativo;
                          if (respuesta.resultado != 'ok')
                              document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
+
                          dibujarTodo();
-                         dibujarTodo();
+                         editando = false;
                      }
                  });
         }
@@ -524,6 +541,7 @@
 
         function doCerrarDocumento() {
             document.getElementById("AC").style.display = "none";
+            preguntarAlSalir = false;
             editando = false;
         }
 

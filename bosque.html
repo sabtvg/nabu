@@ -32,7 +32,6 @@
     <script src="js/tween.min.js"></script>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/three.min.js"></script>
-    <script src="js/tween.min.js"></script>
     <script src="js/OrbitControls.js"></script>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="styles.css">
@@ -61,6 +60,7 @@
         var ver = "grupos"; //tipo de representacion
         var margen = 16;
         var cleanInterval;
+        var showinfoLastClave = '';
 
         //webgl
         var gl; // Un variable global para el contexto WebGL
@@ -293,7 +293,7 @@
 
             generando = false;
             lastMouse = null;
-            var dims = getDimensiones(bosque, 0);
+            var dims = getDimensiones(bosque.padre, 0);
 
             s += "<g id='grupo'>";
             //dibujo bosque
@@ -435,7 +435,7 @@
             //var referencia = new THREE.Line(geometry, lineMaterial);
             //scene.add(referencia);
 
-            grupo3D(0, 0, 0, 150, bosque, 0, 0);
+            grupo3D(0, 0, 0, 150, bosque.padre, 0, 0);
 
             if (generando)
                 setTimeout(actualizarBosque, 1000);
@@ -685,7 +685,7 @@
             imgH = 42 * zoom; //imagen personita
 
             var centro = { x: x, y: y };
-            return doPersonas2(bosque, centro, 0, accion);
+            return doPersonas2(bosque.padre, centro, 0, accion);
         }
 
         function doPersonas2(nodo, centro, nivel, accion) {
@@ -828,7 +828,7 @@
             representantes = ";";
 
             var centro = toPolar(x, y);
-            return doGrupos2(bosque, centro, radioInicial, 0, 360, 90, accion);
+            return doGrupos2(bosque.padre, centro, radioInicial, 0, 360, 90, accion);
         }
 
         function doGrupos2(nodo, centro, radio, nivel, apertura, direccion, accion) {
@@ -1100,19 +1100,23 @@
         }
 
         function showInfo(clave) {
-            var grupo = clave.split(";")[1];
-            var email = clave.split(";")[0];
-            var div = document.getElementById("info");
-            div.innerHTML = "";
-            showInfo2(bosque, grupo, email);
+            if (showinfoLastClave != clave) {
+                var grupo = clave.split(";")[1];
+                var email = clave.split(";")[0];
+                var div = document.getElementById("info");
+                div.innerHTML = "";
+                showInfo2(bosque.padre, grupo, email);
 
-            if (cleanInterval != null) clearInterval(cleanInterval);
-            cleanInterval = setTimeout(mostrarTodo, 5000); //para que vuelva a enseñar a todas las personas
-            dibujarTodo();
+                if (cleanInterval != null) clearInterval(cleanInterval);
+                cleanInterval = setTimeout(mostrarTodo, 5000); //para que vuelva a enseñar a todas las personas
+                dibujarTodo();
+                showinfoLastClave = clave; //para evitar parpadeos
+            }
         }
 
         function mostrarTodo() {
             email = "";
+            showinfoLastClave = "";
             dibujarTodo();
             cleanInterval = null;
             document.getElementById("info").style.visibility = "hidden";
@@ -1132,7 +1136,7 @@
                         var usu = nodo.usuarios[i];
                         if (usu.email == email) {
                             var div = document.getElementById("info");
-                            var info = "<img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png' style='clear:left;float:left;border-radius:15px;margin:15px;'>";
+                            var info = "<img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png' onerror=\"this.src='res/perfilDefault.jpg'\" style='clear:left;float:left;border-radius:15px;margin:15px;'>";
                             info += "<div style='float:left;'>"
                             info += "<span>" + nodo.nombre + "</span><br>"
                             info += "<b>" + usu.nombre + "</b><br>";

@@ -33,7 +33,7 @@ namespace nabu.plataforma.modelos
             niveles = 4;
             nombre = "AlHijo";
             descripcion = "Comunicado al grupo hijo";
-            tipo = "intergrupal";
+            tipo = "hijo";
 
             crearVariables();
         }
@@ -108,7 +108,7 @@ namespace nabu.plataforma.modelos
             }
         }
 
-        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width)
+        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal)
         {
             string ret = "";
             Usuario u = g.getUsuario(email);
@@ -157,7 +157,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
                 }
             }
             else if (nivel == 2)
@@ -172,7 +172,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.situacionactual", prop, width, 290, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
                 }
 
             }
@@ -188,7 +188,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.propuesta", prop, width, 290, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
                 }
             }
             else if (nivel == 4)
@@ -202,7 +202,7 @@ namespace nabu.plataforma.modelos
                     ret += HTMLArea("s.situaciondeseada", prop, width, 550, tieneFlores, g.idioma);
 
                     //variante
-                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                    if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
                 }
             }
             else

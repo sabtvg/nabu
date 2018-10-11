@@ -33,6 +33,8 @@ namespace nabu.plataforma.modelos
             niveles = 4;
             nombre = "Manifiesto";
             descripcion = "Manifiesto";
+            tipo = "estructura";
+            versionar = "modelo";
 
             crearVariables();
         }
@@ -108,6 +110,10 @@ namespace nabu.plataforma.modelos
             //titulo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div><br><br>";
 
+            //fecha
+            if (modo == eModo.consenso)
+                ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+
             ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "<br><span style='color:gray;font-size:12px;'>" + Tools.tr("(Aparece en el pie del arbol)", g.idioma);
@@ -122,7 +128,7 @@ namespace nabu.plataforma.modelos
             return ret;
         }
 
-        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width)
+        override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal)
         {
             string ret = "";
             Usuario u = g.getUsuario(email);
@@ -162,10 +168,6 @@ namespace nabu.plataforma.modelos
                     ret += "</tr></table>";
                 }
 
-                //fecha
-                if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
-
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("manifiesto.vision.titulo", g.idioma) + "</div>";
                 if (editar)
@@ -174,7 +176,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.vision", prop, width, 290, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 2)
             {
@@ -186,7 +188,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.mision", prop, width, 290, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
 
             }
             else if (nivel == 3)
@@ -199,7 +201,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.objetivo", prop, width, 290, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else if (nivel == 4)
             {
@@ -210,7 +212,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLArea("s.servicios", prop, width, 550, tieneFlores, g.idioma);
 
                 //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g);
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
             else
             {

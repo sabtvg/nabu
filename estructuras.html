@@ -66,7 +66,7 @@
         }
 
         function move(event) {
-            if (!editando) {
+            if (!editando && event.target && event.target.id == 'todo') {
                 if (firefoxWhich == 1 && !event.ctrlKey) {
                     //scroll
                     if (lastMouse) {
@@ -327,9 +327,10 @@
             editando = true;
 
             var s = "";
+            var GT;
             s += "<div style='clear:left;float:left'>";
             for (var i in operativo.gruposTrabajo) {
-                var GT = operativo.gruposTrabajo[i];
+                GT = operativo.gruposTrabajo[i];
                 if (GT.EID == EID) {
                     s = "<span class='titulo3'><b>" + tr("GrupoTrabajo") + "</b></span><br>";
                     s += "<b>" + tr("Nombre") + ":</b> " + GT.nombre + "<br>";
@@ -344,6 +345,8 @@
                         var u = GT.usuarios[j];
                         s += HTMLUsuario(u, grupoParam, "float:left");
                     }
+
+                    break;
                 }
             }
             s += "</div>";
@@ -351,7 +354,7 @@
             //grupo
             s += "<div style='clear:left;float:left;margin-top:15px;border: 1px solid gray;border-radius:5px;width:98%;padding:5px;'>";
             s += "<b>" + tr("Arbol") + ":</b><br>";
-            if (GT.grupoNombre == "") {
+            if (GT && GT.grupoNombre == "") {
                 //no tiene grupo creado
                 if (usuarioPertenece(GT)){
                     //se puede crear un nuevo grupo

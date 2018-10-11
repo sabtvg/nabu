@@ -241,7 +241,8 @@ namespace nabu
                             if (grupo.padreNombre == "")
                             {
                                 grupo.bosque = new Bosque(grupo);
-                                ret = grupo.bosque.toJson();  
+                                //ret = grupo.bosque.toJson();
+                                ret = Tools.toJson(grupo.bosque);
                             }
                             else   
                                 //pido al padre
@@ -250,38 +251,29 @@ namespace nabu
                             Response.Write(ret);
                             break;
 
+                        case "getbosques":
+                            //subo buscando al padre
+                            List<string> gruposName = getGrupos();
+                            List<Bosque> bosques = new List<Bosque>();
+                            ret = "[";
+                            foreach (string grupoName in gruposName)
+                            {
+                                grupo = app.getGrupo(grupoName);
+                                if (grupo.padreNombre == "")
+                                {
+                                    //este grupo es padre
+                                    ret += getBosque(grupoName) + ",";
+                                }
+                            }
+                            if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
+
+                            Response.Write(ret + "]");
+                            break;
+
                         case "getbosque":
                             //subo buscando al padre
                             //VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
-                            ret = "";
-                            grupo = app.getGrupo(Request["grupo"]);
-
-                            if (grupo.padreNombre == "")
-                            {
-                                //yo soy la cabeza del bosque
-                                try
-                                {
-                                    if (grupo.bosque == null || DateTime.Now.Subtract(grupo.bosque.born).TotalHours >= 24)
-                                        grupo.bosque = new Bosque(grupo);
-                                        ret = grupo.bosque.toJson();
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Exception("Comunidad [" + grupo.nombre + "]> " + ex.Message);
-                                }
-                            }
-                            else
-                                //pido al padre
-                                try
-                                {
-                                    ret = Tools.getHttp(grupo.padreURL + "/doMain.aspx?actn=getBosque&grupo=" + grupo.padreNombre);
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Exception("No se puede alcanzar la cabeza de la comunidad desde [" + grupo.nombre + "]> " + ex.Message);
-                                }
-
-                            Response.Write(ret);
+                            Response.Write(getBosque(Request["grupo"]));
                             break;
 
                         case "getnodo":
@@ -387,11 +379,7 @@ namespace nabu
                             Usuario u3 = removeUsuario(Request["usuarioemail"], Request["grupo"]);
                             grupo = app.getGrupo(Request["grupo"]);
                             Response.Write(Tools.tr("Usuario [%1] borrado", u3.email, grupo.idioma));
-                            break;
-
-                        //case "getgrupos":
-                        //    Response.Write(getGrupos());
-                        //    break;
+                            break;    
 
                         case "login":
                             Response.Write(doLogin(Request["email"], Request["clave"], Request["grupo"]));
@@ -510,6 +498,38 @@ namespace nabu
             Response.End();
         }
 
+        public string getBosque(string grupoNombre)
+        {
+            string ret="";
+            Grupo grupo = app.getGrupo(grupoNombre);
+
+            if (grupo.padreNombre == "")
+            {
+                //yo soy la cabeza del bosque
+                try
+                {
+                    if (grupo.bosque == null || DateTime.Now.Subtract(grupo.bosque.born).TotalHours >= 24)
+                        grupo.bosque = new Bosque(grupo);
+                    //ret = grupo.bosque.toJson();
+                    ret = Tools.toJson(grupo.bosque);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Comunidad [" + grupo.nombre + "] > " + ex.Message);
+                }
+            }
+            else
+                //pido al padre
+                try
+                {
+                    ret = Tools.getHttp(grupo.padreURL + "/doMain.aspx?actn=getBosque&grupo=" + grupo.padreNombre);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("No se puede alcanzar la cabeza de la comunidad desde [" + grupo.nombre + "] > " + ex.Message);
+                }
+            return ret;
+        }
 
         public string dictionaryFill(string idioma, List<string> eskeys) {
             string ret = "";

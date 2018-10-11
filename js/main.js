@@ -68,7 +68,7 @@ $(document).mousemove(function (event) {
 });
 
 function move(event) {
-    if (!preguntarAlSalir) {
+    if (!preguntarAlSalir && event.target && (event.target.id == 'arbol' || event.target.id == 'svgAprendemos')) {
         if (event.which == 1 && !event.ctrlKey) {
             //scroll
             if (lastMouse) {
@@ -85,6 +85,7 @@ function move(event) {
                 }
             }
             lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            e.cancelBubble = true;
         }
         else if (event.which == 1 && event.ctrlKey) {
             //zoom
@@ -100,6 +101,7 @@ function move(event) {
                 }
             }
             lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            e.cancelBubble = true;
         }
         else {
             lastMouse = null;
@@ -212,6 +214,7 @@ function doLoad2() {
             //no hay parametro de grupo, enseño lista de grupos
             gruposEffectIn();
             doResize();
+            //document.location = "bosques.html";
         }
     }
     catch (ex) {
@@ -622,12 +625,12 @@ function doLogin() {
 
 function showAlertas(alertas) {
     if (alertas.length > 0) {
-        var s = "<span class='titulo2'><b>" + tr("Alertas") + "</b></span>";
+        var s = "<span class='titulo3'><b>" + tr("Alertas") + "</b></span>";
         s += "<div class='titulo2' style='float:right'><img src='res/rojo.gif' style='opacity:0.5;cursor:pointer' onclick='doBorrarAlertas();'></div><br>";
         for (var i in alertas) {
             var a = alertas[i];
-            s += "<span class='titulo3' style='color:#bbbbbb'>" + formatDate(jsonToDate(a.ts)) + "</span><br>";
-            s += "<span class='titulo3'>" + a.msg + "</span><br><br>";
+            s += "<span class='titulo4' style='color:#bbbbbb'>" + formatDate(jsonToDate(a.ts)) + "</span><br>";
+            s += "<span class='titulo4'>" + a.msg + "</span><br><br>";
         }
         var div = document.getElementById("alertas");
         div.innerHTML = s;

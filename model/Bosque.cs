@@ -75,8 +75,12 @@ namespace nabu
         }
 
         private Grupo grupo = null;
-        private Nodo padre = null;
+        public Nodo padre = null;
         public DateTime born = DateTime.Now;
+
+        public Bosque()
+        {
+        }
 
         public Bosque(Grupo g)
         {
@@ -252,14 +256,14 @@ namespace nabu
             }
         }
 
-        public string toJson()
-        {
-            string ret = "";
-            lock (this)
-            {
-                ret = Tools.toJson(padre);
-            }
-            return ret;
-        }
+        //public string toJson()
+        //{
+        //    string ret = "";
+        //    lock (this)
+        //    {
+        //        ret = Tools.toJson(padre);
+        //    }
+        //    return ret;
+        //}
     }
 }
