@@ -315,7 +315,7 @@ namespace nabu.plataforma.modelos
                 ret += "<br>";
 
                 //fases
-                ret += HTMLSeccion("En que gastaremos el dinero", "Excursiones, fiesta nocturna, comidas en familia", "s.gastos", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("En que gastaremos el dinero", "Excursiones, fiesta nocturna, comidas en familia", "s.gastos", editar, prop, tieneFlores, g, width);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);

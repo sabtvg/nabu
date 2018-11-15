@@ -39,6 +39,7 @@ namespace nabu
         public string permisos = "";
         public string versionar = ""; //modelo o titulo
 
+        protected string accion = ""; //para que existe en otros nivels mientras dibujo. Solo se usa en modelos que tengan ABM
         protected int niveles = 0;
         protected List<Variable> variables = new List<Variable>();
         protected eModo modo = eModo.editar;
@@ -83,12 +84,82 @@ namespace nabu
             return ret;
         }
 
-        protected string HTMLSeccion(string tituloid, string tipid, string id, bool editar, Propuesta prop, bool tieneFlores, Grupo g)
+        protected string HTMLABM(string id, Propuesta prop, bool tieneFlores, string lista, string idioma)
         {
-            string ret;
-            ret = "<div class='tema' style='vertical-align:top'><b>" + Tools.tr(tituloid, g.idioma) + "</b></div>";
-            if (editar) ret += "<div class='smalltip'>" + Tools.tr(tipid, g.idioma) + "</div>";
-            ret += "<div style='width:-webkit-fill-available'>" + HTMLArea(id, prop, 300, 120, tieneFlores, g.idioma) + "</div>";
+            string ret = "";
+            //nombre nuevo o existente o borrar
+            if (modo == eModo.editar)
+            {
+                //nuevo
+                ret += "<table class='abm'>";
+                ret += "<tr>";
+                ret += "<td>" + HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo", idioma) + "</td>";
+                ret += "<td style='height:35px;'>" + Tools.tr("Crear", idioma) + "</td>";
+                ret += "<td class='titulo3' style='width:350px;'>";
+                if (prop != null && accion == "nuevo")
+                {
+                    ret += HTMLText(id, prop, 40 * 8, tieneFlores, idioma);
+                }
+                ret += "</td>";
+                ret += "</tr>";
+
+                //existente
+                if (lista != "")
+                {
+                    ret += "<tr>";
+                    ret += "<td>" + HTMLRadio("r.accion", 2, prop, tieneFlores, "existente", idioma) + "</td>";
+                    ret += "<td style='height:35px;'>" + Tools.tr("Modificar", idioma) + "</td>";
+                    ret += "<td class='titulo3'>";
+                    //nombre del grupo
+                    if (prop != null && accion == "existente")
+                    {
+                        ret += HTMLLista(id, lista, prop, 40 * 8, tieneFlores, idioma);
+                    }
+                    ret += "</tr>";
+
+                    //borrar
+                    ret += "<tr>";
+                    ret += "<td>" + HTMLRadio("r.accion", 3, prop, tieneFlores, "borrar", idioma) + "</td>";
+                    ret += "<td style='height:35px;'>" + Tools.tr("Eliminar", idioma) + "</td>";
+                    ret += "<td class='titulo3'>";
+                    //nombre del grupo
+                    if (prop != null && accion == "borrar")
+                    {
+                        ret += HTMLLista(id, lista, prop, 40 * 8, tieneFlores, idioma);
+                    }
+                    ret += "</tr>";
+                }
+                ret += "</table>";
+            }
+            else
+            {
+                if (prop != null)
+                {
+                    string labelAccion = "";
+                    ret += "<table class='abm'>";
+                    if (accion == "nuevo") labelAccion = Tools.tr("Crear", idioma);
+                    if (accion == "existente") labelAccion = Tools.tr("Modificar", idioma);
+                    if (accion == "borrar") labelAccion = Tools.tr("Eliminar", idioma);
+                    ret += "<tr>";
+                    ret += "<td style='height:35px;'>" + labelAccion + "</td>";
+                    ret += "<td class='titulo3' style='width:350px;'>" + getText(id, prop) + "</td>";
+                    ret += "</tr>";
+                    ret += "</table>";
+                }
+            }
+            return ret;
+        }
+
+        protected string HTMLSeccion(string tituloid, string tipid, string id, bool editar, Propuesta prop, bool tieneFlores, Grupo g, int width)
+        {
+            string ret = "";
+            string value = (string)getValue(id, prop);
+            if ((value != "" && (modo == eModo.consenso || modo == eModo.prevista)) || (modo != eModo.consenso && modo != eModo.prevista))
+            {
+                ret = "<div class='tema' style='vertical-align:top'><b>" + Tools.tr(tituloid, g.idioma) + "</b></div>";
+                if (editar) ret += "<div class='smalltip'>" + Tools.tr(tipid, g.idioma) + "</div>";
+                ret += "<div style='width:-webkit-fill-available'>" + HTMLArea(id, prop, width, 120, tieneFlores, g.idioma) + "</div>";
+            }
             return ret;
         }
 
@@ -103,23 +174,30 @@ namespace nabu
             etiqueta = getText("s.etiqueta", prop);
 
             //titulo
-            ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div><br><br>";
+            ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div><br>";
             
             //fecha
             if (modo == eModo.consenso)
                 ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores, g.idioma) + "</nobr></div>";
-
-            //etiqueta
-            ret += "<div class='titulo4'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
-            if (prop == null)
-                ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
-            ret += "</nobr></div>";
-
-            ret += "<br>";
+            //titulo y etiqueta
+            ret += "<table>";
+            ret += "<tr>";
+            ret += "<td class='titulo3'>" + Tools.tr("Titulo", g.idioma) + "</td>";
+            ret += "<td colspan=2>" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores, g.idioma) + "</td>";
+            ret += "</tr>";
+            ret += "<tr>";
+            ret += "<td class='titulo3'>" + Tools.tr("Etiqueta", g.idioma) + "</td>";
+            ret += "<td style='width:120px'>" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma) + "</td>";
+            ret += "<td>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</td>";
+            ret += "</tr>";
+            ret += "</table>";
             ret += "<br>";
             return ret;
+        }
+
+        protected virtual void iniciarDocumento(List<Propuesta> props, Grupo g)
+        {
         }
 
         public string toHTML(Propuesta prop, Grupo g, string email, int width, eModo modo)
@@ -174,6 +252,8 @@ namespace nabu
                 ret += "<body>";
             }
 
+            iniciarDocumento(props, grupo);
+
             //todo el documento
             bool editar = false;
             for (int q = 1; q <= niveles; q++)
@@ -208,7 +288,7 @@ namespace nabu
                 //    ret += "class='seccion'";
                 //contenido de la propuesta
                 ret += "<div class='seccion'>";
-                ret += toHTMLContenido(q, prop, g, email, 500, propFinal);
+                ret += toHTMLContenido(q, prop, g, email, width, propFinal);
                 ret += "</div>";
 
                 //comentarios
@@ -367,6 +447,11 @@ namespace nabu
 
         public string HTMLLista(string id, string valores, Propuesta prop, int width, bool tieneFlores, string idioma)
         {
+            return HTMLLista(id, valores, prop, width, tieneFlores, idioma, true);
+        }
+
+        public string HTMLLista(string id, string valores, Propuesta prop, int width, bool tieneFlores, string idioma, bool autopostback)
+        {
             Variable v = getVariable(id);
             string ret = "";
             if (prop == null && tieneFlores && !consensoAlcanzado)
@@ -376,7 +461,7 @@ namespace nabu
                     //editar en blanco
                     ret += "<select id='" + id + "'  ";
                     ret += "class='" + v.editClassName + "' ";
-                    ret += "onchange=\"documentSubmit('" + id + "_click','')\" ";
+                    if (autopostback) ret += "onchange=\"documentSubmit('" + id + "_click','')\" ";
                     ret += "style='width:" + width + "px;'>";
                     foreach (string l in valores.Split('|'))
                     {
@@ -395,7 +480,7 @@ namespace nabu
                 string value = (string)getValue(id, prop);
                 ret += "<select id='" + id + "' ";
                 ret += "class='" + v.editClassName + "' ";
-                ret += "onchange=\"documentSubmit('" + id + "_click','" + value + "')\" ";
+                if (autopostback) ret += "onchange=\"documentSubmit('" + id + "_click','" + value + "')\" ";
                 ret += "style='width:" + width + "px;'>";
                 foreach (string l in valores.Split('|'))
                 {
@@ -477,7 +562,7 @@ namespace nabu
                 string HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(toHTMLText((string)getValue(id, prop))));
                 ret += "<div ";
                 ret += "class='" + v.className + "' ";
-                ret += "style='width:" + width + "px;'>";
+                ret += "style='width:100%;'>";
                 if (prop.consensoAlcanzado)
                     ret += HTMLText + "</div>";
                     //ret += toHTMLText((string)getValue(id, prop)) + "</div>";
@@ -666,6 +751,44 @@ namespace nabu
             return input(id, prop, width, tieneFlores, "text", getText(id, prop), idioma);
         }
 
+        public string HTMLCheck(string id, Propuesta prop, bool tieneFlores, bool value, string idioma)
+        {
+            Variable v = getVariable(id);
+            string ret = "";
+            if (prop == null && tieneFlores && !consensoAlcanzado)
+            {
+                if (modo != eModo.prevista)
+                {
+                    //editar en blanco
+                    ret += "<input id='" + id + "' name='" + id + "' type='checkbox' ";
+                    ret += "class='" + v.editClassName + "' ";
+                    ret += "value='" + value + "' ";
+                    ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:15px;height:15px;'>";
+                }
+            }
+            else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
+            {
+                //revision
+                ret += "<input id='" + id + "' name='" + id + "' type='checkbox' ";
+                ret += "class='" + v.editClassName + "' ";
+                ret += " " + (value ? "checked" : "") + " ";
+                ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:15px;height:15px;'>";
+            }
+            else if (prop != null)
+            {
+                //ver
+                ret += "<input type='checkbox' ";
+                ret += "class='" + v.editClassName + "' ";
+                ret += " " + (value ? "checked" : "") + " ";
+                ret += "value='" + value + "' disabled='true' style='width:15px;height:15px;'>";
+            }
+            else
+                //sin flores
+                ret += "<div style='color:gray;font-size:12px;'>" + Tools.tr("No tiene flores para crear una propuesta", idioma) + "</div>";
+
+            return ret;
+        }
+
         public string HTMLRadio(string id, int index, Propuesta prop, bool tieneFlores, string value, string idioma)
         {
             Variable v = getVariable(id);
@@ -678,7 +801,7 @@ namespace nabu
                     ret += "<input id='" + id + index + "' name='" + id + "' type='radio' ";
                     ret += "class='" + v.editClassName + "' ";
                     ret += "value='" + value + "' ";
-                    ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:20px;height:20px;'>";
+                    ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:15px;height:15px;'>";
                 }
             }
             else if (prop != null && prop.esPrevista() && (modo == eModo.revisar || modo == eModo.editar))
@@ -688,7 +811,7 @@ namespace nabu
                 ret += "class='" + v.editClassName + "' ";
                 ret += "value='" + value + "' ";
                 if (getText(id, prop) == value) ret += "checked ";
-                ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:20px;height:20px;'>";
+                ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:15px;height:15px;'>";
             }
             else if (prop != null)
             {
@@ -696,11 +819,37 @@ namespace nabu
                 ret += "<input type='radio' ";
                 ret += "class='" + v.editClassName + "' ";
                 if (value == getText(id, prop)) ret += "checked ";
-                ret += "value='" + value + "' disabled='true' style='width:20px;height:20px;'>";
+                ret += "value='" + value + "' disabled='true' style='width:15px;height:15px;'>";
             }
             else
                 //sin flores
                 ret += "<div style='color:gray;font-size:12px;'>" + Tools.tr("No tiene flores para crear una propuesta", idioma) + "</div>";
+
+            return ret;
+        }
+
+        public string HTMLTabs(string names, string id, Propuesta prop, Grupo g)
+        {
+            string ret  ="";
+            string tipo = "";
+            string[] anames = names.Split('|');
+            if (anames.Length > 0) tipo = anames[0];
+            if (prop != null) tipo = getText(id, prop);
+
+            if (modo == eModo.editar)
+            {
+                foreach (string name in anames)
+                {
+                    ret += "<span class='titulo3' ";
+                    if (tipo.ToLower() != name.ToLower()) ret += "style='color:blue;text-decoration: underline;cursor:pointer' ";
+                    ret += "onclick=\"documentSubmit('" + name + "_click','')\">" + Tools.tr(name, g.idioma) + "</span>";
+                }
+            }
+            else
+                ret += "<span class='titulo3'>" + Tools.tr(tipo, g.idioma) + "</span>";
+
+            //pongo input invisible para guardar el valor como cualquier otro
+            ret += "<input type='hidden' id='" + id + "' value='" + tipo + "'>"; //no vacio para que lo envie en el submit
 
             return ret;
         }
@@ -751,6 +900,8 @@ namespace nabu
             Variable v = getVariable(id);
             if (v.id.StartsWith("s."))
                 ret= valor;
+            else if (v.id.StartsWith("b."))
+                ret = valor != "false";
             else if (v.id.StartsWith("d."))
                 try
                 {
@@ -873,10 +1024,20 @@ namespace nabu
             return (bool)getValue(id, prop);
         }
 
+        public object getDefaultValue(string id)
+        {
+            if (id.StartsWith("b."))
+                return false;
+            else if (id.StartsWith("f."))
+                return 0f;
+            else
+                return "";
+        }
+
         private object getValue(string id, Propuesta prop)
         {
             if (prop == null)
-                return "";
+                return getDefaultValue(id);
             else
             {
                 if (prop.bag.ContainsKey(id))
@@ -894,36 +1055,7 @@ namespace nabu
                     }
                 }
                 else
-                    return "";
-            }
-        }
-
-        public void getContenidoDocumentoPrevio(string titulo, List<Propuesta> props, Grupo grupo)
-        {
-            //si es una modificaicon y el primero nivel esta vacio entonces traigo los datos del documento a modificar
-            //busco en el logDocumentos
-            LogDocumento versionAnterior = null;
-            foreach (LogDocumento ldi in grupo.logDecisiones)
-                if (ldi.modeloNombre == nombre && ldi.titulo == titulo)
-                    versionAnterior = ldi; //me quedo con el utlimo
-
-            if (versionAnterior != null)
-            {
-                //traigo datos de este doc
-                if (System.IO.File.Exists(versionAnterior.path))
-                {
-                    string json = System.IO.File.ReadAllText(versionAnterior.path);
-                    Documento doc = Tools.fromJson<Documento>(json);
-                    //agrego contenido
-                    props.Clear();
-                    foreach (Propuesta prop in doc.propuestas)
-                    {
-                        prop.nodoID = 0;
-                        props.Add(prop);
-                    }
-                    if (props.Count >0) 
-                        props[0].bag["r.accion"] = "existente"; //este valor permanece
-                }
+                    return getDefaultValue(id);
             }
         }
 

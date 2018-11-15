@@ -35,7 +35,7 @@ function showPanel() {
             + "&grupo=" + arbolPersonal.nombre
             + "&email=" + arbolPersonal.usuario.email
             + "&clave=" + arbolPersonal.usuario.clave
-            + "&width=" + (365 * scale).toFixed(0),
+            + "&width=" + (620 * scale).toFixed(0),
             function (data) {
                 var panelIzq = document.getElementById("panelIzq");
                 var panelDer = document.getElementById("panelDer");

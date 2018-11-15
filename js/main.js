@@ -40,6 +40,7 @@ var idiomaParam;
 var emailParam;
 var historico = false;
 var historicoFecha;
+var grupoPersonal;
 
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
@@ -85,7 +86,7 @@ function move(event) {
                 }
             }
             lastMouse = { clientX: event.clientX, clientY: event.clientY };
-            e.cancelBubble = true;
+            event.cancelBubble = true;
         }
         else if (event.which == 1 && event.ctrlKey) {
             //zoom
@@ -101,7 +102,7 @@ function move(event) {
                 }
             }
             lastMouse = { clientX: event.clientX, clientY: event.clientY };
-            e.cancelBubble = true;
+            event.cancelBubble = true;
         }
         else {
             lastMouse = null;
@@ -223,6 +224,12 @@ function doLoad2() {
     }
 }
 
+function doKeypress() {
+    if (estado == 'login' && event.keyCode == 13) {
+        doLogin();
+    }
+}
+
 function gruposEffectIn() {
     var s = "";
     s += "<div class='titulo0' style='font-size:10vh'><img src='res/logo2.png' class='logo'>Nab&uacute;</div>"
@@ -314,22 +321,25 @@ function doTimePresent() {
 }
 
 function showTimePanel() {
-    //timePanel
-    if (historico) {
-        var now = new Date();
-        now.setDate(now.getDate() - 1);
-        if (historicoFecha > now) 
-            historicoFecha = now;
-        document.getElementById("timePanel").style.visibility = "visible";
-        document.getElementById("timeDia").innerHTML = historicoFecha.getDate() < 10 ? '0' + historicoFecha.getDate() : historicoFecha.getDate();
-        document.getElementById("timeMes").innerHTML = historicoFecha.getMonth() + 1 < 10 ? '0' + (historicoFecha.getMonth() + 1) : historicoFecha.getMonth() + 1;
-        document.getElementById("timeYear").innerHTML = historicoFecha.getFullYear();
-        document.getElementById("timeBack").style.visibility = "hidden";
-    }
-    else {
-        document.getElementById("timeBack").style.visibility = "visible";
-        document.getElementById("timePanel").style.visibility = "hidden";
-    }
+    //no ready to use
+    document.getElementById("timeBack").style.visibility = "hidden";
+
+    ////timePanel
+    //if (historico) {
+    //    var now = new Date();
+    //    now.setDate(now.getDate() - 1);
+    //    if (historicoFecha > now) 
+    //        historicoFecha = now;
+    //    document.getElementById("timePanel").style.visibility = "visible";
+    //    document.getElementById("timeDia").innerHTML = historicoFecha.getDate() < 10 ? '0' + historicoFecha.getDate() : historicoFecha.getDate();
+    //    document.getElementById("timeMes").innerHTML = historicoFecha.getMonth() + 1 < 10 ? '0' + (historicoFecha.getMonth() + 1) : historicoFecha.getMonth() + 1;
+    //    document.getElementById("timeYear").innerHTML = historicoFecha.getFullYear();
+    //    document.getElementById("timeBack").style.visibility = "hidden";
+    //}
+    //else {
+    //    document.getElementById("timeBack").style.visibility = "visible";
+    //    document.getElementById("timePanel").style.visibility = "hidden";
+    //}
 }
 
 function doResize() {
@@ -373,9 +383,9 @@ function doResize() {
     document.getElementById("tituloppal").style.left = 250 * menuscale + 'px';
     document.getElementById("tituloppal").style.width = 285 * menuscale + 'px';
     if (arbolPersonal && arbolPersonal.nombre.length < 10)
-        document.getElementById("tituloppal").style.fontSize = 45 * menuscale + 'px';
+        document.getElementById("tituloppal").style.fontSize = 30 * menuscale + 'px';
     else
-        document.getElementById("tituloppal").style.fontSize = 28 * menuscale + 'px';
+        document.getElementById("tituloppal").style.fontSize = 16 * menuscale + 'px';
 
     var top = (window.innerHeight / 2 - 600 * menuscale / 2 - 10 * menuscale).toFixed(0);
     if (top < 0) top = 5;
@@ -486,6 +496,8 @@ function doResize() {
 
     //arbol
     translateArbol(translatex = 0, translatey = 0);
+    if (arbolPersonal) dibujarArbol(arbolPersonal.raiz);
+
 }
 
 function sendException(ex, flag) {
@@ -623,15 +635,25 @@ function doLogin() {
         });
 }
 
-function showAlertas(alertas) {
-    if (alertas.length > 0) {
-        var s = "<span class='titulo3'><b>" + tr("Alertas") + "</b></span>";
-        s += "<div class='titulo2' style='float:right'><img src='res/rojo.gif' style='opacity:0.5;cursor:pointer' onclick='doBorrarAlertas();'></div><br>";
-        for (var i in alertas) {
-            var a = alertas[i];
+function showAlertasIcon() {
+    var icon = document.getElementById("alertaIcon");
+    icon.style.display = grupoPersonal.alertas.length > 0 ? "block" : "none";
+}
+
+function showAlertas() {
+    if (grupoPersonal.alertas.length > 0) {
+        var s = "<div class='titulo3'>";
+        s += "<span style='float:left'><b>" + tr("Alertas") + "</b></span>";
+        s += "<img src='res/rojo.gif' style='cursor:pointer;float:right' onclick='doBorrarAlertas();'>";
+        s += "</div>";
+
+        s += "<div style='clear:left;float:left;overflow:auto;max-height:60%'>";
+        for (var i in grupoPersonal.alertas) {
+            var a = grupoPersonal.alertas[i];
             s += "<span class='titulo4' style='color:#bbbbbb'>" + formatDate(jsonToDate(a.ts)) + "</span><br>";
             s += "<span class='titulo4'>" + a.msg + "</span><br><br>";
         }
+        s += "</div>";
         var div = document.getElementById("alertas");
         div.innerHTML = s;
         div.style.display = "block";
@@ -662,7 +684,7 @@ function doMenuppal() {
         document.getElementById("tituloNabu").style.visibility = "visible";
 
         //timeback
-        document.getElementById("timeBack").style.visibility = "visible";
+        showTimePanel();
 
         //hijos
         var hijos = "<nobr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -695,7 +717,7 @@ function doMenuppal() {
         clearInterval(timerQueso);
 
         //panel usuario        
-        document.getElementById("panelUsuario").style.visibility = 'visible';
+        document.getElementById("panelUsuario").style.display = 'block';
 
         menuOptions();
 
@@ -739,8 +761,8 @@ function getGrupoPersonal() {
                 if (data.substring(0, 6) == "Error=") {
                 }
                 else {
-                    var grupoPersonal = JSON.parse(data);
-                    showAlertas(grupoPersonal.alertas);
+                    grupoPersonal = JSON.parse(data);
+                    showAlertasIcon();
                 }
             }); 
 }
@@ -748,7 +770,7 @@ function getGrupoPersonal() {
 function menuOptions() {
     //opciiones de menu
     var mnu = "";
-    mnu += "<div class='menuItem'><a class='menuItem' href='bosque.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El bosque") + "</a></div>";
+    mnu += "<div class='menuItem'><a class='menuItem' href='comunidadGrupos.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El bosque") + "</a></div>";
     if (arbolPersonal.usuario.isAdmin) {
         //adminOptions
         mnu += "<div class='menuItem'><a class='menuItem' href='modificargrupo.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("El arbol") + "</a></div>";
@@ -760,9 +782,20 @@ function menuOptions() {
     }
     if (arbolPersonal.usuario.isFacilitador || arbolPersonal.usuario.isAdmin) {
         mnu += "<div class='menuItem'><a class='menuItem' href='mailer.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Mailer") + "</a></div>";
-    }
+    }  
+
+    //movile page footer
+    mnu += "<div class='menuItem'><a class='menuItem movilePie' href='javascript:' onclick='showMovileFooter();'>?</a></div>";
     if (historico) mnu = "";
     document.getElementById("mnuOptions").innerHTML = mnu;
+}
+
+function showMovileFooter() {
+    document.getElementById("movilePie").style.display = "block";
+}
+
+function hideMovileFooter() {
+    document.getElementById("movilePie").style.display = "none";
 }
 
 function doCloseHelp() {
@@ -773,12 +806,20 @@ function showPerfil() {
     document.getElementById("perfilEmail").value = arbolPersonal.usuario.email;
     document.getElementById("perfilNombre").value = arbolPersonal.usuario.nombre;
     document.getElementById("perfilFuncion").value = arbolPersonal.usuario.funcion;
+    document.getElementById("perfilValidacion").value = "";
+    document.getElementById("googleLocation").value = "";
+
+    document.getElementById("mision").value = arbolPersonal.usuario.mision;
+    document.getElementById("capacidades").value = arbolPersonal.usuario.capacidades;
+    document.getElementById("expectativas").value = arbolPersonal.usuario.expectativas;
+    document.getElementById("participacion").value = arbolPersonal.usuario.participacion;
+    document.getElementById("address").value = arbolPersonal.usuario.address;
+
     document.getElementById("perfil").style.display = 'block';    
-    document.getElementById("cambiarClaveLink").value = tr("Cambiar clave");
+    document.getElementById("cambiarClaveBtn").value = tr("Cambiar clave");
     var img = document.getElementById("perfilImg");
     var d = new Date();
     img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email + "/" + arbolPersonal.usuario.email + ".png?now=" + d.getTime();
-    efectoLeft(document.getElementById("perfil"), 0, 750, -430, 20, TWEEN.Easing.Cubic.Out);
 }
 
 function showCambiarClave() {
@@ -787,7 +828,6 @@ function showCambiarClave() {
     document.getElementById("repeat").value = "";
     document.getElementById("cambiarClaveMsg").innerHTML = "";
     document.getElementById("cambiarClave").style.display = 'block';
-    efectoLeft(document.getElementById("cambiarClave"), 0, 750, -230, 20, TWEEN.Easing.Cubic.Out);
 }
 
 function doAltaUsuario() {
@@ -932,46 +972,77 @@ function doCambiarClave() {
                 if (data != '')
                     document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
                 else 
-                    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -350, TWEEN.Easing.Cubic.Out, function () {
-                        document.getElementById("cambiarClave").style.visibility = 'hidden';
-                    });
+                    document.getElementById("cambiarClave").style.display = 'none';
             });
     }
 }
 
-function doCerrarPerfil() {
-    var perfilNombre = document.getElementById("perfilNombre").value;
-    var perfilFuncion = document.getElementById("perfilFuncion").value;
-
-    getHttp("doMain.aspx?actn=actualizarperfilusuario&grupo=" + arbolPersonal.nombre
-    + "&email=" + arbolPersonal.usuario.email
-    + "&clave=" + arbolPersonal.usuario.clave
-    + "&nombre=" + perfilNombre
-    + "&funcion=" + perfilFuncion,
-    function (data) {
-        if (data.substring(0, 6) == "Error=")
-            document.getElementById("perfilMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
-        else {
-            efectoLeft(document.getElementById("perfil"), 0, 750, 20, -480, TWEEN.Easing.Cubic.In, function () {
-                document.getElementById("perfil").style.visibility = 'hidden';
-            });
-
-            //local update
-            arbolPersonal.usuario.nombre = perfilNombre;
-            arbolPersonal.usuario.funcion = perfilFuncion;
-            document.getElementById("usuarioNombre").innerHTML = perfilNombre;
+function geocodeAddress() {
+    var geocoder = new google.maps.Geocoder();
+    var address = document.getElementById("address").value;
+    geocoder.geocode({ 'address': address }, function (results, status) {
+        if (status === 'OK') {
+            document.getElementById("googleLocation").innerHTML = results[0].formatted_address;
+            arbolPersonal.usuario.lat = results[0].geometry.location.lat();
+            arbolPersonal.usuario.lng = results[0].geometry.location.lng();
         }
+        else
+            document.getElementById("googleLocation").innerHTML = tr("Ubicacion no encontrada");
     });
 }
 
+function doCerrarPerfil() {
+    if (arbolPersonal.usuario.lat == 0 || arbolPersonal.usuario.lng == 0)
+        document.getElementById("perfilValidacion").innerHTML = tr("Ubicacion no validada");
+    else {
+        var perfilNombre = document.getElementById("perfilNombre").value;
+        var perfilFuncion = document.getElementById("perfilFuncion").value;
+
+        var mision = document.getElementById("mision").value;
+        var capacidades = document.getElementById("capacidades").value;
+        var expectativas = document.getElementById("expectativas").value;
+        var participacion = document.getElementById("participacion").value;
+        var address = document.getElementById("address").value;
+
+        var post = "&nombre=" + perfilNombre
+            + "&funcion=" + perfilFuncion
+            + "&mision=" + URIEncode(mision)
+            + "&capacidades=" + URIEncode(capacidades)
+            + "&expectativas=" + URIEncode(expectativas)
+            + "&participacion=" + URIEncode(participacion)
+            + "&address=" + URIEncode(address)
+            + "&lat=" + arbolPersonal.usuario.lat
+            + "&lng=" + arbolPersonal.usuario.lng;
+        postHttp("doMain.aspx?actn=actualizarperfilusuario&grupo=" + arbolPersonal.nombre
+            + "&email=" + arbolPersonal.usuario.email
+            + "&clave=" + arbolPersonal.usuario.clave,
+            post,
+            function (data) {
+                if (data.substring(0, 6) == "Error=")
+                    document.getElementById("perfilMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
+                else {
+                    document.getElementById("perfil").style.display = 'none';
+
+                    //local update
+                    arbolPersonal.usuario.nombre = perfilNombre;
+                    arbolPersonal.usuario.funcion = perfilFuncion;
+                    arbolPersonal.usuario.mision = mision;
+                    arbolPersonal.usuario.capacidades = capacidades;
+                    arbolPersonal.usuario.expectativas = expectativas;
+                    arbolPersonal.usuario.participacion = participacion;
+                    arbolPersonal.usuario.address = address;
+                    document.getElementById("usuarioNombre").innerHTML = perfilNombre;
+                }
+            });
+    }
+}
+
 function doHideCambiarClave() {
-    efectoLeft(document.getElementById("cambiarClave"), 0, 750, 20, -350, TWEEN.Easing.Cubic.In, function () {
-            document.getElementById("cambiarClave").style.visibility = 'hidden';
-        });
+    document.getElementById("cambiarClave").style.display = 'none';
 }
 
 function doAtras() {
-    document.getElementById("cambiarClave").style.visibility = 'hidden';
+    document.getElementById("cambiarClave").style.display = 'none';
 
     if (estado == 'login') {
         //login voy a grupos
@@ -988,7 +1059,7 @@ function doAtras() {
         document.getElementById("quesoDiv").style.display = "none";
 
         document.getElementById("titulo").style.visibility = 'hidden';
-        document.getElementById("panelUsuario").style.visibility = 'visible';
+        document.getElementById("panelUsuario").style.display = 'block';
         document.getElementById("menuEvaluacion").style.visibility = 'hidden';
         document.getElementById("modelosDebate").style.display = "none";
         document.getElementById("modelosEvaluacion").style.display = "none";
@@ -1024,9 +1095,9 @@ function doAtras() {
         setTimeout(loginEffectIn, 600); //doy tiempo al menu a irse
 
         document.getElementById("mnuOptions").innerHTML = "";
-        document.getElementById("panelUsuario").style.visibility = 'hidden';
+        document.getElementById("panelUsuario").style.display = 'none';
 
-        document.getElementById("alertas").style.visibility = 'hidden';
+        document.getElementById("alertas").style.display = 'none';
         document.getElementById("pie").style.display = 'none';
 
         document.getElementById("atras").style.visibility = "hidden";
@@ -1042,7 +1113,7 @@ function doAtras() {
         objetivo.innerHTML = arbolPersonal.objetivo;
         objetivo.style.visibility = 'hidden';
 
-        document.getElementById("panelUsuario").style.visibility = 'visible';
+        document.getElementById("panelUsuario").style.display = 'block';
 
         //efecto de salida: podo el arbol
         var children = arbolPersonal.raiz.children;

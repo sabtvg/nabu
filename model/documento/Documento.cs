@@ -76,6 +76,14 @@ namespace nabu
             return ret;
         }
 
+        public bool contains(string id)
+        {
+            foreach (Propuesta p in propuestas)
+                if (p.bag.ContainsKey(id))
+                    return true;
+            return false;
+        }
+
         public Object getValor(string id)
         {
             foreach(Propuesta p in propuestas)
@@ -108,11 +116,11 @@ namespace nabu
         public string toHTMLSeguimiento()
         {
             string ret = "";
-            ret += "<div class='titulo1'>Seguimiento: " + fname + "</div>";
-            ret += "<div class='titulo1'>Titulo: " + titulo + "</div>";
-            ret += "<div class='titulo2'>Fecha: " + fecha.ToString("dd/MM/yy") + "</div>";
-            ret += "<div class='titulo2'>Modelo" + ": " + nombre + "</div>";
-            ret += "<div class='titulo2'><a href='" + URLPath + "' target='_blank'>" + URLPath + "</a></div><br>";
+            ret += "<div class='titulo2'>Seguimiento: " + fname + "</div>";
+            ret += "<div class='titulo2'>Titulo: " + titulo + "</div>";
+            ret += "<div class='titulo3'>Fecha: " + fecha.ToString("dd/MM/yy") + "</div>";
+            ret += "<div class='titulo3'>Modelo" + ": " + nombre + "</div>";
+            ret += "<div class='titulo4'><a href='" + URLPath + "' target='_blank'>" + URLPath + "</a></div><br>";
                             
             ret += "<table>";
             foreach (Log l in logs)

@@ -33,7 +33,6 @@ namespace nabu.plataforma
         public string docURL = "";
         public DateTime docTs = Tools.minValue;
         public string revision = "";
-        public string objetivo = "";
         public DateTime born = DateTime.Now;
         public string definicion = "";
 

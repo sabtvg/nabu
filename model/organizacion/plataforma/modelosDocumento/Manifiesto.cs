@@ -128,6 +128,21 @@ namespace nabu.plataforma.modelos
             return ret;
         }
 
+        override protected void iniciarDocumento(List<Propuesta> props, Grupo g)
+        {
+            //enseño manifiesto anterior si hay
+            if (props.Count == 0)
+            {
+                LogDocumento anterior = null;
+                foreach (LogDocumento ld in g.logDecisiones)
+                    if (ld.modeloNombre == this.nombre)
+                        anterior = ld;
+
+                if (anterior != null)
+                    getContenidoDocumentoPrevio(anterior, props, grupo);
+            }
+        }
+
         override protected string toHTMLContenido(int nivel, Propuesta prop, Grupo g, string email, int width, Propuesta propFinal)
         {
             string ret = "";
@@ -246,7 +261,23 @@ namespace nabu.plataforma.modelos
             doc.addLog(Tools.tr("Estructura organizativa actualizada", doc.grupo.idioma));
         }
 
-
+        public void getContenidoDocumentoPrevio(LogDocumento anterior, List<Propuesta> props, Grupo grupo)
+        {
+            //si es una modificaicon y el primero nivel esta vacio entonces traigo los datos del documento a modificar
+            //traigo datos de este doc
+            if (System.IO.File.Exists(anterior.path))
+            {
+                string json = System.IO.File.ReadAllText(anterior.path);
+                Documento doc = Tools.fromJson<Documento>(json);
+                //agrego contenido
+                props.Clear();
+                foreach (Propuesta prop in doc.propuestas)
+                {
+                    prop.nodoID = 0;
+                    props.Add(prop);
+                }
+            }
+        }
     }
 }
 

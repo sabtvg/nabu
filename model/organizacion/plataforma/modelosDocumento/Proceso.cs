@@ -68,7 +68,7 @@ namespace nabu.plataforma.modelos
             variables.Add(new Variable("s.conclusiones", 3000, 3));
 			
             //nivel 4
-            variables.Add(new Variable("s.grupoTrabajo", 60, 4));
+            variables.Add(new Variable("s.SubGrupo", 60, 4));
             variables.Add(new Variable("s.implantacion", 3000, 4));
 
             //nivel 5
@@ -131,14 +131,14 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 4)
                 {
-                    if (getText("r.accion", prop) == "nuevo" && getText("s.grupoTrabajo", prop) == "")
+                    if (getText("r.accion", prop) == "nuevo" && getText("s.SubGrupo", prop) == "")
                     {
                         addError(4, "Debes seleccionar un grupo de trabajo");
-                        getVariable("s.grupoTrabajo").className = "errorfino";
+                        getVariable("s.SubGrupo").className = "errorfino";
                     }
 
                     if (getText("s.implantacion", prop) == "" 
-                        && getText("s.grupoTrabajo", prop) == "")
+                        && getText("s.SubGrupo", prop) == "")
                     {
                         addError(4, "La propuesta no puede estar completamente vacia");
                     }
@@ -367,7 +367,7 @@ namespace nabu.plataforma.modelos
                         ret += "<div class='smalltip'>"
                             + Tools.tr("proceso.grupo", g.idioma)
                             + "</div>";
-                    ret += HTMLLista("s.grupoTrabajo", getListaGTs(), prop, width, tieneFlores, g.idioma);
+                    ret += HTMLLista("s.SubGrupo", getListaGTs(), prop, width, tieneFlores, g.idioma);
                 }
 
                 //implantacion
@@ -395,7 +395,7 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='smalltip'>"
                         + Tools.tr("proceso.revision", g.idioma)
                         + "</div>";
-                ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
+                ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma,false);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
@@ -449,25 +449,25 @@ namespace nabu.plataforma.modelos
             //if ((string)doc.getValor("r.accion") == "borrar")
             //{
             //    //borro proceso
-            //    string grupoTrabajo = doc.titulo.Split('.')[0];
+            //    string SubGrupo = doc.titulo.Split('.')[0];
             //    string proceso = doc.titulo.Split('.')[1];
-            //    foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-            //        if (gt.nombre == grupoTrabajo)
+            //    foreach (nabu.plataforma.SubGrupo gt in plataforma.subGrupos)
+            //        if (gt.nombre == SubGrupo)
             //            foreach (nabu.plataforma.Estrategia pr in gt.estrategias)
             //                if (pr.nombre == proceso)
             //                {
             //                    gt.estrategias.Remove(pr);
-            //                    doc.addLog(Tools.tr("proceso.eliminado", grupoTrabajo, doc.grupo.idioma));
+            //                    doc.addLog(Tools.tr("proceso.eliminado", SubGrupo, doc.grupo.idioma));
             //                    break;
             //                }
             //}
             //else if ((string)doc.getValor("r.accion") == "existente")
             //{
-            //    //creo/actualizo grupoTrabajo actual
-            //    string grupoTrabajo = doc.titulo.Split('.')[0];
+            //    //creo/actualizo SubGrupo actual
+            //    string SubGrupo = doc.titulo.Split('.')[0];
             //    string proceso = doc.titulo.Split('.')[1];
-            //    foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-            //        if (gt.nombre == grupoTrabajo)
+            //    foreach (nabu.plataforma.SubGrupo gt in plataforma.subGrupos)
+            //        if (gt.nombre == SubGrupo)
             //        {
             //            foreach (nabu.plataforma.Estrategia pr in gt.estrategias)
             //                if (pr.nombre == proceso)
@@ -480,15 +480,15 @@ namespace nabu.plataforma.modelos
             //                    pr.entradas = doc.getText("s.entradas");
             //                    pr.definicion = doc.getText("s.definicion");
 
-            //                    doc.addLog(Tools.tr("proceso.actualizado", grupoTrabajo, doc.grupo.idioma));
+            //                    doc.addLog(Tools.tr("proceso.actualizado", SubGrupo, doc.grupo.idioma));
             //                }
             //        }
             //}
             //else
             //{//nuevo
-            //    string grupoTrabajo = (string)doc.getValor("s.grupoTrabajo");
-            //    foreach (nabu.plataforma.GrupoTrabajo gt in plataforma.gruposTrabajo)
-            //        if (gt.nombre == grupoTrabajo)
+            //    string SubGrupo = (string)doc.getValor("s.SubGrupo");
+            //    foreach (nabu.plataforma.SubGrupo gt in plataforma.subGrupos)
+            //        if (gt.nombre == SubGrupo)
             //        {
             //            //creo
             //            nabu.plataforma.Proceso pr = new plataforma.Proceso();
@@ -502,7 +502,7 @@ namespace nabu.plataforma.modelos
 
             //            gt.estrategias.Add(pr);
 
-            //            doc.addLog(Tools.tr("proceso.creado", grupoTrabajo, doc.grupo.idioma));
+            //            doc.addLog(Tools.tr("proceso.creado", SubGrupo, doc.grupo.idioma));
             //        }
             //}
         }
@@ -511,7 +511,7 @@ namespace nabu.plataforma.modelos
         {
             string ret = ":";
             nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
-            foreach (plataforma.GrupoTrabajo gt in pl.gruposTrabajo)
+            foreach (plataforma.SubGrupo gt in pl.subgrupos)
                 foreach (plataforma.Estrategia pr in gt.estrategias)
                     ret += gt.nombre + "." + pr.nombre + ":";
             if (ret.EndsWith(":")) ret = ret.Substring(0, ret.Length - 1);
@@ -522,7 +522,7 @@ namespace nabu.plataforma.modelos
         {
             string ret = ":";
             nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
-            foreach (plataforma.GrupoTrabajo gt in pl.gruposTrabajo)
+            foreach (plataforma.SubGrupo gt in pl.subgrupos)
             {
                 ret += gt.nombre + ":";
             }

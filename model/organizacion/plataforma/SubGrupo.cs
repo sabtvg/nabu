@@ -26,7 +26,7 @@ using System.Web;
 
 namespace nabu.plataforma
 {
-    public class GrupoTrabajo
+    public class SubGrupo
     {
         public int EID = 0;
         public string nombre = "";

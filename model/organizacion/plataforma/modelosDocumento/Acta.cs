@@ -47,6 +47,11 @@ namespace nabu.plataforma.modelos
         protected override void crearVariables()
         {
             variables.Clear();
+            variables.Add(new Variable("s.tipo", 200, 1));
+            variables.Add(new Variable("s.subgrupoIntro", 200, 1));
+            variables.Add(new Variable("s.subgrupoIntegrantes", 200, 1));
+            variables.Add(new Variable("s.subgrupo", 200, 1));
+
             variables.Add(new Variable("f.temas", 8, 1));
             variables.Add(new Variable("d.fecha", 12, 1));
             variables.Add(new Variable("d.fechaProxima", 12, 1));
@@ -70,7 +75,26 @@ namespace nabu.plataforma.modelos
         {
             if (prop != null)
             {
-                if (prop.nivel == 1)
+                string tipo = getText("s.tipo", prop);
+                if (prop.nivel == 1 && tipo == "subgrupo")
+                {
+                    if (getText("s.titulo", prop) == "")
+                    {
+                        addError(1, Tools.tr("Definir un titulo de Acta", idioma));
+                        getVariable("s.titulo").className = "errorfino";
+                    }
+                    if (getText("s.subgrupoIntro", prop) == "")
+                    {
+                        addError(1, Tools.tr("Definir una introduccion", idioma));
+                        getVariable("s.subgrupoIntro").className = "errorfino";
+                    }
+                    if (getText("s.subgrupoIntegrantes", prop) == "")
+                    {
+                        addError(1, Tools.tr("Se deben definir los integrantes", idioma));
+                        getVariable("s.subgrupoIntegrantes").className = "errorfino";
+                    }
+                }
+                else if (prop.nivel == 1 && tipo == "Reunion")
                 {
                     if (getText("s.titulo", prop) == "")
                     {
@@ -86,21 +110,6 @@ namespace nabu.plataforma.modelos
                     {
                         addError(1, Tools.tr("Definir apertura", idioma));
                         getVariable("s.apertura").className = "errorfino";
-                    }
-                    if (getText("s.ordendeldia", prop) == "")
-                    {
-                        addError(1, Tools.tr("Definir orden del dia", idioma));
-                        getVariable("s.ordendeldia").className = "errorfino";
-                    }
-                    if (getText("s.logisticos", prop) == "")
-                    {
-                        addError(1, Tools.tr("Aspectos logisticos", idioma));
-                        getVariable("s.logisticos").className = "errorfino";
-                    }
-                    if (getText("s.evaluacion", prop) == "")
-                    {
-                        addError(1, Tools.tr("Definir evaluacion", idioma));
-                        getVariable("s.evaluacion").className = "errorfino";
                     }
                 }                
             }
@@ -119,12 +128,17 @@ namespace nabu.plataforma.modelos
             titulo = getText("s.titulo", prop);
             etiqueta = "Acta";
 
-            //titulo
+            //nombre modelo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
+            ret += "<br>";
+
+            //tipo
+            ret += HTMLTabs("Reunion|Subgrupo", "s.tipo", prop, g);
             ret += "<br>";
             ret += "<br>";
 
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
+            //titulo
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ": " + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
             ret += "</nobr></div>";
 
             //etiqueta
@@ -154,9 +168,47 @@ namespace nabu.plataforma.modelos
             //validaciones de este nivel
             validar(prop, g.idioma);
 
-            if (nivel == 1)
+            string tipo = "Reunion";
+            if (prop != null) tipo = getText("s.tipo", prop);
+            if (tipo == "") tipo = "Reunion";
+            if (nivel == 1 && tipo == "Subgrupo")
             {
-                ret += HTMLEncabezado(prop, g, email, width);            
+                ret += HTMLEncabezado(prop, g, email, width);
+
+                string listaGTs = getListaGTs();
+
+                if (listaGTs == "")
+                    ret += "<div class='tema'>" + Tools.tr("No hay subgrupos", g.idioma) + "</div>";
+                else
+                {
+                    //introduccion
+                    ret += HTMLSeccion("acta.subgrupo.introduccion", "acta.subgrupo.introduccion.tip", "s.subgrupoIntro", editar, prop, tieneFlores, g, width);
+                    //ret += "<div class='tema'>" + Tools.tr("acta.subgrupo.introduccion", g.idioma) + "</div>";
+                    //if (editar)
+                    //    ret += "<div class='smalltip'>" + Tools.tr("acta.subgrupo.introduccion.tip", g.idioma) + "</div>";
+                    //ret += HTMLArea("s.subgrupoIntro", prop, width, 290, tieneFlores, g.idioma);
+
+                    //subgrupo
+                    ret += "<div class='tema'>" + Tools.tr("acta.subgrupo.subgrupo", g.idioma) + "</div>";
+                    ret += HTMLLista("s.subgrupo", listaGTs, prop, 40 * 8, tieneFlores, g.idioma);
+
+                    //Integrantes
+                    ret += "<div class='tema'>" + Tools.tr("Integrantes", g.idioma) + "</div>";
+                    //lista de seleccion de usuarios
+                    string lista = "";
+                    foreach (Usuario u2 in g.getUsuariosHabilitados())
+                        lista += u2.email + ":" + u2.nombre + "|";
+                    lista = lista.Substring(0, lista.Length - 1);
+                    ret += HTMLListaSeleccion("s.subgrupoIntegrantes", prop, width - 150, 250, tieneFlores, lista,
+                        Tools.tr("Es integrantes", g.idioma),
+                        Tools.tr("NO es integrantes", g.idioma),
+                        g.idioma);
+                }
+
+            }
+            else if (nivel == 1 && tipo == "Reunion")
+            {
+                ret += HTMLEncabezado(prop, g, email, width);
 
                 //fecha
                 if (modo == eModo.consenso)
@@ -187,29 +239,32 @@ namespace nabu.plataforma.modelos
                 foreach (Usuario u2 in g.usuarios)
                     lista += u2.email + ":" + u2.nombre + "|";
                 lista = lista.Substring(0, lista.Length - 1);
-                ret += HTMLListaSeleccion("s.participan", prop, width - 150, 250, tieneFlores, lista, 
-                    Tools.tr("Presente", g.idioma), 
-                    Tools.tr("NO presente", g.idioma), 
+                ret += HTMLListaSeleccion("s.participan", prop, width - 150, 250, tieneFlores, lista,
+                    Tools.tr("Presente", g.idioma),
+                    Tools.tr("NO presente", g.idioma),
                     g.idioma);
 
                 //apertura
-                ret += "<div class='tema'>" + Tools.tr("acta.apertura.titulo", g.idioma) + "</div>";
-                if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.apertura.tip", g.idioma) + "</div>";
-                ret += HTMLArea("s.apertura", prop, width, 290, tieneFlores, g.idioma);
+                ret += HTMLSeccion("acta.apertura.titulo", "acta.apertura.tip", "s.apertura", editar, prop, tieneFlores, g, width);
+                //ret += "<div class='tema'>" + Tools.tr("acta.apertura.titulo", g.idioma) + "</div>";
+                //if (editar)
+                //    ret += "<div class='smalltip'>" + Tools.tr("acta.apertura.tip", g.idioma) + "</div>";
+                //ret += HTMLArea("s.apertura", prop, width, 290, tieneFlores, g.idioma);
 
                 //Aspectos logisticos
-                ret += "<div class='tema'>" + Tools.tr("acta.logisticos.titulo", g.idioma) + "</div>";
-                if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.logisticos.tip", g.idioma) + "</div>";
-                ret += HTMLArea("s.logisticos", prop, width, 290, tieneFlores, g.idioma);
-                ret += "<br>";
+                ret += HTMLSeccion("acta.logisticos.titulo", "acta.logisticos.tip", "s.logisticos", editar, prop, tieneFlores, g, width);
+                //ret += "<div class='tema'>" + Tools.tr("acta.logisticos.titulo", g.idioma) + "</div>";
+                //if (editar)
+                //    ret += "<div class='smalltip'>" + Tools.tr("acta.logisticos.tip", g.idioma) + "</div>";
+                //ret += HTMLArea("s.logisticos", prop, width, 290, tieneFlores, g.idioma);
+                //ret += "<br>";
 
                 //Orden del dia
-                ret += "<div class='tema'>" + Tools.tr("acta.ordendeldia.titulo", g.idioma) + "</div>";
-                if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.ordendeldia.tip", g.idioma) + "</div>";
-                ret += HTMLArea("s.ordendeldia", prop, width, 290, tieneFlores, g.idioma);
+                ret += HTMLSeccion("acta.ordendeldia.titulo", "acta.ordendeldia.tip", "s.ordendeldia", editar, prop, tieneFlores, g, width);
+                //ret += "<div class='tema'>" + Tools.tr("acta.ordendeldia.titulo", g.idioma) + "</div>";
+                //if (editar)
+                //    ret += "<div class='smalltip'>" + Tools.tr("acta.ordendeldia.tip", g.idioma) + "</div>";
+                //ret += HTMLArea("s.ordendeldia", prop, width, 290, tieneFlores, g.idioma);
 
                 //temas
                 float temas = 0;
@@ -230,15 +285,16 @@ namespace nabu.plataforma.modelos
                 ret += "<br>";
 
                 //Evaluacion
-                ret += "<div class='tema'>" + Tools.tr("acta.evaluacion.titulo", g.idioma) + "</div>";
-                if (editar)
-                    ret += "<div class='smalltip'>" + Tools.tr("acta.evaluacion.tip", g.idioma) + "</div>";
-                ret += HTMLArea("s.evaluacion", prop, width, 290, tieneFlores, g.idioma);
-                ret += "<br>";
+                ret += HTMLSeccion("acta.evaluacion.titulo", "acta.evaluacion.tip", "s.evaluacion", editar, prop, tieneFlores, g, width);
+                //ret += "<div class='tema'>" + Tools.tr("acta.evaluacion.titulo", g.idioma) + "</div>";
+                //if (editar)
+                //    ret += "<div class='smalltip'>" + Tools.tr("acta.evaluacion.tip", g.idioma) + "</div>";
+                //ret += HTMLArea("s.evaluacion", prop, width, 290, tieneFlores, g.idioma);
+                //ret += "<br>";
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
-            }          
+            }
             else
             {
                 throw new Exception(Tools.tr("Nivel [%1] no existe en este modelo", nivel.ToString(), g.idioma));
@@ -260,7 +316,17 @@ namespace nabu.plataforma.modelos
 
         public override string documentSubmit(string accion, string parametro, List<Propuesta> props, Grupo g, string email, int width, Modelo.eModo modo)
         {
-            if (accion == "agregarTema" && props.Count == 1)
+            if (accion == "Reunion_click" && props.Count == 1)
+            {
+                Propuesta p = props[0];
+                p.bag["s.tipo"] = "Reunion";
+            }
+            else if (accion == "Subgrupo_click" && props.Count == 1)
+            {
+                Propuesta p = props[0];
+                p.bag["s.tipo"] = "Subgrupo";
+            } 
+            else if (accion == "agregarTema" && props.Count == 1)
             {
                 Propuesta p = props[0];
                 float temas = (float)p.bag["f.temas"];     
@@ -304,10 +370,92 @@ namespace nabu.plataforma.modelos
                     prop.bag["s.participan"] = ret;
                 }
             }
+            else if (accion == "s.subgrupoIntegrantes_agregar" && getVariable("s.subgrupoIntegrantes").nivel <= props.Count)
+            {
+                Variable v = getVariable("s.subgrupoIntegrantes");
+                Propuesta prop;
+                prop = props[v.nivel - 1];
+                if (prop.nivel == v.nivel)
+                {
+                    string value = (string)prop.bag["s.subgrupoIntegrantes"];
+
+                    if (value == "*")
+                        prop.bag["s.subgrupoIntegrantes"] = parametro; //caso inicial
+                    else
+                        prop.bag["s.subgrupoIntegrantes"] += "|" + parametro;
+                }
+            }
+            else if (accion == "s.subgrupoIntegrantes_quitar" && getVariable("s.subgrupoIntegrantes").nivel <= props.Count)
+            {
+                Variable v = getVariable("s.subgrupoIntegrantes");
+                Propuesta prop;
+                prop = props[v.nivel - 1];
+                if (prop.nivel == v.nivel)
+                {
+                    string value = (string)prop.bag["s.subgrupoIntegrantes"];
+
+                    //quito
+                    string ret = "";
+                    foreach (string item in value.Split('|'))
+                    {
+                        if (!item.StartsWith(parametro.Split(':')[0]))
+                        {
+                            ret += item + "|";
+                        }
+                    }
+                    if (ret != "") ret = ret.Substring(0, ret.Length - 1);
+                    prop.bag["s.subgrupoIntegrantes"] = ret;
+                }
+            }
 
             return toHTML(props, g, email, width, modo);
         }
 
+        public override void ejecutarConsenso(Documento doc)
+        {
+            //creo/actualizo SubGrupo actual
+            nabu.organizaciones.Plataforma plataforma = (nabu.organizaciones.Plataforma)doc.grupo.organizacion;
+            foreach (nabu.plataforma.SubGrupo gt in plataforma.subgrupos)
+            {
+                string subgrupo = doc.getText("s.subgrupo");
+                if (gt.nombre == subgrupo)
+                {
+                    //actualizo
+                    gt.docURL = doc.URLPath; //nuevo consenso
+                    gt.docTs = DateTime.Now;
+
+                    if (doc.contains("s.subgrupoIntegrantes"))
+                    {
+                        string integrantes = (string)doc.getValor("s.subgrupoIntegrantes");
+                        string[] usuarios = integrantes.Split('|');
+                        gt.integrantes.Clear();
+                        foreach (string usuario in usuarios)
+                        {
+                            gt.integrantes.Add(usuario.Split(':')[0]);
+                            doc.addLog(Tools.tr("%1 agregado", usuario.Split(':')[0], doc.grupo.idioma));
+                        }
+                    }
+                    else
+                        //no hay integrantes
+                        gt.integrantes.Clear();
+
+                    doc.addLog(Tools.tr("SubGrupo.actualizado", doc.grupo.idioma));
+                }
+            }
+
+        }
+
+        private string getListaGTs()
+        {
+            string ret = "";
+            nabu.organizaciones.Plataforma pl = (nabu.organizaciones.Plataforma)grupo.organizacion;
+            foreach (plataforma.SubGrupo gt in pl.subgrupos)
+            {
+                ret += gt.nombre + "|";
+            }
+            if (ret.EndsWith("|")) ret = ret.Substring(0, ret.Length - 1);
+            return ret;
+        }
     }
 }
 

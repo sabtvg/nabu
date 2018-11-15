@@ -26,7 +26,7 @@
     <title>Nab&uacute</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/d3.min.js"></script>
     <script src="js/arbol.js"></script>
@@ -40,6 +40,7 @@
     <script src="js/module.js"></script>
     <script src="js/hotkeys.js"></script>    
     <script src="js/simditor.js"></script>    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8xoStVwa3lHIZYPzT1Bu4k1goUxCrBfM"></script>
     <link rel="stylesheet" type="text/css" href="simditor.css">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -48,7 +49,7 @@
     <meta name="robots" content="index,follow">
     <meta name="keywords" content="democracia directa,democracia interactiva,democracia participativa,generador de consensos,cooperativa 2.0" />
 </head>
-<body onload="doLoad();" style="overflow:hidden"  onresize="doResize()">
+<body onload="doLoad();" style="overflow:hidden" onresize="doResize()" onkeypress="doKeypress();">
     <!--objetivo--------------------------------------------------------------------------------------------------->
     <div id="objetivo" class="objetivo" style="z-index:-1;"></div>
 
@@ -91,10 +92,6 @@
         <div id="msgDiv" class="msg"></div>
     </div>
     
-    <!--panel alertas--------------------------------------------------------------------------------------------------->
-    <div id="alertas"  class="alertas">
-    </div>
-
     <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystickQueso" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
         <nobr>
@@ -168,6 +165,9 @@
             <td id="usuario" class="titulo3" style="vertical-align:middle"></td>
             <td style="width:1.7vw;"><img src="res/icono2.png" style="width:1.6vw;height:auto;vertical-align:middle;margin:auto;"/></td>
             <td id="floresDisponibles" class="titulo3" style="width:15px;vertical-align:middle;text-align:left"></td>
+            <td style="width:1.7vw;">
+                <img id="alertaIcon" src="res/alerta.png" style="width:1.6vw;height:auto;vertical-align:middle;margin:auto;cursor:pointer;display:none" onclick="showAlertas();"/>
+            </td>
         </tr>
     </table>
 
@@ -230,34 +230,59 @@
     </div>
 
     <!--perfil--------------------------------------------------------------------------------------------------->
-    <div id="perfil" class="ventanaclave" style="position: absolute; width: 480px; text-align:center; visibility: hidden;">
-        <span class="titulo2" id="perfilTit">Perfil de usuario</span><br />
-        <div style="clear:left;float:left;text-align:left">
-            <input id="perfilEmail" type="text" class="txt2" placeholder="Email" value=""  style="width: 250px;margin:3px;" disabled/><br />
-            <input id="perfilNombre" type="text" class="txt" placeholder="Nombre" value=""  style="width: 250px;margin:3px;" /><br />
-            <input id="perfilFuncion" type="text" class="txt" placeholder="Funcion" value=""  style="width: 250px;margin:3px;" /><br />
-            <input type="file" id="perfilFile1" onchange="previewFile(this.files[0])" style="display:none;">
-            <label for="perfilFile1"><img src="res/upload.png" style="cursor:pointer;margin:5px;"/></label><br />
-            <div id="cambiarClaveLink" onclick="doCerrarPerfil();showCambiarClave();" style="text-decoration:underline;color:blue;cursor:pointer">Cambiar clave</div>
+    <div id="perfil" class="popup perfil" style="text-align:center">
+        <div class="popupHeader" id="perfilTit">Perfil de usuario</div>
+        <div class="popupContent">
+            <div style="clear:left;float:left;text-align:left;margin:5px;">
+                <input id="perfilEmail" type="text" class="editar disabled" placeholder="Email" value=""  style="width: 250px;margin:3px;" disabled/><br />
+                <input id="perfilNombre" type="text" class="editar" placeholder="Nombre" value=""  style="width: 250px;margin:3px;" /><br />
+                <input id="perfilFuncion" type="text" class="editar" placeholder="Funcion" value=""  style="width: 250px;margin:3px;" /><br />
+                <input type="file" id="perfilFile1" onchange="previewFile(this.files[0])" style="display:none;">
+                <label for="perfilFile1"><img src="res/upload.png" style="cursor:pointer;margin:5px;"/></label><br />
+            </div>
+            <div style="float:right;margin:5px;height:160px;">
+                <input type="file" id="perfilFile2" onchange="previewFile(this.files[0])" style="display:none;">
+                <label for="perfilFile2"><img src="" id="perfilImg" style="border-radius:15px;cursor:pointer;" onerror="this.src='res/perfilDefault.jpg'"></label>
+            </div>
+            <div style="clear:left;float:left;margin:5px;padding:5px;text-align:left;width:95%">
+                <div>Mision</div>
+                <div class="smalltip">Mision</div>
+                <textarea id="mision" class="editar" style="width:100%;height:120px;"></textarea>
+                <div>Capacidades</div>
+                <div class="smalltip">Capacidades</div>
+                <textarea id="capacidades" class="editar" style="width:100%;height:120px;"></textarea>
+                <div>Expectativas</div>
+                <div class="smalltip">Expectativas</div>
+                <textarea id="expectativas" class="editar" style="width:100%;height:120px;"></textarea>
+                <div>Participacion</div>
+                <div class="smalltip">Participacion</div>
+                <textarea id="participacion" class="editar" style="width:100%;height:120px;"></textarea>
+            </div>
+            <div style="clear:left;float:left;margin:5px;padding:5px;text-align:left;width:95%">
+                <div>Ubicaci&oacute;n</div>
+                <div class="smalltip">En que zona resides o deseas actuar. Escribe una poblaci&oacute;n o codigo postal y el pais</div>
+                <input id="address" class="editar" type="text" placeholder="Ubicacion" value="" style="width:250px;margin:3px;" onchange="lan=0;lng=0;"/>
+                <input id="geocodeAddress" type="button" class="btn" value="Validar ubicaci&oacute;n" onclick="geocodeAddress();" />
+                <div id="googleLocation" style="margin-left:4px;"></div>
+                <br />
+                <br />
+                <br />
+            </div>
         </div>
-
-        <div style="float:left;margin-left:15px;width:160px;height:160px;margin:auto;vertical-align:middle;">
-            <input type="file" id="perfilFile2" onchange="previewFile(this.files[0])" style="display:none;">
-            <label for="perfilFile2"><img src="" id="perfilImg" style="border-radius:15px;cursor:pointer;" onerror="this.src='res/perfilDefault.jpg'"></label>
-        </div>
-
-        <div style="width:100%;clear:left;float:left">
-            <input id="perfilBtn1" type="button" class="btn" value="Cerrar" onclick="doCerrarPerfil();" />
-            <div id="perfilMsg"></div>
+        <div class="popupFooter">
+            <input id="cambiarClaveBtn" type="button" class="btn" value="Cambiar clave" onclick="doCerrarPerfil(); showCambiarClave();" />
+            <input id="perfilBtn1" type="button" class="btn" value="Guardar" onclick="doCerrarPerfil();" />
+            <input type="button" class="btn" value="Cancelar" onclick="document.getElementById('perfil').style.display = 'none';" />
+            <div id="perfilValidacion"></div>
         </div>
     </div>
 
     <!--cambiar clave--------------------------------------------------------------------------------------------------->
-    <div id="cambiarClave" class="ventanaclave" style="position: absolute; width: 280px; text-align:center; visibility: hidden;">
+    <div id="cambiarClave" class="popup cambiarClave" style="text-align:center">
         <span class="titulo2">Cambio de clave</span><br />
-        <input id="oldPass" type="password" class="txt" placeholder="Clave actual" value=""  style="width: 250px;margin:3px;"/><br />
-        <input id="newPass" type="password" class="txt" placeholder="Nueva clave" value="" style="width: 250px;margin:3px;"/><br />
-        <input id="repeat" type="password" class="txt" placeholder="Repitela" value="" style="width: 250px;margin:3px;"/><br /><br />
+        <input id="oldPass" type="password" class="editar" placeholder="Clave actual" value=""  style="width: 250px;margin:3px;"/><br />
+        <input id="newPass" type="password" class="editar" placeholder="Nueva clave" value="" style="width: 250px;margin:3px;"/><br />
+        <input id="repeat" type="password" class="editar" placeholder="Repitela" value="" style="width: 250px;margin:3px;"/><br /><br />
         <input id="btnCCCambiar" type="button" class="btn" value="Cambiar" onclick="doCambiarClave();" />
         <input id="btnCCCancelar" type="button" class="btn" value="Cancelar" onclick="doHideCambiarClave();" /><br />
         <div id="cambiarClaveMsg"></div>
@@ -322,7 +347,7 @@
     </div>
 
     <!--documento--------------------------------------------------------------------------------------------------->
-    <div id="documento" class="documento">
+    <div id="documento" class="documento" style="z-index:5;"> 
     </div>
 
     <!--help--------------------------------------------------------------------------------------------------->
@@ -345,6 +370,37 @@
 
     <!--modelos evaluacion--------------------------------------------------------------------------------------------------->
     <div id="modelosEvaluacion" class="modelosEvaluacion" >
+    </div>
+
+    <!--panel alertas--------------------------------------------------------------------------------------------------->
+    <div id="alertas"  class="popup alertas">
+    </div>
+
+    <!--mobile pie--------------------------------------------------------------------------------------------------->
+    <div id="movilePie" class="popup" style="text-align:center">
+        <div class="popupHeader">
+            Proyecto
+        </div>
+        <table style="top:50%;left:50%;position:absolute;transform:translate(-50%,-50%);">
+            <tr>
+                <td style="width:40%;">
+                    <a id="A1" href="simulacion.html">simulacion</a><br />
+                    <a href="http://sociocracia.net" target="_blank">Sociocracia.net</a><br />
+                    01/11/2015<br />
+                    <a href="mailto:nabu@nabu.pt">nabu@nabu.pt</a><br />
+                    <span id="Span1">Mejor visto en</span>&nbsp;<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a><br />
+                </td>
+                <td style="width:40%;">
+                    <span id="Span2" style="color:red">versi&oacute;n beta</span><br />
+                    <a id="A2" href="javascript:doOpen('help.html');">Ayuda</a><br />
+                    <a href="web/default.html" target="_blank">Proyecto</a><br />
+                    <a href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
+                </td>
+            </tr>
+        </table>      
+        <div class="popupFooter">
+            <input id="Button2" type="button" class="btn" value="Cerrar" onclick="hideMovileFooter();" />
+        </div>
     </div>
 </body>
 </html>

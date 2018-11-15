@@ -40,6 +40,8 @@ namespace nabu
         public bool objecion = false;
         public bool comentario = false;
         public int lastEtiquetaID = 1;
+        public DateTime consensoFecha = Tools.minValue;
+
         
         public int getFloresTotales() {
             int ret=0;

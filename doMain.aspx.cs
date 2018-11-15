@@ -159,7 +159,7 @@ namespace nabu
                                 foreach(Usuario u in usuarios)
                                     if (grupo.getUsuario(u.email) == null)
                                         //este no existe, lo creo
-                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false, false, false, false, "", u.grupoDesde);
+                                        actualizarUsuario(u.nombre, u.email, u.clave, grupo.nombre, true, false, false, false, false, false, "", u.grupoDesde, "", "", "", "", "", "0", "0");
                                 Response.Write(Tools.tr("Usuarios creados desahibilitados", Request["grupo"], grupo.idioma));
                             }
                             break;
@@ -331,6 +331,13 @@ namespace nabu
                                 Request["isRepresentante"] == "true",
                                 Request["isFacilitador"] == "true",
                                 Request["funcion"],
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
                                 null);
                             Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
                             app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
@@ -348,7 +355,14 @@ namespace nabu
                                 u2.isRepresentante,
                                 u2.isFacilitador,
                                 Request["funcion"],
-                                null);
+                                null,
+                                Request["mision"],
+                                Request["capacidades"],
+                                Request["expectativas"],
+                                Request["participacion"],
+                                Request["address"],
+                                Request["lat"],
+                                Request["lng"]);
                             Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
                             app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
                             break;
@@ -368,6 +382,13 @@ namespace nabu
                                     false,
                                     false,
                                     "",
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
                                     null);
                                 Response.Write(Tools.tr("Usuario [%1] creado", u2.email, grupo.idioma));
                             }
@@ -431,30 +452,8 @@ namespace nabu
                             byte[] bytes = Convert.FromBase64String(base64);
                             System.Drawing.Image img = System.Drawing.Bitmap.FromStream(new System.IO.MemoryStream(bytes), true);
 
-
-                            //resize
-                            float ratio = (float)img.Width / img.Height;
-                            int newWidth = 1, newHeight = 1;
-                            if (img.Width > 150 && img.Width > img.Height)
-                            {
-                                newWidth = 150;
-                                newHeight = (int)(newWidth / ratio);
-                            }
-                            else if (img.Height > 150 && img.Height > img.Width)
-                            {
-                                newHeight = 150;
-                                newWidth = (int)(newHeight * ratio);
-                            }
-
-                            //save
-                            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(newWidth, newHeight);
-                            bmp.SetResolution(img.HorizontalResolution, img.VerticalResolution);
-                            System.Drawing.Graphics grp = System.Drawing.Graphics.FromImage(bmp);
-                            System.Drawing.Rectangle rct = new System.Drawing.Rectangle(0, 0, newWidth, newHeight);
-                            grp.DrawImage(img, rct, 0, 0, img.Width, img.Height, System.Drawing.GraphicsUnit.Pixel);
-                            if (System.IO.File.Exists(path + "\\" + email + ".png"))
-                                System.IO.File.Delete(path + "\\" + email + ".png");
-                            bmp.Save(path + "\\" + email + ".png", System.Drawing.Imaging.ImageFormat.Png);  // Or Png
+                            saveImage(img, path, 150, email + ".png");
+                            saveImage(img, path, 50, email + ".small.png");
                             break;
 
                         case "dictionary":
@@ -496,6 +495,33 @@ namespace nabu
                 app.addLog("server exception", "", "", "", s);
             }
             Response.End();
+        }
+
+        public void saveImage(System.Drawing.Image img, string path, int maxSize, string name)
+        {
+            //resize
+            float ratio = (float)img.Width / img.Height;
+            int newWidth = img.Width, newHeight = img.Height;
+            if (img.Width > maxSize && img.Width >= img.Height)
+            {
+                newWidth = maxSize;
+                newHeight = (int)(newWidth / ratio);
+            }
+            else if (img.Height > maxSize && img.Height >= img.Width)
+            {
+                newHeight = maxSize;
+                newWidth = (int)(newHeight * ratio);
+            }
+
+            //save
+            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(newWidth, newHeight);
+            bmp.SetResolution(img.HorizontalResolution, img.VerticalResolution);
+            System.Drawing.Graphics grp = System.Drawing.Graphics.FromImage(bmp);
+            System.Drawing.Rectangle rct = new System.Drawing.Rectangle(0, 0, newWidth, newHeight);
+            grp.DrawImage(img, rct, 0, 0, img.Width, img.Height, System.Drawing.GraphicsUnit.Pixel);
+            if (System.IO.File.Exists(path + "\\" + name))
+                System.IO.File.Delete(path + "\\" + name);
+            bmp.Save(path + "\\" + name, System.Drawing.Imaging.ImageFormat.Png);  // Or Png
         }
 
         public string getBosque(string grupoNombre)
@@ -741,7 +767,9 @@ namespace nabu
             }
         }
 
-        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool habilitado, bool readOnly, bool isAdmin, bool isSecretaria, bool isRepresentante, bool isFacilitador, string funcion, string grupoDesde)
+        Usuario actualizarUsuario(string nombre, string email, string clave, string grupo, bool habilitado, bool readOnly, 
+            bool isAdmin, bool isSecretaria, bool isRepresentante, bool isFacilitador, string funcion, string grupoDesde,
+            string mision, string capacidades, string expectativas, string participacion, string address, string lat, string lng)
         {
             string idioma = "es";
             Grupo g;
@@ -760,7 +788,8 @@ namespace nabu
                 throw new appException(Tools.tr("Clave no puede ser vacio", idioma));
             else if (isAdmin && isRepresentante)
                 throw new appException(Tools.tr("No puede ser coordinador y representante", idioma));
-
+            else if (isAdmin && !habilitado)
+                throw new appException(Tools.tr("No se puede deshabilitar al admin", idioma));
             g = app.getGrupo(grupo);
             Usuario u = null;
             lock (g)
@@ -794,6 +823,13 @@ namespace nabu
                     u.isRepresentante = isRepresentante;
                     u.isFacilitador = isFacilitador;
                     if (grupoDesde != null) u.grupoDesde = grupoDesde;
+                    if (mision != null) u.mision = mision;
+                    if (capacidades != null) u.capacidades = capacidades;
+                    if (expectativas != null) u.expectativas = expectativas;
+                    if (participacion != null) u.participacion = participacion;
+                    if (address != null) u.address = address;
+                    if (lat != null) u.lat = Tools.ParseF(lat);
+                    if (lng != null) u.lng = Tools.ParseF(lng);
                 }
                 else
                 {
@@ -810,6 +846,13 @@ namespace nabu
                     u.isRepresentante = isRepresentante;
                     u.isFacilitador = isFacilitador;
                     if (grupoDesde != null) u.grupoDesde = grupoDesde;
+                    if (mision != null) u.mision = mision;
+                    if (capacidades != null) u.capacidades = capacidades;
+                    if (expectativas != null) u.expectativas = expectativas;
+                    if (participacion != null) u.participacion = participacion;
+                    if (address != null) u.address = address;
+                    if (lat != null) u.lat = double.Parse(lat);
+                    if (lng != null) u.lng = double.Parse(lng);
                     g.usuarios.Add(u);
                 }
 

@@ -73,7 +73,7 @@ namespace nabu
         public string email = "";
         public string clave = "";
         public List<Flor> flores = new List<Flor>();
-        public DateTime lastLogin = DateTime.Now;
+        public DateTime lastLogin = DateTime.Now.AddDays(-15); //inactivo
         public DateTime born = DateTime.Now;
         public bool isAdmin = false;
         public bool isSecretaria = false;
@@ -86,6 +86,15 @@ namespace nabu
         public bool habilitado = true;
         public string grupoDesde = "";
         public List<Alerta> alertas = new List<Alerta>();
+
+        //perfil
+        public string mision = "";
+        public string capacidades  = "";
+        public string expectativas  = "";
+        public string participacion  = "";
+        public string address = "";
+        public double lat;
+        public double lng;
 
         public Usuario()
         {

@@ -170,14 +170,22 @@ namespace nabu
                             a.maxNoPc = 0;
 
                             //usuarios de prueba
+                            Usuario admin = null;
                             for (int i = 0; i < 50; i++)
                             {
                                 Usuario u = new Usuario();
                                 u.nombre = "u" + i;
                                 u.email = "u" + i;
+                                u.lastLogin = DateTime.Now;
                                 for (int q = 0; q < 5; q++)
                                     u.flores.Add(new Flor());
                                 g.usuarios.Add(u);
+
+                                if (admin == null)
+                                {
+                                    u.isAdmin = true;
+                                    admin = u;
+                                }
                             }
 
                             //escribo respuesta

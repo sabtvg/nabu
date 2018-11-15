@@ -58,8 +58,11 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bosque.html" />
+    <Content Include="comunidadGrupos.html" />
     <Content Include="bosques.html" />
+    <Content Include="comunidadPersonas.html" />
+    <Content Include="comunidad3D.html" />
+    <Content Include="comunidadMapa.html" />
     <Content Include="dictionary.html" />
     <Content Include="simditor.css" />
     <Content Include="simulacion.html" />
@@ -189,6 +192,7 @@
     <Compile Include="model\organizacion\plataforma\modelosDocumento\AlHijo.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\AlPadre.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Acta.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\Circular.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Didactico.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Estrategia.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Accion.cs" />
@@ -197,10 +201,10 @@
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Enlace.cs" />
     <Compile Include="model\organizacion\plataforma\modelosEvaluacion\Evento.cs" />
     <Compile Include="model\organizacion\plataforma\Proceso.cs" />
-    <Compile Include="model\organizacion\plataforma\GrupoTrabajo.cs" />
+    <Compile Include="model\organizacion\plataforma\SubGrupo.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Accion.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Proceso.cs" />
-    <Compile Include="model\organizacion\plataforma\modelosDocumento\GrupoTrabajo.cs" />
+    <Compile Include="model\organizacion\plataforma\modelosDocumento\SubGrupo.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Evento.cs" />
     <Compile Include="model\organizacion\plataforma\modelosDocumento\Manifiesto.cs" />
     <Compile Include="model\documento\Modelo.cs" />

@@ -35,19 +35,29 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <script>
-        var offsetX = 0;
-        var offsetY = 0;
+        var usuario;
+        var offsetX = -10000;
+        var offsetY = -10000;
         var zoom = 1;
-        var bosques;
-        //var scale = window.innerWidth / 1920;
+        var bosque;
+        var scale = window.innerWidth / 1920;
+        var grupoParam;
+        var idiomaParam;
+        var arbolPersonal;
         var grupos;
+        var usuarios = "";
+        var representantes = "";
         var lastMouse = null;
         var generando = false;
         var torsionInterval;
         var firefoxWhich = 0;
+        var altura = 200;
         var imgW = 17 * zoom; //imagen personita
         var imgH = 42 * zoom; //imagen personita
+        var email = ""; //usuario seleccionado
         var margen = 16;
+        var cleanInterval;
+        var showinfoLastClave = '';
 
         $(document).mouseup(function (event) {
             //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
@@ -57,6 +67,7 @@
         $(document).mousedown(function (event) {
             //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
             firefoxWhich = 1;
+            selected = null;
         });
 
         $(document).mousemove(function (event) {
@@ -65,7 +76,7 @@
         });
 
         function transform(offsetX, offsetY) {
-            var g = document.getElementById("grupos");
+            var g = document.getElementById("grupo");
             if (g) {
                 var matrix0 = document.getElementById("todo").createSVGMatrix();
                 matrix0 = matrix0.translate(offsetX, offsetY);
@@ -121,15 +132,53 @@
             idiomaParam = getParameterByName('idioma');
             if (idiomaParam == null) idiomaParam = 'es';
 
-            var scalex = window.innerWidth / 1920;
-            var scaley = window.innerHeight / 1080;
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam);
+                if (cookie == "")
+                    //login normal
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+                else {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
 
-            getBosques();
-            torsionInterval = setInterval(doTorsion, 100);
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                    idiomaParam = vals[5]; //para el tradcutor
+                    idioma = idiomaParam;  //para el dicionario
+
+                    if (!usuario) {
+                        //login normal
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+                    }
+                    else {
+                        document.getElementById("titulo").innerHTML = usuario.grupo + " - " + tr("El bosque");
+                        actualizarBosque();
+                        torsionInterval = setInterval(doTorsion, 100);
+                    }
+                }
+            }
+            else
+                //login normal
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
         }
 
-        function getBosques() {
-            getHttp("doMain.aspx?actn=getBosques",
+        function actualizarBosque() {
+            getBosque("getBosque");
+        }
+
+        function generarBosque() {
+            getBosque("clearBosque");
+        }
+
+        function getBosque(accion) {
+            getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
+                + "&grupo=" + usuario.grupo
+                + "&clave=" + usuario.clave,
                  function (data) {
                      //atrapo el error si es que hay
                      if (data.substring(0, 6) == "Error=") {
@@ -137,86 +186,68 @@
                          document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
                      }
                      else {
-                         //tengo los bosques
-                         bosques = JSON.parse(data);
+                         //tengo el bosque
+
+                         bosque = JSON.parse(data);
+
                          dibujarTodo();
                      }
                  });
         }
 
         function dibujarTodo() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+            var s = "";
+
             generando = false;
             lastMouse = null;
-            var s = "";
-            var bosqueid = 1;
-            var x = 0;
-            var y = 0;
 
-            s += "<g id='grupos'>";
-            for (var i in bosques) {
-                s += dibujarBosque(bosques[i].padre, bosqueid++, x, y);
-                x += 500 * zoom;
-            }
-            s += "</g>"
-
+            s += "<g id='grupo'>";
+            s += doGrupos(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, doGrupoNodo);
+            s += "</g>";
 
             document.getElementById("todo").innerHTML = s;
             transform(offsetX, offsetY);
 
+            //menu
+            document.getElementById("menuItem1").href = "comunidadGrupos.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem2").href = "comunidadPersonas.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem3").href = "comunidadMapa.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem4").href = "comunidad3D.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem1").innerHTML = tr("Ver grupos");
+            document.getElementById("menuItem2").innerHTML = tr("Ver personas");
+            document.getElementById("menuItem3").innerHTML = tr("Ver mapa");
+            document.getElementById("menuItem4").innerHTML = tr("Ver 3D");
+
+            //panelgrupo
+            var usus = (usuarios.split(";").length - 1);
+            var reps = (representantes.split(";").length - 1);
+            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
+            s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
+
+            var panel = document.getElementById("panelGrupo");
+            panel.innerHTML = s;
+            panel.style.visibility = 'visible';
+
             if (generando)
-                setTimeout(getBosques, 1000);
-        }
-
-        function dibujarBosque(padre, bosqueid, x, y) {
-            var s = "";
-
-            s += "<g id='bosque" + bosqueid + "' transform='translate(" + x + "," + y + ")'>";
-            s += doGrupos(padre, 0, 0, window.innerWidth / 8 * zoom, doGrupoNodo);
-            s += "</g>"
-
-            return s;
-        }
-
-        function VAdd(v1, v2) {
-            return new THREE.Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
-        }
-
-        function VPolToCar(vector) {
-            var ret = PolToCar(vector.x, vector.y, vector.z);
-            return new THREE.Vector3(ret.x, ret.y, ret.z);
-        }
-
-        function VCarToPol(vector) {
-            var ret = CarToPol(vector.x, vector.y, vector.z);
-            return new THREE.Vector3(ret.x, ret.y, ret.z);
-        }
-
-        function PolToCar(lat, lon, radius) {
-            var DEG2RAD = Math.PI / 180;
-            var phi = (90 - lat) * DEG2RAD;
-            var theta = (lon + 180) * DEG2RAD;
-
-            return {
-                x: -(radius * Math.sin(phi) * Math.sin(theta)),
-                y: radius * Math.cos(phi),
-                z: radius * Math.sin(phi) * Math.cos(theta),
-            }
-        }
-
-        function CarToPol(x, y, z, radius) {
-            var RAD2DEG = 180 / Math.PI;
-            var lon = Math.atan2(x, -z) * RAD2DEG;
-            var radius = Math.sqrt(x * x + z * z);
-            var lat = Math.atan2(y, radius) * RAD2DEG;
-            return { lon: lon, lat: lat, radius: radius };
+                setTimeout(actualizarBosque, 1000);
         }
 
         //grupos
-        function doGrupos(padre, x, y, radioInicial, accion) {
+        function doGrupos(x, y, radioInicial, accion) {
+            document.getElementById("todo").style.display = "inline";
+            document.getElementById("canvasGL").style.display = "none";
+
             grupos = 0;
+            usuarios = ";";
+            representantes = ";";
 
             var centro = toPolar(x, y);
-            return doGrupos2(padre, centro, radioInicial, 0, 360, 90, accion);
+            return doGrupos2(bosque.padre, centro, radioInicial, 0, 360, 90, accion);
         }
 
         function doGrupos2(nodo, centro, radio, nivel, apertura, direccion, accion) {
@@ -262,6 +293,13 @@
             nodo.id = grupos; //id dinamico en la estructura SVG
             nodo.torsion = 0;
 
+            //cuento usuarios
+            for (var i in nodo.usuarios) {
+                var usu = nodo.usuarios[i];
+                if (usuarios.indexOf(";" + usu.email + ";") == -1)
+                    usuarios += usu.email + ";";
+            }
+
             //verifico fallo de defincion de padre
             var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
             if (nodo.msg != "") 
@@ -294,6 +332,7 @@
             if (fontSize2 > 30 - 8) fontSize2 = 30 - 8;
             if (fontSize3 > 30 - 16) fontSize3 = 30 - 16;
             var colorb = nodo.colorPromedio == 0 ? "transparent" : HTMLColor(nodo.colorPromedio);
+            var own = nodo.nombre == usuario.grupo;
 
 
             //var s = "<circle cx='" + x.toFixed(0) + "' cy='" + y.toFixed(0) + "' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
@@ -311,6 +350,12 @@
                     s += "<text x='0' y='" + (fontSize1 + fontSize2 + 2).toFixed(0) + "' fill='gray' style='font-size:" + (fontSize3).toFixed(0) + "px' text-anchor='middle'>" + t3 + "</text>";
             }
 
+            //own
+            if (own) {
+                s += "<image xlink:href='res/tu.png' x='-8' y='" + (-r - 10 * scale - 42 * scale) + "' height='" + (42 * scale) + "px' width='" + (17 * scale) + "px'/>";
+                //s += "<circle cx='" + (r + 15).toFixed(0) + "' cy='0' r='10' stroke='" + colorb + "' stroke-width='3' fill='white' fill-opacity='1' />";
+            }
+
             //centro
             s += "<circle cx='0' cy='0' r='5' stroke='" + colorb + "' stroke-width='1' fill='white' fill-opacity='0.6' />";
 
@@ -321,7 +366,19 @@
 
         function doGrupoNodoEngranaje(x, y, r, colorb, width, nodo, url) {
             var s = "";
-            //s += "<line x1='0' y1='0' x2='" + r.toFixed(0) + "' y2='0' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";         
+            //s += "<line x1='0' y1='0' x2='" + r.toFixed(0) + "' y2='0' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+           
+            //poligono
+            //var lastp;
+            //var points = "";
+            //for (var a = 0; a < 361; a+= 360 / nodo.usuarios) {
+            //    var p2 = toRect(r, a);
+            //    if (lastp)
+            //        points += p2.x.toFixed(0) + "," + p2.y.toFixed(0) + " ";
+
+            //    lastp = { x: p2.x, y: p2.y };
+            //}
+            //s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:gray;stroke-width:" + width + ";opacity:0.4' />";
 
             //engranaje
             var lastp;
@@ -335,14 +392,26 @@
             }
             s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;cursor:pointer;' onClick=\"document.location='" + url + "'\"/>";
 
+            //circulo
+            //s += "<circle cx='0' cy='0' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+            //var lastp;
+            //for (var a = 0; a < nodo.usuarios; a++) {
+            //    var p2 = toRect(r, a * r / 50);
+            //    if (lastp) {
+            //        s += "<circle cx='" + p2.x.toFixed(0) + "' cy='" + p2.y.toFixed(0) + "' r='5' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";
+            //    }
+
+            //    lastp = { x: p2.x, y: p2.y };
+            //}
+
             return s;
         }
 
         function doTorsion() {
             //recorro el bosque
-            //for (var i in bosques) {
-            //    doGrupos(bosques[i].padre, 0, 0, window.innerWidth / 8 * zoom, doTorsionNodo);
-            //}
+            if (bosque) {
+                doGrupos(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000, window.innerWidth / 8 * zoom, doTorsionNodo);
+            }
         }
 
         function doTorsionNodo(nodo, centro, radio, nivel) {
@@ -423,16 +492,36 @@
             var r2 = toRect(p2.m, p2.a);
             return toPolar(r1.x + r2.x, r1.y + r2.y);
         }
-
     </script>
 </head>
 <body onload="doLoad();" onresize="doResize()" style="overflow:hidden">
+    <canvas id="canvasGL" style="left:0px;top:0px;width:100%;height:100%;z-index:-1"></canvas>
     <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1"></svg>
+
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
 
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="titulo" class="tituloPagina"></div>       
     <div id="msg" style="position:fixed;left:5vw;top:10vh;float:left;"></div>
     
+    <div style="position:fixed;left:0.5vw;top:10vh;">
+    <!--panel grupo--------------------------------------------------------------------------------------------------->
+    <div id="panelGrupo" class="borde" style="visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    </div>
+
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh; padding: 0.3vw; visibility: visible; text-align: right;">
+        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        </a>
+        <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br>Digital</div>
+        <div class='menuItem'><a id="menuItem1" href='comunidadGrupos.html'><nobr>Ver grupos</nobr></a></div>
+        <div class='menuItem'><a id="menuItem2" href='comunidadPersonas.html'><nobr>Ver personas</nobr></a></div>
+        <div class='menuItem'><a id="menuItem3" href='comunidadMapa.html'><nobr>Ver mapa</nobr></a></div>
+        <div class='menuItem'><a id="menuItem4" href='comunidad3D.html'><nobr>Ver 3D</nobr></a></div>
+    </div>
+
     <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystick" style="position:fixed;bottom: 5px;padding: 5px;left:5px; ">
         <nobr>
@@ -453,10 +542,10 @@
     </div>
 
     <!--rotarpantalla--------------------------------------------------------------------------------------------------->
-    <div id="rotarpantalla" class="rotarpantalla">
-        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
-        <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
-    </div>
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+        </div>
 
 </body>
 </html>

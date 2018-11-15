@@ -5,7 +5,7 @@
     <title>Nab&uacute</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <script src="js/util.js"></script>
     <script src="js/common.js"></script>
     <script src="js/tween.min.js"></script>
@@ -43,7 +43,7 @@
 
         //var operativo = {
         //    objetivo: 'xxxxx', URLEstatuto: 'xxx',
-        //    gruposTrabajo: [
+        //    subGrupos: [
         //        { nombre: 'g1', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
         //        { nombre: 'g2', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
         //        { nombre: 'g3', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
@@ -209,9 +209,9 @@
         function setZoom(operativo) {
             //grupos de trabjo
             var h = 2;
-            var w = operativo.gruposTrabajo.length + 1;
-            for (i in operativo.gruposTrabajo) {
-                var gt = operativo.gruposTrabajo[i];
+            var w = operativo.subGrupos.length + 1;
+            for (i in operativo.subGrupos) {
+                var gt = operativo.subGrupos[i];
                 var hg = gt.estrategias.length + 1;
                 h = hg > h ? hg: h;
             }
@@ -232,10 +232,10 @@
                 s += caja(operativo.objetivo, x, y, "#F08080", zoom, "openManifiesto();");
 
             //grupos de trabjo
-            for (i in operativo.gruposTrabajo) {
-                var gt = operativo.gruposTrabajo[i];
-                //var gtX = x - operativo.gruposTrabajo.length * 2 * ancho / 2 + i * 2 * ancho;
-                var gtX = x - operativo.gruposTrabajo.length * 2 * zcol / 2 + i * 2 * zcol + 2 * zcol / 2;
+            for (i in operativo.subGrupos) {
+                var gt = operativo.subGrupos[i];
+                //var gtX = x - operativo.subGrupos.length * 2 * ancho / 2 + i * 2 * ancho;
+                var gtX = x - operativo.subGrupos.length * 2 * zcol / 2 + i * 2 * zcol + 2 * zcol / 2;
                 var gtY = y + zrow * 1.5;
                 s += caja(gt.nombre, gtX, gtY, "#4169E1", zoom, "openGT(" + gt.EID + ");");
 
@@ -299,25 +299,30 @@
         function openPR(EID) {
             editando = true;
             var s = "";
-            for (var i in operativo.gruposTrabajo) {
-                var GT = operativo.gruposTrabajo[i];
+            s += "<div class='popupHeader'>" + tr("Estrategia") + "</div>";
+
+            s += "<div class='popupContent' style='text-align:left;padding-left:25px;padding:right:25px'>";
+            for (var i in operativo.subGrupos) {
+                var GT = operativo.subGrupos[i];
                 for (var j in GT.estrategias) {
                     var PR = GT.estrategias[j];
-                    if (PR.EID = EID) {
-                        s = "<span class='titulo3'><b>" + tr("Estrategia") + "</b></span><br>";
+                    if (PR.EID == EID) {
                         s += "<b>" + tr("Estrategia") + ":</b> " + PR.nombre + "<br>";
-                        s += "<b>" + tr("GrupoTrabajo") + ":</b> " + GT.nombre + "<br>";
+                        s += "<b>" + tr("SubGrupo") + ":</b> " + GT.nombre + "<br>";
                         s += "<b>" + tr("Nacido") + ":</b> " + PR.born + "<br>";
                         s += "<b>" + tr("Decision fecha") + ":</b> " + PR.docTs + "<br>";
                         s += "<b>" + tr("Decision") + ":</b> <a href='" + PR.docURL + "' target='_blank'>" + getURLName(PR.docURL) + "</a><br>";
-                        s += "<b>" + tr("Objetivo") + ":</b> " + PR.objetivo + "<br>";
                         s += "<b>" + tr("Revision") + ":</b> " + PR.revision + "<br>";
                         s += "<b>" + tr("Definicion") + ":</b><br> " + PR.definicion + "<br>";
                         s += "<br>";
                     }
                 }
             }
+            s += "</div>";
+
+            s += "<div class='popupFooter'>";
             s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
+            s += "</div>";
             document.getElementById("GT").innerHTML = s;
             document.getElementById("GT").style.display = "block";
 
@@ -328,11 +333,14 @@
 
             var s = "";
             var GT;
-            s += "<div style='clear:left;float:left'>";
-            for (var i in operativo.gruposTrabajo) {
-                GT = operativo.gruposTrabajo[i];
+            s += "<div class='popupHeader'>" + tr("SubGrupo") + "</div>";
+
+            s += "<div class='popupContent' style='text-align:left'>";
+
+            s += "<div style='clear:left;float:left;margin:5px;width:-webkit-fill-available;padding:5px;'>";
+            for (var i in operativo.subGrupos) {
+                GT = operativo.subGrupos[i];
                 if (GT.EID == EID) {
-                    s = "<span class='titulo3'><b>" + tr("GrupoTrabajo") + "</b></span><br>";
                     s += "<b>" + tr("Nombre") + ":</b> " + GT.nombre + "<br>";
                     s += "<b>" + tr("Nacido") + ":</b> " + GT.born + "<br>";
                     s += "<b>" + tr("Decision fecha") + ":</b> " + GT.docTs + "<br>";
@@ -352,14 +360,12 @@
             s += "</div>";
 
             //grupo
-            s += "<div style='clear:left;float:left;margin-top:15px;border: 1px solid gray;border-radius:5px;width:98%;padding:5px;'>";
+            s += "<div style='clear:left;float:left;margin:5px;border: 1px solid gray;border-radius:5px;width:-webkit-fill-available;padding:5px;'>";
             s += "<b>" + tr("Arbol") + ":</b><br>";
             if (GT && GT.grupoNombre == "") {
                 //no tiene grupo creado
                 if (usuarioPertenece(GT)){
                     //se puede crear un nuevo grupo
-                    s += "<div class='cuadro' style='width:620px;border-radius: 4px;'>";
-                    s += tr("Crear arbol") + "<br>";
                     s += "<table style='border-collapse: collapse; border-spacing: 0;'>";
                     s += "<tr><td>Nombre</td><td><input type='text' class='editar' value='" + GT.nombre + "' id='grupoNombre' style='width:200px'></td></tr>";
                     s += "<tr><td>Organizaci&oacute;n</td><td><select id='organizacion' class='editar' style='width: 210px'>";
@@ -369,7 +375,6 @@
                     if (!historico)
                         s += "<input type='button' class='btn' value='" + tr("Crear arbol") + "' onclick='doCrearArbolParaGrupo(" + GT.EID + ");'>";
                     s += "<div id='retmsg'></div>"
-                    s += "</div>";
                 }
                 else
                     s += "Este grupo de trabajo no tiene &aacute;rbol creado";
@@ -381,8 +386,9 @@
                     s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
             }
             s += "</div>";
+            s += "</div>";
 
-            s += "<div style='clear:left;float:left;margin-top:15px;'>";
+            s += "<div class='popupFooter'>";
             s += "<input type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
             s += "</div>";
 
@@ -392,8 +398,8 @@
         }
 
         function doBorrarEnlace(EID) {
-            for (var i in operativo.gruposTrabajo) {
-                var gt = operativo.gruposTrabajo[i];
+            for (var i in operativo.subGrupos) {
+                var gt = operativo.subGrupos[i];
                 if (gt.EID == EID) {
                     getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
                         + "&grupo=" + usuario.grupo
@@ -434,8 +440,8 @@
         }
 
         function doCrearArbolParaGrupo(EID) {
-            for (var i in operativo.gruposTrabajo) {
-                var gt = operativo.gruposTrabajo[i];
+            for (var i in operativo.subGrupos) {
+                var gt = operativo.subGrupos[i];
                 if (gt.EID == EID) {
                     var grupoNombre = document.getElementById("grupoNombre");
                     var organizacion = getSelectedId(document.getElementById("organizacion"));
@@ -477,10 +483,13 @@
             document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
         }
 
+        function doResize() {
+            setBackgroundImage();
+        }
     </script>
 </head>
-<body onload="doLoad();" style="overflow:hidden">
-        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1">
+<body onload="doLoad();" style="overflow:hidden" onresize="doResize()">
+        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;">
         </svg>
         <!--titulo--------------------------------------------------------------------------------------------------->
         <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
@@ -517,7 +526,7 @@
         </div>
 
         <!--GT--------------------------------------------------------------------------------------------------->
-        <div id="GT" class="popup" style="fill:#4169E1;stroke:black;stroke-width:5;overflow:auto;"></div>
+        <div id="GT" class="popup subGrupo" style="text-align:center"></div>
 
         <!--rotarpantalla--------------------------------------------------------------------------------------------------->
         <div id="rotarpantalla" class="rotarpantalla">

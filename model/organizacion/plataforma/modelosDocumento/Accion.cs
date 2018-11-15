@@ -147,7 +147,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //tema
-                ret += HTMLSeccion("accion.introduccion.titulo", "accion.introduccion.tip", "s.introduccion", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.introduccion.titulo", "accion.introduccion.tip", "s.introduccion", editar, prop, tieneFlores, g, width);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
@@ -155,13 +155,13 @@ namespace nabu.plataforma.modelos
             else if (nivel == 2)
             {
                 //Objetivo a lograr
-                ret += HTMLSeccion("accion.objetivo.titulo", "accion.objetivo.tip", "s.objetivo", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.objetivo.titulo", "accion.objetivo.tip", "s.objetivo", editar, prop, tieneFlores, g, width);
 
                 //Descripcion
-                ret += HTMLSeccion("accion.descripcion.titulo", "accion.descripcion.tip", "s.descripcion", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.descripcion.titulo", "accion.descripcion.tip", "s.descripcion", editar, prop, tieneFlores, g, width);
 
                 //A quien va dirigido
-                ret += HTMLSeccion("accion.aquien.titulo", "accion.aquien.tip", "s.aquien", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.aquien.titulo", "accion.aquien.tip", "s.aquien", editar, prop, tieneFlores, g, width);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
@@ -170,13 +170,13 @@ namespace nabu.plataforma.modelos
             else if (nivel == 3)
             {
                 //Materiales
-                ret += HTMLSeccion("accion.materiales.titulo", "accion.materiales.tip", "s.materiales", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.materiales.titulo", "accion.materiales.tip", "s.materiales", editar, prop, tieneFlores, g, width);
 
                 //RRHH
-                ret += HTMLSeccion("accion.rrhh.titulo", "accion.rrhh.tip", "s.rrhh", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.rrhh.titulo", "accion.rrhh.tip", "s.rrhh", editar, prop, tieneFlores, g, width);
 
                 //Otros
-                ret += HTMLSeccion("accion.software.titulo", "accion.software.tip", "s.otros", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.software.titulo", "accion.software.tip", "s.otros", editar, prop, tieneFlores, g, width);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
@@ -184,7 +184,7 @@ namespace nabu.plataforma.modelos
             else if (nivel == 4)
             {
                 //fases
-                ret += HTMLSeccion("accion.fases.titulo", "accion.fases.tip", "s.fases", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.fases.titulo", "accion.fases.tip", "s.fases", editar, prop, tieneFlores, g, width);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
@@ -192,7 +192,7 @@ namespace nabu.plataforma.modelos
             else if (nivel == 5)
             {
                 //presupuesto
-                ret += HTMLSeccion("accion.presupuesto.titulo", "accion.presupuesto.tip", "s.presupuesto", editar, prop, tieneFlores, g);
+                ret += HTMLSeccion("accion.presupuesto.titulo", "accion.presupuesto.tip", "s.presupuesto", editar, prop, tieneFlores, g, width);
 
                 ret += "<div class='tema'>" + Tools.tr("accion.responsable.titulo", g.idioma) + "</div>";
                 if (editar)
@@ -213,7 +213,7 @@ namespace nabu.plataforma.modelos
                     ret += "<div class='smalltip'>"
                         + Tools.tr("accion.revision.tip", g.idioma)
                         + "</div>";
-                ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma);
+                ret += HTMLLista("s.revision", "|Mensual|Trimestral|Semestral|Anual", prop, 250, tieneFlores, g.idioma, false);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);

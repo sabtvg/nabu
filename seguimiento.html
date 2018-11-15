@@ -25,7 +25,7 @@
     <title>Nab&uacute</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <script src="js/util.js"></script>
     <script src="js/tween.min.js"></script>
     <script src="js/dictionary.js"></script>
@@ -85,7 +85,7 @@
 
         //var operativo = {
         //    objetivo: 'xxxxx', URLEstatuto: 'xxx',
-        //    gruposTrabajo: [
+        //    subGrupos: [
         //        { nombre: 'g1', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
         //        { nombre: 'g2', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
         //        { nombre: 'g3', procesos: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }], publis: [{ nombre: 'p1' }, { nombre: 'p2' }, { nombre: 'p3' }] },
@@ -366,10 +366,13 @@
             editando = true;
 
             var s = "";
+            s += "<div class='popupHeader' style='text-align:center;'>" + tr("Accion") + "</div>";
+
+            s += "<div class='popupContent' style='text-align:left'>";
+
             var AC = operativo.seguimientos[index];
             //datos
             s += "<div style='clear:left;margin-top:15px;'>";
-            s += "<span class='titulo3'><b>" + tr("Accion") + "</b></span><br>";
             s += "<b>" + tr("Accion") + ":</b> " + AC.nombre + "<br>";
             s += "<b>" + tr("Nacido") + ":</b> " + AC.born + "<br>";
             s += "<b>" + tr("Decision fecha") + ":</b> " + AC.docTs + "<br>";
@@ -389,12 +392,6 @@
             s += "<br>";
             s += "</div>";
 
-            //cierre
-            s += "<input style='clear:left;float:left' type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
-            if ((usuario.email == adminEmail || usuario.email == AC.responsable) && !historico) {
-                s += "<input type='button' class='btn' value='" + tr("Finalizar seguimiento") + "' onclick='doFinalizar(" + index + ");' style='float:right;background-color:lightcoral'>";
-            }
-
             //estados
             s += "<div style='clear:left;float:left'>";
             s += "<br>";
@@ -407,7 +404,7 @@
                 efin = formatDate(toDate(estado.fin));
 
                 s += HTMLUsuario(estado.usuario, grupoParam, "clear:left;float:left");
-                s += "<div class='seguimientoEstado' style='float:left;height:120px;'>";
+                s += "<div class='seguimientoEstado' style='float:left;'>";
                 s += formatDate(toDate(estado.estadoTs));
                 s += "&nbsp;&nbsp;<img src='res/" + estado.luz + "' style='vertical-align:bottom'><br>";
                 s += "<b>" + estado.estado + "</b>:" + estado.avance + "%";
@@ -418,7 +415,7 @@
             s += "</div>";
 
             //agregar estado
-            s += "<div style='clear:left;float:left;width:880px;'>";
+            s += "<div style='clear:left;float:left;width:-webkit-fill-available;'>";
             s += "<br>";
             if (usuario.email == operativo.admin || usuario.email == AC.responsable || usuario.email == adminEmail) {
                 //puede crear estados
@@ -443,6 +440,18 @@
                 if (!historico)
                     s += "<input type='button' class='btn' value='" + tr("Agregar estado") + "' onclick='doAgregarEstado(" + index + ");'>";
                 s += "<div id='msg'></div>";
+                s += "<br>";
+                s += "<br>";
+                s += "<br>";
+            }
+            s += "</div>";
+            s += "</div>";
+
+            s += "<div class='popupFooter'>";
+            //cierre
+            s += "<input style='clear:left;float:left' type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
+            if ((usuario.email == adminEmail || usuario.email == AC.responsable) && !historico) {
+                s += "<input type='button' class='btn' value='" + tr("Finalizar seguimiento") + "' onclick='doFinalizar(" + index + ");' style='float:right;background-color:lightcoral'>";
             }
             s += "</div>";
 
@@ -593,7 +602,7 @@
         </div>
 
         <!--GT--------------------------------------------------------------------------------------------------->
-        <div id="AC" class="popup" style="overflow:auto;"></div>
+        <div id="AC" class="popup seguimiento" style="overflow:auto;"></div>
 
         <!--rotarpantalla--------------------------------------------------------------------------------------------------->
         <div id="rotarpantalla" class="rotarpantalla">

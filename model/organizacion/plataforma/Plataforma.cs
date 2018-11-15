@@ -26,7 +26,7 @@ namespace nabu.organizaciones
 {
     public class Plataforma: Organizacion
     {
-        public List<nabu.plataforma.GrupoTrabajo> gruposTrabajo = new List<nabu.plataforma.GrupoTrabajo>();
+        public List<nabu.plataforma.SubGrupo> subgrupos = new List<nabu.plataforma.SubGrupo>();
         public List<nabu.plataforma.Seguimiento> seguimientos = new List<nabu.plataforma.Seguimiento>();
         public string URLEstatuto = "";
         public string objetivo = "";
@@ -95,7 +95,7 @@ namespace nabu.organizaciones
                     int EID = int.Parse(req["EID"]);
                     string grupoNombre = req["grupoNombre"];
                     Usuario usuarioActual = g.getUsuario(email);
-                    foreach (nabu.plataforma.GrupoTrabajo gt in gruposTrabajo)
+                    foreach (nabu.plataforma.SubGrupo gt in subgrupos)
                         if (gt.EID == EID)
                         {
                             Grupo newg = Grupo.newGrupo(grupoNombre,
@@ -149,7 +149,7 @@ namespace nabu.organizaciones
                 else if (accion == "borrarEnlace")
                 {
                     int EID = int.Parse(req["EID"]);
-                    foreach (nabu.plataforma.GrupoTrabajo gt in gruposTrabajo)
+                    foreach (nabu.plataforma.SubGrupo gt in subgrupos)
                         if (gt.EID == EID)
                         {
                             gt.grupoNombre = "";
@@ -334,9 +334,9 @@ namespace nabu.organizaciones
             }
 
             ret += "\"URLEstatuto\":\"" + URLEstatuto + "\",";
-            ret += "\"gruposTrabajo\":[";
+            ret += "\"subGrupos\":[";
 
-            foreach (nabu.plataforma.GrupoTrabajo gt in gruposTrabajo)
+            foreach (nabu.plataforma.SubGrupo gt in subgrupos)
             {
                 ret += "{\"nombre\":\"" + gt.nombre + "\",";
                 ret += "\"EID\":" + gt.EID + ",";
@@ -382,10 +382,7 @@ namespace nabu.organizaciones
                     ret += "\"revision\":\"" + pr.revision + "\",";
 
                     HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(pr.definicion.Replace("\n", "<br>")));
-                    ret += "\"definicion\":" + Tools.toJson(HTMLText) + ",";
-
-                    HTMLText = Tools.HTMLDecode(Tools.HTMLDecode(pr.objetivo.Replace("\n", "<br>")));
-                    ret += "\"objetivo\":" + Tools.toJson(HTMLText);
+                    ret += "\"definicion\":" + Tools.toJson(HTMLText);
                     ret += "},";
                 }
                 if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);
@@ -447,7 +444,7 @@ namespace nabu.organizaciones
         {
             List<Modelo> ret = new List<Modelo>();
             ret.Add(new plataforma.modelos.Manifiesto());
-            ret.Add(new plataforma.modelos.GrupoTrabajo());
+            ret.Add(new plataforma.modelos.SubGrupo());
             ret.Add(new plataforma.modelos.Estrategia());
             ret.Add(new plataforma.modelos.Accion());
             ret.Add(new plataforma.modelos.Evento());
@@ -455,6 +452,7 @@ namespace nabu.organizaciones
             ret.Add(new plataforma.modelos.AlHijo());
             ret.Add(new plataforma.modelos.Acta());
             ret.Add(new plataforma.modelos.Didactico());
+            ret.Add(new plataforma.modelos.Circular());
             //ret.Add(new plataforma.modelos.Proceso());
             return ret;
         }

@@ -30,6 +30,7 @@ var rotFlores = 0;
 var maxWidth = 50;
 var useMaxWidth = false;
 var historico = historico || false;
+var parents = [];
 
 function crearArbol() {
     var diameter = window.innerHeight / 2;
@@ -97,6 +98,7 @@ function doMousedown() {
         if (menu)
             menu.style.visibility = "hidden";
         selectedNode = null;
+        parents = [];
         dibujarArbol(selectedNode);
         hidePanelDer();
         hidePanelIzq();
@@ -515,6 +517,13 @@ function dibujarArbol(referencia) {
             var stroke = historico ? "gray" : "rgb(100," + (255 - r) + ",0)";
             if (d.target.consensoAlcanzado) stroke = "gray";
             else if (d.target.email == arbolPersonal.usuario.email) stroke = "Crimson";
+
+            //selected
+            if (isNodeSelectedPath(d.target)) {
+                w = 18;
+                //stroke = "blue";
+            }
+
             return "fill: none; stroke: " + stroke + ";stroke-width: " + (w * scale + 1).toFixed(0) + "px;";
         })
         .attr("d", diagonal);
@@ -534,6 +543,13 @@ function dibujarArbol(referencia) {
         d.x0 = d.x;
         d.y0 = d.y;
     });
+}
+
+function isNodeSelectedPath(n) {
+    for (var i in parents)
+        if (parents[i] == n)
+            return true;
+    return false;
 }
 
 function arrayRemove(parent, node) {
@@ -670,6 +686,14 @@ function nodeClick(d) {
         menu.style.visibility = "hidden";
 
     selectedNode = d;
+
+    //remember parents
+    var n = d;
+    parents = [];
+    while (n.parent) {
+        parents.push(n);
+        n = n.parent;
+    }
 
     //cambio imagen al nodo seleccionado
     dibujarArbol(selectedNode);

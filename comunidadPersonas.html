@@ -1,0 +1,605 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <script src="js/util.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/tween.min.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+        var offsetX = -10000;
+        var offsetY = -10000;
+        var zoom = 1;
+        var bosque;
+        var scale = window.innerWidth / 1920;
+        var grupoParam;
+        var idiomaParam;
+        var arbolPersonal;
+        var grupos;
+        var usuarios = "";
+        var representantes = "";
+        var lastMouse = null;
+        var generando = false;
+        var torsionInterval;
+        var firefoxWhich = 0;
+        var altura = 200;
+        var imgW = 17 * zoom; //imagen personita
+        var imgH = 42 * zoom; //imagen personita
+        var email = ""; //usuario seleccionado
+        var margen = 16;
+        var cleanInterval;
+        var showinfoLastClave = '';
+
+
+        $(document).mouseup(function (event) {
+            //document.getElementById("joystick").innerHTML = "mouseup.event.which: " + event.which;
+            firefoxWhich = 0;
+        });
+
+        $(document).mousedown(function (event) {
+            //document.getElementById("joystick").innerHTML = "mousedown.event.which: " + event.which;
+            firefoxWhich = 1;
+            selected = null;
+        });
+
+        $(document).mousemove(function (event) {
+            move(event);
+            event.preventDefault();
+        });
+
+        function transform(offsetX, offsetY) {
+            var g = document.getElementById("grupo");
+            if (g) {
+                var matrix0 = document.getElementById("todo").createSVGMatrix();
+                matrix0 = matrix0.translate(offsetX, offsetY);
+                if (g.transform.baseVal.numberOfItems == 0)
+                    g.transform.baseVal.appendItem(g.transform.baseVal.createSVGTransformFromMatrix(matrix0));
+                else
+                    g.transform.baseVal.getItem(0).setMatrix(matrix0);
+            }
+        }
+
+        function move(event) {
+            if (firefoxWhich == 1 && !event.ctrlKey) {
+                //scroll
+                if (lastMouse) {
+                    offsetX -= lastMouse.clientX - event.clientX;
+                    offsetY -= lastMouse.clientY - event.clientY;
+                    transform(offsetX, offsetY);
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else if (firefoxWhich == 1 && event.ctrlKey) {
+                //zoom
+                if (lastMouse) {
+                    zoom += (lastMouse.clientX - event.clientX) * 2 / window.innerWidth;
+                    //document.body.style.cursor = "w-resize";
+                    dibujarTodo();
+                }
+                lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            }
+            else {
+                lastMouse = null;
+            }
+            //$("div").text(event.which + ", " + event.ctrlKey);        
+        }
+
+        function doLoad() {
+            //background
+            setBackgroundImage();
+
+            //eventos tactiles
+            document.body.addEventListener('touchmove', function (e) {
+                var touch = e.changedTouches[0] // reference first touch point for this event
+                firefoxWhich = 1;
+                touch.ctrlKey = false;
+                move(touch);
+            }, false)
+
+            document.body.addEventListener('touchend', function (e) {
+                lastMouse = null;
+            }, false)
+
+            //idioma
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
+
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam);
+                if (cookie == "")
+                    //login normal
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+                else {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
+
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                    idiomaParam = vals[5]; //para el tradcutor
+                    idioma = idiomaParam;  //para el dicionario
+
+                    if (!usuario) {
+                        //login normal
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+                    }
+                    else {
+                        document.getElementById("titulo").innerHTML = usuario.grupo + " - " + tr("El bosque");
+                        actualizarBosque();
+                    }
+                }
+            }
+            else
+                //login normal
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+        }
+
+        function actualizarBosque() {
+            getBosque("getBosque");
+        }
+
+        function generarBosque() {
+            getBosque("clearBosque");
+        }
+
+        function getBosque(accion) {
+            email = "";
+
+            var div = document.getElementById("info");
+            div.style.visibility = "hidden";
+
+            getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
+                + "&grupo=" + usuario.grupo
+                + "&clave=" + usuario.clave,
+                 function (data) {
+                     //atrapo el error si es que hay
+                     if (data.substring(0, 6) == "Error=") {
+                         //ha habido un error
+                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                     }
+                     else {
+                         //tengo el bosque
+                         bosque = JSON.parse(data);
+                         dibujarTodo();
+                     }
+                 });
+        }
+
+        function dibujarTodo() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+            var s = "";
+
+            generando = false;
+            lastMouse = null;
+
+            s += "<g id='grupo'>";
+            var dims = getDimensiones(bosque.padre, 0);
+            s += doPersonas(window.innerWidth / 2 + 10000, window.innerHeight / 2 + 10000 - dims.alto / 2, doPersonasNodo);
+            s += "</g>"
+
+            document.getElementById("todo").innerHTML = s;
+            transform(offsetX, offsetY);
+
+            //menu
+            document.getElementById("menuItem1").href = "comunidadGrupos.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem2").href = "comunidadPersonas.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem3").href = "comunidadMapa.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem4").href = "comunidad3D.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem1").innerHTML = tr("Ver grupos");
+            document.getElementById("menuItem2").innerHTML = tr("Ver personas");
+            document.getElementById("menuItem3").innerHTML = tr("Ver mapa");
+            document.getElementById("menuItem4").innerHTML = tr("Ver 3D");
+
+            //panelgrupo
+            var usus = (usuarios.split(";").length - 1);
+            var reps = (representantes.split(";").length - 1);
+            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
+            s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
+            email = "";
+
+            var panel = document.getElementById("panelGrupo");
+            panel.innerHTML = s;
+            panel.style.visibility = 'visible';
+
+            if (generando)
+                setTimeout(actualizarBosque, 1000);
+        }
+
+        //personas
+        function doPersonas(x, y, accion) {
+            document.getElementById("todo").style.display = "inline";
+            document.getElementById("canvasGL").style.display = "none";
+
+            grupos = 0;
+            usuarios = ";";
+            representantes = ";";
+            imgW = 17 * zoom; //imagen personita
+            imgH = 42 * zoom; //imagen personita
+
+            var centro = { x: x, y: y };
+            return doPersonas2(bosque.padre, centro, 0, accion);
+        }
+
+        function doPersonas2(nodo, centro, nivel, accion) {
+            var s = '';
+
+            if (nodo.exception) {
+                var rect = toRect(centro.m, centro.a);
+                s += msg(nodo.exception, centro)
+            }
+            else {
+                //accion
+                s += accion(nodo, centro, nivel);
+
+                //hijos
+                var hijoLeft = margen / 2 - nodo.ancho / 2;
+                for (i in nodo.hijos) {
+                    var hijo = nodo.hijos[i];
+                    var hijoCentro = { x: centro.x + hijoLeft * zoom + hijo.ancho / 2 * zoom, y: centro.y + getHijoAltura(hijo, nodo) };
+
+                    //hijo
+                    s += doPersonas2(hijo, hijoCentro, nivel + 1, accion);
+                    hijoLeft += hijo.ancho;
+
+                    //lineas
+                    if (!generando) {
+                        s += "<line x1='" + (centro.x).toFixed(0) + "' y1='" + (centro.y + imgH + 30 * zoom).toFixed(0) + "' x2='" + (centro.x).toFixed(0) + "' y2='" + (centro.y + imgH + 50 * zoom).toFixed(0) + "' style='stroke:gray;stroke-width:2' />";
+                        s += "<line x1='" + (centro.x).toFixed(0) + "' y1='" + (centro.y + imgH + 50 * zoom).toFixed(0) + "' x2='" + (hijoCentro.x).toFixed(0) + "' y2='" + (centro.y + imgH + 50 * zoom).toFixed(0) + "' style='stroke:gray;stroke-width:2' />";
+                        s += "<line x1='" + (hijoCentro.x).toFixed(0) + "' y1='" + (centro.y + imgH + 50 * zoom).toFixed(0) + "' x2='" + (hijoCentro.x).toFixed(0) + "' y2='" + (hijoCentro.y + 4).toFixed(0) + "' style='stroke:gray;stroke-width:2' />";
+                    }
+                }
+            }
+            return s;
+        }
+          
+        function getHijoAltura(hijo, padre) {
+            //cuento representantes
+            var reps=0;
+            for(var i in hijo.usuarios)
+                if (hijo.usuarios[i].isRepresentante)
+                    reps++;
+
+            var horizontalidad;
+            if (padre.bloqueo == 0)
+                horizontalidad = 100;
+            else
+                horizontalidad = reps / padre.bloqueo * 100;
+            if (horizontalidad > 100) horizontalidad = 100;
+
+            return altura * zoom + imgH - horizontalidad / 100 * zoom * altura + 50 * zoom;
+        }
+
+        function doPersonasNodo(nodo, centro, nivel) {
+            var s = "";
+
+            grupos += 1;
+
+            //verifico fallo de defincion de padre
+            var url = nodo.URL + '/default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+            if (nodo.msg != "")
+                s += msg(nodo.msg, centro);
+            else if (!nodo.descargado) {
+                s += msg("[?]", centro);
+                generando = true;
+            }
+            else if (!nodo.padreVerificado)
+                s += msg(nodo.nombre + " [" + tr("Grupo padre no corresponde") + "]", centro);
+            else
+                s += doPersonasNodoIconos(nodo.nombre, centro, url, nodo);
+            return s;
+        }
+
+        function doPersonasNodoIconos(t1, centro, url, nodo) {
+            var fontSize1 = 20 * zoom;
+            if (fontSize1 > 20) fontSize1 = 20;
+            var colorb = nodo.colorPromedio == 0 ? "transparent" : HTMLColor(nodo.colorPromedio);
+            var own = nodo.nombre == usuario.grupo;
+
+            var s = "<g transform='translate(" + centro.x.toFixed(0) + "," + centro.y.toFixed(0) + ")'>";
+
+            //dibujo textos
+            //nombre de grupo
+            if (t1 != "" && fontSize1 > 8)
+                s += "<text x='0' y='" + fontSize1.toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
+
+            //usuarios ordenados por rol (deben venir ordenados del servidor)
+            var length = nodo.usuarios.length;
+            for (var i in nodo.usuarios) {
+                var usu = nodo.usuarios[i];
+                s += "<image x='" + (-length * imgW / 2 + imgW * parseInt(i)) + "' y='" + (5 + fontSize1).toFixed(0) + "' height='" + (imgH).toFixed(0) + "px' width='" + (imgW) + "px'";
+                s += " onmouseover='email=\"" + usu.email + "\";showInfo(\"" + usu.email + ";" + nodo.nombre + "\");' ";
+                s += " style='cursor:pointer;' ";
+
+                if (usu.email == email || email == "") {
+                    if (usu.isRepresentante)
+                        s += " xlink:href='res/representante.png'";
+                    else if (usu.isAdmin)
+                        s += " xlink:href='res/coordinador.png'";
+                    else if (usu.isSecretaria)
+                        s += " xlink:href='res/secretaria.png'";
+                    else if (usu.isFacilitador)
+                        s += " xlink:href='res/facilitador.png'";
+                    else if (!usu.isActive)
+                        s += " xlink:href='res/inactivo.png'";
+                    else if (usu.readOnly)
+                        s += " xlink:href='res/readonly.png'";
+                    else
+                        s += " xlink:href='res/activo.png'";
+                }
+                else if (email != "") 
+                    s += " xlink:href='res/transparente.png'";
+                s += "/>";
+
+                //tu
+                if (email == "" && usu.email == usuario.email) {
+                    var iW = (19 * zoom).toFixed(0);
+                    var iH = (17 * zoom).toFixed(0);
+                    s += "<image x='" + (-length * imgW / 2 + imgW * parseInt(i)) + "' y='" + (5 + fontSize1 + imgH / 2 + 25 * zoom).toFixed(0) + "' height='" + iH + "px' width='" + iW + "px' xlink:href='res/aqui.png' />";
+                }
+
+
+                //acumulo lista de usuarios y representntes sin repticion
+                if (usuarios.indexOf(";" + usu.email + ";") == -1)
+                    usuarios += usu.email + ";";
+                if (representantes.indexOf(";" + usu.email + ";") == -1 && usu.isRepresentante)
+                    representantes += usu.email + ";";
+            }
+            s += "</g>";
+
+            return s;
+        }
+
+        //tools
+        function diente(r, a) {
+            var sin = Math.sin(a * 2 * 3.1415 / 180 / (0.1));
+            var rect;
+            if (sin > 0) rect = 0; else rect = -10;
+            return r + rect * r / 150;
+        }
+
+        function msg(s, centro) {
+            var rect = toRect(centro.m, centro.a);
+            var x = rect.x;
+            var y = rect.y;
+            var fontSize1 = 20 * zoom;
+            s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' \">" + s + "</text>";
+            return s;
+        }
+             
+        function toPolar(x, y){
+            var ret = { m: 0, a: 0 };
+            ret.m = Math.sqrt(x * x + y * y);
+            if (x == 0)
+                if (y > 0) ret.a = 90; else ret.a = 270;
+            else if (y == 0)
+                if (x > 0) ret.a = 0; else ret.a = 180;
+            else
+            {
+                if (y >= 0 && x >= 0) ret.a = Math.atan(y / x) * 180 / Math.PI;
+                if (y >= 0 && x <= 0) ret.a = Math.atan(y / -x) * 180 / Math.PI + 90;
+                if (y <= 0 && x <= 0) ret.a = Math.atan(y / x) * 180 / Math.PI + 180;
+                if (y <= 0 && x >= 0) ret.a = Math.atan(-y / x) * 180 / Math.PI + 270;
+            }
+            return ret;
+        }
+
+        function doAtras() {
+            document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+        }
+            
+        function toRect(m, a)
+        {
+            //en grados
+            return { x: Math.cos(a * Math.PI / 180) * m, y: Math.sin(a * Math.PI / 180) * m };
+        }
+
+        function cut(s, len) {
+            if (s.length <= len)
+                return s;
+            else
+                return s.substring(0, 25) + "...";
+        }
+
+        function getDimensiones(nodo, nivel) {
+            //calculo profundiadd de la estructura y ancho por niveles
+            var ret = 1;
+            var maxHijo = 0;
+            var hijosAncho = 0;
+            var hijosAlto = 50;
+            for (i in nodo.hijos) {
+                var hijo = nodo.hijos[i];
+                var dims = getDimensiones(hijo, nivel + 1);
+
+                if (dims.niveles > maxHijo) 
+                    maxHijo = dims.niveles;
+
+                if (getHijoAltura(hijo, nodo) > hijosAlto)
+                    hijosAlto = getHijoAltura(hijo, nodo);
+
+                hijosAncho += hijo.ancho;
+            }
+            nodo.ancho = nodo.usuarios.length * imgW > hijosAncho ? nodo.usuarios.length * imgW : hijosAncho;
+            nodo.ancho = nodo.nombre.length * 11 > nodo.ancho ? nodo.nombre.length * 11 : nodo.ancho;  //nombre de grupo largo
+            nodo.ancho += margen; //margen
+            //////////////////
+            return { niveles: ret + maxHijo, ancho: nodo.ancho, alto: hijosAlto };
+        }
+
+        function doResize(){
+            //background
+            setBackgroundImage();
+        }
+
+        function addPolar(p1, p2) {
+            var r1 = toRect(p1.m, p1.a);
+            var r2 = toRect(p2.m, p2.a);
+            return toPolar(r1.x + r2.x, r1.y + r2.y);
+        }
+
+        function showInfo(clave) {
+            if (showinfoLastClave != clave) {
+                var grupo = clave.split(";")[1];
+                var email = clave.split(";")[0];
+                var div = document.getElementById("info");
+                div.innerHTML = "";
+                showInfo2(bosque.padre, grupo, email);
+
+                if (cleanInterval != null) clearInterval(cleanInterval);
+                cleanInterval = setTimeout(mostrarTodo, 5000); //para que vuelva a enseñar a todas las personas
+                dibujarTodo();
+                showinfoLastClave = clave; //para evitar parpadeos
+            }
+        }
+
+        function mostrarTodo() {
+            email = "";
+            showinfoLastClave = "";
+            dibujarTodo();
+            cleanInterval = null;
+            document.getElementById("info").style.visibility = "hidden";
+        }
+
+        function showInfo2(nodo, grupo, email) {
+            //colores
+            //coordinador   #0066CC
+            //secretaria    #FF66CC
+            //representante #00CC99
+            //facilitador   #FF9900
+
+            if (!nodo.exception) {
+                //accion
+                if (nodo.nombre == grupo) {
+                    for (var i in nodo.usuarios) {
+                        var usu = nodo.usuarios[i];
+                        if (usu.email == email) {
+                            var div = document.getElementById("info");
+                            var info = "<img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png' onerror=\"this.src='res/perfilDefault.jpg'\" style='clear:left;float:left;border-radius:15px;margin:15px;'>";
+                            info += "<div style='float:left;'>"
+                            info += "<span>" + nodo.nombre + "</span><br>"
+                            info += "<b>" + usu.nombre + "</b><br>";
+                            info += "<b>" + usu.funcion + "</b><br>";
+                            info += "<a href='mailto:" + usu.email + "'>" + usu.email + "</a><br>";
+                            info += usu.readOnly ? "Solo lectura<br>" : "";
+                            info += usu.isActive ? "Activo<br>" : "Inactivo<br>";
+                            info += usu.isSecretaria ? "<span style='color:#FF66CC'>Secretaria</span><br>" : "";
+                            info += usu.isFacilitador ? "<span style='color:#FF9900'>Facilitador</span><br>" : "";
+                            info += usu.isRepresentante ? "<span style='color:#00CC99'>Representante</span><br>" : "";
+                            info += usu.isAdmin ? "<span style='color:#0066CC'>Coordinador</span><br>" : "";
+                            info += "Desde:" + usu.grupoDesde + "<br>";
+                            info += "Nacido:" + formatDate(jsonToDate(usu.born)) + "<br>";
+                            info += "</div>"
+
+                            div.innerHTML = info;
+                            div.style.visibility = "visible";
+                        }
+                    }
+                }
+                else {
+                    //hijos
+                    for (i in nodo.hijos) {
+                        var hijo = nodo.hijos[i];
+                        showInfo2(hijo, grupo, email);
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body onload="doLoad();" onresize="doResize()" style="overflow:hidden">
+    <canvas id="canvasGL" style="left:0px;top:0px;width:100%;height:100%;z-index:-1"></canvas>
+    <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1"></svg>
+
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
+
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="titulo" class="tituloPagina"></div>       
+    <div id="msg" style="position:fixed;left:5vw;top:10vh;float:left;"></div>
+    
+
+    <!--panel grupo--------------------------------------------------------------------------------------------------->
+    <div id="panelGrupo" class="borde" style="position:fixed;left:0.5vw;top:10vh;visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    </div>
+    
+    <!--panel info--------------------------------------------------------------------------------------------------->
+    <div id="info" class="info">
+    </div>
+    
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh; padding: 0.3vw; visibility: visible; text-align: right;">
+        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        </a>
+        <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br>Digital</div>
+        <div class='menuItem'><a id="menuItem1" href='comunidadGrupos.html'><nobr>Ver grupos</nobr></a></div>
+        <div class='menuItem'><a id="menuItem2" href='comunidadPersonas.html'><nobr>Ver personas</nobr></a></div>
+        <div class='menuItem'><a id="menuItem3" href='comunidadMapa.html'><nobr>Ver mapa</nobr></a></div>
+        <div class='menuItem'><a id="menuItem4" href='comunidad3D.html'><nobr>Ver 3D</nobr></a></div>
+    </div>
+
+    <!--joystick--------------------------------------------------------------------------------------------------->
+    <div id="joystick" style="position:fixed;bottom: 5px;padding: 5px;left:5px; ">
+        <nobr>
+            <img src="res/jzm.png" onclick="zoom *= 1.1; dibujarTodo();" class="img" />
+            <img src="res/ju.png" onclick="offsetY -= 30; dibujarTodo();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" onclick="offsetX -= 30; dibujarTodo();" class="img" />
+            <img src="res/j00.png" onclick="zoom = 1; transform(0,0); dibujarTodo();" class="img" />
+            <img src="res/jr.png" onclick="offsetX += 30; dibujarTodo();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" onclick="zoom *= 0.9; dibujarTodo();" class="img" />
+            <img src="res/jd.png" onclick="offsetY += 30; dibujarTodo();" class="img" />
+        </nobr>
+    </div>
+
+    <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+        </div>
+
+</body>
+</html>

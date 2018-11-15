@@ -180,7 +180,7 @@ namespace nabu
             {
                 int ret = 0;
                 foreach (Usuario u2 in usuarios)
-                    if (u2.habilitado && u2.isActive)
+                    if (u2.habilitado && u2.isActive && !u2.readOnly)
                         ret += 1;
                 return ret;
             }
@@ -280,7 +280,7 @@ namespace nabu
         {
             List<Usuario> ret = new List<Usuario>();
             foreach (Usuario u in usuarios)
-                if (u.habilitado && u.isActive)
+                if (u.habilitado && u.isActive && !u.readOnly)
                     ret.Add(u);
             return ret;
         }

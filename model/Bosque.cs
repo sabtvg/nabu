@@ -40,6 +40,13 @@ namespace nabu
             public bool readOnly = false;
             public string grupoDesde = "";
             public bool isActive = false;
+            public string mision = "";
+            public string capacidades = "";
+            public string expectativas = "";
+            public string participacion = "";
+            public string address = "";
+            public double lat;
+            public double lng;
         }
 
         public class Seguimiento
@@ -125,6 +132,13 @@ namespace nabu
                 p.apoyos = u.apoyos; //cantidad de apoyos por parte de otros usuarios
                 p.readOnly = u.readOnly;
                 p.grupoDesde = u.grupoDesde;
+                p.mision = u.mision;
+                p.capacidades = u.capacidades;
+                p.expectativas = u.expectativas;
+                p.participacion = u.participacion;
+                p.address = u.address;
+                p.lat = u.lat;
+                p.lng = u.lng;
                 ret.usuarios.Add(p);
             }
 
@@ -177,6 +191,13 @@ namespace nabu
                     p.apoyos = u.apoyos; //cantidad de apoyos por parte de otros usuarios
                     p.readOnly = u.readOnly;
                     p.grupoDesde = u.grupoDesde;
+                    p.mision = u.mision;
+                    p.capacidades = u.capacidades;
+                    p.expectativas = u.expectativas;
+                    p.participacion = u.participacion;
+                    p.address = u.address;
+                    p.lat = u.lat;
+                    p.lng = u.lng;
                     nodo.usuarios.Add(p);
                 }
             }

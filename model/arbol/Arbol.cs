@@ -384,9 +384,6 @@ namespace nabu
                             version++;
                     }
 
-                    //guardo HTML
-                    generarDocumentoHTML(n, fdate, fname, docPath, URL, version, titulo);
-
                     //creo documento
                     Documento doc = crearDocumento(n, fdate, fname, docPath, URL);
                     doc.version = version;
@@ -401,9 +398,11 @@ namespace nabu
                     {
                         doc.addLog("EjecutarConsenso: <font color=red>" + ex.Message + "</font>");
                     }
-
                     //guardo el documento
                     doc.save();
+
+                    //guardo HTML
+                    generarDocumentoHTML(n, fdate, fname, docPath, URL, version, titulo, doc.logs);
 
                     //notifico via email a todos los socios
                     if (!simulacion)
@@ -451,6 +450,7 @@ namespace nabu
                     for (int i = 0; i < pathn.Count - 1; i++) //menos la raiz
                     {
                         pathn[i].consensoAlcanzado = true;
+                        pathn[i].consensoFecha = DateTime.Now;
                         getPropuesta(pathn[i]).consensoAlcanzado = true;
                         foreach (Nodo n2 in pathn[i].children)
                             marcarConsenso(n2);
@@ -468,10 +468,12 @@ namespace nabu
         {
             //marco sus hijos
             n.consensoAlcanzado = true;
+            n.consensoFecha = DateTime.Now;
             getPropuesta(n).consensoAlcanzado = true;
             foreach (Nodo n2 in n.children)
             {
                 n2.consensoAlcanzado = true;
+                n2.consensoFecha = DateTime.Now;
                 getPropuesta(n2).consensoAlcanzado = true;
                 marcarConsenso(n2);
             }
@@ -507,7 +509,7 @@ namespace nabu
             return doc;
         }
 
-        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL, int version, string titulo)
+        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL, int version, string titulo, List<Documento.Log> logs)
         {
             List<Nodo> pathn = getPath(n.id);
             Modelo m = grupo.organizacion.getModeloDocumento(n.modeloID);
@@ -526,7 +528,8 @@ namespace nabu
             }
             //firma consenso
             string ret = "";
-            ret += "<div style='clear:left;float:left'>";
+            ret += "<div style='clear:left;float:left;width:100%;font-size:12px;'>";
+            ret += "<hr>";
             ret += "Documento escrito de forma cooperativa.<br>";
             ret += "Titulo: " + titulo + "<br>";
             if (m.versionar != "")
@@ -559,6 +562,12 @@ namespace nabu
             
             //facilitador
             if (this.grupo.getFacilitador() != null) ret += "Facilitador: " + grupo.getFacilitador().nombre + "<br>";
+
+            //log consenso
+            ret += "<br>";
+            ret += "Log consenso: <br>";
+            foreach (Documento.Log l in logs)
+                ret += "&nbsp;&nbsp;" + l.msg + "<br>";
 
             ret += "</div>";
 
@@ -777,11 +786,11 @@ namespace nabu
             foreach (Flor f in u.flores)
             {
                 //15 dias sin entrar o 60 dias la flor
-                if (f.id != 0 && (DateTime.Now.Subtract(u.lastLogin).TotalDays > 15 ||
-                                  DateTime.Now.Subtract(f.born).TotalDays > 60)) 
+                Nodo n = getNodo(f.id);
+                if (n != null)
                 {
-                    Nodo n = getNodo(f.id);
-                    if (n != null)
+                    if (f.id != 0 && (DateTime.Now.Subtract(u.lastLogin).TotalDays > 15 ||
+                                  DateTime.Now.Subtract(f.born).TotalDays > 60)) 
                     {
                         quitarFlor(n, u);
                         string msg = Tools.tr("Flor caducada para [%1]", n.nombre, grupo.idioma);
@@ -791,6 +800,8 @@ namespace nabu
                         u.alertas.Add(new Alerta(msg));
                         caido = true;
                     }
+                    else if (n.consensoAlcanzado && DateTime.Now.Subtract(n.consensoFecha).TotalDays > 5)
+                        quitarFlor(n, u);
                 }
             }
             return caido;

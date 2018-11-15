@@ -1,0 +1,473 @@
+<!--
+///////////////////////////////////////////////////////////////////////////
+//  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+///////////////////////////////////////////////////////////////////////////
+-->
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>Nab&uacute</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <script src="js/util.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/tween.min.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8xoStVwa3lHIZYPzT1Bu4k1goUxCrBfM"></script>
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <script>
+        var usuario;
+        var offsetX = -10000;
+        var offsetY = -10000;
+        var zoom = 1;
+        var bosque;
+        var scale = window.innerWidth / 1920;
+        var grupoParam;
+        var idiomaParam;
+        var arbolPersonal;
+        var grupos;
+        var usuarios = "";
+        var generando = false;
+        var altura = 200;
+        var imgW = 17 * zoom; //imagen personita
+        var imgH = 42 * zoom; //imagen personita
+        var email = ""; //usuario seleccionado
+        var margen = 16;
+        var representantes = "";
+
+        var mapa;
+        var generando = false;
+        var points = [];
+        var circles = [];
+        var markers = [];
+
+        function doLoad() {
+            //background
+            document.body.style.backgroundSize = "0px 0px";
+
+            //eventos tactiles
+            document.body.addEventListener('touchmove', function (e) {
+                var touch = e.changedTouches[0] // reference first touch point for this event
+                firefoxWhich = 1;
+                touch.ctrlKey = false;
+                move(touch);
+            }, false)
+
+            document.body.addEventListener('touchend', function (e) {
+                lastMouse = null;
+            }, false)
+
+            //idioma
+            idiomaParam = getParameterByName('idioma');
+            if (idiomaParam == null) idiomaParam = 'es';
+
+            //obtengo datos de los parametros
+            grupoParam = getParameterByName('grupo');
+            if (grupoParam && grupoParam != "" && grupoParam != "null") {
+                //leo cookie
+                var cookie = getCookie("nabu-" + grupoParam);
+                if (cookie == "")
+                    //login normal
+                    document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+                else {
+                    var scalex = window.innerWidth / 1920;
+                    var scaley = window.innerHeight / 1080;
+
+                    //cargo datos iniciales
+                    var vals = cookie.split("|");
+                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+
+                    idiomaParam = vals[5]; //para el tradcutor
+                    idioma = idiomaParam;  //para el dicionario
+
+                    if (!usuario) {
+                        //login normal
+                        document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+                    }
+                    else {
+                        document.getElementById("titulo").innerHTML = usuario.grupo + " - " + tr("El bosque");
+
+                        //init map
+                        var mapdiv = document.getElementById('todo');
+                        mapa = new google.maps.Map(mapdiv, {
+                            zoom: 10,
+                            center: { lat: 41.385063, lng: 2.173404 },
+                            disableDefaultUI: true,
+                            styles: [
+                                {
+                                    featureType: 'poi.business',
+                                    stylers: [{ visibility: 'off' }]
+                                },
+                                {
+                                    featureType: 'transit',
+                                    elementType: 'labels.icon',
+                                    stylers: [{ visibility: 'off' }]
+                                }
+                            ]
+                        });
+
+                        //decargar datos
+                        actualizarBosque();
+                    }
+                }
+            }
+            else
+                //login normal
+                document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+        }
+
+        function actualizarBosque() {
+            getBosque("getBosque");
+        }
+
+        function generarBosque() {
+            getBosque("clearBosque");
+        }
+
+        function getBosque(accion) {
+            email = "";
+
+            var div = document.getElementById("info");
+            div.style.visibility = "hidden";
+
+            getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
+                + "&grupo=" + usuario.grupo
+                + "&clave=" + usuario.clave,
+                 function (data) {
+                     //atrapo el error si es que hay
+                     if (data.substring(0, 6) == "Error=") {
+                         //ha habido un error
+                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                     }
+                     else {
+                         //tengo el bosque
+                         bosque = JSON.parse(data);
+                         dibujarTodo();
+                     }
+                 });
+        }
+
+        function bosqueToPoints(nodo) {
+            var s = '';
+
+            if (nodo.exception) {
+                s += nodo.exception;
+            }
+            else if (!nodo.descargado) {
+                generando = true;
+            }
+            else {
+                //accion
+                for (var i in nodo.usuarios) {
+                    var u = nodo.usuarios[i];
+                    if (!usuarioExists(u) && (u.lat != 0 || u.lng != 0))
+                        points.push({
+                            lat: u.lat,
+                            lng: u.lng,
+                            label: u.nombre,
+                            icon: "grupos/" + grupoParam + "/usuarios/" + u.email + "/" + u.email + ".small.png",
+                            location: u.address,
+                            grupo: nodo.nombre,
+                            usuario: u
+                        });
+                }
+
+                //hijos
+                for (var i in nodo.hijos) {
+                    var hijo = nodo.hijos[i];
+                    s += bosqueToPoints(hijo);
+                }
+            }
+            return s;
+        }
+
+        function usuarioExists(u) {
+            //mismo usuario con diferentes ubicaciones si que se dibuja
+            for (var i in points)
+                if (points[i].usuario.email == u.email && points[i].usuario.lat == u.lat && points[i].usuario.lng == u.lng)
+                    return true;
+            return false;
+        }
+
+        function dibujarTodo() {
+            var scalex = window.innerWidth / 1920;
+            var scaley = window.innerHeight / 1080;
+            var s = "";
+
+            generando = false;
+            lastMouse = null;
+
+            //preparo datos
+            points = [];
+            bosqueToPoints(bosque.padre);
+            pointsToCircles();
+            calculateCircles();
+
+            //dibujo
+            s += doMapa();
+
+            //menu
+            document.getElementById("menuItem1").href = "comunidadGrupos.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem2").href = "comunidadPersonas.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem3").href = "comunidadMapa.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem4").href = "comunidad3D.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
+            document.getElementById("menuItem1").innerHTML = tr("Ver grupos");
+            document.getElementById("menuItem2").innerHTML = tr("Ver personas");
+            document.getElementById("menuItem3").innerHTML = tr("Ver mapa");
+            document.getElementById("menuItem4").innerHTML = tr("Ver 3D");
+
+            //panelgrupo
+            var usus = (usuarios.split(";").length - 1);
+            var reps = (representantes.split(";").length - 1);
+            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
+            s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
+            email = "";
+
+            var panel = document.getElementById("panelGrupo");
+            panel.innerHTML = s;
+            panel.style.visibility = 'visible';
+
+            if (generando)
+                setTimeout(actualizarBosque, 1000);
+        }
+
+        //mapa
+        function doMapa() {
+            //draw
+            var bounds = new google.maps.LatLngBounds();
+
+            //remove old markrs
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+
+            //add new markers
+            for (var c in circles) {
+                var circle = circles[c];
+                for (var p in circle.points) {
+                    //usuarios
+                    var point = circle.points[p];
+                    var person = circle.persons[p];
+                    if (point.lat != 0 || point.lng != 0) {
+                        var marker = new google.maps.Marker({
+                            position: { lat: point.lat, lng: point.lng },
+                            map: mapa,
+                            label: {
+                                text: person.label,
+                                color: 'black',
+                                fontSize: "30px"
+                            },
+                            icon: {
+                                url: person.icon,
+                                //scaledSize: new google.maps.Size(50, 50), // scaled size
+                                //origin: new google.maps.Point(0, 40),
+                                // The anchor for this image is the base of the flagpole at (0, 32).
+                                //anchor: new google.maps.Point(0, 50)
+                                labelOrigin: new google.maps.Point(25, 70)
+                            }
+                        });
+
+                        bounds.extend(marker.position);
+
+                        marker.addListener('click', function (m) {
+                            var person = document.getElementById("person");
+                            person.innerHTML = marker.label;
+                            person.style.display = "block";
+                        });
+
+                        markers.push(marker);
+                    }
+                }
+                //circle
+                if (circle.persons.length > 1)
+                    var cityCircle = new google.maps.Circle({
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.4,
+                        strokeWeight: 2,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.1,
+                        map: mapa,
+                        center: { lat: circle.lat, lng: circle.lng },
+                        radius: circle.persons.length * 50
+                    });
+            }
+            //center map
+            mapa.fitBounds(bounds);
+        }
+
+        function calculateCircles() {
+            for (var c in circles) {
+                var circle = circles[c];
+                var centro = { lat: circle.lat, lng: circle.lng };
+                var step = 360 / circle.persons.length; //at least one label is always present
+                var dist = 0.0005 * circle.persons.length;
+                circle.points = [];
+                for (var l in circle.persons) {
+                    var vector = toRect(dist, step * parseInt(l));
+                    circle.points.push({ lat: centro.lat + vector.x, lng: centro.lng + vector.y });
+                }
+            }
+        }
+
+        function pointsToCircles() {
+            circles = [];
+            for (var p in points) {
+                var point = points[p];
+                var circle = getCircle(point);
+                if (circle)
+                    circle.persons.push({ label: point.label, icon: point.icon });
+                else
+                    circles.push({ lat: point.lat, lng: point.lng, persons: [{ label: point.label, icon: point.icon }], points: [] });
+
+            }
+        }
+
+        function getCircle(point) {
+            for (var c in circles) {
+                var circle = circles[c];
+                if (circle.lat == point.lat && circle.lng == point.lng)
+                    return circle;
+            }
+            return null;
+        }
+
+        //tools
+        function msg(s, centro) {
+            var rect = toRect(centro.m, centro.a);
+            var x = rect.x;
+            var y = rect.y;
+            var fontSize1 = 20 * zoom;
+            s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' \">" + s + "</text>";
+            return s;
+        }
+             
+        function toPolar(x, y){
+            var ret = { m: 0, a: 0 };
+            ret.m = Math.sqrt(x * x + y * y);
+            if (x == 0)
+                if (y > 0) ret.a = 90; else ret.a = 270;
+            else if (y == 0)
+                if (x > 0) ret.a = 0; else ret.a = 180;
+            else
+            {
+                if (y >= 0 && x >= 0) ret.a = Math.atan(y / x) * 180 / Math.PI;
+                if (y >= 0 && x <= 0) ret.a = Math.atan(y / -x) * 180 / Math.PI + 90;
+                if (y <= 0 && x <= 0) ret.a = Math.atan(y / x) * 180 / Math.PI + 180;
+                if (y <= 0 && x >= 0) ret.a = Math.atan(-y / x) * 180 / Math.PI + 270;
+            }
+            return ret;
+        }
+
+        function doAtras() {
+            document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
+        }
+            
+        function toRect(m, a)
+        {
+            //en grados
+            return { x: Math.cos(a * Math.PI / 180) * m, y: Math.sin(a * Math.PI / 180) * m };
+        }
+
+        function cut(s, len) {
+            if (s.length <= len)
+                return s;
+            else
+                return s.substring(0, 25) + "...";
+        }
+
+        function doResize(){
+            //background
+            setBackgroundImage();
+        }
+
+        function addPolar(p1, p2) {
+            var r1 = toRect(p1.m, p1.a);
+            var r2 = toRect(p2.m, p2.a);
+            return toPolar(r1.x + r2.x, r1.y + r2.y);
+        }
+
+     </script>
+</head>
+<body onload="doLoad();" style="overflow:hidden">
+    <div id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1;opacity:0.6"></div>
+
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
+
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="titulo" class="tituloPagina"></div>       
+    <div id="msg" style="position:fixed;left:5vw;top:10vh;float:left;"></div>
+    
+
+    <!--panel grupo--------------------------------------------------------------------------------------------------->
+    <div id="panelGrupo" class="borde" style="position:fixed;left:0.5vw;top:10vh;visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    </div>
+    
+    <!--panel info--------------------------------------------------------------------------------------------------->
+    <div id="info" class="info">
+    </div>
+    
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh; padding: 0.3vw; visibility: visible; text-align: right;">
+        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        </a>
+        <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br>Digital</div>
+        <div class='menuItem'><a id="menuItem1" href='comunidadGrupos.html'><nobr>Ver grupos</nobr></a></div>
+        <div class='menuItem'><a id="menuItem2" href='comunidadPersonas.html'><nobr>Ver personas</nobr></a></div>
+        <div class='menuItem'><a id="menuItem3" href='comunidadMapa.html'><nobr>Ver mapa</nobr></a></div>
+        <div class='menuItem'><a id="menuItem4" href='comunidad3D.html'><nobr>Ver 3D</nobr></a></div>
+    </div>
+
+    <!--joystick--------------------------------------------------------------------------------------------------->
+    <div id="joystick" style="position:fixed;bottom: 5px;padding: 5px;left:5px; ">
+        <nobr>
+            <img src="res/jzm.png" onclick="zoom *= 1.1; dibujarTodo();" class="img" />
+            <img src="res/ju.png" onclick="offsetY -= 30; dibujarTodo();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" onclick="offsetX -= 30; dibujarTodo();" class="img" />
+            <img src="res/j00.png" onclick="zoom = 1; transform(0,0); dibujarTodo();" class="img" />
+            <img src="res/jr.png" onclick="offsetX += 30; dibujarTodo();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" onclick="zoom *= 0.9; dibujarTodo();" class="img" />
+            <img src="res/jd.png" onclick="offsetY += 30; dibujarTodo();" class="img" />
+        </nobr>
+    </div>
+
+    <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+        <div id="rotarpantalla" class="rotarpantalla">
+            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+        </div>
+
+</body>
+</html>
