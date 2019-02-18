@@ -14,7 +14,7 @@ body {
 }
 
 .abm {
-    border:1px solid black;
+    border:1px solid gray;
     border-radius: 8px;
 }
 
@@ -119,10 +119,19 @@ body {
     font-size: 14px;
     color: #006699;
 }
-
+.burbuja {
+    padding: 4px;
+    padding-left: 5px;
+    border: 1px solid #C0C0C0;
+    border-radius: 8px;
+    background-color: #FFFFDD;
+    font-size: 14px;
+    margin: 5px;
+}
 .editar {
     padding: 2px;
     padding-left: 5px;
+    padding-right: 5px;
     border: 1px solid #C0C0C0;
     border-radius: 4px;
     background-color: #FFFFDD;
@@ -266,6 +275,17 @@ body {
     cursor:pointer;
     color:blue;
     text-decoration: underline;
+    z-index:5;
+}
+.icono2 {
+    width:1.6vw;
+    height:auto;
+    vertical-align:middle;
+    margin:auto;
+}
+.item {
+    padding: 10px;
+    font-size: 16px;
 }
 .tema {
     padding: 5px;
@@ -313,6 +333,7 @@ body {
     top:50%;
     transform: translate(-50%,-50%);
     max-height:90%;
+    z-index:5;
 }
 .popupHeader {
     font-size:16px;
@@ -372,6 +393,7 @@ body {
     margin-top: -200px;
     width: 600px;
     height: min-content;
+    z-index:5;
 }
 .modelosEvaluacion {
     position:absolute;
@@ -402,7 +424,6 @@ body {
     background-color: #C6ECFF;
     opacity: 0.9;
     width:500px;
-;
 }
 .ventanaltausuario {
     position:absolute;
@@ -417,7 +438,7 @@ body {
     opacity: 0.9;
     width: 380px;
     text-align:center;
-    visibility:hidden;
+    display:none;
 }
 .ventanalogin {
     position:absolute;
@@ -471,13 +492,10 @@ body {
 .txt {
     margin: 2px;
     padding: 2px;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 6px;
-    border-color: gray;
-    background-color: #FAF5F5;
-    font-size: 15px;
-    font-family:inherit;
+    border: 1px solid gray;
+    border-radius: 4px;
+    background-color: #FFFFDD;
+    font-size: 14px;
 }
 .btn {
     border: 2px solid #006666;
@@ -722,7 +740,20 @@ body {
     border-radius: 10px;
     font-size: 18px;
 }
-
+.modeloBox {
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    float: left;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: 5px;
+    min-height: 150px;
+    min-width: 150px;
+}
+.modeloIcon {
+    width: 150px;
+}
 .movilePie {  
     display:none;
 }
@@ -834,6 +865,7 @@ body {
         height:100%;
     }
     .seguimiento {
+        height: 100%;
         width: -webkit-fill-available;
     }
     .cambiarClave {
@@ -934,7 +966,6 @@ body {
         border-width: 1px;
         border-radius: 2px;
         border-color: gray;
-        background-color: #FAF5F5;
         font-size: 12px;
         font-family:inherit;
     }
@@ -1063,9 +1094,6 @@ body {
     .loginFlor {
         width: 135px ;
         height:auto;
-        visibility:hidden;
-        position:absolute;
-        cursor:pointer;   
     }
     .grupos {
         position: fixed;
@@ -1230,19 +1258,51 @@ body {
     }
 }
 
-/*@media only screen and (max-width: 500px) {
-    .rotarpantalla {
-        display: block;
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: 10;
-        text-align:center;
-        background-image: url('res/background.jpg');
+@media only screen and (max-width: 400px) {
+    .panelGrupo {
+        top: 11vh;
     }
-}*/
+    .panelUsuario {
+        top: 5.5vh;
+    }
+    .atras {
+        top: 5px;
+        width: 9vw;
+    }
+    .icono2 {
+        width: 3.5vw;
+    }
+    .img {
+        width: 5vh;
+        height: 5vh;
+    }
+    .tituloPagina {
+        padding: 1px;
+        font-size: 16px;
+        left: 40px;
+        top: 5px;
+        padding-left: 1%;
+        padding-top: 1%;
+        width: 200px;
+    }
+    .panelQueso {
+        top: 11vh;
+    }
+    .panelConsenso {
+        top: 11vh;
+    }
+    .ventanaltausuario {
+        position: absolute;
+        left: 15px;
+        right: 15px;
+        top: 90px;
+        bottom: 255px;
+        width: auto;
+        margin-left: 0px;
+        padding: 5px;
+        display: none;
+    }
+}
 
 
 p {

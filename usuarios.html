@@ -285,6 +285,11 @@
             document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;;
         }
 
+        function doResize() {
+            //background
+            setBackgroundImage();
+        }
+
         function traducir() {
             document.getElementById("tit1").innerHTML = tr("Modificar usuarios");
             document.getElementById("nombre").placeholder = tr("Nombre");
@@ -304,14 +309,14 @@
         }
     </script>
 </head>
-<body onload="doLoad();" style="z_overflow:hidden">
+<body onload="doLoad();" style="overflow:hidden" onresize="'doResize();">
 
         <div id="todo" class="ventana">
             <table style="border-spacing:0px;border-collapse:collapse;width:100%">
                 <tr>
                     <td><div id="tit1" class="titulo3" style="padding-top:10px;">Modificar usuarios</div></td>
                     <td rowspan="2">
-                        <input id="btnCancelar" type='button' class='btn' value='Volver ' onclick='doAtras();' style="float:right;margin:5px"/>
+                        <input id="btnCancelar" type='button' class='btn' value='Volver' onclick='doAtras();' style="float:right;margin:5px"/>
                         <input id="btnActualizar" type='button' class='btn' value='Actualizar ' onclick='doActualizarUsuario();' style="float:right;margin:5px"/>   
                     </td>
                 </tr>
@@ -362,7 +367,7 @@
             </div>
             <br />
 
-            <div id="usuarios" style="overflow:scroll;height:fit-content"></div>
+            <div id="usuarios" class="usuarios"></div>
             <br />
         </div>
     </body>

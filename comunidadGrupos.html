@@ -303,8 +303,9 @@
             //verifico fallo de defincion de padre
             var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
             if (nodo.msg != "") 
-                s += msg(nodo.msg, centro);
-            else if (!nodo.descargado){ 
+                //s += msg(nodo.msg, centro);
+                s += msg("[X]", centro, "red");
+            else if (!nodo.descargado) {
                 s += msg("[?]", centro);
                 generando = true;
             }
@@ -439,12 +440,13 @@
             return r + rect * r / 150;
         }
 
-        function msg(s, centro) {
+        function msg(s, centro, color) {
             var rect = toRect(centro.m, centro.a);
             var x = rect.x;
             var y = rect.y;
             var fontSize1 = 20 * zoom;
-            s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' \">" + s + "</text>";
+            if (color == undefined) color = "black";
+            s += "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='gray' style='color:" + color + ";cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' \">" + s + "</text>";
             return s;
         }
              

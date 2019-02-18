@@ -81,7 +81,7 @@ namespace nabu.plataforma.modelos
                     if (getText("s.introduccion", prop) == "")
                     {
                         addError(1, Tools.tr("La introduccion no puede ser vacia", idioma));
-                        getVariable("s.vision").className = "errorfino";
+                        getVariable("s.introduccion").className = "errorfino";
                     }
                 }
                 else if (prop.nivel == 2)
@@ -137,7 +137,8 @@ namespace nabu.plataforma.modelos
                     foreach (Hijo h in g.hijos)
                         listahijos += h.nombre + "|";
 
-                    ret += "<div class='titulo2'>" + Tools.tr("Comunicado al grupo hijo", g.idioma) + ":" + HTMLLista("s.hijonombre", listahijos, prop, 250, tieneFlores, g.idioma) + "</div>";
+                    ret += "<div class='titulo2'>" + Tools.tr("Comunicado del grupo", g.idioma) + ":" + g.nombre + "</div>";
+                    ret += "<div class='titulo2'>" + Tools.tr("Al grupo hijo", g.idioma) + ":" + HTMLLista("s.hijonombre", listahijos, prop, 250, tieneFlores, g.idioma) + "</div>";
 
                     //fiho url
                     if (getText("s.hijonombre", prop) != "")

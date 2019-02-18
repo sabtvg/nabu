@@ -16,6 +16,46 @@
 //  
 ///////////////////////////////////////////////////////////////////////////
 
+function HTMLUsuarioExtendido(u, grupoParam, style) {
+    var d = new Date();
+    var s = "<div style='" + style + ";border: 2px solid #cccccc;border-radius:8px;text-align:center;margin:2px;padding:2px;max-width:350px;max-height:600px'>";
+    if (u != null) {
+        s += "<table style='width:100%;padding:4px;'><tr>" +
+            "<td style='text-align:left;vertical-align:top;'>" +
+            u.nombre + "<br>" + u.funcion + "</td>" +
+            "<td style='text-align:right'>" +
+            "<img src='grupos/" + grupoParam + "/usuarios/" + u.email + "/" + u.email + ".png?now=" + d.getTime() + "' " +
+            "style='border-radius:5px;height:80%;width:auto;' " +
+            "onerror=\"this.src='res/perfilDefault.jpg'\">" +
+            "</td>" + 
+            "</tr></table>";
+        //s += "<a href='mailto:" + u.email + "'>" + u.email + "</a>";
+        if (u.estado)
+            s += "<br><font color='red'>" + u.estado + "</font>";
+    }
+
+    s += "<div style='max-height:400px;overflow:auto'>";
+    if (u.mision) {
+        s += "<div class='titulo3' style='text-align:left'>" + tr("Mision") + "</div>";
+        s += "<div class='divborde' style='font-size:12px'>" + u.mision + "</div>";
+    }
+    if (u.capacidades) {
+        s += "<div class='titulo3' style='text-align:left'>" + tr("Capacidades") + "</div>";
+        s += "<div class='divborde' style='font-size:12px'>" + u.capacidades + "</div>";
+    }
+    if (u.expectativas) {
+        s += "<div class='titulo3' style='text-align:left'>" + tr("Expectativas") + "</div>";
+        s += "<div class='divborde' style='font-size:12px'>" + u.expectativas + "</div>";
+    }
+    if (u.participacion) {
+        s += "<div class='titulo3' style='text-align:left'>" + tr("Participacion") + "</div>";
+        s += "<div class='divborde' style='font-size:12px'>" + u.participacion + "</div>";
+    }
+    s += "</div>";
+    s += "</div>";
+    return s;
+}
+
 function HTMLUsuario(u, grupoParam, style) {
     var d = new Date();
     var s = "<div style='" + style + ";border: 2px solid #cccccc;border-radius:8px;text-align:center;margin:2px;padding:2px;'>";
@@ -26,7 +66,7 @@ function HTMLUsuario(u, grupoParam, style) {
             "<br>";
         s += u.nombre + "<br>";
         s += u.funcion + "<br>";
-        s += "<a href='mailto:" + u.email + "'>" + u.email + "</a>";
+        //s += "<a href='mailto:" + u.email + "'>" + u.email + "</a>";
         if (u.estado)
             s += "<br><font color='red'>" + u.estado + "</font>";
     }

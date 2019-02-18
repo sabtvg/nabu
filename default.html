@@ -50,6 +50,9 @@
     <meta name="keywords" content="democracia directa,democracia interactiva,democracia participativa,generador de consensos,cooperativa 2.0" />
 </head>
 <body onload="doLoad();" style="overflow:hidden" onresize="doResize()" onkeypress="doKeypress();">
+    <svg id="arbol">
+    </svg>
+
     <!--objetivo--------------------------------------------------------------------------------------------------->
     <div id="objetivo" class="objetivo" style="z-index:-1;"></div>
 
@@ -163,7 +166,7 @@
     <table id="panelUsuario" class="panelUsuario" border="0">
         <tr>
             <td id="usuario" class="titulo3" style="vertical-align:middle"></td>
-            <td style="width:1.7vw;"><img src="res/icono2.png" style="width:1.6vw;height:auto;vertical-align:middle;margin:auto;"/></td>
+            <td style="width:1.7vw;"><img src="res/icono2.png" class="icono2"/></td>
             <td id="floresDisponibles" class="titulo3" style="width:15px;vertical-align:middle;text-align:left"></td>
             <td style="width:1.7vw;">
                 <img id="alertaIcon" src="res/alerta.png" style="width:1.6vw;height:auto;vertical-align:middle;margin:auto;cursor:pointer;display:none" onclick="showAlertas();"/>
@@ -191,7 +194,7 @@
         <a href="mailto:nabu@nabu.pt">nabu@nabu.pt</a> - 
         <span id="mejorVisto">Mejor visto en</span>&nbsp;<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a> -
         <span id="version" style="color:red">versi&oacute;n beta</span> - 
-        <a id="lnkAyuda" href="javascript:doOpen('help.html');">Ayuda</a> -
+        <a id="lnkAyuda" href="help.html" target="_blank">Ayuda</a> -
         <a href="web/default.html" target="_blank">Proyecto</a> - 
         <a href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
     </div>
@@ -247,16 +250,16 @@
             <div style="clear:left;float:left;margin:5px;padding:5px;text-align:left;width:95%">
                 <div>Mision</div>
                 <div class="smalltip">Mision</div>
-                <textarea id="mision" class="editar" style="width:100%;height:120px;"></textarea>
+                <textarea id="mision" class="editar" style="width:-webkit-fill-available;height:120px;"></textarea>
                 <div>Capacidades</div>
                 <div class="smalltip">Capacidades</div>
-                <textarea id="capacidades" class="editar" style="width:100%;height:120px;"></textarea>
+                <textarea id="capacidades" class="editar" style="width:-webkit-fill-available;height:120px;"></textarea>
                 <div>Expectativas</div>
                 <div class="smalltip">Expectativas</div>
-                <textarea id="expectativas" class="editar" style="width:100%;height:120px;"></textarea>
+                <textarea id="expectativas" class="editar" style="width:-webkit-fill-available;height:120px;"></textarea>
                 <div>Participacion</div>
                 <div class="smalltip">Participacion</div>
-                <textarea id="participacion" class="editar" style="width:100%;height:120px;"></textarea>
+                <textarea id="participacion" class="editar" style="width:-webkit-fill-available;height:120px;"></textarea>
             </div>
             <div style="clear:left;float:left;margin:5px;padding:5px;text-align:left;width:95%">
                 <div>Ubicaci&oacute;n</div>
@@ -290,29 +293,35 @@
 
     <!--alta usuario--------------------------------------------------------------------------------------------------->
     <div id="altaUsuarioC" class="ventanaltausuario">
-        <div id="auTit1C" class="titulo2">Alta de usuario</div>
+        <div id="auTit1C" class="titulo1">Alta de usuario</div>
+        <br />
         <div id="auTit2C">
         El alta de usuarios es administrada manualmente.<br />
         Completa tus datos y recibiras un email con tus datos de acceso.<br />
         </div>
+        <br />
         <input id="altaUsuarioNombreC" type="text" class="txt" placeholder="Nombre completo" value=""  style="width: 200px;margin:3px;"/><br />
         <input id="altaUsuarioEmailC" type="text" class="txt" placeholder="Email" value=""  style="width: 200px;margin:3px;"/><br />
+        <br />
         <input id="auEnviarC" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();"   style="margin:5px;"/>
-        <input id="auCerrarC" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuarioC'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);"   style="margin:5px;"/><br />
+        <input id="auCerrarC" type="button" class="btn" value="Cerrar" onclick="document.getElementById('altaUsuarioC').style.display='none';"   style="margin:5px;"/><br />
         <div id="altaUsuarioMsgC"></div>
     </div>
 
     <div id="altaUsuarioA" class="ventanaltausuario">
-        <div id="auTit1A" class="titulo2">Alta de usuario</div>
+        <div id="auTit1A" class="titulo1">Alta de usuario</div>
         <input id="altaUsuarioNombreA" type="text" class="txt" placeholder="Nombre completo" value=""  style="width: 200px;margin:3px;"/><br />
         <input id="altaUsuarioEmailA" type="text" class="txt" placeholder="Email" value=""  style="width: 200px;margin:3px;"/><br />
         <input id="altaUsuarioClave1A" type="password" class="txt" placeholder="Clave" value=""  style="width: 200px;margin:3px;"/><br />
         <input id="altaUsuarioClave2A" type="password" class="txt" placeholder="Repetir clave" value=""  style="width: 200px;margin:3px;"/><br />
-        <div id="altaUsuarioURLEstatuto">manifiesto</div>
-        <input id="altaUsuarioCheck" type="checkbox" style="margin-left:30px;margin-top:25px;clear:left;float:left"/>
-        <div id="altaUsuarioLeido" style="margin:10px;width:260px;text-align:left;float:left">He leido el manifiesto<br />y deseo ser parte de este grupo</div>
+        <div>
+            <div id="altaUsuarioURLEstatuto">manifiesto</div>
+            <input id="altaUsuarioCheck" type="checkbox" style="margin-top:25px;" />
+            <span id="altaUsuarioLeido" style="width:260px;text-align:left;">He leido el manifiesto<br />y deseo ser parte de este grupo</span>
+        </div>
+        <br />
         <input id="auEnviarA" type="button" class="btn" value="Crear" onclick="doAltaUsuarioCrear();"   style="margin:5px;margin-top:15px;"/>
-        <input id="auCerrarA" type="button" class="btn" value="Cerrar" onclick="efectoTop(document.getElementById('altaUsuarioA'), 0, 80 * scale, -380, TWEEN.Easing.Cubic.Out);"   style="margin:5px;margin-top:15px;"/><br />
+        <input id="auCerrarA" type="button" class="btn" value="Cerrar" onclick="document.getElementById('altaUsuarioA').style.display = 'none';" style="margin:5px;margin-top:15px;"/><br />
         <div id="altaUsuarioMsgA"></div>
     </div>
         
@@ -381,23 +390,18 @@
         <div class="popupHeader">
             Proyecto
         </div>
-        <table style="top:50%;left:50%;position:absolute;transform:translate(-50%,-50%);">
-            <tr>
-                <td style="width:40%;">
-                    <a id="A1" href="simulacion.html">simulacion</a><br />
-                    <a href="http://sociocracia.net" target="_blank">Sociocracia.net</a><br />
-                    01/11/2015<br />
-                    <a href="mailto:nabu@nabu.pt">nabu@nabu.pt</a><br />
-                    <span id="Span1">Mejor visto en</span>&nbsp;<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a><br />
-                </td>
-                <td style="width:40%;">
-                    <span id="Span2" style="color:red">versi&oacute;n beta</span><br />
-                    <a id="A2" href="javascript:doOpen('help.html');">Ayuda</a><br />
-                    <a href="web/default.html" target="_blank">Proyecto</a><br />
-                    <a href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
-                </td>
-            </tr>
-        </table>      
+        <div class="popupContent" style="padding:35px">
+            <a class="item" id="A1" href="simulacion.html">simulacion</a>
+            <a class="item" href="http://sociocracia.net" target="_blank">Sociocracia.net</a>
+            <div class="item">01/11/2015</div>
+            <a class="item" href="mailto:nabu@nabu.pt">nabu@nabu.pt</a>
+
+            <div class="item">Mejor visto en&nbsp;<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a></div>
+            <div class="item" style="color:red">versi&oacute;n beta</div>
+            <a class="item" id="A2" href="javascript:doOpen('help.html');">Ayuda</a>
+            <a class="item" href="web/default.html" target="_blank">Proyecto</a>
+            <a class="item" href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
+        </div>
         <div class="popupFooter">
             <input id="Button2" type="button" class="btn" value="Cerrar" onclick="hideMovileFooter();" />
         </div>

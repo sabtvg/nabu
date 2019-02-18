@@ -7125,3 +7125,2693 @@
 18/09/18 Estado final fecha|es
 18/09/18 Autor|es
 18/09/18 Usuario [%1] creado|es
+26/09/18 No|es
+26/09/18 Si|es
+26/09/18 No|es
+26/09/18 Si|es
+26/09/18 No|es
+26/09/18 Si|es
+26/09/18 No|es
+26/09/18 Si|es
+26/09/18 No|es
+26/09/18 Si|es
+26/09/18 Si|es
+26/09/18 No|es
+26/09/18 grupoTrabajo.actualizado|es
+26/09/18 evento.responsable.tip|es
+26/09/18 grupoTrabajo.creado|es
+26/09/18 alpadre.situaciondeseada.titulo|es
+26/09/18 alpadre.situaciondeseada.titulo|es
+26/09/18 alpadre.situaciondeseada.titulo|es
+26/09/18 alpadre.situaciondeseada.titulo|es
+26/09/18 alpadre.situaciondeseada.titulo|es
+26/09/18 Nuevo documento intergrupal [%1]|en
+26/09/18 Nuevo documento intergrupal [%1]|en
+26/09/18 Nuevo documento intergrupal [%1]|en
+26/09/18 Nuevo documento intergrupal [%1]|en
+26/09/18 Nuevo documento intergrupal [%1]|en
+26/09/18 Nuevo documento intergrupal [%1]|en
+26/09/18 Documento publicado en Evaluamos en el grupo padre|es
+26/09/18 alpadre.situaciondeseada.titulo|es
+02/10/18 alpadre.situaciondeseada.titulo|es
+02/10/18 Usuario [%1] creado|es
+02/10/18 Flor caducada para [%1]|en
+02/10/18 El tema ha caido|en
+02/10/18 Tus flores han caido|en
+11/10/18 Nacido|es
+11/10/18 Decision|es
+11/10/18 Objetivo|es
+11/10/18 Estado final|es
+11/10/18 Estado final fecha|es
+11/10/18 Autor|es
+11/10/18 Flor caducada para [%1]|en
+11/10/18 Tus flores han caido|en
+11/10/18 Flor caducada para [%1]|en
+11/10/18 Tus flores han caido|en
+11/10/18 Flor caducada para [%1]|en
+11/10/18 Tus flores han caido|en
+11/10/18 Flor caducada para [%1]|en
+11/10/18 Tus flores han caido|en
+11/10/18 Flor caducada para [%1]|en
+11/10/18 El tema ha caido|en
+11/10/18 Tus flores han caido|en
+11/10/18 grupoTrabajo.creado|en
+11/10/18 grupoTrabajo.actualizado|en
+11/10/18 grupoTrabajo.actualizado|en
+11/10/18 grupoTrabajo.actualizado|en
+11/10/18 grupoTrabajo.creado|en
+11/10/18 grupoTrabajo.actualizado|en
+11/10/18 grupoTrabajo.actualizado|en
+11/10/18 grupoTrabajo.actualizado|en
+16/10/18 Comunicado al grupo hijo|es
+16/10/18 alhijo.introduccion.titulo|es
+16/10/18 Comunicado al grupo hijo|es
+16/10/18 Comunicado al grupo hijo|es
+16/10/18 alhijo.introduccion.titulo|es
+16/10/18 alhijo.introduccion.titulo|es
+16/10/18 alhijo.introduccion.titulo|es
+16/10/18 alhijo.situaciondeseada.tip|en
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Documento publicado en Evaluamos en el grupo hijo [%1]|a5
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Documento publicado en Evaluamos en el grupo hijo [%1]|a6
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Documento publicado en Evaluamos en el grupo hijo [%1]|a7
+16/10/18 alhijo.situaciondeseada.tip|en
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Documento publicado en Evaluamos en el grupo hijo [%1]|en
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Documento publicado en Evaluamos en el grupo hijo [%1]|en
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Nuevo documento intergrupal [%1]|es
+16/10/18 Documento publicado en Evaluamos en el grupo hijo [%1]|en
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip1|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip2|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip3|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip4|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 alhijo.evaluacion.tip5|es
+16/10/18 No|es
+16/10/18 Si|es
+16/10/18 No|es
+16/10/18 Si|es
+16/10/18 No|es
+16/10/18 Si|es
+16/10/18 No|es
+16/10/18 Si|es
+16/10/18 No|es
+16/10/18 Si|es
+16/10/18 alhijo.situaciondeseada.tip|en
+16/10/18 alhijo.situaciondeseada.tip|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 proceso.consecuencias.titulo|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|es
+16/10/18 Modificar|es
+16/10/18 Eliminar|es
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 grupoTrabajo.creado|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 grupoTrabajo.actualizado|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 grupoTrabajo.eliminado|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Crear|en
+16/10/18 Crear|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.objetivo.tip|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+16/10/18 Crear|en
+16/10/18 Modificar|en
+16/10/18 Eliminar|en
+16/10/18 proceso.consecuencias.titulo|en
+28/10/18 grupoTrabajo.actualizado|es
+28/10/18 alhijo.introduccion.titulo|es
+28/10/18 alhijo.introduccion.titulo|es
+28/10/18 Nuevo documento intergrupal [%1]|es
+28/10/18 Nuevo documento intergrupal [%1]|es
+28/10/18 Nuevo documento intergrupal [%1]|es
+28/10/18 Documento publicado en Evaluamos en el grupo hijo [%1]|es
+29/10/18 SubGrupo.creado|es
+07/11/18 Tu estado es inactivo|es
+07/11/18 Tu estado es inactivo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 No se puede deshabilitar al admin|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Definir una introduccion|es
+08/11/18 Se deben definir los miembros|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Definir una introduccion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Reunion|es
+08/11/18 Reunion|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Miembros|es
+08/11/18 Es miembro|es
+08/11/18 NO es miembro|es
+08/11/18 Reunion|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 No hay subgrupos|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 No hay integrantes|es
+08/11/18 SubGrupo.creado|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 |es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 |es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 |es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Tu estado es inactivo|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.apertura.tip|es
+08/11/18 acta.logisticos.tip|es
+08/11/18 acta.ordendeldia.tip|es
+08/11/18 acta.evaluacion.tip|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Reunion|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.introduccion.tip|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 %1 agregado|es
+08/11/18 %1 agregado|es
+08/11/18 %1 agregado|es
+08/11/18 SubGrupo.actualizado|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+08/11/18 Subgrupo|es
+08/11/18 acta.subgrupo.introduccion|es
+08/11/18 acta.subgrupo.subgrupo|es
+08/11/18 Es integrantes|es
+08/11/18 NO es integrantes|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Tus flores han caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Tus flores han caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Tus flores han caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Tus flores han caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Tus flores han caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Tus flores han caido|ES
+15/11/18 Flor caducada para [%1]|ES
+15/11/18 El tema ha caido|ES
+15/11/18 Tus flores han caido|ES
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.apertura.tip|es
+15/11/18 acta.logisticos.tip|es
+15/11/18 acta.ordendeldia.tip|es
+15/11/18 acta.evaluacion.tip|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.apertura.tip|es
+15/11/18 acta.logisticos.tip|es
+15/11/18 acta.ordendeldia.tip|es
+15/11/18 acta.evaluacion.tip|es
+15/11/18 Reunion|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.apertura.tip|es
+15/11/18 acta.logisticos.tip|es
+15/11/18 acta.ordendeldia.tip|es
+15/11/18 acta.evaluacion.tip|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.apertura.tip|es
+15/11/18 acta.logisticos.tip|es
+15/11/18 acta.ordendeldia.tip|es
+15/11/18 acta.evaluacion.tip|es
+15/11/18 Reunion|es
+15/11/18 Reunion|es
+15/11/18 Reunion|es
+15/11/18 Reunion|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 %1 agregado|es
+15/11/18 %1 agregado|es
+15/11/18 SubGrupo.creado|es
+15/11/18 evento.responsable.tip|es
+15/11/18 evento.responsable.tip|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 proceso.consecuencias.titulo|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.apertura.tip|es
+15/11/18 acta.logisticos.tip|es
+15/11/18 acta.ordendeldia.tip|es
+15/11/18 acta.evaluacion.tip|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 %1 agregado|es
+15/11/18 %1 agregado|es
+15/11/18 %1 agregado|es
+15/11/18 %1 agregado|es
+15/11/18 %1 agregado|es
+15/11/18 SubGrupo.actualizado|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.apertura.tip|es
+15/11/18 acta.logisticos.tip|es
+15/11/18 acta.ordendeldia.tip|es
+15/11/18 acta.evaluacion.tip|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Reunion|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.introduccion.tip|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 %1 agregado|es
+15/11/18 SubGrupo.actualizado|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 %1 agregado|es
+15/11/18 %1 agregado|es
+15/11/18 SubGrupo.creado|es
+15/11/18 Subgrupo|es
+15/11/18 acta.subgrupo.introduccion|es
+15/11/18 acta.subgrupo.subgrupo|es
+15/11/18 Es integrantes|es
+15/11/18 NO es integrantes|es
+15/11/18 Tu estado es inactivo|es
+15/11/18 SubGrupo.actualizado|es
+15/11/18 SubGrupo.eliminado|es
+15/11/18 %1 agregado|es
+15/11/18 %1 agregado|es
+15/11/18 SubGrupo.creado|es
+15/11/18 SubGrupo.actualizado|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+16/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 evento.responsable.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.organizacion.fecha|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 evento.responsable.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 evento.responsable.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 evento.responsable.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.responsable.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.responsable.tip|es
+17/11/18 evento.responsable.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Reunion|es
+17/11/18 Subgrupo|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.subgrupo.introduccion|es
+17/11/18 acta.subgrupo.introduccion.tip|es
+17/11/18 acta.subgrupo.subgrupo|es
+17/11/18 Es integrantes|es
+17/11/18 NO es integrantes|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 acta.apertura.tip|es
+17/11/18 acta.logisticos.tip|es
+17/11/18 acta.ordendeldia.tip|es
+17/11/18 acta.evaluacion.tip|es
+17/11/18 alpadre.situaciondeseada.titulo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 No se pudo publicar documento en el grupo padre|es
+17/11/18 No se pudo publicar documento en el grupo padre|es
+17/11/18 No se pudo publicar documento en el grupo padre|es
+17/11/18 No se pudo publicar documento en el grupo padre|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Documento publicado en Evaluamos en el grupo padre|es
+17/11/18 Comunicado de l grupo|es
+17/11/18 Al grupo padre|es
+17/11/18 Comunicado al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Comunicado al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 El titulo del comunicado no puede ser vacio|es
+17/11/18 La introduccion no puede ser vacia|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 La introduccion no puede ser vacia|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Documento publicado en Evaluamos en el grupo hijo|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Comunicado del grupo|es
+17/11/18 Al grupo hijo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Documento publicado en Evaluamos en el grupo hijo [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Documento publicado en Evaluamos en el grupo hijo [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Nuevo documento intergrupal [%1]|es
+17/11/18 Documento publicado en Evaluamos en el grupo hijo [%1]|es
+17/11/18 alhijo.introduccion.titulo|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 Crear evaluacion|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip1|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip2|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip3|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip4|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 alhijo.evaluacion.tip5|es
+17/11/18 No|es
+17/11/18 Si|es
+17/11/18 No|es
+17/11/18 Si|es
+17/11/18 No|es
+17/11/18 Si|es
+17/11/18 No|es
+17/11/18 Si|es
+17/11/18 No|es
+17/11/18 Si|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Tu estado es inactivo|es
+17/11/18 Grupo creado|es
+17/11/18 proceso.consecuencias.titulo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+20/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 acta.apertura.tip|es
+23/11/18 acta.logisticos.tip|es
+23/11/18 acta.ordendeldia.tip|es
+23/11/18 acta.evaluacion.tip|es
+23/11/18 acta.subgrupo.introduccion|es
+23/11/18 acta.subgrupo.introduccion.tip|es
+23/11/18 acta.subgrupo.subgrupo|es
+23/11/18 Es integrantes|es
+23/11/18 NO es integrantes|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 acta.apertura.tip|es
+23/11/18 acta.logisticos.tip|es
+23/11/18 acta.ordendeldia.tip|es
+23/11/18 acta.evaluacion.tip|es
+23/11/18 acta.subgrupo.introduccion.tip|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 Tu estado es inactivo|es
+23/11/18 No hay integrantes|es
+23/11/18 SubGrupo.creado|es
+16/12/18 Flor caducada para [%1]|es
+16/12/18 El tema ha caido|es
+16/12/18 Tus flores han caido|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 Tu estado es inactivo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/12/18 proceso.consecuencias.titulo|es
+16/01/19 Tu estado es inactivo|es
+16/01/19 Tu estado es inactivo|es
+16/01/19 Tu estado es inactivo|es
+16/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+21/01/19 Tu estado es inactivo|es
+13/02/19 Tu estado es inactivo|es
+13/02/19 Tu estado es inactivo|es
+18/02/19 Tu estado es inactivo|es

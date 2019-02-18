@@ -78,10 +78,10 @@ function cumplePermisos(modelo) {
 }
 
 function getModeloIcon(modelo) {
-    var ret = "<tr>";
-    ret += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'></td>";
-    ret += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
-    ret += "</tr>";
+    var ret = "<div class='modeloIcon'>";
+    ret += "<img src='" + modelo.icono + "' style='float:left;clear:left;width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>";
+    ret += "<div style='float:left;text-align:left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</div>";
+    ret += "</div>";
     return ret;
 }
 
@@ -90,10 +90,10 @@ function seleccionarModelo() {
     if (getFloresDisponibles().length == 0)
         msg("No tienes flores disponibles");
     else {
-        var listE = "<table style='border-collapse: collapse; border-spacing: 0;'>";
-        var listS = "<table style='border-collapse: collapse; border-spacing: 0;'>";
-        var listI = "<table style='border-collapse: collapse; border-spacing: 0;'>";
-        var listO = "<table style='border-collapse: collapse; border-spacing: 0;'>";
+        var listE = "<div class='modeloBox'><div><b>" + tr("Estructura") + "</b></div>";
+        var listS = "<div class='modeloBox'><div><b>" + tr("Seguimiento") + "</b></div>";
+        var listI = "<div class='modeloBox'><div><b>" + tr("Intergrupal") + "</b></div>";
+        var listO = "<div class='modeloBox'><div><b>" + tr("Otros") + "</b></div>";
 
         //si no hay manifiesto solo permito crear modelo Manifiesto
         for (var i in modelos) {
@@ -118,34 +118,21 @@ function seleccionarModelo() {
                 }
             }
         }
-        listE += "</table>";
-        listS += "</table>";
-        listI += "</table>";
-        listO += "</table>";
+        listE += "</div>";
+        listS += "</div>";
+        listI += "</div>";
+        listO += "</div>";
 
-        var list = "<table style='border-collapse: collapse; border-spacing: 5px;margin:auto;'>";
-        list += "<tr><td style='text-align:center;padding:15px;' class='titulo1' colspan='4'><b>" + tr("Modelos de debate") + "</b></td></tr>";
-        list += "<tr><td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Estructura") + "</b></td>";
-        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Seguimiento") + "</b></td>";
-        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Intergrupal") + "</b></td>";
-        list += "<td style='text-align:center;padding-left:25px;padding-right:25px;'><b>" + tr("Others") + "</b></td></tr>";
-        list += "<tr>";
-        list += "<td style='vertical-align:top;'>" + listE + "</td>";
-        list += "<td style='vertical-align:top;'>" + listS + "</td>";
-        list += "<td style='vertical-align:top;'>" + listI + "</td>";
-        list += "<td style='vertical-align:top;'>" + listO + "</td>";
-        list += "</tr>";
+        var list = "<div style='clear:left;float:left;text-align:center;padding:10px;width:100%;' class='titulo1' colspan='4'><b>" + tr("Modelos de debate") + "</b></div>";
+        list += listE;
+        list += listS;
+        list += listI;
+        list += listO;
 
         //cartel sociocracia.net
-        list += "<tr>";
-        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=4>" + tr("nuevos modelos") + "</td>";
-        list += "</tr>";
-        list += "<tr>";
-        list += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan=4>";
-        list += "<input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelosDebate\").style.display = \"none\";' style='margin: 0 auto;'/>";
-        list += "</td>"
-        list += "</tr>";
-        list += "</table>";
+        list += "<div style='clear:left;float:left;vertical-align:top;font-size:12px;text-align:center;padding:5px;width:100%;' colspan=4>" + tr("nuevos modelos") + "</div>";
+        list += "<div style='clear:left;float:left;width:100%;text-align:center;'><input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelosDebate\").style.display = \"none\";' /></div>";
+        list += "</div>";
 
 
         document.getElementById("modelosDebate").innerHTML = list;
@@ -183,7 +170,14 @@ function recibirArbolPersonal(data) {
         
         //si se ha creado un nuevo nodo lo selecciono
         if (arbolPersonal.nuevoNodoID != 0) {
-            selectedNode = getNodo(arbolPersonal.nuevoNodoID);
+            setParents(arbolPersonal.raiz);
+            selectNode(getNodo(arbolPersonal.nuevoNodoID));
+        }
+        else if (selectedNode){
+            //actualizo el selectedNode en la nueva estructura
+            var n = getNodo(selectedNode.id);
+            setParents(arbolPersonal.raiz);
+            selectNode(n);
         }
 
         dibujarArbol(selectedNode);

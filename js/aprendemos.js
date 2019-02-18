@@ -39,7 +39,6 @@ function doAprendemos() {
         efectoOpacity(document.getElementById("menuppal"), 0, 1, 0, TWEEN.Easing.Linear.None, function () { document.getElementById("menuppal").style.visibility = "hidden"; });
 
     document.getElementById("panelGrupo").style.display = 'none';
-    document.getElementById("panelUsuario").style.visibility = 'hidden';
 
     //titulo
     document.getElementById("titulo").innerHTML = arbolPersonal.nombre + " - " + tr("Evaluamos");

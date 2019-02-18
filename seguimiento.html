@@ -231,10 +231,11 @@
 
         function dibujarTodo() {
             row = window.innerWidth < 800 ? 70 : 35; //vista movil doble alto de barra
+            var top = window.innerWidth < 400 ? 2300 : 800; //vista movil
             var s = "";
 
             s += "<g id='grupo'>";
-            s += dibujarSeguimiento(operativo, 800 + offsetY, zoom);
+            s += dibujarSeguimiento(operativo, top + offsetY, zoom);
             s += "</g>"
 
             document.getElementById("todo").innerHTML = s;
@@ -368,7 +369,7 @@
             var s = "";
             s += "<div class='popupHeader' style='text-align:center;'>" + tr("Accion") + "</div>";
 
-            s += "<div class='popupContent' style='text-align:left'>";
+            s += "<div class='popupContent' style='text-align:left;padding:5px;'>";
 
             var AC = operativo.seguimientos[index];
             //datos

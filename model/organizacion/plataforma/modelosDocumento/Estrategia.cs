@@ -163,6 +163,10 @@ namespace nabu.plataforma.modelos
             //titulo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
 
+            //fecha
+            if (modo == eModo.consenso)
+                ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ": " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+
             //abm controls
             ret += HTMLABM("s.nombreProceso", prop, tieneFlores, getListaPRs(), g.idioma);
             ret += "<br>";
@@ -277,15 +281,19 @@ namespace nabu.plataforma.modelos
                 else if (prop != null && accion == "" && prop.bag.ContainsKey("r.accion"))
                     accion = getText("r.accion", prop);
 
+                //grupo de trabajo
+                ret += "<div class='tema'>" + Tools.tr("proceso.grupo.titulo", g.idioma) + "</div>";
                 if (accion == "nuevo")
                 {
-                    //grupo de trabajo
-                    ret += "<div class='tema'>" + Tools.tr("proceso.grupo.titulo", g.idioma) + "</div>";
                     if (editar)
                         ret += "<div class='smalltip'>"
                             + Tools.tr("proceso.grupo.tip", g.idioma)
                             + "</div>";
                     ret += HTMLLista("s.SubGrupo", getListaGTs(), prop, 300, tieneFlores, g.idioma, false);
+                }
+                else
+                {
+                    ret += HTMLListaReadonly("s.SubGrupo", getListaGTs(), prop, 300, true, g.idioma);
                 }
 
                 //implantacion
@@ -467,7 +475,7 @@ namespace nabu.plataforma.modelos
                 props[0].bag.Clear();
                 props[0].bag["r.accion"] = "nuevo";
             }
-            else if (accion == "r.accion_click" && parametro == "existente" && props.Count == 1)
+            else if (accion == "r.accion_click" && parametro == "existente" && props.Count > 0)
             {
                 //traer datos del coumento seleccionado si es una modificaicon
                 string nombre;
@@ -494,44 +502,66 @@ namespace nabu.plataforma.modelos
         public void getContenidoDocumentoPrevio(string grupoTitulo, List<Propuesta> props, Grupo grupo)
         {
             //si es una modificaicon y el primero nivel esta vacio entonces traigo los datos del documento a modificar
-            //busco en el logDocumentos
-            if (grupoTitulo != "")
-                for (int i = grupo.logDecisiones.Count - 1; i > 0 ; i-- )
+            //busco en el logDocumentos la ultima version
+            Documento lastDoc = null;
+            if (grupoTitulo != "" && grupoTitulo.IndexOf(".") > 0)
+            {
+                for (int i = grupo.logDecisiones.Count -1; i > 0; i--)
                 {
+                    //path fix if server is different
                     LogDocumento ldi = grupo.logDecisiones[i];
-                    if (ldi.modeloNombre == nombre)
+                    string path = ldi.path;
+                    if (!path.StartsWith(Tools.startupPath))
+                        //fix
+                        path = Tools.startupPath + path.Substring(path.IndexOf("\\nabu\\") + 5);
+
+                    if (ldi.modeloNombre == nombre && System.IO.File.Exists(path))
                     {
-                        //traigo datos de este doc
-                        if (System.IO.File.Exists(ldi.path))
+                        try
                         {
-                            string json = System.IO.File.ReadAllText(ldi.path);
+                            string json = System.IO.File.ReadAllText(path);
                             Documento doc = Tools.fromJson<Documento>(json);
                             string eSubGrupo = doc.getText("s.SubGrupo");
                             string eNombreProceso = doc.getText("s.nombreProceso");
                             string titulo = grupoTitulo.Split('.')[1];
                             string subGrupo = grupoTitulo.Split('.')[0];
-                            if (eSubGrupo == subGrupo && eNombreProceso == titulo)
+                            if (Tools.HTMLDecode(eSubGrupo) == Tools.HTMLDecode(subGrupo) && Tools.HTMLDecode(eNombreProceso) == Tools.HTMLDecode(titulo))
                             {
-                                //esta es la estretagia que me piden
-                                //traigo datos de este doc
-                                //agrego contenido
-                                props.Clear();
-                                foreach (Propuesta prop in doc.propuestas)
-                                {
-                                    prop.nodoID = 0;
-                                    prop.consensoAlcanzado = false;
-                                    props.Add(prop);
-                                }
-                                props[0].bag["s.nombreProceso"] = grupoTitulo;
-
-                                if (props.Count > 0)
-                                    props[0].bag["r.accion"] = "existente"; //este valor permanece
+                                if (lastDoc == null)
+                                    lastDoc = doc;
+                                else if (lastDoc.fecha < ldi.fecha)
+                                    lastDoc = doc;
                             }
                         }
-                    }
+                        catch (Exception ex)
+                        {}
+                    }                 
                 }
-        }
+                //traigo datos de este doc
+                //server debug only
+                //if (ldi.path.StartsWith("h:")) ldi.path = grupo.path + "\\" + ldi.path.Substring(33); //debug only
+                //server debug only
+                //esta es la estretagia que me piden
+                //traigo datos de este doc
+                //agrego contenido
+                if (lastDoc != null)
+                {
+                    props.Clear();
+                    foreach (Propuesta prop in lastDoc.propuestas)
+                    {
+                        prop.nodoID = 0;
+                        prop.consensoAlcanzado = false;
+                        props.Add(prop);
+                    }
+                    props[0].bag["s.nombreProceso"] = grupoTitulo;
 
+                    if (props.Count > 0)
+                        props[0].bag["r.accion"] = "existente"; //este valor permanece
+                }
+                else
+                    props.Clear();
+            }
+        }
     }
 }
 

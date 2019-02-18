@@ -52,7 +52,8 @@
 
         $(document).mousemove(function (event) {
             move(event);
-            event.preventDefault();
+            event.cancelBubble = true;
+
         });
 
         function transform(offsetX, offsetY) {
@@ -250,7 +251,7 @@
                     var pr = gt.estrategias[j];
                     var prX = gtX + 10 * zoom + zcol / 2;
                     var prY = y + 2.5 * zrow + zrow * j;
-                    s += caja(pr.nombre, prX, prY, "#FF6347", zoom, "openPR(" + pr.EID + ");");
+                    s += caja(pr.nombre, prX, prY, "cornsilk", zoom, "openPR(" + pr.EID + ");");
 
                     //flecha
                     s += flecha("M" + gtX.toFixed(0) + "," + (gtY + zrow * 0.8 / 2).toFixed(0)
@@ -283,7 +284,7 @@
 
             var s = "<rect x='" + (x - boxWidth / 2).toFixed(0) + "' y='" + (y - boxHeight / 2).toFixed(0) + "' rx='" + (20 * zoom) + "' ry='" + (20 * zoom) + "' "
                 + "width='" + boxWidth.toFixed(0) + "' height='" + boxHeight.toFixed(0) + "' "
-                + "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:" + (5 * zoom).toFixed(0) + ";opacity:0.4' "
+                + "style='cursor:pointer;fill:" + color + ";stroke:black;stroke-width:" + (3 * zoom).toFixed(0) + ";opacity:0.4' "
                 + "onclick=\"" + onclick + "\"/>"
                 + "<text x='" + x.toFixed(0) + "' y='" + y.toFixed(0) + "' fill='cursor:pointer;black' style='font-size:" + (18 * zoom).toFixed(0) + "px' text-anchor='middle' "
                 + "onclick=\"" + onclick + "\">"

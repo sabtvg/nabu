@@ -190,10 +190,15 @@ var dictionary = [
     { key: 'simulacion', idioma: 'es', txt: 'simulaci&oacute;n' },
     { key: 'ufTit1', idioma: 'es', txt: 'Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir' },
     { key: 'version beta', idioma: 'es', txt: 'versi&oacute;n beta' },
-
-    { key: 'btnBorrar', idioma: 'es', txt: 'Borrar grupo y todos sus datos' },
+    { key: 'btnBorrar', idioma: 'es', txt: 'Borrar grupo' },
     { key: 'btnCancelar', idioma: 'es', txt: 'Volver' },
     { key: 'altaUsuarioLeido', idioma: 'es', txt: 'He leido el manifiesto<br />y deseo ser parte de este grupo' },
+    { key: 'Mision', idioma: 'es', txt: 'Mision' },
+    { key: 'Capacidades', idioma: 'es', txt: 'Capacidades' },
+    { key: 'Expectativas', idioma: 'es', txt: 'Expectativas' },
+    { key: 'Participacion', idioma: 'es', txt: 'Participacion' },
+    { key: 'Cambiar clave', idioma: 'es', txt: 'Cambiar clave' },
+    { key: 'Otros', idioma: 'es', txt: 'Otros' },
     
 
 

@@ -57,7 +57,6 @@ namespace nabu.plataforma.modelos
 
             //nivel 2
             variables.Add(new Variable("s.objetivo", 3000, 2));
-            variables.Add(new Variable("s.descripcion", 3000, 2));
             variables.Add(new Variable("s.aquien", 3000, 2));
             variables.Add(new Variable("s.consecuencias", 3000, 2));
 
@@ -100,7 +99,6 @@ namespace nabu.plataforma.modelos
                 else if (prop.nivel == 2)
                 {
                     if (getText("s.objetivo", prop) == ""
-                        && getText("s.descripcion", prop) == ""
                         && getText("s.aquien", prop) == "" 
                         && getText("s.consecuencias", prop) == "")
                     {
@@ -236,14 +234,6 @@ namespace nabu.plataforma.modelos
                             + Tools.tr("SubGrupo.objetivo.tip", g.idioma) 
                             + "</div>";
                     ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
-
-                    //Descripcion
-                    ret += "<div class='tema'>" + Tools.tr("SubGrupo.descripcion.titulo", g.idioma) + "</div>";
-                    if (editar)
-                        ret += "<div class='smalltip'>"
-                            + Tools.tr("SubGrupo.descripcion.tip", g.idioma)
-                            + "</div>";
-                    ret += HTMLArea("s.descripcion", prop, width, 120, tieneFlores, g.idioma);
 
                     //A quien va dirigido
                     ret += "<div class='tema'>" + Tools.tr("SubGrupo.aquien.titulo", g.idioma) + "</div>";
@@ -525,7 +515,15 @@ namespace nabu.plataforma.modelos
                     prop.bag["s.integrantes"] = ret;
                 }
             }
-            else if (accion == "r.accion_click" && parametro == "existente" && props.Count == 1)
+            else if (accion == "r.accion_click" && parametro == "nuevo" && props.Count > 0)
+            {
+                for (int i = 1; i < props.Count - 1; i++)
+                    props.RemoveAt(i);
+
+                props[0].bag.Clear();
+                props[0].bag["r.accion"] = "nuevo";
+            }
+            else if (accion == "r.accion_click" && parametro == "existente" && props.Count > 0)
             {
                 //traer datos del coumento seleccionado si es una modificaicon
                 string nombre;

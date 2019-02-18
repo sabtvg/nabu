@@ -126,11 +126,14 @@ namespace nabu.plataforma.modelos
                 else
                 {
                     //padre
-                    ret += "<div class='titulo2'>" + Tools.tr("Comunicado al grupo padre", g.idioma) + ":" + g.padreNombre + "</div>";
+                    ret += "<div class='titulo2'>" + Tools.tr("Comunicado del grupo", g.idioma) + ":&nbsp;" + g.nombre + "</div>";
+                    ret += "<div class='titulo2'>" + Tools.tr("Al grupo padre", g.idioma) + ":&nbsp;" + g.padreNombre + "</div>";
+
+                    //representantes
                     List<Usuario> reps = g.getRepresentantes();
                     if (reps.Count > 0)
                     {
-                        ret += "<div class='titulo3'>" + Tools.tr("Representantes", g.idioma) + ":";
+                        ret += "<div class='titulo3'>" + Tools.tr("Representantes", g.idioma) + ":&nbsp;";
                         foreach (Usuario rep in reps)
                             ret += rep.nombre + " ";
                         ret += "</div>";

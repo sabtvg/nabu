@@ -125,30 +125,37 @@ namespace nabu.plataforma.modelos
             if (prop != null)
                 prop.bag["s.etiqueta"] = "Acta";
 
+            //titulo
             titulo = getText("s.titulo", prop);
+
+            //fecha
+            if (modo == eModo.consenso)
+                ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ": " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
+
             etiqueta = "Acta";
 
             //nombre modelo
             ret += "<div class='titulo1'><nobr>" + nombre + "</nobr></div>";
-            ret += "<br>";
 
             //tipo
             ret += HTMLTabs("Reunion|Subgrupo", "s.tipo", prop, g);
             ret += "<br>";
             ret += "<br>";
 
-            //titulo
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ": " + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
-            ret += "</nobr></div>";
+            //titulo y etiqueta
+            ret += "<table>";
+            ret += "<tr>";
+            ret += "<td class='titulo3'>" + Tools.tr("Titulo", g.idioma) + "</td>";
+            ret += "<td colspan=2>" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores, g.idioma) + "</td>";
+            ret += "</tr>";
+            ret += "<tr>";
+            ret += "<td class='titulo3'>" + Tools.tr("Etiqueta", g.idioma) + "</td>";
+            ret += "<td class='titulo3' style='width:80px'>" + Tools.tr("Acta", g.idioma) + "</td>";
+            ret += "<td>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</td>";
+            ret += "</tr>";
+            ret += "</table>";
+            ret += "<br>";
 
-            //etiqueta
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Acta", g.idioma);
-            etiqueta = Tools.tr("Acta", g.idioma);
-            if (prop == null)
-                ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
-            ret += "</nobr></div>";
-            ret += "<br>";
-            ret += "<br>";
             return ret;
         }
 
@@ -183,10 +190,6 @@ namespace nabu.plataforma.modelos
                 {
                     //introduccion
                     ret += HTMLSeccion("acta.subgrupo.introduccion", "acta.subgrupo.introduccion.tip", "s.subgrupoIntro", editar, prop, tieneFlores, g, width);
-                    //ret += "<div class='tema'>" + Tools.tr("acta.subgrupo.introduccion", g.idioma) + "</div>";
-                    //if (editar)
-                    //    ret += "<div class='smalltip'>" + Tools.tr("acta.subgrupo.introduccion.tip", g.idioma) + "</div>";
-                    //ret += HTMLArea("s.subgrupoIntro", prop, width, 290, tieneFlores, g.idioma);
 
                     //subgrupo
                     ret += "<div class='tema'>" + Tools.tr("acta.subgrupo.subgrupo", g.idioma) + "</div>";
@@ -211,10 +214,6 @@ namespace nabu.plataforma.modelos
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //fecha
-                if (modo == eModo.consenso)
-                    ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
-
-                //fecha
                 ret += "<div class='tema'>" + Tools.tr("Fecha celebracion", g.idioma) + "</div>";
                 ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
                 ret += "<br>";
@@ -228,7 +227,7 @@ namespace nabu.plataforma.modelos
 
                 //lugar
                 ret += "<div class='tema'>" + Tools.tr("Lugar", g.idioma) + "</div>";
-                ret += HTMLText("s.lugar", prop, width, tieneFlores, g.idioma);
+                ret += HTMLText("s.lugar", prop, width - 250, tieneFlores, g.idioma);
                 ret += "<br>";
                 ret += "<br>";
 
@@ -239,50 +238,35 @@ namespace nabu.plataforma.modelos
                 foreach (Usuario u2 in g.usuarios)
                     lista += u2.email + ":" + u2.nombre + "|";
                 lista = lista.Substring(0, lista.Length - 1);
-                ret += HTMLListaSeleccion("s.participan", prop, width - 150, 250, tieneFlores, lista,
+                ret += HTMLListaSeleccion("s.participan", prop, width - 250, 250, tieneFlores, lista,
                     Tools.tr("Presente", g.idioma),
                     Tools.tr("NO presente", g.idioma),
                     g.idioma);
 
                 //apertura
                 ret += HTMLSeccion("acta.apertura.titulo", "acta.apertura.tip", "s.apertura", editar, prop, tieneFlores, g, width);
-                //ret += "<div class='tema'>" + Tools.tr("acta.apertura.titulo", g.idioma) + "</div>";
-                //if (editar)
-                //    ret += "<div class='smalltip'>" + Tools.tr("acta.apertura.tip", g.idioma) + "</div>";
-                //ret += HTMLArea("s.apertura", prop, width, 290, tieneFlores, g.idioma);
 
                 //Aspectos logisticos
                 ret += HTMLSeccion("acta.logisticos.titulo", "acta.logisticos.tip", "s.logisticos", editar, prop, tieneFlores, g, width);
-                //ret += "<div class='tema'>" + Tools.tr("acta.logisticos.titulo", g.idioma) + "</div>";
-                //if (editar)
-                //    ret += "<div class='smalltip'>" + Tools.tr("acta.logisticos.tip", g.idioma) + "</div>";
-                //ret += HTMLArea("s.logisticos", prop, width, 290, tieneFlores, g.idioma);
-                //ret += "<br>";
 
                 //Orden del dia
                 ret += HTMLSeccion("acta.ordendeldia.titulo", "acta.ordendeldia.tip", "s.ordendeldia", editar, prop, tieneFlores, g, width);
-                //ret += "<div class='tema'>" + Tools.tr("acta.ordendeldia.titulo", g.idioma) + "</div>";
-                //if (editar)
-                //    ret += "<div class='smalltip'>" + Tools.tr("acta.ordendeldia.tip", g.idioma) + "</div>";
-                //ret += HTMLArea("s.ordendeldia", prop, width, 290, tieneFlores, g.idioma);
 
                 //temas
                 float temas = 0;
-                if (prop != null)
+                if (prop != null && prop.bag.ContainsKey("f.temas"))
                 {
                     temas = float.Parse(prop.bag["f.temas"].ToString());
                     if (temas > 10) temas = 10;
                     for (int q = 0; q < temas; q++)
                     {
-                        ret += "<div class='tema'>" + Tools.tr("Tema", g.idioma) + " " + (q + 1) + ":" + HTMLText("s.tituloTema" + q, prop, 70 * 8, tieneFlores, g.idioma) + "</div>";
+                        ret += "<div class='tema'>" + Tools.tr("Tema", g.idioma) + " " + (q + 1) + ":&nbsp;" + HTMLText("s.tituloTema" + q, prop, 70 * 8, tieneFlores, g.idioma) + "</div>";
                         ret += HTMLArea("s.textoTema" + q, prop, width, 220, tieneFlores, g.idioma);
                     }
                 }
                 if (editar && temas < 10)
                     ret += "<input type='button' class='btn' value='" + Tools.tr("Agregar tema", g.idioma) + "' onclick=\"documentSubmit('agregarTema','')\">";
                 ret += "<input type='hidden' id='f.temas' value='" + temas.ToString("0") + "'>"; //guardo valor de Temas en el propio documento
-                ret += "<br>";
-                ret += "<br>";
 
                 //Evaluacion
                 ret += HTMLSeccion("acta.evaluacion.titulo", "acta.evaluacion.tip", "s.evaluacion", editar, prop, tieneFlores, g, width);

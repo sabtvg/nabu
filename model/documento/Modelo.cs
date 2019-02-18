@@ -39,7 +39,7 @@ namespace nabu
         public string permisos = "";
         public string versionar = ""; //modelo o titulo
 
-        protected string accion = ""; //para que existe en otros nivels mientras dibujo. Solo se usa en modelos que tengan ABM
+        protected string accion = "nuevo"; //para que existe en otros nivels mientras dibujo. Solo se usa en modelos que tengan ABM
         protected int niveles = 0;
         protected List<Variable> variables = new List<Variable>();
         protected eModo modo = eModo.editar;
@@ -91,60 +91,54 @@ namespace nabu
             if (modo == eModo.editar)
             {
                 //nuevo
-                ret += "<table class='abm'>";
-                ret += "<tr>";
-                ret += "<td>" + HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo", idioma) + "</td>";
-                ret += "<td style='height:35px;'>" + Tools.tr("Crear", idioma) + "</td>";
-                ret += "<td class='titulo3' style='width:350px;'>";
+                ret += "<div class='abm'>";
+                ret += "<div style='clear:left;float:left;padding:4px;'>" + HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo", idioma) + "</div>";
+                ret += "<div style=padding:5px;'>" + Tools.tr("Crear", idioma) + "</div>";
+                ret += "<div class='titulo3'>";
                 if (prop != null && accion == "nuevo")
                 {
                     ret += HTMLText(id, prop, 40 * 8, tieneFlores, idioma);
                 }
-                ret += "</td>";
-                ret += "</tr>";
+                ret += "</div>";
 
                 //existente
                 if (lista != "")
                 {
-                    ret += "<tr>";
-                    ret += "<td>" + HTMLRadio("r.accion", 2, prop, tieneFlores, "existente", idioma) + "</td>";
-                    ret += "<td style='height:35px;'>" + Tools.tr("Modificar", idioma) + "</td>";
-                    ret += "<td class='titulo3'>";
+                    ret += "<div style='clear:left;float:left;padding:4px;'>" + HTMLRadio("r.accion", 2, prop, tieneFlores, "existente", idioma) + "</div>";
+                    ret += "<div style=padding:5px;'>" + Tools.tr("Modificar", idioma) + "</div>";
+                    ret += "<div class='titulo3'>";
                     //nombre del grupo
                     if (prop != null && accion == "existente")
                     {
                         ret += HTMLLista(id, lista, prop, 40 * 8, tieneFlores, idioma);
                     }
-                    ret += "</tr>";
+                    ret += "</div>";
 
                     //borrar
-                    ret += "<tr>";
-                    ret += "<td>" + HTMLRadio("r.accion", 3, prop, tieneFlores, "borrar", idioma) + "</td>";
-                    ret += "<td style='height:35px;'>" + Tools.tr("Eliminar", idioma) + "</td>";
-                    ret += "<td class='titulo3'>";
+                    ret += "<div style='clear:left;float:left;padding:4px;'>" + HTMLRadio("r.accion", 3, prop, tieneFlores, "borrar", idioma) + "</div>";
+                    ret += "<div style=padding:5px;'>" + Tools.tr("Eliminar", idioma) + "</div>";
+                    ret += "<div class='titulo3'>";
                     //nombre del grupo
                     if (prop != null && accion == "borrar")
                     {
                         ret += HTMLLista(id, lista, prop, 40 * 8, tieneFlores, idioma);
                     }
-                    ret += "</tr>";
+                    ret += "</div>";
                 }
-                ret += "</table>";
+                ret += "</div>";
             }
             else
             {
                 if (prop != null)
                 {
                     string labelAccion = "";
-                    ret += "<table class='abm'>";
+                    ret += "<div class='abm'>";
                     if (accion == "nuevo") labelAccion = Tools.tr("Crear", idioma);
                     if (accion == "existente") labelAccion = Tools.tr("Modificar", idioma);
                     if (accion == "borrar") labelAccion = Tools.tr("Eliminar", idioma);
-                    ret += "<tr>";
-                    ret += "<td style='height:35px;'>" + labelAccion + "</td>";
-                    ret += "<td class='titulo3' style='width:350px;'>" + getText(id, prop) + "</td>";
-                    ret += "</tr>";
-                    ret += "</table>";
+                    ret += "<div style='height:35px;'>" + labelAccion + "</div>";
+                    ret += "<div class='titulo3' style='width:350px;'>" + getText(id, prop) + "</div>";
+                    ret += "</div>";
                 }
             }
             return ret;
@@ -521,6 +515,49 @@ namespace nabu
             else
                 //sin flores
                 ret += "<div style='color:gray;font-size:12px;'>" + Tools.tr("No tiene flores para crear una propuesta", idioma) + "</div>";
+
+            return ret;
+        }
+
+        public string HTMLListaReadonly(string id, string valores, Propuesta prop, int width, bool tieneFlores, string idioma)
+        {
+            Variable v = getVariable(id);
+            string ret = "";
+            if (prop != null)
+            {
+                //ver
+                string value = getValue(id, prop).ToString();
+                foreach (string l in valores.Split('|'))
+                {
+                    string[] item = l.Split('#');
+                    if (value == item[0])
+                    {
+                        if (item.Length == 1)
+                        {
+                            ret += "<input type='text' readonly ";
+                            ret += "class='" + v.className + "' ";
+                            ret += "style='width:" + width + "px;' ";
+                            ret += "value='" + item[0] + "'>";
+                        }
+                        else
+                        {
+                            ret += "<input type='text' readonly ";
+                            ret += "class='" + v.className + "' ";
+                            ret += "style='width:" + width + "px;' ";
+                            ret += "value='" + item[1] + "'>";
+                        }
+                    }
+                }
+                //pongo input invisible para guardar el valor como cualquier otro
+                ret += "<br><input type='hidden' id='" + id + "' value='" + value + "' size=90>"; //no vacio para que lo envie en el submit
+            }
+            else
+            {
+                ret += "<input type='text' readonly ";
+                ret += "class='" + v.className + "' ";
+                ret += "style='width:" + width + "px;' ";
+                ret += "value=''>";
+            }
 
             return ret;
         }
@@ -1034,7 +1071,7 @@ namespace nabu
                 return "";
         }
 
-        private object getValue(string id, Propuesta prop)
+        protected object getValue(string id, Propuesta prop)
         {
             if (prop == null)
                 return getDefaultValue(id);
@@ -1060,17 +1097,21 @@ namespace nabu
         }
 
         public string HTMLFlores(Nodo n, bool showVariante, Usuario u) {
-            string ret;
-            ret = "<div class='votos' style='clear:right;float:right;vertical-align:center;'><nobr>&nbsp;";
-            ret += n.born.ToString("dd/MM/yy");
-            ret += "&nbsp;<img src='res/icono.png' style='vertical-align:middle'>";
-            ret += "&nbsp;" + n.getFloresTotales();
-            ret += "&nbsp;</nobr></div>";
-            if (n.nivel > 0 && showVariante) {
-                if (u.floresDisponibles().Count == 0)
-                    ret += "<input type='button' class='btnDis' style='float:right;' value='Crear variante' title='No tienes flores disponibles' disabled>";
-                else
-                    ret += "<input type='button' class='btn' style='float:right;' value='Crear variante' title='Crea otra propuesta basada en esta' onclick='doVariante(" + n.id + ");'>";
+            string ret = "";
+            if (n != null)
+            {
+                ret = "<div class='votos' style='clear:right;float:right;vertical-align:center;'><nobr>&nbsp;";
+                ret += n.born.ToString("dd/MM/yy");
+                ret += "&nbsp;<img src='res/icono.png' style='vertical-align:middle'>";
+                ret += "&nbsp;" + n.getFloresTotales();
+                ret += "&nbsp;</nobr></div>";
+                if (n.nivel > 0 && showVariante)
+                {
+                    if (u.floresDisponibles().Count == 0)
+                        ret += "<input type='button' class='btnDis' style='float:right;' value='Crear variante' title='No tienes flores disponibles' disabled>";
+                    else
+                        ret += "<input type='button' class='btn' style='float:right;' value='Crear variante' title='Crea otra propuesta basada en esta' onclick='doVariante(" + n.id + ");'>";
+                }
             }
             return ret;
         }

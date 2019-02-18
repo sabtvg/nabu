@@ -272,7 +272,7 @@
             document.getElementById("conminSiPc").innerHTML = tr("conminSiPc");
             document.getElementById("conmaxNoPc").innerHTML = tr("conmaxNoPc");
             document.getElementById("jarDat").innerHTML = tr("Datos del coordinador");
-            document.getElementById("btnBorrar").innerHTML = tr("btnBorrarGrupo");
+            document.getElementById("btnBorrar").innerHTML = tr("btnBorrar");
         }
 
         function doBorrarArbol() {
@@ -314,11 +314,11 @@
                 </select>
                 <div style="float:left;margin-top:5px;margin-left:15px;" id="org">Organizaci&oacute;n</div>
                 <input style="float:left" id="organizacion" type="text" class="txt" size="10" placeholder="Organizacion" disabled/>
-                <div class="divborde" style="clear:left;float:left;background-color: #f5f4f5;">
+                <div class="burbuja" style="clear:left;float:left;">
                     <input id="tipoGrupoC" name="tipoGrupo" style="clear:left;float:left;margin:15px;" type="radio" value="cerrado" />
                     <div style="float:left">Grupo cerrado:<br />Administrado por el coordinador</div>
                 </div>
-                <div class="divborde" style="float:left;margin-left:15px;background-color: #f5f4f5;">
+                <div class="burbuja" style="float:left;">
                     <input id="tipoGrupoA" name="tipoGrupo" style="clear:left;float:left;margin:15px;" type="radio" value="abierto" />
                     <div style="float:left">Grupo abierto:<br />Los usuarios se dan de alta libremente</div>
                 </div>
@@ -363,7 +363,7 @@
         <div class="popupFooter">
             <input id="btnCancelar" style="clear:left;float:left;" type="button" class="btn" value="Cancelar" onclick="doAtras();" /> 
             <input id="btnMod" style="float:left;" type="button" class="btn" value="Modificar" onclick="doModificar();" /> 
-            <input id="btnBorrar" type="button" class="btn" value="Borrar grupo y todos sus datos" onclick="doBorrarArbol();" style="float:right;background-color:lightcoral;margin-right:5px" /> 
+            <input id="btnBorrar" type="button" class="btn" value="Borrar grupo" onclick="doBorrarArbol();" style="float:right;background-color:lightcoral;margin-right:5px" /> 
         </div>
     </div>
 

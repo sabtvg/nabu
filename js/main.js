@@ -41,6 +41,7 @@ var emailParam;
 var historico = false;
 var historicoFecha;
 var grupoPersonal;
+var lastMouse = null;
 
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
@@ -65,7 +66,7 @@ var modelosEvaluacion;
 
 $(document).mousemove(function (event) {
     move(event);
-    event.preventDefault();
+    //event.preventDefault();
 });
 
 function move(event) {
@@ -179,6 +180,9 @@ function doLoad2() {
         var cookie = "";
         if (grupoParam && grupoParam != "" && grupoParam != "null") {
             cookie = getCookie("nabu-" + grupoParam.replace(' ', ''));
+
+            document.getElementById("pie").style.display = "none";
+
             if (cookie == "") {
                 //login normal con el grupo parametro
                 doResize();
@@ -232,8 +236,17 @@ function doKeypress() {
 
 function gruposEffectIn() {
     var s = "";
-    s += "<div class='titulo0' style='font-size:10vh'><img src='res/logo2.png' class='logo'>Nab&uacute;</div>"
-    s += "<div class='titulo1'><b>" + tr("Grupos") + "</b></div>";
+    s += "<div style='font-size:10vh;margin:top;'>";
+    s += "<img src='res/logo2.png' class='logo' style='position:relative;left:3px;top:0px;padding:4px;'>";
+    if (window.innerWidth <= 400)
+        s += "<span class='titulo0' style='position:relative;top:-10px;left:2px;font-size:30px;'>Nab&uacute;</span>";
+    else if (window.innerWidth <= 800)
+        s += "<span class='titulo0' style='position:relative;top:-10px;left:2px;font-size:30px;'>Nab&uacute;</span>";
+    else
+        s += "<span class='titulo0' style='position:relative;top:-27px;left:2px;font-size:44px;'>Nab&uacute;</span>";
+
+    s += "</div>"
+    s += "<div class='titulo1' style='clear:left;'><b>" + tr("Grupos") + "</b></div>";
     for (i in config.grupos) {
         var grupo = config.grupos[i];
         s += " <a href='default.html?grupo=" + grupo;
@@ -245,6 +258,9 @@ function gruposEffectIn() {
 
     document.getElementById("grupos").style.display = "block";
     document.getElementById("grupos").innerHTML = s;
+
+    //pie
+    document.getElementById("pie").style.display = "block";
 
     estado = 'grupos';
 }
@@ -369,9 +385,26 @@ function doResize() {
     showTimePanel();
 
     //resize del menuppal segun pantalla
-    var scale = scalex < scaley ? scalex : scaley;
-    var menuscale = scale * 1.4;
-    if (menuscale > 0.8) menuscale = 0.8;
+    var scale, menuscale;
+    if (window.innerWidth <= 400) {
+        //movil vertical
+        scale = scalex;
+        menuscale = scalex * 2.1;
+        //if (menuscale > 2) menuscale = 2;
+    }
+    else if (window.innerWidth <= 800) {
+        //movil horizontal
+        scale = scalex;
+        menuscale = scalex * 1.4;
+        if (menuscale > 0.8) menuscale = 0.8;
+    }
+    else {
+        //ordenador
+        scale = scalex;
+        menuscale = scalex * 1.4;
+        if (menuscale > 0.8) menuscale = 0.8;
+    }
+
     document.getElementById("padrenombre").style.width = 800 * menuscale + 'px';
     document.getElementById("padrenombre").style.top = -15 - 5 * menuscale + 'px';
 
@@ -464,7 +497,7 @@ function doResize() {
     document.getElementById("ppal11").src = "res/" + idioma + "/operativo.png";
     document.getElementById("ppal11").style.width = 35 * menuscale + 'px';
     document.getElementById("ppal11").style.height = 230 * menuscale + 'px';
-    document.getElementById("ppal11").style.left = 800 * menuscale + 'px';
+    document.getElementById("ppal11").style.left = 775 * menuscale + 'px';
     document.getElementById("ppal11").style.top = 150 * menuscale + 'px';
 
     //traducir
@@ -521,12 +554,28 @@ function loginEffectIn(){
         document.getElementById("loginFlor").style.visibility = "hidden";
         document.getElementById("timeBack").style.visibility = "hidden";
 
-        document.getElementById("loginIn").style.top = (window.innerHeight / 6) + 'px';
-        document.getElementById("loginFlor").style.top = (window.innerHeight / 6) + 'px';
+        var florTop = window.innerHeight / 6;
+        var loginTop = window.innerHeight / 6;
+        var florXfin = window.innerWidth / 2 - 170;
+        var loginXfin = window.innerWidth / 2;
+        var tipYfin = window.innerHeight / 4 + 200;
+        if (window.innerWidth <= 400) {
+            //movil vertical
+            florTop = 260;
+            loginTop = 80;
+            florXfin = window.innerWidth / 2 - 65;
+            loginXfin = window.innerWidth / 2 - 140;
+            tipYfin = 350;
+        }
+        else if (window.innerWidth <= 800) {
+            //movil horizonta
+        }
+        document.getElementById("loginIn").style.top = loginTop + 'px';
+        document.getElementById("loginFlor").style.top = florTop + 'px';
+        efectoLeft(document.getElementById("loginIn"), 0, 750, window.innerWidth, loginXfin, TWEEN.Easing.Cubic.Out);
+        efectoLeft(document.getElementById("loginFlor"), 0, 750, -200, florXfin, TWEEN.Easing.Exponential.Out);
 
-        efectoLeft(document.getElementById("loginIn"), 0, 750, window.innerWidth, window.innerWidth / 2 - 50, TWEEN.Easing.Cubic.Out);
-        efectoLeft(document.getElementById("loginFlor"), 0, 750, -200, window.innerWidth / 2 - 230, TWEEN.Easing.Exponential.Out);
-        efectoTop(document.getElementById("tip"), 800, window.innerHeight, window.innerHeight / 4 + 200, TWEEN.Easing.Elastic.Out);
+        efectoTop(document.getElementById("tip"), 800, window.innerHeight, tipYfin, TWEEN.Easing.Elastic.Out);
         timerFlores = setInterval(function () {
             rotFlores += 0.3;
             document.getElementById("loginFlor").style.transform = "rotate(" + rotFlores + "deg)";
@@ -668,6 +717,8 @@ function doBorrarAlertas() {
         + "&grupo=" + arbolPersonal.nombre,
         function (data) {}); //no proceso respuesta
     div.style.display = "none";
+    var icon = document.getElementById("alertaIcon");
+    icon.style.display = "none";
 }
 
 function doMenuppal() {
@@ -844,8 +895,7 @@ function doAltaUsuario() {
             var URLEstatuto = data.split(';')[1];
             if (tipoGrupo == 'cerrado') {
                 document.getElementById("altaUsuarioMsgC").innerHTML = "";
-                document.getElementById("altaUsuarioC").style.visibility = 'visible';
-                efectoTop(document.getElementById("altaUsuarioC"), 0, -600 * scale, 80 * scale, TWEEN.Easing.Cubic.Out);
+                document.getElementById("altaUsuarioC").style.display = 'block';
             }
             else {
                 if (URLEstatuto != "")
@@ -855,8 +905,7 @@ function doAltaUsuario() {
 
                 document.getElementById("altaUsuarioLeido").innerHTML = tr("altaUsuarioLeido");
                 document.getElementById("altaUsuarioMsgA").innerHTML = "";
-                document.getElementById("altaUsuarioA").style.visibility = 'visible';
-                efectoTop(document.getElementById("altaUsuarioA"), 0, -600 * scale, 80 * scale, TWEEN.Easing.Cubic.Out);
+                document.getElementById("altaUsuarioA").style.display = 'block';
             }
         }
     });

@@ -246,6 +246,8 @@
         function dibujarFrutos(lds) {
             var s = "";
             var modelos = getModelos(lds);
+            var offsetY = 0;
+            var imgZoom = 0.9;
             try
             {
                 inicio = toDate(lds[lds.length - 1].fecha).addDays(-viewDays)
@@ -257,14 +259,28 @@
             }
             viewWidth = window.innerWidth - viewLeft - 10;
 
+            //stepy
+            if (window.innerWidth <= 400) {
+                //movil vertical
+                stepY = 280;
+                offsetY = 1300;
+                imgZoom = 0.5;
+            }
+            else if (window.innerWidth <= 800) {
+                //movil horizontal
+                stepY = 100;
+                imgZoom = 0.5;
+            }
+
+
             //modelos
             for (var h in modelos) {
-                var y = viewTop * zoom + h * stepY * zoom + 25 * zoom;
-                s += "<text x='5' y='" + y + "' fill='black' class='titulo3'>" + modelos[h] + "</text>";
+                var y = viewTop + h * stepY + 25 + offsetY;
+                s += "<text x='5' y='" + (y * zoom) + "' fill='black' class='titulo3'>" + modelos[h] + "</text>";
             }
 
             //marcas
-            var y = viewTop + modelos.length * stepY + 50;
+            var y = viewTop + modelos.length * stepY + 50 + offsetY ;
             for (var i = 0; i < viewDays; i++) {
                 var x = viewLeft + i / viewDays * viewWidth;
                 var fecha = final.addDays(-i - offsetDays);
@@ -296,34 +312,38 @@
                 //var x = 180 + ld.dias * 10 * zoom - offsetDays;
                 var fecha = toDate(ld.fecha);
                 var x = viewLeft + (days(final) - days(fecha) - offsetDays) / viewDays * viewWidth;
-                var y = viewTop + indexOf(ld.modeloNombre, modelos) * stepY;
+                var y = viewTop + indexOf(ld.modeloNombre, modelos) * stepY + offsetY;
                 if (x >= viewLeft) {
-                    if (Math.abs(x - xant) < 5) dif = 10; //agrego una pequeña diferencia por si caen justo uno encima del otro
-                    s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + (x + dif) + "' y='" + (y * zoom) + "' ";
-                    s += "height='" + (79 * zoom) + "px' width='" + (64 * zoom) + "px' ";
+                    if (Math.abs(x - xant) < 5) dif = 10; //agrego una pequena diferencia por si caen justo uno encima del otro
+                    s += "<image xlink:href='res/documentos/" + ld.modeloNombre + ".png' x='" + (x + dif - 64 * imgZoom / 2) + "' y='" + (y * zoom - 79 * imgZoom / 2) + "' ";
+                    s += "height='" + (79 * imgZoom) + "px' width='" + (64 * imgZoom) + "px' ";
                     s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
+
+                    //titulo
+                    s += "<text x='" + (x + dif + 32 * zoom) + "' y='" + (y * zoom + 90 * zoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
+                        + ld.titulo + "</text>";
 
                     //seguimiento
                     var sdt = formatShortDate(toDate(ld.fecha));
-                    s += "<text x='" + (x + dif + 32 * zoom) + "' y='" + (y * zoom + 90 * zoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                    s += "<text x='" + (x + dif) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
                 xant = x + dif;
                 dif = 0;
             }
 
             //recta
-            y = viewTop + modelos.length * stepY + 50;
+            y = viewTop + modelos.length * stepY + 50 + offsetY;
             var x1 = viewLeft;
             var x2 = window.innerWidth - viewRight;
             s += "<line x1='" + x1 + "' y1='" + (y * zoom) + "' x2='" + x2 + "' y2='" + (y * zoom) + "' style='stroke:gray;stroke-width:2' />";
 
             //inicio (derecha)
             var sdt = formatDate(inicio.addDays(-offsetDays));
-            s += "<text x='" + x2 + "' y='" + (y + 45) + "' fill='gray' class='titulo4' text-anchor='end'>" + sdt + "</text>";
+            s += "<text x='" + x2 + "' y='" + (y * zoom + 45) + "' fill='gray' class='titulo4' text-anchor='end'>" + sdt + "</text>";
 
             //fin (izquierda)
             sdt = formatDate(final.addDays(-offsetDays));
-            s += "<text x='" + x1 + "' y='" + (y + 45) + "' fill='gray' class='titulo4' text-anchor='start'>" + sdt + "</text>";
+            s += "<text x='" + x1 + "' y='" + (y * zoom + 45) + "' fill='gray' class='titulo4' text-anchor='start'>" + sdt + "</text>";
 
 
             return s;

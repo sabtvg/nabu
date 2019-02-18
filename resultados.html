@@ -297,9 +297,13 @@
                     s += "height='" + (79 * zoom) + "px' width='" + (64 * zoom) + "px' ";
                     s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
 
+                    //titulo
+                    s += "<text x='" + (x + dif + 32 * zoom) + "' y='" + (y * zoom + 90 * zoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
+                        + ld.titulo + "</text>";
+
                     //seguimiento
                     var sdt = formatShortDate(toDate(ld.fecha));
-                    s += "<text x='" + (x + dif + 32 * zoom - imgWidth) + "' y='" + (y * zoom + 90 * zoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                    s += "<text x='" + (x + dif + 32 * zoom - imgWidth) + "' y='" + (y * zoom + 110 * zoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
                 xant = x + dif;
                 dif = 0;

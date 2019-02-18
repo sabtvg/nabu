@@ -149,7 +149,7 @@
             email = "";
 
             var div = document.getElementById("info");
-            div.style.visibility = "hidden";
+            div.style.display = "none";
 
             getHttp("doMain.aspx?actn=" + accion + "&email=" + usuario.email
                 + "&grupo=" + usuario.grupo
@@ -171,8 +171,8 @@
         function bosqueToPoints(nodo) {
             var s = '';
 
-            if (nodo.exception) {
-                s += nodo.exception;
+            if (nodo.msg) {
+                s += nodo.msg;
             }
             else if (!nodo.descargado) {
                 generando = true;
@@ -237,19 +237,19 @@
             document.getElementById("menuItem3").innerHTML = tr("Ver mapa");
             document.getElementById("menuItem4").innerHTML = tr("Ver 3D");
 
-            //panelgrupo
-            var usus = (usuarios.split(";").length - 1);
-            var reps = (representantes.split(";").length - 1);
-            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
-            //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
-            s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
-            email = "";
+            ////panelgrupo
+            //var usus = (usuarios.split(";").length - 1);
+            //var reps = (representantes.split(";").length - 1);
+            //s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            //s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            //s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            ////s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
+            //s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
+            //email = "";
 
-            var panel = document.getElementById("panelGrupo");
-            panel.innerHTML = s;
-            panel.style.visibility = 'visible';
+            //var panel = document.getElementById("panelGrupo");
+            //panel.innerHTML = s;
+            //panel.style.visibility = 'visible';
 
             if (generando)
                 setTimeout(actualizarBosque, 1000);
@@ -280,7 +280,8 @@
                             label: {
                                 text: person.label,
                                 color: 'black',
-                                fontSize: "30px"
+                                fontSize: "18px",
+                                usuario: person.usuario
                             },
                             icon: {
                                 url: person.icon,
@@ -294,11 +295,19 @@
 
                         bounds.extend(marker.position);
 
-                        marker.addListener('click', function (m) {
-                            var person = document.getElementById("person");
-                            person.innerHTML = marker.label;
-                            person.style.display = "block";
-                        });
+                        google.maps.event.addListener(marker, 'click', (function (marker) {
+                            return function (m) {
+                                var info = document.getElementById("info");
+                                info.innerHTML = HTMLUsuarioExtendido(marker.label.usuario, grupoParam, "float:left");
+                                info.style.display = "block";
+                            }
+                        })(marker));
+
+                        //marker.addListener('click', function (m) {
+                        //    var info = document.getElementById("info");
+                        //    info.innerHTML = HTMLUsuarioExtendido(marker.label.usuario, grupoParam, "float:left");
+                        //    info.style.display = "block";
+                        //});
 
                         markers.push(marker);
                     }
@@ -337,12 +346,22 @@
         function pointsToCircles() {
             circles = [];
             for (var p in points) {
-                var point = points[p];
+                var point = points[p]; 
                 var circle = getCircle(point);
                 if (circle)
-                    circle.persons.push({ label: point.label, icon: point.icon });
+                    circle.persons.push({ label: point.label, icon: point.icon, usuario: point.usuario });
                 else
-                    circles.push({ lat: point.lat, lng: point.lng, persons: [{ label: point.label, icon: point.icon }], points: [] });
+                    circles.push({
+                        lat: point.lat,
+                        lng: point.lng,
+                        persons: [
+                            {
+                                label: point.label,
+                                icon: point.icon,
+                                usuario: point.usuario
+                            }],
+                        points: []
+                    });
 
             }
         }
@@ -429,7 +448,7 @@
     </div>
     
     <!--panel info--------------------------------------------------------------------------------------------------->
-    <div id="info" class="info">
+    <div id="info" class="info" style="border:none;visibility:visible;background-color:white">
     </div>
     
     <!--titulo--------------------------------------------------------------------------------------------------->

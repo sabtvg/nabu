@@ -43,9 +43,20 @@ function crearArbol() {
     diagonal = d3.svg.diagonal.radial()
         .projection(function (d) { return [d.y, d.x / 180 * Math.PI - Math.PI / 2]; });
 
-    svgArbol = d3.select("body").append("svg")
+    //svgArbol = d3.select("body").append("svg")
+    //    .attr("id", "arbol")
+    //    .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;z-index:-1;")
+    //    .on("mousedown", doMousedown)
+    //    .on("mousemove", doMousemove)
+    //    .on("mouseup", doMouseup)
+    //    .on("mousewheel", doMousewheel1)
+    //    //.on("DOMMouseScroll", doMousewheel2)  //firefox  //NO FUNCIONA EVENT
+    //    .append("g")
+    //    .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
+
+    svgArbol = d3.select("svg")
         .attr("id", "arbol")
-        .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;z-index:-1")
+        .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;")
         .on("mousedown", doMousedown)
         .on("mousemove", doMousemove)
         .on("mouseup", doMouseup)
@@ -53,6 +64,7 @@ function crearArbol() {
         //.on("DOMMouseScroll", doMousewheel2)  //firefox  //NO FUNCIONA EVENT
         .append("g")
         .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
+
 
     dibujarArbol(arbolPersonal.raiz);
 
@@ -136,6 +148,7 @@ function dibujarArbol(referencia) {
 
     //actualizo las flores de los padres
     useMaxWidth = false;
+    setParents(arbolPersonal.raiz);
     updateFloresTotales(arbolPersonal.raiz);
 
     // Compute the new tree layout.
@@ -594,6 +607,15 @@ function txtCut(s) {
         return s;
 }
 
+function setParents(node) {
+    var hijos = node.children;
+    for (var i in hijos) {
+        var hijo = hijos[i];
+        hijo.parent = node;                 //aprovecho la recorrida y fijo al padre de cada nodo
+        setParents(hijo);
+    }
+}
+
 function updateFloresTotales(node) {
     if (node.flores == undefined)
         if (node.children)
@@ -608,7 +630,6 @@ function updateFloresTotales(node) {
     var totalFlores = 0;
     for (var i in hijos) {
         var hijo = hijos[i];
-        hijo.parent = node;                 //aprovecho la recorrida y fijo al padre de cada nodo
         //hijo.nivel = node.nivel + 1;
         updateFloresTotales(hijo);
         totalFlores += hijo.totalFlores;
@@ -680,11 +701,7 @@ function florClick(d) {
     }
 }
 
-function nodeClick(d) {
-    //guardo nodo seleccionado
-    if (menu != null)
-        menu.style.visibility = "hidden";
-
+function selectNode(d) {
     selectedNode = d;
 
     //remember parents
@@ -694,6 +711,14 @@ function nodeClick(d) {
         parents.push(n);
         n = n.parent;
     }
+}
+
+function nodeClick(d) {
+    //guardo nodo seleccionado
+    if (menu != null)
+        menu.style.visibility = "hidden";
+
+    selectNode(d);
 
     //cambio imagen al nodo seleccionado
     dibujarArbol(selectedNode);

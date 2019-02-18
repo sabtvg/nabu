@@ -362,11 +362,11 @@ namespace nabu
                         System.IO.Directory.CreateDirectory(grupo.path + "\\" + docPath);
                         System.IO.Directory.CreateDirectory(grupo.path + "\\" + docPath + "\\res\\documentos");
                         System.IO.File.Copy(grupo.path + "\\..\\..\\styles.css", grupo.path + "\\" + docPath + "\\styles.css");
-                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(grupo.path + "\\..\\..\\res\\documentos");
-                        foreach (System.IO.FileInfo fi in di.GetFiles())
-                        {
-                            System.IO.File.Copy(fi.FullName, grupo.path + "\\" + docPath + "\\res\\documentos\\" + fi.Name);
-                        }
+                        //System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(grupo.path + "\\..\\..\\res\\documentos");
+                        //foreach (System.IO.FileInfo fi in di.GetFiles())
+                        //{
+                        //    System.IO.File.Copy(fi.FullName, grupo.path + "\\" + docPath + "\\res\\documentos\\" + fi.Name);
+                        //}
                     }
 
                     //titulo
@@ -383,6 +383,9 @@ namespace nabu
                         else if (m.versionar == "modelo" && ldi.modeloNombre == m.nombre)
                             version++;
                     }
+
+                    //guardo HTML. Debo hacerlo antes de ejecutar consenso por si usa el fichero HTML
+                    generarDocumentoHTML(n, fdate, fname, docPath, URL, version, titulo);
 
                     //creo documento
                     Documento doc = crearDocumento(n, fdate, fname, docPath, URL);
@@ -401,7 +404,7 @@ namespace nabu
                     //guardo el documento
                     doc.save();
 
-                    //guardo HTML
+                    //vuelvo a guarda HTML para agregarle los logs
                     generarDocumentoHTML(n, fdate, fname, docPath, URL, version, titulo, doc.logs);
 
                     //notifico via email a todos los socios
@@ -509,6 +512,11 @@ namespace nabu
             return doc;
         }
 
+        private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL, int version, string titulo)
+        {
+            generarDocumentoHTML(n, now, fname, docPath, URL, version, titulo, null);
+        }
+
         private void generarDocumentoHTML(Nodo n, DateTime now, string fname, string docPath, string URL, int version, string titulo, List<Documento.Log> logs)
         {
             List<Nodo> pathn = getPath(n.id);
@@ -564,12 +572,14 @@ namespace nabu
             if (this.grupo.getFacilitador() != null) ret += "Facilitador: " + grupo.getFacilitador().nombre + "<br>";
 
             //log consenso
-            ret += "<br>";
-            ret += "Log consenso: <br>";
-            foreach (Documento.Log l in logs)
-                ret += "&nbsp;&nbsp;" + l.msg + "<br>";
-
-            ret += "</div>";
+            if (logs != null)
+            {
+                ret += "<br>";
+                ret += "Log consenso: <br>";
+                foreach (Documento.Log l in logs)
+                    ret += "&nbsp;&nbsp;" + l.msg + "<br>";
+                ret += "</div>";
+            }
 
             //armo HTML
             string html = "";

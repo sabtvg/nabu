@@ -91,9 +91,7 @@
                         var usuarios = JSON.parse(data);
                         var s = "<table class='table'>";
                         s += "<tr>"
-                        s += "<td style='width:20px;'></td>";
-                        s += "<td style='width:60px;'></td>";
-                        s += "<td style='width:180px;'><b>" + tr("Nombre") + "</b></td>";
+                        s += "<td style='width:240px;' colspan=2><b>" + tr("Nombre") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
                         s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
                         s += "<td style='width:55px;text-align:center;'><b>" + tr("estadoUsuario") + "</b></td>";
@@ -101,18 +99,18 @@
                         s += "<td style='width:25px;text-align:center;' title='" + tr("abrSecretaria") + "'><b>S</b></td>";
                         s += "<td style='width:25px;text-align:center;' title='" + tr("abrRepresentante") + "'><b>R</b></td>";
                         s += "<td style='width:25px;text-align:center;' title='" + tr("abrFacilitador") + "'><b>F</b></td>";
-                        s += "<td style='width:50px;text-align:center;'><b>" + tr("email") + "</b></td>";
+                        //s += "<td style='width:50px;text-align:center;'><b>" + tr("email") + "</b></td>";
                         s += "<td style='width:50px;text-align:center;'><b>" + tr("borrar") + "</b></td>";
                         s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
                             s += "<tr>"
-                            s += "<td><img src='res/ver.gif' onclick=\"doSelect('" + usu.email + "');\" style='cursor:pointer;'></td>";
                             var d = new Date();
                             s += "<td style='text-align:center'><img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" style='border-radius:5px;height:60px;width:auto;'></td>";
                             s += "<td>" + usu.nombre + "<br>";
-                            s += usu.funcion + "<br>";
-                            s += "<a href='mailto:" + usu.email + "'>" + usu.email + "</a></td>";
+                            s += usu.funcion; // + "<br>";
+                            //s += "<a href='mailto:" + usu.email + "'>" + usu.email + "</a>";
+                            s += "</td>";
                             s += "<td style='text-align:center;'>"
                                 + "<div class='votos' style='border-radius:12px; margin-left:20px;padding:5px;'>"
                                 + "<img style='margin-top:2px;' src='res/icono.png'><br />"
@@ -131,7 +129,7 @@
                             s += "<td style='text-align:center;padding:2px;'>" + box(usu.isSecretaria, "#FF66CC", tr("abrSecretaria")) + "</td>";
                             s += "<td style='text-align:center;padding:2px;'>" + box(usu.isRepresentante, "#00CC99", tr("abrRepresentante")) + "</td>";
                             s += "<td style='text-align:center;padding:2px;'>" + box(usu.isFacilitador, "#FF9900", tr("abrFacilitador")) + "</td>";
-                            s += "<td style='text-align:center;padding:2px;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
+                            //s += "<td style='text-align:center;padding:2px;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
                             if (!usu.isAdmin)
                                 s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
                             else
@@ -156,13 +154,18 @@
             document.location = "default.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;;
         }
 
+        function doResize() {
+            //background
+            setBackgroundImage();
+        }
+
         function traducir() {
             document.getElementById("usu").innerHTML = tr("Usuarios");
             document.getElementById("btnCancelar").innerHTML = tr("btnCancelar");
         }
     </script>
 </head>
-<body onload="doLoad();" style="overflow:hidden">
+<body onload="doLoad();" style="overflow:hidden" onresize="doResize();">
 
         <div id="todo" class="ventana">
             <table style="width:100%">
@@ -175,7 +178,7 @@
                 </tr>          
             </table>
 
-            <div id="usuarios" style="overflow:scroll;height:100%"></div>
+            <div id="usuarios" class="verusuarios"></div>
             <br />
 
         </div>

@@ -202,7 +202,7 @@
 }
 .simditor .simditor-body {
     padding: 5px 5px 5px;
-    min-height: 150px;
+    min-height: 80px;
     outline: none;
     cursor: text;
     position: relative;
