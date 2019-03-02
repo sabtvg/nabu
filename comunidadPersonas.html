@@ -1,4 +1,4 @@
-<!--
+ï»¿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -200,9 +200,18 @@
                  });
         }
 
+        function doResize() {
+            //background
+            setBackgroundImage();
+
+            scale = window.innerWidth / 1920;
+            offsetX = -10000;
+            offsetY = -10000;
+
+            dibujarTodo();
+        }
+
         function dibujarTodo() {
-            var scalex = window.innerWidth / 1920;
-            var scaley = window.innerHeight / 1080;
             var s = "";
 
             generando = false;
@@ -229,16 +238,16 @@
             //panelgrupo
             var usus = (usuarios.split(";").length - 1);
             var reps = (representantes.split(";").length - 1);
-            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
             //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
             s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
             email = "";
 
             var panel = document.getElementById("panelGrupo");
             panel.innerHTML = s;
-            panel.style.visibility = 'visible';
+            panel.style.display = 'block';
 
             if (generando)
                 setTimeout(actualizarBosque, 1000);
@@ -247,7 +256,6 @@
         //personas
         function doPersonas(x, y, accion) {
             document.getElementById("todo").style.display = "inline";
-            document.getElementById("canvasGL").style.display = "none";
 
             grupos = 0;
             usuarios = ";";
@@ -347,6 +355,7 @@
                 var usu = nodo.usuarios[i];
                 s += "<image x='" + (-length * imgW / 2 + imgW * parseInt(i)) + "' y='" + (5 + fontSize1).toFixed(0) + "' height='" + (imgH).toFixed(0) + "px' width='" + (imgW) + "px'";
                 s += " onmouseover='email=\"" + usu.email + "\";showInfo(\"" + usu.email + ";" + nodo.nombre + "\");' ";
+                s += " onclick='email=\"" + usu.email + "\";showInfo(\"" + usu.email + ";" + nodo.nombre + "\");' ";
                 s += " style='cursor:pointer;' ";
 
                 if (usu.email == email || email == "") {
@@ -464,11 +473,6 @@
             return { niveles: ret + maxHijo, ancho: nodo.ancho, alto: hijosAlto };
         }
 
-        function doResize(){
-            //background
-            setBackgroundImage();
-        }
-
         function addPolar(p1, p2) {
             var r1 = toRect(p1.m, p1.a);
             var r2 = toRect(p2.m, p2.a);
@@ -484,7 +488,7 @@
                 showInfo2(bosque.padre, grupo, email);
 
                 if (cleanInterval != null) clearInterval(cleanInterval);
-                cleanInterval = setTimeout(mostrarTodo, 5000); //para que vuelva a enseñar a todas las personas
+                cleanInterval = setTimeout(mostrarTodo, 5000); //para que vuelva a enseï¿½ar a todas las personas
                 dibujarTodo();
                 showinfoLastClave = clave; //para evitar parpadeos
             }
@@ -512,7 +516,7 @@
                         var usu = nodo.usuarios[i];
                         if (usu.email == email) {
                             var div = document.getElementById("info");
-                            var info = "<img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png' onerror=\"this.src='res/perfilDefault.jpg'\" style='clear:left;float:left;border-radius:15px;margin:15px;'>";
+                            var info = "<img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png' onerror=\"this.src='res/perfilDefault.jpg'\" class='infoImg'>";
                             info += "<div style='float:left;'>"
                             info += "<span>" + nodo.nombre + "</span><br>"
                             info += "<b>" + usu.nombre + "</b><br>";
@@ -545,8 +549,7 @@
     </script>
 </head>
 <body onload="doLoad();" onresize="doResize()" style="overflow:hidden">
-    <canvas id="canvasGL" style="left:0px;top:0px;width:100%;height:100%;z-index:-1"></canvas>
-    <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1"></svg>
+    <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;"></svg>
 
     <!--atras--------------------------------------------------------------------------------------------------->
     <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
@@ -557,7 +560,7 @@
     
 
     <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelGrupo" class="borde" style="position:fixed;left:0.5vw;top:10vh;visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    <div id="panelGrupo" class="panelGrupo">
     </div>
     
     <!--panel info--------------------------------------------------------------------------------------------------->

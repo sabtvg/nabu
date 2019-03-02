@@ -47,6 +47,9 @@ function doDecidimos() {
     //flores
     timerFlores = setInterval(rotarFlores, 200);
 
+    if (window.innerWidth <= 400)
+        treeScale = scale * 3;
+
     //dibujo el arbol
     if (svgArbol == null)
         crearArbol();
@@ -131,7 +134,7 @@ function seleccionarModelo() {
 
         //cartel sociocracia.net
         list += "<div style='clear:left;float:left;vertical-align:top;font-size:12px;text-align:center;padding:5px;width:100%;' colspan=4>" + tr("nuevos modelos") + "</div>";
-        list += "<div style='clear:left;float:left;width:100%;text-align:center;'><input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelosDebate\").style.display = \"none\";' /></div>";
+        list += "<div style='clear:left;float:left;width:100%;text-align:center;'><input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' style='float:unset;' onclick='document.getElementById(\"modelosDebate\").style.display = \"none\";' /></div>";
         list += "</div>";
 
 

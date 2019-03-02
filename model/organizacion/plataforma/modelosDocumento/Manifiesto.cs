@@ -114,7 +114,7 @@ namespace nabu.plataforma.modelos
             if (modo == eModo.consenso)
                 ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 70 * 8, tieneFlores, g.idioma);
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ": " + HTMLText("s.titulo", prop, width - 100, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "<br><span style='color:gray;font-size:12px;'>" + Tools.tr("(Aparece en el pie del arbol)", g.idioma);
             ret += "</nobr></div>";
@@ -172,7 +172,7 @@ namespace nabu.plataforma.modelos
                 }
                 if (anterior != null)
                 {
-                    ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;width:350px'><tr>";
+                    ret += "<table class='smalltip' style='margin: 0 auto;background:wheat;min-width:250px;max-width:350px'><tr>";
                     ret += "<td colspan=2 style='text-align:center;'><b>" + Tools.tr("Este manifiesto reemplaza al anterior", g.idioma) + "</b></td>";
                     ret += "<tr><td>";
                     ret += "<img src='" + anterior.icono + "' style='width:32px;height:40px'></td>";
@@ -274,6 +274,7 @@ namespace nabu.plataforma.modelos
                 foreach (Propuesta prop in doc.propuestas)
                 {
                     prop.nodoID = 0;
+                    prop.born = DateTime.Now;
                     props.Add(prop);
                 }
             }

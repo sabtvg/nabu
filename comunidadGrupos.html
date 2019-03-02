@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -195,9 +195,19 @@
                  });
         }
 
+
+        function doResize() {
+            //background
+            setBackgroundImage();
+
+            scale = window.innerWidth / 1920;
+            offsetX = -10000;
+            offsetY = -10000;
+
+            dibujarTodo();
+        }
+
         function dibujarTodo() {
-            var scalex = window.innerWidth / 1920;
-            var scaley = window.innerHeight / 1080;
             var s = "";
 
             generando = false;
@@ -223,15 +233,15 @@
             //panelgrupo
             var usus = (usuarios.split(";").length - 1);
             var reps = (representantes.split(";").length - 1);
-            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
             //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
             s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
 
             var panel = document.getElementById("panelGrupo");
             panel.innerHTML = s;
-            panel.style.visibility = 'visible';
+            panel.style.display = 'block';
 
             if (generando)
                 setTimeout(actualizarBosque, 1000);
@@ -484,11 +494,6 @@
                 return s.substring(0, 25) + "...";
         }
 
-        function doResize(){
-            //background
-            setBackgroundImage();
-        }
-
         function addPolar(p1, p2) {
             var r1 = toRect(p1.m, p1.a);
             var r2 = toRect(p2.m, p2.a);
@@ -509,7 +514,7 @@
     
     <div style="position:fixed;left:0.5vw;top:10vh;">
     <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelGrupo" class="borde" style="visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    <div id="panelGrupo" class="panelGrupo">
     </div>
 
     <!--titulo--------------------------------------------------------------------------------------------------->

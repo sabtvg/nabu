@@ -57,7 +57,7 @@ namespace nabu.plataforma.modelos
 
             //nivel 3
             variables.Add(new Variable("s.lugar", 3000, 3));
-            variables.Add(new Variable("s.materiales", 3000, 3));
+            variables.Add(new Variable("s.recursos", 3000, 3));
             variables.Add(new Variable("s.transporte", 3000, 3));
 
             //nivel 4
@@ -103,7 +103,7 @@ namespace nabu.plataforma.modelos
                 else if (prop.nivel == 3)
                 {
                     if (getText("s.lugar", prop) == ""
-                        && getText("s.materiales", prop) == ""
+                        && getText("s.recursos", prop) == ""
                         && getText("s.transporte", prop) == "")
                     {
                         addError(3, "La propuesta no puede estar completamente vacia");
@@ -174,8 +174,8 @@ namespace nabu.plataforma.modelos
                 //Lugar
                 ret += HTMLSeccion("evento.lugar.titulo", "evento.lugar.tip", "s.lugar", editar, prop, tieneFlores, g, width);
 
-                //materiales
-                ret += HTMLSeccion("evento.materiales.titulo", "evento.materiales.tip", "s.materiales", editar, prop, tieneFlores, g, width);
+                //recursos
+                ret += HTMLSeccion("evento.recursos.titulo", "evento.recursos.tip", "s.recursos", editar, prop, tieneFlores, g, width);
 
                 //Otros
                 ret += HTMLSeccion("evento.transportes.titulo", "evento.transportes.tip", "s.transporte", editar, prop, tieneFlores, g, width);

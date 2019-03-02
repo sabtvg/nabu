@@ -43,17 +43,6 @@ function crearArbol() {
     diagonal = d3.svg.diagonal.radial()
         .projection(function (d) { return [d.y, d.x / 180 * Math.PI - Math.PI / 2]; });
 
-    //svgArbol = d3.select("body").append("svg")
-    //    .attr("id", "arbol")
-    //    .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;z-index:-1;")
-    //    .on("mousedown", doMousedown)
-    //    .on("mousemove", doMousemove)
-    //    .on("mouseup", doMouseup)
-    //    .on("mousewheel", doMousewheel1)
-    //    //.on("DOMMouseScroll", doMousewheel2)  //firefox  //NO FUNCIONA EVENT
-    //    .append("g")
-    //    .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
-
     svgArbol = d3.select("svg")
         .attr("id", "arbol")
         .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;")
@@ -139,12 +128,31 @@ function translateArbol(x, y) {
 
 function rotarFlores() {
     rotFlores++;
-    var offFlor = window.innerWidth <= 800 ? -39 : -19; //responsive
+    var offFlor;
+    if (window.innerWidth <= 400) {
+        //movil vertical
+        offFlor = -75
+    }
+    else if (window.innerWidth <= 800) {
+        //movil horizontal
+        offFlor = -39
+    }
+    else {
+        //ordenador
+        offFlor = -19
+    }
     svgArbol.selectAll(".florImage")
         .attr("transform", "rotate(" + rotFlores.toFixed(0) + ")translate(" + (offFlor * scale).toFixed(0) + "," + (offFlor * scale).toFixed(0) + ")");
 }
 
 function dibujarArbol(referencia) {
+    d3.select("svg")
+        .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;")
+
+    //d3.select("svg")
+    //    .select("g")
+    //    .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
+
 
     //actualizo las flores de los padres
     useMaxWidth = false;
@@ -196,18 +204,18 @@ function dibujarArbol(referencia) {
         .attr("id", function (d) {
             return 't1.' + d.id;
         })
-        .style("font-size", function (d) {
-            var i = window.innerWidth <= 800 ? 30 : 20;
-            var size = i * scale > 30 ? 30 : i * scale;
-            return size + 'px';
-        })
         .attr("x", function (d) {
             return 0;
         })
         .attr("dy", function (d) {
-            var i = window.innerWidth <= 800 ? 25 : 15;
-            var size = i * scale > 25 ? 25 : i * scale;
-            return window.innerWidth <= 800 ? -size : -size * 2;
+            var i;
+            if (window.innerWidth <= 400)
+                i = 15;
+            else if (window.innerWidth <= 800)
+                i = 15;
+            else
+                i = 15;
+            return -i;
         })
         .attr("transform", function (d) {
                 return "rotate(90)";
@@ -217,6 +225,17 @@ function dibujarArbol(referencia) {
         })
         .attr("text-anchor", function (d) {
             return "middle";
+        })
+        .style("font-size", function (d) {
+            var i;
+            if (window.innerWidth <= 400)
+                i = 50
+            else if (window.innerWidth <= 800)
+                i = 25;
+            else
+                i = 15;
+            var size = i * scale > 25 ? 25 : i * scale;
+            return size + 'px';
         });
 
     //2da linea de texto NO
@@ -224,24 +243,35 @@ function dibujarArbol(referencia) {
         .attr("id", function (d) {
             return 't2.' + d.id;
         })
-        .style("font-size", function (d) {
-            var i = window.innerWidth <= 800 ? 25 : 15;
-            var size = i * scale > 25 ? 25 : i * scale;
-            return size + 'px';
-        })
         .attr("x", function (d) {
             return 0;
         })
         .attr("dy", function (d) {
-            var i = window.innerWidth <= 800 ? 25 : 15;
-            var size = i * scale > 25 ? 25 : i * scale;
-            return window.innerWidth <= 800 ? -size * 2 : -size * 3;
+            var i;
+            if (window.innerWidth <= 400)
+                i = 25;
+            else if (window.innerWidth <= 800)
+                i = 25;
+            else
+                i = 30;
+            return -i;
         })
         .attr("transform", function (d) {
             return "rotate(90)";
         })
         .attr("text-anchor", function (d) {
             return "middle";
+        })
+        .style("font-size", function (d) {
+            var i;
+            if (window.innerWidth <= 400)
+                i = 45;
+            else if (window.innerWidth <= 800)
+                i = 25;
+            else
+                i = 15;
+            var size = i * scale > 25 ? 25 : i * scale;
+            return size + 'px';
         });
 
     //3da linea de texto SI
@@ -249,24 +279,35 @@ function dibujarArbol(referencia) {
         .attr("id", function (d) {
             return 't3.' + d.id;
         })
-        .style("font-size", function (d) {
-            var i = window.innerWidth <= 800 ? 25 : 15;
-            var size = i * scale > 25 ? 25 : i * scale;
-            return size + 'px';
-        })
         .attr("x", function (d) {
             return 0;
         })
         .attr("dy", function (d) {
-            var i = window.innerWidth <= 800 ? 25 : 15;
-            var size = i * scale > 25 ? 25 : i * scale;
-            return window.innerWidth <= 800 ? -size * 3 : -size * 4;
+            var i;
+            if (window.innerWidth <= 400)
+                i = 35;
+            else if (window.innerWidth <= 800)
+                i = 35;
+            else
+                i = 45;
+            return -i;
         })
         .attr("transform", function (d) {
             return "rotate(90)";
         })
         .attr("text-anchor", function (d) {
             return "middle";
+        })
+        .style("font-size", function (d) {
+            var i;
+            if (window.innerWidth <= 400)
+                i = 45;
+            else if (window.innerWidth <= 800)
+                i = 25;
+            else
+                i = 15;
+            var size = i * scale > 25 ? 25 : i * scale;
+            return size + 'px';
         });
 
     // Transition nodes to their new position.
@@ -278,13 +319,14 @@ function dibujarArbol(referencia) {
 
     nodeUpdate.select("circle")
         .attr("r", function (d) {
-            var r = d.totalFlores / 4 + 2;
-            if (useMaxWidth)
-                r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
-            if (r < 10) r = 10;
-            if (window.innerWidth <= 800) r = r * 2;
-            if (selectedNode && d.id == selectedNode.id) r += 8;
-            return r * scale;
+            var i;
+            if (window.innerWidth <= 400)
+                i = 10;
+            else if (window.innerWidth <= 800)
+                i = 10;
+            else
+                i = 8;
+            return i;
         })
         .style("stroke", function (d) {
             if (selectedNode)
@@ -313,11 +355,6 @@ function dibujarArbol(referencia) {
         });   
 
     nodeUpdate.select("text")  //etiqueta
-        .style("font-size", function (d) {
-            var i = window.innerWidth <= 800 ? 25 : 15;
-            var size = i * scale > 25 ? 25 : i * scale;
-            return size + 'px';
-        })
         .text(function (d) {
             if (d.nivel == 0)
                 return "";
@@ -379,15 +416,11 @@ function dibujarArbol(referencia) {
 
     florEnter.append("image")
         .attr("class", "florImage")
-        .attr("width", (window.innerWidth <= 800 ? 74 : 37) * scale + "px")
-        .attr("height", (window.innerWidth <= 800 ? 72 : 36) * scale + "px")
         .attr("transform", "translate(0)")
         .attr("xlink:href", "res/icono2.png");
 
     var florUpdate = flor.transition()
         .duration(duration)
-        .attr("width", (window.innerWidth <= 800 ? 74 : 37) * scale + "px")
-        .attr("height", (window.innerWidth <= 800 ? 72 : 36) * scale + "px")
         .attr("transform", function (d) {
             if (d.id == 0)
                 //flor disponible
@@ -403,8 +436,23 @@ function dibujarArbol(referencia) {
         });
 
     florUpdate.select("image")
-        .attr("width", (window.innerWidth <= 800 ? 74 : 37) * scale + "px")
-        .attr("height", (window.innerWidth <= 800 ? 72 : 36) * scale + "px")
+        .attr("width", function (d) {
+            if (window.innerWidth <= 400)
+                return 152 * scale;
+            else if (window.innerWidth <= 800)
+                return 74 * scale;
+            else
+                return 37 * scale;
+        }
+        )
+        .attr("height", function (d) {
+            if (window.innerWidth <= 400)
+                return 152 * scale;
+            else if (window.innerWidth <= 800)
+                return 72 * scale;
+            else
+                return 36 * scale;
+        })
         .attr("xlink:href", "res/icono2.png")
         .attr("visibility", !historico);
 

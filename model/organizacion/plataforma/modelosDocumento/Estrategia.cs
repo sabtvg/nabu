@@ -168,7 +168,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ": " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             //abm controls
-            ret += HTMLABM("s.nombreProceso", prop, tieneFlores, getListaPRs(), g.idioma);
+            ret += HTMLABM("s.nombreProceso", prop, width, tieneFlores, getListaPRs(), g.idioma);
             ret += "<br>";
 
             //etiqueta
@@ -521,11 +521,12 @@ namespace nabu.plataforma.modelos
                         {
                             string json = System.IO.File.ReadAllText(path);
                             Documento doc = Tools.fromJson<Documento>(json);
-                            string eSubGrupo = doc.getText("s.SubGrupo");
+                            //string eSubGrupo = doc.getText("s.SubGrupo");
                             string eNombreProceso = doc.getText("s.nombreProceso");
-                            string titulo = grupoTitulo.Split('.')[1];
-                            string subGrupo = grupoTitulo.Split('.')[0];
-                            if (Tools.HTMLDecode(eSubGrupo) == Tools.HTMLDecode(subGrupo) && Tools.HTMLDecode(eNombreProceso) == Tools.HTMLDecode(titulo))
+                            //string titulo = grupoTitulo.Split('.')[1];
+                            //string subGrupo = grupoTitulo.Split('.')[0];
+                            //if (Tools.HTMLDecode(eSubGrupo) == Tools.HTMLDecode(subGrupo) && Tools.HTMLDecode(eNombreProceso) == Tools.HTMLDecode(titulo))
+                            if (Tools.HTMLDecode(eNombreProceso) == Tools.HTMLDecode(grupoTitulo))
                             {
                                 if (lastDoc == null)
                                     lastDoc = doc;

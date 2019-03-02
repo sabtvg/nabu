@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <meta charset="utf-8">
 <html>
 <head>
@@ -302,7 +302,7 @@
             var s = "";
             s += "<div class='popupHeader'>" + tr("Estrategia") + "</div>";
 
-            s += "<div class='popupContent' style='text-align:left;padding-left:25px;padding:right:25px'>";
+            s += "<div class='popupContent' style='text-align:left;padding:10px;'>";
             for (var i in operativo.subGrupos) {
                 var GT = operativo.subGrupos[i];
                 for (var j in GT.estrategias) {
@@ -361,7 +361,7 @@
             s += "</div>";
 
             //grupo
-            s += "<div style='clear:left;float:left;margin:5px;border: 1px solid gray;border-radius:5px;width:-webkit-fill-available;padding:5px;'>";
+            s += "<div style='clear:left;float:left;margin:5px;border: 1px solid #cccccc;border-radius:5px;width:-webkit-fill-available;padding:5px;'>";
             s += "<b>" + tr("Arbol") + ":</b><br>";
             if (GT && GT.grupoNombre == "") {
                 //no tiene grupo creado

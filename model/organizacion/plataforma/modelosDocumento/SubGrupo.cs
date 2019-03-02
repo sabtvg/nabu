@@ -160,7 +160,7 @@ namespace nabu.plataforma.modelos
                 ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ": " + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
            
             //abm controls
-            ret += HTMLABM("s.nombreSubGrupo", prop, tieneFlores, getListaGTs(), g.idioma);
+            ret += HTMLABM("s.nombreSubGrupo", prop, width, tieneFlores, getListaGTs(), g.idioma);
             ret += "<br>";
 
             //etiqueta

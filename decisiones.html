@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -38,14 +38,14 @@
         var usuario;
         var offsetDays = 0;
         var stepY = 70;
-        var viewDaysInit = 60;
+        var viewDaysInit = window.innerWidth <= 400 ? 30 : 90;
         var viewDays = viewDaysInit;
         var arbolPersonal;
         var scale = window.innerWidth / 1920;
         var inicio;
         var final;
         var viewWidth;
-        var viewLeft = window.innerWidth <= 800 ? 110 : 180;
+        var viewLeft = 45;
         var viewRight = 40;
         var viewTop = 200;
         var grupoParam;
@@ -167,7 +167,7 @@
 
 
                     //resize
-                    calcularResize();
+                    doLayout();
 
                     //loadsettings
                     var cookie = getCookie("nabu-" + grupoParam.replace(' ', '') + "-Decisiones");
@@ -221,11 +221,6 @@
             editando = false;
         }
 
-        function calcularResize() {
-            scalex = window.innerWidth / 1920;
-            scaley = window.innerHeight / 955; //1080-bordes de pantalla
-        }
-
         function saveSettings() {
             var cname = "nabu-" + grupoParam.replace(' ', '') + "-Decisiones";
             setCookie(cname, offsetDays + "|" + viewDays);
@@ -236,6 +231,25 @@
              dat.setDate(dat.getDate() + days);
              return dat;
          }
+
+        function doLayout() {
+            //background
+            setBackgroundImage();
+
+            scalex = window.innerWidth / 1920;
+            scaley = window.innerHeight / 955; //1080-bordes de pantalla
+
+            viewDaysInit = window.innerWidth <= 400 ? 30 : 90;
+            viewDays = viewDaysInit;
+            scale = window.innerWidth / 1920;
+            zoom = window.innerWidth / 1920;
+        }
+
+        function doResize() {
+            doLayout();
+
+            dibujarTodo();
+        }
 
         function dibujarTodo() {
             var s = "";
@@ -263,7 +277,7 @@
             if (window.innerWidth <= 400) {
                 //movil vertical
                 stepY = 280;
-                offsetY = 1300;
+                offsetY = 800;
                 imgZoom = 0.5;
             }
             else if (window.innerWidth <= 800) {
@@ -271,13 +285,17 @@
                 stepY = 100;
                 imgZoom = 0.5;
             }
-
-
-            //modelos
-            for (var h in modelos) {
-                var y = viewTop + h * stepY + 25 + offsetY;
-                s += "<text x='5' y='" + (y * zoom) + "' fill='black' class='titulo3'>" + modelos[h] + "</text>";
+            else {
+                stepY = 70;
+                imgZoom = 0.5;
             }
+
+
+            ////modelos
+            //for (var h in modelos) {
+            //    var y = viewTop + h * stepY + 25 + offsetY ;
+            //    s += "<text x='5' y='" + (y * zoom) + "' fill='black' class='titulo3'>" + modelos[h] + "</text>";
+            //}
 
             //marcas
             var y = viewTop + modelos.length * stepY + 50 + offsetY ;
@@ -320,12 +338,12 @@
                     s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
 
                     //titulo
-                    s += "<text x='" + (x + dif + 32 * zoom) + "' y='" + (y * zoom + 90 * zoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
+                    s += "<text x='" + (x + dif + 32 * imgZoom) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
                         + ld.titulo + "</text>";
 
                     //seguimiento
                     var sdt = formatShortDate(toDate(ld.fecha));
-                    s += "<text x='" + (x + dif) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                    s += "<text x='" + (x + dif + 32 * imgZoom) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
                 xant = x + dif;
                 dif = 0;
@@ -434,8 +452,8 @@
         }
     </script>
 </head>
-<body onload="doLoad();" style="overflow:hidden">
-        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1">
+<body onload="doLoad();" style="overflow:hidden" onresize="doResize();">
+        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;">
         </svg>
 
         <!--atras--------------------------------------------------------------------------------------------------->

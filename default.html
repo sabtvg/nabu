@@ -52,39 +52,36 @@
 <body onload="doLoad();" style="overflow:hidden" onresize="doResize()" onkeypress="doKeypress();">
     <svg id="arbol">
     </svg>
-
     <!--objetivo--------------------------------------------------------------------------------------------------->
     <div id="objetivo" class="objetivo" style="z-index:-1;"></div>
-
     <!--aprendemos--------------------------------------------------------------------------------------------------->
     <div id="quesoDiv" style="display:none;position:absolute;left: 0px; top: 0px; width:100%; height:100%;"></div>
-
     <!--grupos--------------------------------------------------------------------------------------------------->
     <div id="grupos" class="grupos"></div>
-
     <!--login--------------------------------------------------------------------------------------------------->
     <div id="loginGrupo" class="titulo0" style="visibility:hidden;position:absolute; width: 500px; height: 60px; text-align:center;"></div>
-    <img id="loginFlor" src="res/logo.png" class="loginFlor" onclick="document.location='default.html';"/>
+    <img id="loginFlor" src="res/logo.png" class="loginFlor" onclick="document.location='default.html';" />
     <div id="loginIn" class="ventanalogin" style="visibility:hidden;text-align:center;">
         <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
             <span class="titulo1" style="cursor: pointer;"><font color="blue" size="2">[?]</font>Nab&uacute;</span>
         </a><br />
-        <input id="email" type="text" class="txt" placeholder="email" value="" /><br />
-        <input id="clave" type="password" class="txt" placeholder="clave" value=""/><br />
-        <input id="btnEntrar" type="button" class="btn" value="Entrar" onclick="doLogin();" /><br />
+        <form action="" method="post" target="dummy">
+            <input id="email" type="text" class="txt" placeholder="email" value="" /><br />
+            <input id="clave" type="password" class="txt" placeholder="clave" value="" /><br />
+        </form>
+        <input id="btnEntrar" type="button" class="btn" value="Entrar" style="float:none;" onclick="doLogin();" /><br />
         <div id="loginResponse" class="titulo3">&nbsp;</div>
         <div id="loginAltaUsuario" onclick="doAltaUsuario();" class="titulo3" style="color:blue; cursor: pointer;">Alta de usuario</div>
     </div>
     <div id="tip" style="visibility:hidden;position:absolute;left:0px;width:100%;text-align:center;">
         <div id="tipContent" class="tip" style="text-align:center; vertical-align: middle;width: fit-content;margin: auto;"></div>
     </div>
-    
+
     <!--atras--------------------------------------------------------------------------------------------------->
     <img id='atras' src="res/atras.png" class="atras" onclick="doAtras();" />
-
     <!--titulo--------------------------------------------------------------------------------------------------->
-    <div id="titulo" class="tituloPagina"></div>       
-        
+    <div id="titulo" class="tituloPagina"></div>
+
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
         <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
@@ -94,7 +91,7 @@
         <div id="mnuOptions"></div>
         <div id="msgDiv" class="msg"></div>
     </div>
-    
+
     <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystickQueso" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
         <nobr>
@@ -105,19 +102,18 @@
         <nobr>
             <img src="res/jl.png" onmousedown="quesox-=5;dibujarQueso();" class="img" />
             <img src="res/j00.png" onclick="translateQueso(quesox = 0, quesoy = 0)" class="img" />
-            <img src="res/jr.png" onmousedown="quesox+=5;dibujarQueso();" class="img"/>
+            <img src="res/jr.png" onmousedown="quesox+=5;dibujarQueso();" class="img" />
         </nobr>
         <br />
         <nobr>
             <img src="res/jzl.png" onclick="quesoScale*=0.9;dibujarQueso();" class="img" />
-            <img src="res/jd.png" onmousedown="quesoy+=5;dibujarQueso();" class="img"  />
-        </nobr>           
+            <img src="res/jd.png" onmousedown="quesoy+=5;dibujarQueso();" class="img" />
+        </nobr>
     </div>
-
     <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystickArbol" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
         <nobr>
-            <img src="res/jzm.png" onclick="zoom(10);"  class="img" />
+            <img src="res/jzm.png" onclick="zoom(10);" class="img" />
             <img src="res/ju.png" onmousedown="pany(-5);" onmouseup="clearInterval(joyInterval);" class="img" />
         </nobr>
         <br />
@@ -130,19 +126,18 @@
         <nobr>
             <img src="res/jzl.png" onclick="zoom(-10);" class="img" />
             <img src="res/jd.png" onmousedown="pany(5);" onmouseup="clearInterval(joyInterval);" class="img" />
-        </nobr>           
+        </nobr>
     </div>
-
     <!--timePanel--------------------------------------------------------------------------------------------------->
-    <div id="timePanel"  style="position:fixed;bottom:0vh;padding: 5px; right:0vw;visibility:hidden">
+    <div id="timePanel" style="position:fixed;bottom:0vh;padding: 5px; right:0vw;visibility:hidden">
         <table style="border-collapse: collapse; border-spacing: 0;">
             <tr>
-                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setDate(historicoFecha.getDate() + 1);showTimePanel();"  /></td>
+                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setDate(historicoFecha.getDate() + 1);showTimePanel();" /></td>
                 <td></td>
-                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() + 1);showTimePanel();"/></td>
+                <td><img src="res/timemas.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() + 1);showTimePanel();" /></td>
                 <td></td>
                 <td></td>
-                <td rowspan="3" style="vertical-align:middle;"><img src="res/timepresent.png" style='cursor:pointer;margin:0px;width:80%;height:auto;'  onclick="doTimePresent();"/></td>
+                <td rowspan="3" style="vertical-align:middle;"><img src="res/timepresent.png" style='cursor:pointer;margin:0px;width:80%;height:auto;' onclick="doTimePresent();" /></td>
             </tr>
             <tr>
                 <td id="timeDia" style="font-size:18px;text-align:center">00</td>
@@ -152,53 +147,51 @@
                 <td id="timeYear" style="font-size:18px;text-align:center">2018</td>
             </tr>
             <tr>
-                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setDate(historicoFecha.getDate() - 1);showTimePanel();"  /></td>
+                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setDate(historicoFecha.getDate() - 1);showTimePanel();" /></td>
                 <td></td>
-                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() - 1);showTimePanel();"/></td>
+                <td><img src="res/timemenos.png" style='cursor:pointer;text-align:center;margin:0px;width:80%;height:auto;' onclick="historicoFecha.setMonth(historicoFecha.getMonth() - 1);showTimePanel();" /></td>
                 <td></td>
                 <td></td>
             </tr>
         </table>
     </div>
-    <img id="timeBack" src="res/timeback.png" onclick="doTimeBack();"  style="cursor:pointer;visibility:hidden; position:fixed;bottom:5vh;padding:5px;right:0vw;opacity:0.4" />
-           
+    <img id="timeBack" src="res/timeback.png" onclick="doTimeBack();" style="cursor:pointer;visibility:hidden; position:fixed;bottom:5vh;padding:5px;right:0vw;opacity:0.4" />
+
     <!--panel flores--------------------------------------------------------------------------------------------------->
     <table id="panelUsuario" class="panelUsuario" border="0">
         <tr>
-            <td id="usuario" class="titulo3" style="vertical-align:middle"></td>
-            <td style="width:1.7vw;"><img src="res/icono2.png" class="icono2"/></td>
+            <td style="width:1.7vw;"><img src="res/icono2.png" class="icono2" /></td>
             <td id="floresDisponibles" class="titulo3" style="width:15px;vertical-align:middle;text-align:left"></td>
+            <td id="usuario" class="panelUsuarioNombre" style="vertical-align:middle;"></td>
             <td style="width:1.7vw;">
-                <img id="alertaIcon" src="res/alerta.png" style="width:1.6vw;height:auto;vertical-align:middle;margin:auto;cursor:pointer;display:none" onclick="showAlertas();"/>
+                <img id="alertaIcon" src="res/alerta.png" class="alertaicon" onclick="showAlertas();" />
             </td>
         </tr>
     </table>
-
     <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelGrupo"  class="panelGrupo">
+    <div id="panelGrupo" class="panelGrupo">
     </div>
-    
+
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="panelConsenso">
+    <div id="panelConsenso" class="panelConsenso">
     </div>
-    
+
     <!--panel queso--------------------------------------------------------------------------------------------------->
     <div id="panelQueso" class="panelQueso">
     </div>
-    
+
     <!--pie--------------------------------------------------------------------------------------------------->
     <div id="pie" class="pie">
-        <a id="lnkSim" href="simulacion.html">simulacion</a> - 
-        <a href="http://sociocracia.net" target="_blank">Sociocracia.net</a> - 
-        01/11/2015 - 
-        <a href="mailto:nabu@nabu.pt">nabu@nabu.pt</a> - 
-        <span id="mejorVisto">Mejor visto en</span>&nbsp;<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a> -
-        <span id="version" style="color:red">versi&oacute;n beta</span> - 
-        <a id="lnkAyuda" href="help.html" target="_blank">Ayuda</a> -
-        <a href="web/default.html" target="_blank">Proyecto</a> - 
-        <a href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
+        <a class="pieItem" id="lnkSim" href="simulacion.html">[simulacion]</a>
+        <a class="pieItem" href="http://sociocracia.net" target="_blank">[Sociocracia.net]</a>
+        <span class="pieItem">[01/11/2015]</span>
+        <a class="pieItem" href="mailto:nabu@nabu.pt">[nabu@nabu.pt]</a>
+        <a class="pieItem" id="mejorVisto" target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">[Mejor visto en Google Chrome]</a>
+        <span class="pieItem" id="version">[versi&oacute;n beta]</span>
+        <a class="pieItem" id="lnkAyuda" href="help.html" target="_blank">[Ayuda]</a>
+        <a class="pieItem" href="web/default.html" target="_blank">[Proyecto]</a>
+        <a class="pieItem" href="https://github.com/sabtvg/nabu" target="_blank">[fork me]</a>
     </div>
-
     <!--no soportado--------------------------------------------------------------------------------------------------->
     <div id="noSoportado" style="visibility: hidden; position: absolute; top: 30px; left:30px;">
         <div class="ventana">
@@ -214,39 +207,39 @@
             </table>
         </div>
     </div>
-
     <!--menuppal--------------------------------------------------------------------------------------------------->
     <div id="menuppal" style="position: absolute; visibility:hidden; width: 800px; height: 600px;">
         <div id="padrenombre" style="position: inherit; width:800px; left:0px; top:-110px;text-align: center;" class="titulo2"></div>
         <div id="tituloppal" style="position: inherit; left:190px; top:278px; width:285px; text-align: center;font-weight:bold;font-size:18px" class="titulo2"></div>
         <img id="ciclo" class="btnimg" src="res/ciclo.png" style="position: inherit; left:159px; top:47px;;cursor:default" />
-        <img id="ppal1" class="btnimg" src="res/es/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doDecidimos();"/>
-        <img id="ppal2" class="btnimg" src="res/es/noticias.png" style="position: inherit; left:15px; top:192px;" onclick="doAprendemos();"/>
-        <img id="ppal3" class="btnimg" src="res/es/estructuras.png" style="position: inherit; left:600px; top:242px;" onclick="doEstructuras();"/>
-        <img id="ppal4" class="btnimg" src="res/es/seguimiento.png" style="position: inherit; left:600px; top:329px;" onclick="doSeguimiento();"/>
-        <img id="ppal5" class="btnimg" src="res/es/docConsensos.png" style="position: inherit; left:338px; top:31px;" onclick="doDecisiones();"/>
-        <img id="ppal7" class="btnimg" src="res/es/docRealizacion.png" style="position: inherit; left:285px; top:439px;" onclick="doResultados();"/>
-        <img id="ppal9" class="btnimg" src="res/doc.png" style="position: inherit; left:120px; top:258px;" onclick="doManifiesto();"/>
-        <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;cursor:default;"/>
+        <img id="ppal1" class="btnimg" src="res/es/debates.png" style="position: inherit; left:15px; top:145px;" onclick="doDecidimos();" />
+        <img id="ppal2" class="btnimg" src="res/es/noticias.png" style="position: inherit; left:15px; top:192px;" onclick="doAprendemos();" />
+        <img id="ppal3" class="btnimg" src="res/es/estructuras.png" style="position: inherit; left:600px; top:242px;" onclick="doEstructuras();" />
+        <img id="ppal4" class="btnimg" src="res/es/seguimiento.png" style="position: inherit; left:600px; top:329px;" onclick="doSeguimiento();" />
+        <img id="ppal5" class="btnimg" src="res/es/docConsensos.png" style="position: inherit; left:338px; top:31px;" onclick="doDecisiones();" />
+        <img id="ppal7" class="btnimg" src="res/es/docRealizacion.png" style="position: inherit; left:285px; top:439px;" onclick="doResultados();" />
+        <img id="ppal9" class="btnimg" src="res/doc.png" style="position: inherit; left:120px; top:258px;" onclick="doManifiesto();" />
+        <img id="ppal10" class="btnimg" src="res/es/politico.png" style="position: inherit; left:190px; top:278px;cursor:default;" />
         <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;cursor:default" />
         <div id="hijos" style="position: inherit; width:1600px; left:-400px; top:480px;text-align: center;" class="titulo2"></div>
     </div>
-
     <!--perfil--------------------------------------------------------------------------------------------------->
     <div id="perfil" class="popup perfil" style="text-align:center">
         <div class="popupHeader" id="perfilTit">Perfil de usuario</div>
         <div class="popupContent">
             <div style="clear:left;float:left;text-align:left;margin:5px;">
-                <input id="perfilEmail" type="text" class="editar disabled" placeholder="Email" value=""  style="width: 250px;margin:3px;" disabled/><br />
-                <input id="perfilNombre" type="text" class="editar" placeholder="Nombre" value=""  style="width: 250px;margin:3px;" /><br />
-                <input id="perfilFuncion" type="text" class="editar" placeholder="Funcion" value=""  style="width: 250px;margin:3px;" /><br />
+                <input id="perfilEmail" type="text" class="editar disabled" placeholder="Email" value="" style="width: 190px;margin:3px;" disabled /><br />
+                <input id="perfilNombre" type="text" class="editar" placeholder="Nombre" value="" style="width: 190px;margin:3px;" /><br />
+                <input id="perfilFuncion" type="text" class="editar" placeholder="Funcion" value="" style="width: 190px;margin:3px;" /><br />
                 <input type="file" id="perfilFile1" onchange="previewFile(this.files[0])" style="display:none;">
-                <label for="perfilFile1"><img src="res/upload.png" style="cursor:pointer;margin:5px;"/></label><br />
+                <label for="perfilFile1">
+                    <img src="res/upload.png" class="uploadIcon" style="cursor:pointer;margin:5px;" />
+                </label><br />
             </div>
-            <div style="float:right;margin:5px;height:160px;">
-                <input type="file" id="perfilFile2" onchange="previewFile(this.files[0])" style="display:none;">
-                <label for="perfilFile2"><img src="" id="perfilImg" style="border-radius:15px;cursor:pointer;" onerror="this.src='res/perfilDefault.jpg'"></label>
-            </div>
+            <input type="file" id="perfilFile2" onchange="previewFile(this.files[0])" style="display:none;">
+            <label for="perfilFile2">
+                <img src="" id="perfilImg" style="float:right;margin:5px;border-radius:15px;cursor:pointer;width:120px;height:auto;" onerror="this.src='res/perfilDefault.jpg'">
+            </label>
             <div style="clear:left;float:left;margin:5px;padding:5px;text-align:left;width:95%">
                 <div>Mision</div>
                 <div class="smalltip">Mision</div>
@@ -264,7 +257,7 @@
             <div style="clear:left;float:left;margin:5px;padding:5px;text-align:left;width:95%">
                 <div>Ubicaci&oacute;n</div>
                 <div class="smalltip">En que zona resides o deseas actuar. Escribe una poblaci&oacute;n o codigo postal y el pais</div>
-                <input id="address" class="editar" type="text" placeholder="Ubicacion" value="" style="width:250px;margin:3px;" onchange="lan=0;lng=0;"/>
+                <input id="address" class="editar" type="text" placeholder="Ubicacion" value="" style="width:250px;margin:3px;" onchange="lan=0;lng=0;" />
                 <input id="geocodeAddress" type="button" class="btn" value="Validar ubicaci&oacute;n" onclick="geocodeAddress();" />
                 <div id="googleLocation" style="margin-left:4px;"></div>
                 <br />
@@ -273,92 +266,86 @@
             </div>
         </div>
         <div class="popupFooter">
+            <input id="perfilBtn1" type="button" class="btnok" value="Guardar" onclick="doCerrarPerfil();" />
             <input id="cambiarClaveBtn" type="button" class="btn" value="Cambiar clave" onclick="doCerrarPerfil(); showCambiarClave();" />
-            <input id="perfilBtn1" type="button" class="btn" value="Guardar" onclick="doCerrarPerfil();" />
-            <input type="button" class="btn" value="Cancelar" onclick="document.getElementById('perfil').style.display = 'none';" />
-            <div id="perfilValidacion"></div>
+            <input type="button" class="btnnok" value="Cancelar" onclick="document.getElementById('perfil').style.display = 'none';" />
         </div>
     </div>
-
     <!--cambiar clave--------------------------------------------------------------------------------------------------->
     <div id="cambiarClave" class="popup cambiarClave" style="text-align:center">
-        <span class="titulo2">Cambio de clave</span><br />
-        <input id="oldPass" type="password" class="editar" placeholder="Clave actual" value=""  style="width: 250px;margin:3px;"/><br />
-        <input id="newPass" type="password" class="editar" placeholder="Nueva clave" value="" style="width: 250px;margin:3px;"/><br />
-        <input id="repeat" type="password" class="editar" placeholder="Repitela" value="" style="width: 250px;margin:3px;"/><br /><br />
-        <input id="btnCCCambiar" type="button" class="btn" value="Cambiar" onclick="doCambiarClave();" />
-        <input id="btnCCCancelar" type="button" class="btn" value="Cancelar" onclick="doHideCambiarClave();" /><br />
-        <div id="cambiarClaveMsg"></div>
+        <div class="popupHeader" id="perfilTit">Cambio de clave</div>
+        <div class="popupContent">
+            <br />
+            <input id="oldPass" type="password" class="editar" placeholder="Clave actual" value="" style="width: 250px;margin:3px;" /><br />
+            <input id="newPass" type="password" class="editar" placeholder="Nueva clave" value="" style="width: 250px;margin:3px;" /><br />
+            <input id="repeat" type="password" class="editar" placeholder="Repitela" value="" style="width: 250px;margin:3px;" /><br /><br />
+        </div>
+        <div class="popupFooter">
+            <input id="btnCCCambiar" type="button" class="btnok" value="Cambiar" onclick="doCambiarClave();" />
+            <input id="btnCCCancelar" type="button" class="btnnok" value="Cancelar" onclick="doHideCambiarClave();" style="margin-right:15px;" /><br />
+        </div>
     </div>
-
     <!--alta usuario--------------------------------------------------------------------------------------------------->
     <div id="altaUsuarioC" class="ventanaltausuario">
         <div id="auTit1C" class="titulo1">Alta de usuario</div>
         <br />
         <div id="auTit2C">
-        El alta de usuarios es administrada manualmente.<br />
-        Completa tus datos y recibiras un email con tus datos de acceso.<br />
+            El alta de usuarios es administrada manualmente.<br />
+            Completa tus datos y recibiras un email con tus datos de acceso.<br />
         </div>
         <br />
-        <input id="altaUsuarioNombreC" type="text" class="txt" placeholder="Nombre completo" value=""  style="width: 200px;margin:3px;"/><br />
-        <input id="altaUsuarioEmailC" type="text" class="txt" placeholder="Email" value=""  style="width: 200px;margin:3px;"/><br />
+        <input id="altaUsuarioNombreC" type="text" class="txt" placeholder="Nombre completo" value="" style="width: 200px;margin:3px;" /><br />
+        <input id="altaUsuarioEmailC" type="text" class="txt" placeholder="Email" value="" style="width: 200px;margin:3px;" /><br />
         <br />
-        <input id="auEnviarC" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();"   style="margin:5px;"/>
-        <input id="auCerrarC" type="button" class="btn" value="Cerrar" onclick="document.getElementById('altaUsuarioC').style.display='none';"   style="margin:5px;"/><br />
+        <input id="auEnviarC" type="button" class="btn" value="Enviar solicitud" onclick="doAltaUsuarioEnviar();" style="margin:5px;float:unset;" />
+        <input id="auCerrarC" type="button" class="btn" value="Cerrar" onclick="document.getElementById('altaUsuarioC').style.display='none';" style="margin:5px;float:unset;" /><br />
         <div id="altaUsuarioMsgC"></div>
     </div>
-
     <div id="altaUsuarioA" class="ventanaltausuario">
         <div id="auTit1A" class="titulo1">Alta de usuario</div>
-        <input id="altaUsuarioNombreA" type="text" class="txt" placeholder="Nombre completo" value=""  style="width: 200px;margin:3px;"/><br />
-        <input id="altaUsuarioEmailA" type="text" class="txt" placeholder="Email" value=""  style="width: 200px;margin:3px;"/><br />
-        <input id="altaUsuarioClave1A" type="password" class="txt" placeholder="Clave" value=""  style="width: 200px;margin:3px;"/><br />
-        <input id="altaUsuarioClave2A" type="password" class="txt" placeholder="Repetir clave" value=""  style="width: 200px;margin:3px;"/><br />
+        <input id="altaUsuarioNombreA" type="text" class="txt" placeholder="Nombre completo" value="" style="width: 200px;margin:3px;" /><br />
+        <input id="altaUsuarioEmailA" type="text" class="txt" placeholder="Email" value="" style="width: 200px;margin:3px;" /><br />
+        <input id="altaUsuarioClave1A" type="password" class="txt" placeholder="Clave" value="" style="width: 200px;margin:3px;" /><br />
+        <input id="altaUsuarioClave2A" type="password" class="txt" placeholder="Repetir clave" value="" style="width: 200px;margin:3px;" /><br />
         <div>
             <div id="altaUsuarioURLEstatuto">manifiesto</div>
             <input id="altaUsuarioCheck" type="checkbox" style="margin-top:25px;" />
             <span id="altaUsuarioLeido" style="width:260px;text-align:left;">He leido el manifiesto<br />y deseo ser parte de este grupo</span>
         </div>
         <br />
-        <input id="auEnviarA" type="button" class="btn" value="Crear" onclick="doAltaUsuarioCrear();"   style="margin:5px;margin-top:15px;"/>
-        <input id="auCerrarA" type="button" class="btn" value="Cerrar" onclick="document.getElementById('altaUsuarioA').style.display = 'none';" style="margin:5px;margin-top:15px;"/><br />
+        <input id="auEnviarA" type="button" class="btn" value="Crear" onclick="doAltaUsuarioCrear();" style="margin:5px;margin-top:15px;float:unset;" />
+        <input id="auCerrarA" type="button" class="btn" value="Cerrar" onclick="document.getElementById('altaUsuarioA').style.display = 'none';" style="margin:5px;margin-top:15px;float:unset;" /><br />
         <div id="altaUsuarioMsgA"></div>
     </div>
-        
-    <!--lista consensos--------------------------------------------------------------------------------------------------->
-    <div id="panelListaConsensos" style="visibility: hidden;position:absolute;width:1024px;overflow-x:auto;" >
-    </div>
 
+    <!--lista consensos--------------------------------------------------------------------------------------------------->
+    <div id="panelListaConsensos" style="visibility: hidden;position:absolute;width:1024px;overflow-x:auto;">
+    </div>
     <!--confirmar quitar ultima flor--------------------------------------------------------------------------------------------------->
-    <div id="ultimaFlor" style="visibility: hidden;position:absolute;width:300px;" >
+    <div id="ultimaFlor" style="visibility: hidden;position:absolute;width:300px;">
         <div class="ventanaultimaflor" style="text-align:center;">
             <span id="ufTit1" class="titulo3">Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir</span><br /><br />
-            <input id="ufAceptar" type="button" value="Aceptar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
-            <input id="ufCancelar" type="button" value="Cancelar" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
-        </div>             
+            <input id="ufAceptar" type="button" value="Aceptar" style="float:unset" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
+            <input id="ufCancelar" type="button" value="Cancelar" style="float:unset" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
+        </div>
     </div>
-
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuNode" class="menuarbol">
-        <img class="menuimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();"/>
-        <img class="menuimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();"/>
+        <img class="menuimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
+        <img class="menuimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();" />
     </div>
-
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuEvaluacion" class="menuqueso">
         <img class="menuimg" title="Crear evaluacion" src="res/documento.png" onclick="seleccionarModeloEvaluacion();" />
     </div>
-
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="panelDer" class="panel" style="visibility: hidden;">
     </div>
     <div id="panelIzq" class="panel" style="visibility: hidden;">
     </div>
-
     <!--documento--------------------------------------------------------------------------------------------------->
-    <div id="documento" class="documento" style="z-index:5;"> 
+    <div id="documento" class="documento" style="z-index:5;">
     </div>
-
     <!--help--------------------------------------------------------------------------------------------------->
     <div id="help" class="documento">
         <table style="width: 100%;">
@@ -366,25 +353,20 @@
             <tr><td id="helpContent"></td></tr>
         </table>
     </div>
-
     <!--rotarpantalla--------------------------------------------------------------------------------------------------->
     <div id="rotarpantalla" class="rotarpantalla">
         <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
         <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
     </div>
-
     <!--modelos documento--------------------------------------------------------------------------------------------------->
-    <div id="modelosDebate" class="modelosDebate" >
+    <div id="modelosDebate" class="modelosDebate">
     </div>
-
     <!--modelos evaluacion--------------------------------------------------------------------------------------------------->
-    <div id="modelosEvaluacion" class="modelosEvaluacion" >
+    <div id="modelosEvaluacion" class="modelosEvaluacion">
     </div>
-
     <!--panel alertas--------------------------------------------------------------------------------------------------->
-    <div id="alertas"  class="popup alertas">
+    <div id="alertas" class="popup alertas">
     </div>
-
     <!--mobile pie--------------------------------------------------------------------------------------------------->
     <div id="movilePie" class="popup" style="text-align:center">
         <div class="popupHeader">
@@ -395,16 +377,21 @@
             <a class="item" href="http://sociocracia.net" target="_blank">Sociocracia.net</a>
             <div class="item">01/11/2015</div>
             <a class="item" href="mailto:nabu@nabu.pt">nabu@nabu.pt</a>
-
             <div class="item">Mejor visto en&nbsp;<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">Google Chrome</a></div>
             <div class="item" style="color:red">versi&oacute;n beta</div>
-            <a class="item" id="A2" href="javascript:doOpen('help.html');">Ayuda</a>
+            <a class="item" id="A2" href="help.html" target="_blank">Ayuda</a>
             <a class="item" href="web/default.html" target="_blank">Proyecto</a>
             <a class="item" href="https://github.com/sabtvg/nabu" target="_blank">fork me</a>
         </div>
         <div class="popupFooter">
-            <input id="Button2" type="button" class="btn" value="Cerrar" onclick="hideMovileFooter();" />
+            <input id="Button2" type="button" class="btn" value="Cerrar" style="float:none" onclick="hideMovileFooter();" />
         </div>
+    </div>
+
+    <!--popmsg-->
+    <div id="popupmsgback" style="position:absolute;width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;" onclick="popupMsgOff();"></div>
+    <div id="popupmsg" class="popupmsg" onclick="popupMsgOff();">
+        <div id="popupmsgtext" style="text-align:center;"></div>
     </div>
 </body>
 </html>

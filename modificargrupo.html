@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <meta charset="utf-8">
 <html>
 <head>
@@ -58,7 +58,7 @@
                                 //atrapo el error si es que hay
                                 if (data.substring(0, 6) == "Error=") {
                                     //ha habido un error
-                                    document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                                    popupMsgOn('<font color=red>' + data + '</font>');
                                 }
                                 else {
                                     //login ok, he recibido el arbol
@@ -117,7 +117,7 @@
                 + "&clave=" + usuario.clave,
                  function (data) {
                     if (data.substring(0, 6) == "Error=")
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                         popupMsgOn('<font color=red>' + data + '</font>');
                     else {
                         //actualizo idioma en cookie
                         usuario.idioma = idioma;
@@ -153,7 +153,7 @@
                 postHttp(padreURL + "/doMain.aspx?actn=crearUsuarios&grupo=" + padreNombre,
                     param,
                     function(data){
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        popupMsgOn('<font color=red>' + data + '</font>');
                     });
             });
         }
@@ -168,7 +168,7 @@
                 + "&hijoURL=" + hijoURL
                 + "&hijoNombre=" + hijoNombre,
                 function (data) {
-                    document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    //popupMsgOn('<font color=red>' + data + '</font>');
                     getListaHijos();
                 });
         }
@@ -181,7 +181,7 @@
                 + "&hijoURL=" + hijo.URL
                 + "&hijoNombre=" + hijo.nombre,
                 function (data) {
-                    document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                    //popupMsgOn('<font color=red>' + data + '</font>');
                     getListaHijos();
                 });
         }
@@ -194,7 +194,7 @@
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
                         //ha habido un error
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        popupMsgOn('<font color=red>' + data + '</font>');
                     }
                     else {
                         //he recibido los hijos
@@ -207,11 +207,11 @@
         }
 
         function showHijos() {
-            var s = "<table style='border: 1px solid gray; padding: 5px; border-radius: 10px;'>";
+            var s = "<table style='border: 1px solid #cccccc; padding: 1px; border-radius: 4px;'>";
             s += "<tr>"
-            s += "<td class='titulo4' style='width:200px;'><b>" + tr("URL") + "</b></td>";
-            s += "<td class='titulo4' style='width:220px;'><b>" + tr("Nombre") + "</b></td>";
-            s += "<td class='titulo4' style='width:70px;text-align:center;'><b>" + tr("Borrar") + "</b></td>";
+            s += "<td class='titulo3' style='width:240px;'>" + tr("URL") + "</td>";
+            s += "<td class='titulo3' style='width:220px;'>" + tr("Nombre") + "</td>";
+            s += "<td class='titulo3' style='width:70px;text-align:center;'>" + tr("Borrar") + "</td>";
             s += "</tr>"
             for (var i in hijos) {
                 var hijo = hijos[i];
@@ -234,7 +234,7 @@
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
                         //ha habido un error
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        popupMsgOn('<font color=red>' + data + '</font>');
                     }
                     else {
                         //he recibido los usuarios
@@ -285,7 +285,7 @@
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
                         //ha habido un error
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        popupMsgOn('<font color=red>' + data + '</font>');
                     }
                     else {
                         document.location = "default.html";
@@ -296,75 +296,81 @@
     </script>
 </head>
 <body onload="doLoad();" style="background-color: #b3d3f9;overflow:hidden">
-    <div id="perfil" class="popup modificarGrupo" style="display:block">
+    <div id="perfil" class="popup modificarGrupo" style="display:block;text-align: center;">
         <div class="popupHeader" id="perfilTit">Modificar grupo
-            <div id="response" style="text-align:center; font-size:14px;"></div>
         </div>
         <div class="popupContent" style="text-align:left">         
             <div class="divborde" style="clear:left;float:left;width:98%">
-                <div id="datArb" style="clear:left;float:left" class="titulo3">Datos del grupo</div><br />
-                <div style="clear:left;float:left;margin-top:5px;" id="nom">Nombre</div>
-                <input style="float:left" id="nombreArbol" type="text" class="txt" size="15" placeholder="Nombre de arbol" disabled/>
-                <div style="float:left;margin-top:5px;margin-left:15px;" id="idi">Idioma</div>
-                <select id="idioma" class="txt" style="float:left;width: 90px">
+                <div id="datArb" style="clear:left;float:left" class="titulo3"><b>Datos del grupo</b></div><br />
+
+                <div class="field1" style="width:80px" id="nom">Nombre</div>
+                <input class="field2"  id="nombreArbol" type="text" size="15" placeholder="Nombre del grupo" disabled/><br />
+                <div class="field1" style="width:110px" id="idi">Idioma</div>
+                <select  class="field2" id="idioma" style="width: 90px">
                     <option value="es">Espa&ntilde;ol</option>
                     <option value="ct">Catal&aacute;n</option>
                     <option value="en">English</option>
                     <option value="fr">Franc&eacute;s</option>
                 </select>
-                <div style="float:left;margin-top:5px;margin-left:15px;" id="org">Organizaci&oacute;n</div>
-                <input style="float:left" id="organizacion" type="text" class="txt" size="10" placeholder="Organizacion" disabled/>
+                <div class="field1" style="width:110px" id="org">Organizaci&oacute;n</div>
+                <input class="field2" style="float:left" id="organizacion" type="text" size="10" placeholder="Organizacion" disabled/>
                 <div class="burbuja" style="clear:left;float:left;">
                     <input id="tipoGrupoC" name="tipoGrupo" style="clear:left;float:left;margin:15px;" type="radio" value="cerrado" />
-                    <div style="float:left">Grupo cerrado:<br />Administrado por el coordinador</div>
+                    <div style="float:left;width:280px">Grupo cerrado:<br />Administrado por el coordinador</div>
                 </div>
                 <div class="burbuja" style="float:left;">
                     <input id="tipoGrupoA" name="tipoGrupo" style="clear:left;float:left;margin:15px;" type="radio" value="abierto" />
-                    <div style="float:left">Grupo abierto:<br />Los usuarios se dan de alta libremente</div>
+                    <div style="float:left;width:280px">Grupo abierto:<br />Los usuarios se dan de alta libremente</div>
                 </div>
             </div>
 
             <div class="divborde" style="clear:left;float:left;width:98%">
                 <span id="jarDat" class="titulo3">Datos del coordinador</span><br />
-                <input id="nombreAdmin" type="text" class="txt" placeholder="Nombre" disabled/>
-                <input id="email" type="text" class="txt" placeholder="Email" disabled/><br />
+                <input id="nombreAdmin" type="text" class="field2" placeholder="Nombre" disabled/>
+                <input id="email" type="text" class="field2" placeholder="Email" disabled/><br />
             </div>
 
             <div class="divborde" style="clear:left;float:left;width:98%">
                 <span id="pad" class="titulo3">Grupo padre</span><br />
-                <input id="padreURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo padre"/>
-                <input id="padreNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo padre"/><br />
+                <input id="padreURL" type="text" class="field2" size="35" placeholder="Direcci&oacute;n web del grupo padre"/>
+                <input id="padreNombre" type="text" class="field2" size="20" placeholder="Nombre del grupo padre"/><br />
                 <input id="btnCrearPadre" type="button" class="btn" value="Crear usuarios en grupo padre" onclick="doCrearUsuariosArbolPadre();" /> 
             </div>
 
             <div class="divborde" style="clear:left;float:left;width:98%">
                 <span id="hij" class="titulo3">Grupos hijos</span><br />
-                <input id="hijoURL" type="text" class="txt" size="35" placeholder="Direcci&oacute;n web del grupo hijo"/>
-                <input id="hijoNombre" type="text" class="txt" size="20" placeholder="Nombre del grupo hijo"/>
-                <input id="btnCrearHijo" type="button" class="btn" value="Crear" onclick="doCrearHijo();" /> 
-                <div id="hijos"></div>
+                <input id="hijoURL" type="text" class="field2" style="width:170px;margin-top:10px;margin-bottom:10px;" placeholder="Direcci&oacute;n web del grupo hijo"/>
+                <input id="hijoNombre" type="text" class="field2" style="width:100px;margin-top:10px;margin-bottom:10px;" placeholder="Nombre del grupo hijo"/>
+                <input id="btnCrearHijo" type="button" class="btn" value="Crear" style="float:right" onclick="doCrearHijo();" /> 
+                <div id="hijos" style="clear:left;"></div>
             </div>
 
             <div class="divborde" style="clear:left;float:left;width:98%">
-                <span id="flo" class="titulo3">Flores disponibles para todos los usuarios</span>
-                <input id="cantidadFlores" type="text" class="txt" size="8" placeholder="Cantidad de flores"/><br />
+                <div id="flo" class="titulo3">Flores disponibles para todos los usuarios</div>
+                <input id="cantidadFlores" type="text" class="field2" size="8" placeholder="Cantidad de flores"/><br />
             </div>
 
             <div class="divborde" style="clear:left;float:left;width:98%">
                 <span id="concon" class="titulo3">Condici&oacute;n de consenso</span><br />
 
                 <div id="conminSiPc" class="smalltip">M&iacute;nimos usuarios implicados en el debate. Cada rama que parte de la raiz es un debate distinto.</div>
-                <input id="minSiPc" type="text" class="txt" size="8" />%<br />
+                <input id="minSiPc" type="text" class="field2" size="8" />%<br /><br />
 
                 <div id="conmaxNoPc" class="smalltip">M&aacute;ximos usuarios que divergen en el debate. Si hay mas entonces no se alcanza el consenso.</div>
-                <input id="maxNoPc" type="text" class="txt" size="8" />%<br />
+                <input id="maxNoPc" type="text" class="field2" size="8" />%<br />
             </div>
         </div>
         <div class="popupFooter">
-            <input id="btnCancelar" style="clear:left;float:left;" type="button" class="btn" value="Cancelar" onclick="doAtras();" /> 
-            <input id="btnMod" style="float:left;" type="button" class="btn" value="Modificar" onclick="doModificar();" /> 
-            <input id="btnBorrar" type="button" class="btn" value="Borrar grupo" onclick="doBorrarArbol();" style="float:right;background-color:lightcoral;margin-right:5px" /> 
+            <input id="btnMod" style="clear:left;float:left;" type="button" class="btnok" value="Modificar" onclick="doModificar();" />
+            <input id="btnCancelar" style="float:left;" type="button" class="btn" value="Cancelar" onclick="doAtras();" />
+            <input id="btnBorrar" type="button" class="btnnok" value="Borrar grupo" onclick="doBorrarArbol();" />
         </div>
+
+        <!--popmsg-->
+        <div id="popupmsgback" style="position:absolute;width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;" onclick="popupMsgOff();"></div>
+        <div id="popupmsg" class="popupmsg" onclick="popupMsgOff();">
+            <div id="popupmsgtext" style="text-align:center;"></div>
+        </div>        
     </div>
 
 

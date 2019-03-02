@@ -33,7 +33,7 @@ namespace nabu.plataforma.modelosEvaluacion
             titulo = "Evalucion de Evento";
             preguntas = 6;
             icono = "res/documentos/evento.png";
-
+            tipo = "seguimiento";
 
             crearVariables();
         }
@@ -175,7 +175,7 @@ namespace nabu.plataforma.modelosEvaluacion
             string valores = getListaResultados();
             ret += "<div class='titulo3'>" + Tools.tr("Documento de resultado a evaluar", g.idioma) + "</div>";
             if (getText("s.basadoEnTemaExistente", prop) == "")
-                ret += HTMLLista("f.evaluadoID", valores, prop, 450, g.idioma, true);
+                ret += HTMLLista("f.evaluadoID", valores, prop, width - 100, g.idioma, true);
             ret += "<br>";
             ret += "<br>";
 

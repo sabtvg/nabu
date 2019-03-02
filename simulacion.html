@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -124,7 +124,7 @@
                 stopSim = true;
                 playing = false;
                 document.getElementById("startStop").value = tr("Play");
-                document.getElementById("startStop").className = "btn btnStop";
+                document.getElementById("startStop").className = "btn";
             }
             else {
                 stopSim = false;
@@ -209,19 +209,24 @@
             document.getElementById("minSiPc").title = tr("conminSiPc");
             document.getElementById("maxNoPc").title = tr("conmaxNoPc");
         }
+
+        function doResize() {
+            //background
+            setBackgroundImage();
+        }
     </script>
 </head>
-<body onload="doLoad();">
+<body onload="doLoad();" onresize="doResize();">
+    <svg id="arbol">
+    </svg>
 
-        <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" title="Atras" src="res/atras.png" class="atras" onclick="doAtras();" />
 
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="panelDer" class="panel" style="visibility: hidden;">
-        <table style="width: 95%;">
-        </table>
+        <table style="width: 95%;"></table>
     </div>
-
     <!--help--------------------------------------------------------------------------------------------------->
     <div id="help" class="documento">
         <table style="width: 100%;">
@@ -229,17 +234,15 @@
             <tr><td id="helpContent"></td></tr>
         </table>
     </div>
-
     <!--panel--------------------------------------------------------------------------------------------------->
-    <div id="Div1" style="padding: 10px; position: fixed; right:0vw; top:25vh;text-align:right;">
-        <input id="btnNuevo" class="btn" type="button" value="Nuevo debate" onclick="nuevoDebate();" style="margin-right:0px"/><br />
-        <input id="btnPaso" class="btn" type="button" value="Paso" onclick="live();"  style="margin-right:0px";/><br />
-        <input id="startStop" class="btn btnPlay" type="button" value="Play" onclick="startStop();"  style="margin-right:0px;"/>
+    <div class="panelSim">
+        <input id="btnNuevo" class="btn" type="button" value="Nuevo debate" onclick="nuevoDebate();"/><br />
+        <input id="btnPaso" class="btn" type="button" value="Paso" onclick="live();" ; /><br />
+        <input id="startStop" class="btnok" type="button" value="Play" onclick="startStop();" />
         <div id="nodes" class="titulo3"></div>
     </div>
-
     <!--titulo--------------------------------------------------------------------------------------------------->
-        <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;text-align: right;">
+    <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;text-align: right;">
         <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
             <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
         </a>
@@ -247,15 +250,13 @@
         <div id="tit4" class="titulo1" style="color:red;"><nobr>Simulacion</nobr></div>
     </div>
 
-
     <!--panel consenso--------------------------------------------------------------------------------------------------->
-    <div id="panelConsenso"  class="panelConsenso" style="display:block;">
+    <div id="panelConsenso" class="panelConsenso" style="display:block;">
         <div id="divCon" class="titulo2" style="visibility:visible;"><nobr><b>Consenso</b></nobr></div>
-        <div id = "usuarios" class="titulo3"></div>
-        <div id = "minSiPc" class="titulo3" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
-        <div id = "maxNoPc" class="titulo3" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>
+        <div id="usuarios"></div>
+        <div id="minSiPc" title="Cantidad minima de usuarios implicados en el debate para alcanzar el consenso"></div>
+        <div id="maxNoPc" title="Cantidad maxima de opiniones diferentes en el debate para alcanzar el consenso"></div>
     </div>
-
     <!--panel flores--------------------------------------------------------------------------------------------------->
     <div id="flores" style="visibility: hidden; position: absolute; left: 10px; top: 120px;">
         <table>
@@ -263,9 +264,8 @@
                 <td><img src="res/icono2.png" /></td>
                 <td style="font-size: 25px; font-weight: bold;">5</td>
             </tr>
-        </table>      
+        </table>
     </div>
-
     <!--joystick--------------------------------------------------------------------------------------------------->
     <div id="joystick" style="visibility:hidden; position:fixed;bottom:0vh;padding: 5px; left:0vw;">
         <table>
@@ -286,11 +286,10 @@
             </tr>
         </table>
     </div>
-
     <!--rotarpantalla--------------------------------------------------------------------------------------------------->
-        <div id="rotarpantalla" class="rotarpantalla">
-            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
-            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
-        </div>
+    <div id="rotarpantalla" class="rotarpantalla">
+        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+        <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+    </div>
 </body>
 </html>

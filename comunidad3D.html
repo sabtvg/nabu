@@ -1,4 +1,4 @@
-<!--
+ï»¿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -90,7 +90,7 @@
             if (intersects.length > 0) {
                 selected = intersects[0].object;
                 if (selected.name != "plano") {
-                    //obtengo tamaño del objeto seleccionado
+                    //obtengo tamaï¿½o del objeto seleccionado
                     var bounds = new THREE.Box3();
                     bounds.setFromObject(selected);
                     var sizex = bounds.max.x - bounds.min.x;
@@ -265,9 +265,28 @@
                  });
         }
 
+
+        function doResize() {
+            //background
+            setBackgroundImage();
+
+            scale = window.innerWidth / 1920;
+            offsetX = -10000;
+            offsetY = -10000;
+
+            var z = camera.position.z;
+            var y = camera.position.y;
+            var x = camera.position.x;
+            iniciar3D();
+            zoom = 1;
+            transform(0, 0);
+            camera.position.z = z;
+            camera.position.y = y;
+            camera.position.x = x;
+            dibujarTodo();
+        }
+
         function dibujarTodo() {
-            var scalex = window.innerWidth / 1920;
-            var scaley = window.innerHeight / 1080;
             var s = "";
 
             generando = false;
@@ -282,7 +301,6 @@
             document.getElementById("todo").innerHTML = s;
             transform(offsetX, offsetY);
 
-
             //menu
             document.getElementById("menuItem1").href = "comunidadGrupos.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
             document.getElementById("menuItem2").href = "comunidadPersonas.html?grupo=" + grupoParam + "&idioma=" + idiomaParam;
@@ -296,15 +314,15 @@
             //panelgrupo
             var usus = (usuarios.split(";").length - 1);
             var reps = (representantes.split(";").length - 1);
-            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
+            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
             //s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
             //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
             s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
 
             var panel = document.getElementById("panelGrupo");
             panel.innerHTML = s;
-            panel.style.visibility = 'visible';
+            panel.style.display = 'block';
 
             if (generando)
                 setTimeout(actualizarBosque, 1000);
@@ -369,11 +387,11 @@
             scene.add(AmbientLight);
 
             //panelgrupo
-            s = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + 0 + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + 0 + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + 0 + "%</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
-            s += "<div class='titulo3' style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
+            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + 0 + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + 0 + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + 0 + "%</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
             var panel = document.getElementById("panelGrupo");
             panel.innerHTML = s;
             panel.style.visibility = 'visible';
@@ -689,11 +707,6 @@
                 return s.substring(0, 25) + "...";
         }
 
-        function doResize(){
-            //background
-            setBackgroundImage();
-        }
-
         function addPolar(p1, p2) {
             var r1 = toRect(p1.m, p1.a);
             var r2 = toRect(p2.m, p2.a);
@@ -701,7 +714,7 @@
         }
     </script>
 </head>
-<body onload="doLoad();" onresize="doResize()" style="overflow:hidden">
+<body onload="doLoad();" onresize="doResize();" style="overflow:hidden">
     <canvas id="canvasGL" style="left:0px;top:0px;width:100%;height:100%;z-index:-1"></canvas>
     <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;z-index:-1"></svg>
 
@@ -715,7 +728,7 @@
     <div style="position:fixed;left:0.5vw;top:10vh;">
 
     <!--panel grupo--------------------------------------------------------------------------------------------------->
-    <div id="panelGrupo" class="borde" style="visibility:hidden; padding: 5px; margin-top: 25px; margin-top:1vh; color: gray;">
+    <div id="panelGrupo" class="panelGrupo">
     </div>
     
     <!--titulo--------------------------------------------------------------------------------------------------->

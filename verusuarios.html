@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -40,7 +40,7 @@
 
         function doLoad() {
             //background
-            setBackgroundImage();
+            //setBackgroundImage();
 
             //idioma
             idiomaParam = getParameterByName('idioma');
@@ -65,7 +65,6 @@
                     idiomaParam = vals[5]; //para el tradcutor
                     idioma = idiomaParam;  //para el dicionario
 
-
                     traducir();
 
                     getListaUsuarios();
@@ -77,6 +76,7 @@
         }
 
         function getListaUsuarios() {
+            var s = "";
             getHttp("doMain.aspx?actn=getusuarios&grupo=" + usuario.grupo
                 + "&email=" + usuario.email
                 + "&clave=" + usuario.clave,
@@ -89,54 +89,44 @@
                     else {
                         //he recibido los usuarios
                         var usuarios = JSON.parse(data);
-                        var s = "<table class='table'>";
-                        s += "<tr>"
-                        s += "<td style='width:240px;' colspan=2><b>" + tr("Nombre") + "</b></td>";
-                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
-                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
-                        s += "<td style='width:55px;text-align:center;'><b>" + tr("estadoUsuario") + "</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrCoordinador") + "'><b>C</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrSecretaria") + "'><b>S</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrRepresentante") + "'><b>R</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrFacilitador") + "'><b>F</b></td>";
-                        //s += "<td style='width:50px;text-align:center;'><b>" + tr("email") + "</b></td>";
-                        s += "<td style='width:50px;text-align:center;'><b>" + tr("borrar") + "</b></td>";
-                        s += "</tr>"
                         for (var i in usuarios) {
                             var usu = usuarios[i];
-                            s += "<tr>"
                             var d = new Date();
-                            s += "<td style='text-align:center'><img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" style='border-radius:5px;height:60px;width:auto;'></td>";
-                            s += "<td>" + usu.nombre + "<br>";
-                            s += usu.funcion; // + "<br>";
-                            //s += "<a href='mailto:" + usu.email + "'>" + usu.email + "</a>";
-                            s += "</td>";
-                            s += "<td style='text-align:center;'>"
-                                + "<div class='votos' style='border-radius:12px; margin-left:20px;padding:5px;'>"
+                            s += "<div class='cuadro' style='float:left;' onclick='doSelect(\"" + usu.email + "\");'>";
+
+                            s += "<img style='float:left;border-radius:5px;width:60px;height:auto;' src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" >";
+
+                            s += "<div style='float:left;vertical-align:top;font-size:12px;min-width:150px;padding:4px;' onclick='doSelect(\"" + usu.email + "\");'>"
+                                + usu.nombre + "<br>"
+                                + usu.funcion + "<br>"
+                                + usu.sLastLogin + "<br>"
+                                + "<a href='mailto:" + usu.email + "'>" + usu.email + "</a>"
+                                + "</div>";
+
+                            s += "<div style='float:left;text-align:center;'>"
+                                + "<div class='votos' style='border-radius:12px; margin:4px;padding:5px;'>"
                                 + "<img style='margin-top:2px;' src='res/icono.png'><br />"
-                                + "<div>" + usu.apoyos + "</div>"
-                                + "</td>";
-                            s += "<td style='text-align:center;'>" + usu.sLastLogin + "</td>";
-                            s += "<td style='text-align:center;'>"
+                                + usu.apoyos 
+                                + "</div>"
+                                + "</div>";
+
+                            s += "<div style='float:left;text-align:center;padding-bottom:8px;' onclick='doSelect(\"" + usu.email + "\");'>"
                                 + "<div style='background-color:" + (usu.habilitado ? "#ccffe6" : "#ffcccc")
-                                    + ";border-top-left-radius:8px;border-top-right-radius:8px;padding:2px;'>" + (usu.habilitado ? "Habilitad@" : "Deshabilitad@") + "</div>"
+                                + ";border-top-left-radius:8px;border-top-right-radius:8px;padding:2px;'>" + (usu.habilitado ? "Habilitad@" : "Deshabilitad@") + "</div>"
                                 + "<div style='background-color:" + (!usu.readOnly ? "#ccffe6" : "#ffcccc")
-                                    + ";padding:2px;'>" + (usu.readOnly ? "Lectura" : "Escritura") + "</div>"
+                                + ";padding:2px;'>" + (usu.readOnly ? "Lectura" : "Escritura") + "</div>"
                                 + "<div style='background-color:" + (usu.isActive ? "#ccffe6" : "#ffcccc")
-                                    + ";border-bottom-left-radius:8px;border-bottom-right-radius:8px;padding:2px;'>" + (usu.isActive ? "Activ@" : "Inactiv@") + "</div>"
-                                + "</td>";
-                            s += "<td style='text-align:center;padding:2px;'>" + box(usu.isAdmin, "#0066CC", tr("abrCoordinador")) + "</td>";
-                            s += "<td style='text-align:center;padding:2px;'>" + box(usu.isSecretaria, "#FF66CC", tr("abrSecretaria")) + "</td>";
-                            s += "<td style='text-align:center;padding:2px;'>" + box(usu.isRepresentante, "#00CC99", tr("abrRepresentante")) + "</td>";
-                            s += "<td style='text-align:center;padding:2px;'>" + box(usu.isFacilitador, "#FF9900", tr("abrFacilitador")) + "</td>";
-                            //s += "<td style='text-align:center;padding:2px;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
-                            if (!usu.isAdmin)
-                                s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
-                            else
-                                s += "<td>[Admin]</td>";
-                            s += "</tr>"
+                                + ";border-bottom-left-radius:8px;border-bottom-right-radius:8px;padding:2px;'>" + (usu.isActive ? "Activ@" : "Inactiv@") + "</div>"
+                                + "</div>";
+
+                            s += "<div style='clear:left;float:left;width:160px;height:25px;'>"
+                                + box(usu.isAdmin, "#0066CC", tr("abrCoordinador"))
+                                + box(usu.isSecretaria, "#FF66CC", tr("abrSecretaria"))
+                                + box(usu.isRepresentante, "#00CC99", tr("abrRepresentante"))
+                                + box(usu.isFacilitador, "#FF9900", tr("abrFacilitador")) + "</div>";
+
+                            s += "</div>"
                         }
-                        s += "</table>";
 
                         document.getElementById("usuarios").innerHTML = s;
                     }
@@ -145,7 +135,7 @@
 
         function box(cond, color, title) {
             if (cond)
-                return "<div style='height:16px;width:16px;border:1px gray solid;background-color:" + color + "' title='" + title + "'></div>";
+                return "<div style='float:left;margin:2px;height:16px;width:16px;border:1px gray solid;background-color:" + color + "' title='" + title + "'></div>";
             else
                 return "";
         }
@@ -156,31 +146,32 @@
 
         function doResize() {
             //background
-            setBackgroundImage();
+            //setBackgroundImage();
         }
 
         function traducir() {
             document.getElementById("usu").innerHTML = tr("Usuarios");
             document.getElementById("btnCancelar").innerHTML = tr("btnCancelar");
+
+            var refs = "<table style='border-collapse: collapse; border-spacing: 0;font-size:12px'>"
+                + "<tr><td>&nbsp;</td><td>" + box(true, "#0066CC", tr("abrCoordinador")) + "</td><td>" + tr("Coordinador") + "</td>"
+                + "<td>" + box(true, "#FF66CC", tr("abrSecretaria")) + "</td><td>" + tr("Secretaria") + "</td></tr>"
+                + "<tr><td>&nbsp;</td><td>" + box(true, "#00CC99", tr("abrRepresentante")) + "</td><td>" + tr("Representante") + "</td>"
+                + "<td>" + box(true, "#FF9900", tr("abrFacilitador")) + "</td><td>" + tr("Facilitador") + "</td></tr>"
+                + "</table>";
+            document.getElementById("referencias").innerHTML = refs;
+
         }
     </script>
 </head>
-<body onload="doLoad();" style="overflow:hidden" onresize="doResize();">
-
-        <div id="todo" class="ventana">
-            <table style="width:100%">
-                <tr>
-                    <td style="vertical-align:middle"><div id="usu" class="titulo3">Ver usuarios</div>
-                    <div id="response" class="titulo4"></div></td>
-                    <td style="text-align:right">
-                        <input id="btnCancelar" type='button' class='btn' value='Volver ' onclick='doAtras();' style="margin:5px"/>
-                    </td>
-                </tr>          
-            </table>
-
-            <div id="usuarios" class="verusuarios"></div>
-            <br />
-
-        </div>
-    </body>
+<body onload="doLoad();" style="overflow:hidden;background-image:unset;" onresize="doResize();">
+    <div id="usu" class="popupHeader" style="text-align:center;">Usuarios</div>
+    <div class="popupContent" style="padding:5px;">
+        <div id="usuarios" class="verusuarios"></div>   
+    </div>
+    <div class="popupFooter">
+        <input id="btnCancelar" type='button' class='btn' value='Volver' onclick='doAtras();' style="margin:5px" />
+        <div id="referencias" style="padding:2px;"></div>
+    </div>
+</body>
 </html>

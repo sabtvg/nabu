@@ -13,6 +13,28 @@ body {
     margin:1.9vw;
 }
 
+.field1 {
+    clear: left;
+    float: left;
+    margin-top: 5px;
+    margin: 2px;
+    padding: 2px;
+    margin-left:0px;
+    padding-left:0px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.field2 {
+    float: left;
+    margin-top: 5px;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background-color: #FFFFDD;
+    font-size: 14px;
+}
+
 .abm {
     border:1px solid gray;
     border-radius: 8px;
@@ -88,16 +110,16 @@ body {
     padding: 2px;
     margin: 2px;
     border-radius: 8px;
-    background-color: #FFFFFF;
-    min-width: 400px;
-    max-width: 750px;
+    background-color: aliceblue;
+    width: 675px;
 }
 
 .cuadro {
-    border: 1px solid black;
+    border: 1px solid #cccccc;
     text-align: left;
     padding: 5px;
-    margin: 0px;
+    margin: 1px;
+    border-radius:4px;
 }
 .editarBig {
     padding: 2px;
@@ -269,6 +291,13 @@ body {
     width: 4vh;
     height: 4vh;
 }
+.panelSim {
+    padding: 5px;
+    position: fixed;
+    right: 0vw;
+    top: 25vh;
+    text-align: right;
+}
 .menuItem {
     padding-top:1vh;
     font-size: 16px;
@@ -292,6 +321,7 @@ body {
     font-size: 18px;
     font-weight: bold;
     margin-top:15px;
+    padding-left:0px;
 }
 .smalltip {
     border: 1px solid #339966;
@@ -311,7 +341,7 @@ body {
     border-radius: 10px;
     border-color: #403d3d;
     background-color: #FFFFFF;
-    opacity: 0.9; 
+    opacity: 1; 
     overflow: scroll;
     top: 2.5vh;
     left: 2.5vw;
@@ -326,7 +356,6 @@ body {
     border-radius: 10px;
     border-color: #403d3d;
     background-color: #FFFFFF;
-    opacity: 0.95; 
     display: none;
     text-align:left;
     left:50%;
@@ -334,6 +363,37 @@ body {
     transform: translate(-50%,-50%);
     max-height:90%;
     z-index:5;
+}
+input[readonly] {
+    background-color: gainsboro;
+}
+.popupmsg {
+    position: absolute;
+    border: 4px solid gray;
+    padding: 26px;
+    border-radius: 10px;
+    border-color: #403d3d;
+    background-color: aliceblue;
+    opacity: 0.95;
+    display: none;
+    text-align: left;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    min-height: 20%;
+    z-index: 10;
+    max-width: 85%;
+    min-height: 15%;
+    vertical-align:middle;
+    font-size:18px;
+}
+.alertaicon {
+    width: 1.6vw;
+    height: auto;
+    vertical-align: middle;
+    margin: auto;
+    cursor: pointer;
+    display: none;
 }
 .popupHeader {
     font-size:16px;
@@ -343,19 +403,20 @@ body {
     left:0px;
     right:0px;
     border-bottom: 1px solid silver;
+    padding:2px;
 }
 .popupFooter {
     border-top: 1px solid silver;
-    position:relative;
-    bottom:0px;
-    left:0px;
-    right:0px;
-    height:55px;
+    position: relative;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
 }
 .popupContent {
-    overflow:auto;
-    position:relative;
-    height:calc(100% - 85px);
+    overflow: auto;
+    position: relative;
+    height: calc(100% - 85px);
+    padding: 2px;
 }
 .perfil {
     height:90%;
@@ -406,10 +467,11 @@ body {
     display: none;
     top: 50%;
     left: 50%;
-    margin-left: -150px;
-    margin-top: -100px;
-    width: 300px;
-    height: 200px;
+    margin-left: -300px;
+    margin-top: -200px;
+    width: 600px;
+    height: min-content;
+    z-index: 5;
 }
 .rotarpantalla {
     display:none;
@@ -422,7 +484,6 @@ body {
     border-radius: 15px;
     border-color: #403d3d;
     background-color: #C6ECFF;
-    opacity: 0.9;
     width:500px;
 }
 .ventanaltausuario {
@@ -435,7 +496,6 @@ body {
     border-radius: 15px;
     border-color: #403d3d;
     background-color: #C6ECFF;
-    opacity: 0.9;
     width: 380px;
     text-align:center;
     display:none;
@@ -448,7 +508,6 @@ body {
     border-radius: 15px;
     border-color: #403d3d;
     background-color: #C6ECFF;
-    opacity: 0.9;
     width: 350px;
 }
 .ventanaultimaflor {
@@ -490,9 +549,10 @@ body {
     background-color: #f5f5f0;    
 }
 .txt {
+    margin-top: 5px;
     margin: 2px;
     padding: 2px;
-    border: 1px solid gray;
+    border: 1px solid #cccccc;
     border-radius: 4px;
     background-color: #FFFFDD;
     font-size: 14px;
@@ -507,6 +567,31 @@ body {
     margin-left: 4px;
     margin-top: 4px;
     font-family:inherit;
+}
+.btnnok {
+    border: 2px solid #006666;
+    background-color: #0066CC;
+    color: #FFFFFF;
+    border-radius: 16px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 4px;
+    font-family: inherit;
+    background-color: lightcoral;
+    margin-right: 5px
+}
+
+.btnok {
+    border: 2px solid teal;
+    background-color: teal;
+    color: #FFFFFF;
+    border-radius: 16px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 4px;
+    font-family: inherit;
 }
 .btnStop {
     background-color: #CC0000;
@@ -538,14 +623,8 @@ body {
     cursor: pointer;
     font-family:inherit;
 }
-.table {
-    border: 1px solid gray;
-    padding: 5px;
-    border-radius: 10px;
-    font-size: 12px;
-}
 .divborde {
-    border: 1px solid gray;
+    border: 1px solid #cccccc;
     padding: 5px;
     border-radius: 10px;
     margin: 5px 0px 5px 0px;
@@ -563,7 +642,6 @@ body {
 }
 .seccion {
     padding: 2px;
-    padding-left: 7px;
     margin: 2px;
     font-size: 14px;
     vertical-align:top;
@@ -664,7 +742,7 @@ body {
     position: fixed;
     left: 5px;
     top: 5px;
-    width: 4vw;
+    width: 60px;
     height: auto;
     cursor: pointer;
 }
@@ -673,9 +751,9 @@ body {
     padding: 1px;
     font-size: 16px;
     position: fixed;
-    left: 5vw;
+    left: 70px;
     top: 0px;
-    font-size: 1.4vw;
+    font-size: 23px;
     padding-left: 1%;
     padding-top: 1%;
 }
@@ -687,6 +765,12 @@ body {
     margin-top: 25px;
     margin-top: 1vh;
     color: gray;
+}
+.panelUsuarioNombre
+{
+    padding-top:10px;
+    padding-bottom:10px;
+    min-width: 70px;
 }
 .panelConsenso {
     position: fixed;
@@ -740,6 +824,12 @@ body {
     border-radius: 10px;
     font-size: 18px;
 }
+.infoImg {
+    clear: left;
+    float: left;
+    border-radius: 15px;
+    margin: 15px;
+}
 .modeloBox {
     text-align: center;
     padding-left: 5px;
@@ -758,9 +848,14 @@ body {
     display:none;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 800px)  {
     body {
         height:2000px;
+    }
+    .popupmsg {
+        padding: 6px;
+        width: 85%;
+        min-height: 30%;
     }
     .titulo0 {  
         padding: 1px;
@@ -773,15 +868,15 @@ body {
     }
     .titulo2 {
         padding: 1px;
-        font-size: 12px;
+        font-size: 14px;
     }
     .titulo3 {
         padding: 1px;
-        font-size: 12px;
+        font-size: 14px;
     }
     .titulo4 {
         padding: 2px;
-        font-size: 10px;
+        font-size: 12px;
     }
     .img {
         cursor:pointer;
@@ -800,12 +895,7 @@ body {
     .documento {
         margin: 0px;
         border: none;
-        padding: 5px 5px 5px 5px;
         border-radius: 0px;
-        background-color: #FFFFFF;
-        opacity: 0.9;
-        display: none;
-        position: absolute;    
         left: 0px;
         top: 0px;
         width: -webkit-fill-available;
@@ -837,7 +927,7 @@ body {
     }
     .popupContent {
         position:absolute;
-        top:26px;
+        top:32px;
         bottom:51px;
         left:0px;
         right:0px;
@@ -846,7 +936,7 @@ body {
     .popupHeader {
         position:absolute;
         top:0px;
-        height:25px;
+        height:27px;
         left:0px;
         right:0px;
     }
@@ -905,16 +995,19 @@ body {
         display:none;
     }
     .tema {
-        padding: 5px;
-        font-size: 16px;
-        margin-top:10px;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+        padding-left: 0px;
+        padding-bottom: 0px;
     }
     .smalltip {
         border: 1px solid #339966;
         padding: 2px;
+        margin-left:0px;
         border-radius: 5px;
         color: #339966;
-        font-size: 14px;
+        font-size: 10px;
         text-align: center;
         margin-top: 2px;
         margin-bottom: 2px;
@@ -960,14 +1053,13 @@ body {
         opacity: 0.8;
     }
     .txt {
+        margin-top: 5px;
         margin: 2px;
         padding: 2px;
-        border-style: solid;
-        border-width: 1px;
-        border-radius: 2px;
-        border-color: gray;
-        font-size: 12px;
-        font-family:inherit;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        background-color: #FFFFDD;
+        font-size: 14px;
     }
     .btn {
         border: 1px solid #006666;
@@ -976,12 +1068,43 @@ body {
         border-radius: 8px;
         font-size: 14px;
         cursor: pointer;
-        padding:8px;
+        padding: 8px;
         margin-left: 5px;
         margin-top: 3px;
         margin-left: 3px;
-        font-family:inherit;
+        font-family: inherit;
+        float: left;
     }
+    .btnok {
+        border: 2px solid teal;
+        background-color: teal;
+        color: #FFFFFF;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 8px;
+        margin-left: 5px;
+        margin-top: 3px;
+        margin-left: 3px;
+        font-family: inherit;
+        float:left;
+    }
+    .btnnok {
+        border: 1px solid #006666;
+        color: #FFFFFF;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 8px;
+        margin-left: 5px;
+        margin-top: 3px;
+        margin-left: 3px;
+        font-family: inherit;
+        float: right;
+        background-color: lightcoral;
+        margin-right: 5px
+    }
+
 
     .btn2 {
         border: 1px solid #006666;
@@ -991,7 +1114,7 @@ body {
         font-size: 12px;
         cursor: pointer;
         margin: 0px 0px 0px 5px;
-        font-family:inherit;
+        font-family: inherit;
     }
     .btnDis {
         border: 1px solid #006666;
@@ -1040,7 +1163,6 @@ body {
     }
     .seccion {
         padding: 2px;
-        padding-left: 7px;
         margin: 2px;
         font-size: 14px;
         vertical-align:top;
@@ -1077,6 +1199,7 @@ body {
         vertical-align: middle;
         color: #999999;
         width: fit-content;
+        margin-top:10px;
     }
     .tip {
         visibility:hidden;
@@ -1104,7 +1227,7 @@ body {
         text-align: center;
     }
     .grupo {
-        font-size:12px;
+        font-size:14px;
         padding: 8px;
     }
     .editarComentario {
@@ -1119,15 +1242,15 @@ body {
         margin: 0px;
         left: 0px;
         top: 0px;
-        padding-left: 25vw;
-        padding-right: 25vw;
-        position:absolute;
-        border-radius:0px;
+        position: absolute;
+        border-radius: 0px;
         border-style: none;
         background-color: #C6ECFF;
         opacity: 0.9;
         width: -webkit-fill-available;
         overflow: auto;
+        width: -webkit-fill-available;
+        height: -webkit-fill-available;
     }
     .menuimg {
         cursor: pointer;
@@ -1160,19 +1283,17 @@ body {
         left:50%;
     }
     .pie {
-        font-size: 8px;
-        padding: 5px;
-        position: fixed;
-        bottom: 0vh;
-        width: 100%;
-        text-align: center;
-        display: none;
+        color: gray;
+        font-size: 14px;
+        width: -webkit-fill-available;
+        margin-left: 15px;
+        margin-right: 15px;
     }
     .atras {
         position: fixed;
         left: 5px;
         top: 0px;
-        width: 6vw;
+        width: 40px;
         height: auto;
         cursor: pointer;
     }
@@ -1181,8 +1302,8 @@ body {
         padding: 1px;
         font-size: 16px;
         position: fixed;
-        left: 7vw;
-        top: 3vh;
+        left: 55px;
+        top: 8px;
         font-size: 2vw;
     }
     .logo {
@@ -1234,14 +1355,15 @@ body {
         border-radius: 10px;
     }
     .info {
-        visibility: hidden;
-        padding: 5px;
-        margin-top: 5px;
-        color: gray;
-        overflow: auto;
-        border: 1px solid gray;
-        border-radius: 10px;
         font-size: 12px;
+        width: min-content;
+        min-width: 250px;
+    }
+    .infoImg {
+        border-radius: 10px;
+        margin: 5px;
+        width:40%;
+        height:auto;
     }
     .msg {
         padding: 2px;
@@ -1252,18 +1374,31 @@ body {
     .movilePie {
         display:block;
     }
-
-    .pie {
-        visibility: hidden;
+    .texto {
+        padding-left: 0px;
+        margin-left: 0px;
+    }
+    .field1 {
+        clear: left;
+    }
+    .pieItem {
+        color: gray;
+        margin-top: 15px;
+        padding-bottom: 15px;
+        white-space: nowrap;
+    }
+    .seguimientoEstado {
+        width: 500px;
     }
 }
 
 @media only screen and (max-width: 400px) {
     .panelGrupo {
-        top: 11vh;
+        top: 70px;
+        font-size: 12px;
     }
     .panelUsuario {
-        top: 5.5vh;
+        top: 25px;
     }
     .atras {
         top: 5px;
@@ -1273,8 +1408,8 @@ body {
         width: 3.5vw;
     }
     .img {
-        width: 5vh;
-        height: 5vh;
+        width: 4vh;
+        height: 4vh;
     }
     .tituloPagina {
         padding: 1px;
@@ -1286,24 +1421,48 @@ body {
         width: 200px;
     }
     .panelQueso {
-        top: 11vh;
+        top: 70px;
+        font-size: 12px;
     }
     .panelConsenso {
-        top: 11vh;
+        top: 70px;
+        font-size: 12px;
     }
     .ventanaltausuario {
         position: absolute;
         left: 15px;
         right: 15px;
         top: 90px;
-        bottom: 255px;
+        height: 330px;
         width: auto;
         margin-left: 0px;
         padding: 5px;
         display: none;
     }
+    .pie {
+    }
+    .alertaicon {
+        width: 16px;
+    }
+    .seguimientoEstado {
+        width: 230px;
+    }
+    .uploadIcon
+    {
+        display:none;
+        visibility:hidden;
+    }
+    .panelSim {
+        top: 14vh;
+    }
+
 }
 
+@media only screen and (max-height: 500px) {
+    .pie {
+        visibility: hidden;
+    }
+}
 
 p {
     display: block;

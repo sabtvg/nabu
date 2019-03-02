@@ -184,8 +184,8 @@ function dibujarQueso() {
     var pan = "";
     var HTMLColorPromedio = quesoPersonal.colorPromedio == 0 ? "transparent" : HTMLColor(quesoPersonal.colorPromedio);
 
-    pan = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Evaluaciones") + ":" + totalEvaluaciones + "</nobr></div>";
-    pan += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Promedio") + ": <span style='border:1px solid gray;background-color:" + HTMLColorPromedio + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></nobr></div>";
+    pan = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Evaluaciones") + ":" + totalEvaluaciones + "</nobr></div>";
+    pan += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Promedio") + ": <span style='border:1px solid gray;background-color:" + HTMLColorPromedio + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></nobr></div>";
     panel.innerHTML = pan; 
     panel.style.display = 'inline';
 
@@ -319,27 +319,42 @@ function getSVGPoints(index, iniDeg, finDeg, celda) {
 
 function seleccionarModeloEvaluacion() {
     //opciones de modelos de documentos
-    var listE = "<table style='margin:auto;'>";
+    var listE = "<div class='modeloBox'><div><b>" + tr("Estructura") + "</b></div>";
+    var listS = "<div class='modeloBox'><div><b>" + tr("Seguimiento") + "</b></div>";
 
     //si no hay manifiesto solo permito crear modelo Manifiesto
     for (var i in modelosEvaluacion) {
         var modelo = modelosEvaluacion[i];
         if (modelo.activo) {
-                listE += "<tr>";
-                listE += "<td><img src='" + modelo.icono + "' style='width:32px;height:40px;cursor:pointer;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'></td>";
-                listE += "<td style='text-align: left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'>" + modelo.nombre + "</td>";
-                listE += "</tr>";
+            if (modelo.tipo == "seguimiento") {
+                listE += getEvaluacionIcon(modelo);
+            }
+            else if (modelo.tipo == "externo") {
+                listS += getEvaluacionIcon(modelo);
+            }
         }
     }
-    listE += "<tr>";
-    listE += "<td style='vertical-align:top;font-size:12px;text-align:center;padding:5px;' colspan='2'>";
-    listE += "<input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' onclick='document.getElementById(\"modelosEvaluacion\").style.display = \"none\";'/>";
-    listE += "</td>"
-    listE += "</tr>";
-    listE += "</table>";
+    listE += "</div>";
+    listS += "</div>";
 
-    document.getElementById("modelosEvaluacion").innerHTML = listE;
-    document.getElementById("modelosEvaluacion").style.display = "block";
+    var list = "<div style='clear:left;float:left;text-align:center;padding:10px;width:100%;' class='titulo1' colspan='4'><b>"
+        + tr("Modelos de evaluacion") + "</b></div>";
+    list += listE;
+    list += listS;
+
+    list += "<div style='clear:left;float:left;width:100%;text-align:center;'><input id='btnCancelar' type='button' value='" + tr("Cancelar") + "' class='btn' style='float:unset;' onclick='document.getElementById(\"modelosEvaluacion\").style.display = \"none\";' /></div>";
+    list += "</div>";
+
+    document.getElementById("modelosEvaluacion").innerHTML = list;
+    document.getElementById("modelosEvaluacion").style.display = "block";   
+}
+
+function getEvaluacionIcon(modelo) {
+    var ret = "<div class='modeloIcon'>";
+    ret += "<img src='" + modelo.icono + "' style='float:left;clear:left;width:32px;height:40px;cursor:pointer;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'>";
+    ret += "<div style='float:left;text-align:left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModeloEvaluacionID(\"" + modelo.id + "\");'>" + modelo.nombre + "</div>";
+    ret += "</div>";
+    return ret;
 }
 
 function seleccionarModeloEvaluacionID(modeloID) {
@@ -355,7 +370,7 @@ function doEvaluarTema(idTema) {
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
-        + "&width=" + (window.innerWidth - 200).toFixed(0),
+        + "&width=" + window.innerWidth,
         function (data) {
             //puedo mostrar el documento
             preguntarAlSalir = true;
@@ -379,7 +394,7 @@ function doVerEvaluacion(modeloID) {
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
-        + "&width=" + (window.innerWidth - 200).toFixed(0),
+        + "&width=" + window.innerWidth,
         function (data) {
             //puedo mostrar el documento
             preguntarAlSalir = true;
@@ -401,7 +416,7 @@ function doRevisarEvaluacion(modeloID) {
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
         + "&grupo=" + arbolPersonal.nombre
-        + "&width=" + (window.innerWidth - 200).toFixed(0),
+        + "&width=" + window.innerWidth,
         function (data) {
             //muestro
             document.getElementById("documento").innerHTML = data;
@@ -420,7 +435,7 @@ function doPrevistaEvaluacion(modeloID) {
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
         + "&grupo=" + arbolPersonal.nombre
-        + "&width=" + (window.innerWidth - 200).toFixed(0),
+        + "&width=" + window.innerWidth,
         post,
         function (data) {
             //muestro
@@ -439,7 +454,7 @@ function doCrearEvaluacion(modeloID) {
             + "&email=" + arbolPersonal.usuario.email
             + "&clave=" + arbolPersonal.usuario.clave
             + "&grupo=" + arbolPersonal.nombre
-            + "&width=" + (window.innerWidth - 200).toFixed(0),
+            + "&width=" + window.innerWidth,
             recibirQuesoPersonal
         );
     }, 1500); //doy tiempo al documento a salir de pantalla
@@ -460,7 +475,7 @@ function evaluacionSubmit(accion, parametro, modeloID) {
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
-        + "&width=" + (window.innerWidth - 200).toFixed(0),
+        + "&width=" + window.innerWidth,
         post,
         function (data) {
             //muestro

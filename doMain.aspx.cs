@@ -339,7 +339,7 @@ namespace nabu
                                 null,
                                 null,
                                 null);
-                            Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
+                            //Response.Write(Tools.tr("Usuario [%1] actualizado", u2.email, grupo.idioma));
                             app.addLog("actualizarUsuario", Request.UserHostAddress, Request["grupo"], Request["email"], Request["nombre"]);
                             break;
 

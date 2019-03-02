@@ -56,17 +56,19 @@ namespace nabu.plataforma.modelos
             v.editClassName = "editarBig";
             variables.Add(v);
 
-            //nivel 2
-            variables.Add(new Variable("r.donde", 60, 2));
+            //nivel 1
+            variables.Add(new Variable("r.donde", 60, 1));
 
+            //nivel 2
+            variables.Add(new Variable("r.que", 60, 2));
+			
             //nivel 3
-            variables.Add(new Variable("r.que", 60, 3));
+            variables.Add(new Variable("r.quemas", 60, 3));
 			
             //nivel 4
-            variables.Add(new Variable("r.quemas", 60, 4));
-			
+            variables.Add(new Variable("f.costo", 60, 4));
+
             //nivel 5
-            variables.Add(new Variable("f.costo", 60, 5));
             variables.Add(new Variable("s.gastos", 3000, 5));
         }
 
@@ -86,16 +88,13 @@ namespace nabu.plataforma.modelos
                         addError(2, "El titulo de la escapada no puede ser vacio");
                         getVariable("s.titulo").className = "errorfino";
                     }
-                }
-                else if (prop.nivel == 2)
-                {
                     if (getText("r.donde", prop) == "")
                     {
                         addError(2, "Completar todos los niveles");
                         getVariable("r.donde").className = "errorfino";
                     }
                 }
-                else if (prop.nivel == 3)
+                else if (prop.nivel == 2)
                 {
                     if (getText("r.que", prop) == "")
                     {
@@ -103,7 +102,7 @@ namespace nabu.plataforma.modelos
                         getVariable("r.que").className = "errorfino";
                     }
                 }
-                else if (prop.nivel == 4)
+                else if (prop.nivel == 3)
                 {
                     if (getText("r.quemas", prop) == "")
                     {
@@ -111,13 +110,16 @@ namespace nabu.plataforma.modelos
                         getVariable("r.quemas").className = "errorfino";
                     }
                 }
-                else if (prop.nivel == 5)
+                else if (prop.nivel == 4)
                 {
                     if (getFloat("f.costo", prop) == 0)
                     {
                         addError(5, "Completar todos los niveles");
                         getVariable("f.costo").className = "errorfino";
                     }
+                }
+                else if (prop.nivel == 5)
+                {
                     if (getText("s.gastos", prop) == "")
                     {
                         addError(5, "Completar todos los niveles");
@@ -185,28 +187,24 @@ namespace nabu.plataforma.modelos
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //titulo
-                ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores, g.idioma) + "</nobr></div>";
+                ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, width - 100, tieneFlores, g.idioma) + "</nobr></div>";
 
                 //etiqueta
                 ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
                 if (prop == null)
                     ret += "<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
                 ret += "</nobr></div><br><br>";
-            }
-            else if (nivel == 2)
-            {
+
                 //donde
                 ret += "<div class='tema'><nobr>" + Tools.tr("Donde vamos?", g.idioma) + "</nobr></div>";
                 ret += "<div>" + HTMLRadio("r.donde", 1, prop, tieneFlores, "Casa", g.idioma) + " " + Tools.tr("Nos quedamos en casa", g.idioma) + "</div>";
                 ret += "<div>" + HTMLRadio("r.donde", 2, prop, tieneFlores, "Nacional", g.idioma) + " " + Tools.tr("Viaje nacional", g.idioma) + "</div>";
                 ret += "<div>" + HTMLRadio("r.donde", 3, prop, tieneFlores, "Internacional", g.idioma) + " " + Tools.tr("Viaje internacional", g.idioma) + "</div>";
                 ret += "<br>";
-
-                //variante
-                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
-            else if (nivel == 3)
+            else if (nivel == 2)
             {
+                //que hacemos
                 ret += "<div class='tema'><nobr>" + Tools.tr("Que hacemos?", g.idioma) + "</nobr></div>";
 
                 if (donde == "Casa")
@@ -235,8 +233,9 @@ namespace nabu.plataforma.modelos
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
-            else if (nivel == 4)
+            else if (nivel == 3)
             {
+                //que hacemos mas concreto
                 ret += "<div class='tema'><nobr>" + Tools.tr("Que hacemos? (mas concreto)", g.idioma) + "</nobr></div>";
 
                 if (que == "Pasear")
@@ -307,14 +306,19 @@ namespace nabu.plataforma.modelos
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
             }
-            else if (nivel == 5)
+            else if (nivel == 4)
             {
+                //costo
                 ret += "<div class='tema'><nobr>" + Tools.tr("Costo asumido por cabeza", g.idioma) + "</nobr></div>";
                 ret += HTMLFloat("f.costo", prop, tieneFlores, g.idioma, "0.00");
                 ret += "<br>";
-                ret += "<br>";
 
-                //fases
+                //variante
+                if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
+            }
+            else if (nivel == 5)
+            {
+                //descripcion
                 ret += HTMLSeccion("En que gastaremos el dinero", "Excursiones, fiesta nocturna, comidas en familia", "s.gastos", editar, prop, tieneFlores, g, width);
 
                 //variante

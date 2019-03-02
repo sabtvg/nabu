@@ -99,21 +99,6 @@ namespace nabu
             this.modo = modo;
             this.grupo = g;
 
-            //reinicio el modelo
-            //errores.Clear();
-
-            //if (modo == eModo.consenso)
-            //{
-            //    //header HTML
-            //    ret += "<html>";
-            //    ret += "<head>";
-            //    ret += "<title></title>";
-            //    ret += "<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1' />";
-            //    ret += "<link rel='stylesheet' type='text/css' href='styles.css'>";
-            //    ret += "</head>";
-            //    ret += "<body>";
-            //}
-
             //contenido 
             ret += toHTMLContenido(prop, g, email, width);
 
@@ -122,22 +107,21 @@ namespace nabu
             if (modo == eModo.editar)
             {
                 //modo muestra
-                ret += "<input type='button' class='btn' style='clear:left;float:left;' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
-                ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
-
+                ret += "<input type='button' class='btnok' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btnnok' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }
             else if (modo == eModo.prevista)
             {
-                ret += "<input type='button' class='btn' style='clear:left;float:left;' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
-                ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Revisar evaluacion", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisarEvaluacion(\"" + id + "\");' />";
                 if (!hayError())
-                    ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Crear evaluacion", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doCrearEvaluacion(\"" + id + "\");' />";
+                    ret += "<input type='button' class='btnok' value='" + Tools.tr("Crear evaluacion", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doCrearEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btn' value='" + Tools.tr("Revisar evaluacion", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisarEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }
             else if (modo == eModo.revisar)
             {
                 //permito prevista
-                ret += "<input type='button' class='btn' style='clear:left;float:left;' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
-                ret += "<input type='button' class='btn' style='float:left;' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btnok' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }
 
             //ret += "<a id='btnDownload' href='' target='_blank'><font size='1'>Descargar esta versi&oacute;n</font></a>";

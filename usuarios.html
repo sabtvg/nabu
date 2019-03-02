@@ -116,27 +116,15 @@
                     + "&clave=" + usuario.clave,
                     function (data) {
                         if (data.substring(0, 6) == "Error=")
-                            document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                            popupMsgOn('<font color=red>' + data.substring(6) + '</font>');
                         else {
-                            document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
-
-                            ////limpio valores
-                            //document.getElementById("nombre").value = "";
-                            //document.getElementById("funcion").value = "";
-                            //document.getElementById("email").value = "";
-                            //document.getElementById("clave").value = "";
-
-                            //document.getElementById("habilitado").checked = false;
-                            //document.getElementById("readOnly").checked = false;
-                            //document.getElementById("isAdmin").checked = false;
-                            //document.getElementById("isSecretaria").checked = false;
-                            //document.getElementById("isRepresentante").checked = false;
-                            //document.getElementById("isFacilitador").checked = false;
-
+                            //popupMsgOn(data);
                             //actualizo lista
                             getListaUsuarios();
                         }
                     });
+
+                editpopupMsgOff();
             }
         }
 
@@ -144,21 +132,30 @@
             for (q in usuarios) {
                 var u = usuarios[q];
                 if (u.email == email) {
-                    document.getElementById("nombre").value = u.nombre;
-                    document.getElementById("funcion").value = u.funcion;
-                    document.getElementById("email").value = u.email;
-                    document.getElementById("clave").value = u.clave;
 
-                    document.getElementById("habilitado").checked = u.habilitado;
-                    document.getElementById("readOnly").checked = u.readOnly;
-                    document.getElementById("isAdmin").checked = u.isAdmin;
-                    document.getElementById("isSecretaria").checked = u.isSecretaria;
-                    document.getElementById("isRepresentante").checked = u.isRepresentante;
-                    document.getElementById("isFacilitador").checked = u.isFacilitador;
+                    showUsuario(u);
 
+                    document.getElementById("email").readOnly = true;
                     selected = email;
+
                 }
             }
+        }
+
+        function showUsuario(u) {
+            document.getElementById("nombre").value = u.nombre;
+            document.getElementById("funcion").value = u.funcion;
+            document.getElementById("email").value = u.email;
+            document.getElementById("clave").value = u.clave;
+
+            document.getElementById("habilitado").checked = u.habilitado;
+            document.getElementById("readOnly").checked = u.readOnly;
+            document.getElementById("isAdmin").checked = u.isAdmin;
+            document.getElementById("isSecretaria").checked = u.isSecretaria;
+            document.getElementById("isRepresentante").checked = u.isRepresentante;
+            document.getElementById("isFacilitador").checked = u.isFacilitador;
+
+            editpopupMsgOn();
         }
 
         function getListaUsuarios() {
@@ -169,72 +166,79 @@
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
                         //ha habido un error
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        popupMsgOn('<font color=red>' + data + '</font>');
                     }
                     else {
                         //he recibido los usuarios
                         usuarios = JSON.parse(data);
-                        var s = "<table class='table'>";
-                        s += "<tr>"
-                        s += "<td style='width:20px;'></td>";
-                        s += "<td style='width:60px;'></td>";
-                        s += "<td style='width:180px;'><b>" + tr("Nombre") + "</b></td>";
-                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Apoyos") + "</b></td>";
-                        s += "<td style='width:80px;text-align:center;'><b>" + tr("Ultimo") + "</b></td>";
-                        s += "<td style='width:55px;text-align:center;'><b>" + tr("estadoUsuario") + "</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrCoordinador") + "'><b>C</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrSecretaria") + "'><b>S</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrRepresentante") + "'><b>R</b></td>";
-                        s += "<td style='width:25px;text-align:center;' title='" + tr("abrFacilitador") + "'><b>F</b></td>";
-                        s += "<td style='width:50px;text-align:center;'><b>" + tr("email") + "</b></td>";
-                        s += "<td style='width:50px;text-align:center;'><b>" + tr("borrar") + "</b></td>";
-                        s += "</tr>"
-                        for (var i in usuarios) {
-                            var usu = usuarios[i];
-                            s += "<tr>"
-                            s += "<td><img src='res/ver.gif' onclick=\"doSelect('" + usu.email + "');\" style='cursor:pointer;'></td>";
-                            var d = new Date();
-                            s += "<td style='text-align:center'><img src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" style='border-radius:5px;height:60px;width:auto;'></td>";
-                            s += "<td>" + usu.nombre + "<br>";
-                            s += usu.funcion + "<br>";
-                            s += "<a href='mailto:" + usu.email + "'>" + usu.email + "</a></td>";
-                            s += "<td style='text-align:center;'>" 
-                                + "<div class='votos' style='border-radius:12px; margin-left:20px;padding:5px;'>"
-                                + "<img style='margin-top:2px;' src='res/icono.png'><br />"
-                                + "<div>" + usu.apoyos + "</div>"
-                                + "</td>";
-                            s += "<td style='text-align:center;'>" + usu.sLastLogin + "</td>";
-                            s += "<td style='text-align:center;'>"
-                                + "<div style='background-color:" + (usu.habilitado ? "#ccffe6" : "#ffcccc")
-                                    + ";border-top-left-radius:8px;border-top-right-radius:8px;padding:2px;'>" + (usu.habilitado ? "Habilitad@" : "Deshabilitad@") + "</div>"
-                                + "<div style='background-color:" + (!usu.readOnly ? "#ccffe6" : "#ffcccc")
-                                    + ";padding:2px;'>" + (usu.readOnly ? "Lectura" : "Escritura") + "</div>"
-                                + "<div style='background-color:" + (usu.isActive ? "#ccffe6" : "#ffcccc")
-                                    + ";border-bottom-left-radius:8px;border-bottom-right-radius:8px;padding:2px;'>" + (usu.isActive ? "Activ@" : "Inactiv@") + "</div>"
-                                + "</td>";
-                            s += "<td style='text-align:center;'>" + box(usu.isAdmin, "#0066CC", tr("abrCoordinador")) + "</td>";
-                            s += "<td style='text-align:center;'>" + box(usu.isSecretaria, "#FF66CC", tr("abrSecretaria")) + "</td>";
-                            s += "<td style='text-align:center;'>" + box(usu.isRepresentante, "#00CC99", tr("abrRepresentante")) + "</td>";
-                            s += "<td style='text-align:center;'>" + box(usu.isFacilitador, "#FF9900", tr("abrFacilitador")) + "</td>";
-                            s += "<td style='text-align:center;'><img src='res/men.gif' title='Enviar mail de bienvenida' style='cursor: pointer;' onclick='doEnviarMail(\"" + usu.email + "\");'></td>";
-                            if (!usu.isAdmin)
-                                s += "<td style='text-align:center;'><img src='res/rojo.gif' style='cursor: pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'></td>";
-                            else
-                                s += "<td>[Admin]</td>";
-                            s += "</tr>"
-                        }
-                        s += "</table>";
+
+                        showLista();
 
                         document.body.style.cursor = "default";
-
-                        document.getElementById("usuarios").innerHTML = s;
                     }
                 });
         }
 
+        function showLista() {
+            var s = "";
+            for (var i in usuarios) {
+                var usu = usuarios[i];
+                var d = new Date();
+                s += "<div class='cuadro' style='float:left;'>";
+
+                s += "<img style='float:left;border-radius:5px;width:60px;height:auto;' src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" "
+                    + " onclick='doSelect(\"" + usu.email + "\");'"
+                    + ">";
+
+                s += "<div style='float:left;vertical-align:top;font-size:12px;min-width:150px;padding:4px;' "
+                    + " onclick='doSelect(\"" + usu.email + "\");'>"
+                    + usu.nombre + "<br>"
+                    + usu.funcion + "<br>"
+                    + usu.sLastLogin + "<br>"
+                    + "<a href='mailto:" + usu.email + "'>" + usu.email + "</a>"
+                    + "</div>";
+
+                s += "<div style='float:left;text-align:center;' onclick='doSelect(\"" + usu.email + "\");'>"
+                    + "<div class='votos' style='border-radius:12px; margin:4px;padding:5px;'>"
+                    + "<img style='margin-top:2px;' src='res/icono.png'><br />"
+                    + usu.apoyos
+                    + "</div>"
+                    + "</div>";
+
+                s += "<div style='float:left;text-align:center;padding-bottom:8px;' onclick='doSelect(\"" + usu.email + "\");'>"
+                    + "<div style='background-color:" + (usu.habilitado ? "#ccffe6" : "#ffcccc")
+                    + ";border-top-left-radius:8px;border-top-right-radius:8px;padding:2px;'>" + (usu.habilitado ? "Habilitad@" : "Deshabilitad@") + "</div>"
+                    + "<div style='background-color:" + (!usu.readOnly ? "#ccffe6" : "#ffcccc")
+                    + ";padding:2px;'>" + (usu.readOnly ? "Lectura" : "Escritura") + "</div>"
+                    + "<div style='background-color:" + (usu.isActive ? "#ccffe6" : "#ffcccc")
+                    + ";border-bottom-left-radius:8px;border-bottom-right-radius:8px;padding:2px;'>" + (usu.isActive ? "Activ@" : "Inactiv@") + "</div>"
+                    + "</div>";
+
+                s += "<div style='clear:left;float:left;width:160px;height:22px;'>"
+                    + box(usu.isAdmin, "#0066CC", tr("abrCoordinador"))
+                    + box(usu.isSecretaria, "#FF66CC", tr("abrSecretaria"))
+                    + box(usu.isRepresentante, "#00CC99", tr("abrRepresentante"))
+                    + box(usu.isFacilitador, "#FF9900", tr("abrFacilitador")) + "</div>";
+
+                if (!usu.isAdmin) {
+                    s += "<div style='float:right;width:90px;height:22px;'>"
+                        + "<img src='res/rojo.gif' style='margin:4px;float:right;cursor:pointer;' onclick='doBorrarUsuario(\"" + usu.email + "\");'>"
+                        + "<img src='res/men.gif' title = 'Enviar mail de bienvenida' style = 'padding-right:25px;margin:4px;float:right;cursor:pointer;' onclick = 'doEnviarMail(\"" + usu.email + "\");' >"
+                        + "</div>";
+                }
+                else
+                    s += "<div style='float:left;width:27px;'></div>"
+
+
+                s += "</div>"
+            }
+
+            document.getElementById("usuarios").innerHTML = s;
+        }
+
         function box(cond, color, title) {
             if (cond)
-                return "<div style='height:16px;width:16px;border:1px gray solid;background-color:" + color + "' title='" + title + "'></div>";
+                return "<div style='float:left;height:16px;margin:2px;width:16px;border:1px gray solid;background-color:" + color + "' title='" + title + "'></div>";
             else
                 return "";
         }
@@ -248,10 +252,10 @@
                     //atrapo el error si es que hay
                     if (data.substring(0, 6) == "Error=") {
                         //ha habido un error
-                        document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                        popupMsgOn('<font color=red>' + data + '</font>');
                     }
                     else {
-                        document.getElementById("response").innerHTML = '<font color=green>' + email + ": " + data + '</font>';
+                        popupMsgOn('<font color=green>' + email + ": " + data + '</font>');
                     }
                 });
 
@@ -259,7 +263,7 @@
 
         function doBorrarUsuario(email) {
             if (email == usuario.email)
-                document.getElementById("response").innerHTML = '<font color=red>' + tr("No se puede borrar el usuario actual") + '</font>';
+                popupMsgOn('<font color=red>' + tr("No se puede borrar el usuario actual") + '</font>');
             else {
                 getHttp("doMain.aspx?actn=removeusuario&grupo=" + usuario.grupo
                     + "&usuarioemail=" + email
@@ -269,11 +273,9 @@
                         //atrapo el error si es que hay
                         if (data.substring(0, 6) == "Error=") {
                             //ha habido un error
-                            document.getElementById("response").innerHTML = '<font color=red>' + data + '</font>';
+                            popupMsgOn('<font color=red>' + data + '</font>');
                         }
                         else {
-                            document.getElementById("response").innerHTML = '<font color=green>' + data + '</font>';
-
                             //actualizo lista
                             getListaUsuarios();
                         }
@@ -287,88 +289,115 @@
 
         function doResize() {
             //background
-            setBackgroundImage();
+            //setBackgroundImage();
         }
 
         function traducir() {
-            document.getElementById("tit1").innerHTML = tr("Modificar usuarios");
-            document.getElementById("nombre").placeholder = tr("Nombre");
-            document.getElementById("funcion").placeholder = tr("funcion");
-            document.getElementById("email").placeholder = tr("Email");
-            document.getElementById("clave").placeholder = tr("Clave");
+            document.getElementById("tit1").innerHTML = tr("Usuarios");
+            document.getElementById("lnombre").placeholder = tr("Nombre");
+            document.getElementById("lfuncion").placeholder = tr("funcion");
+            document.getElementById("lemail").placeholder = tr("Email");
+            document.getElementById("lclave").placeholder = tr("Clave");
             document.getElementById("lHab").innerHTML = tr("Habilitado");
             document.getElementById("lsoloLec").innerHTML = tr("Solo lectura");
 
-            document.getElementById("ladmin").innerHTML = tr("Coordinador");
-            document.getElementById("lsecre").innerHTML = tr("Secretaria");
-            document.getElementById("lrepre").innerHTML = tr("Representante");
-            document.getElementById("lfacil").innerHTML = tr("Facilitador");
-            document.getElementById("btnCancelar").innerHTML = tr("btnCancelar");
-            document.getElementById("btnActualizar").innerHTML = tr("actualizar");
+            var refs = "<table style='border-collapse: collapse; border-spacing: 0;font-size:12px'>"
+                + "<tr><td>&nbsp;</td><td>" + box(true, "#0066CC", tr("abrCoordinador")) + "</td><td>" + tr("Coordinador") + "</td>"
+                + "<td>" + box(true, "#FF66CC", tr("abrSecretaria")) + "</td><td>" + tr("Secretaria") + "</td></tr>"
+                + "<tr><td>&nbsp;</td><td>" + box(true, "#00CC99", tr("abrRepresentante")) + "</td><td>" + tr("Representante") + "</td>"
+                + "<td>" + box(true, "#FF9900", tr("abrFacilitador")) + "</td><td>" + tr("Facilitador") + "</td></tr>"
+                + "</table>";
+            document.getElementById("referencias").innerHTML = refs;
+        }
 
+        function doAdd() {
+            var u =
+            {
+                "address": "",
+                "alertas": [],
+                "funcion": "",
+                "grupoDesde": "",
+                "habilitado": true,
+                "isActive": false,
+                "isAdmin": false,
+                "isFacilitador": false,
+                "isRepresentante": false,
+                "isSecretaria": false,
+                "lat": 0,
+                "lng": 0,
+                "apoyos": 0,
+                "mision": "",
+                "nombre": "",
+                "clave": "",
+                "email": "",
+                "participacion": "",
+                "readOnly": false,
+                "sLastLogin": ""
+            };
+
+            document.getElementById("email").readOnly = false;
+
+            showUsuario(u);
+        }
+
+        function editpopupMsgOn() {
+            document.getElementById('editpopupback').style.top = '0px';
+            document.getElementById('editpopupback').style.left = '0px';
+            document.getElementById('editpopupback').style.width = '100%';
+            document.getElementById('editpopupback').style.height = '100%';
+            document.getElementById('editpopupback').style.display = 'block';
+            document.getElementById('editpopup').style.display = 'block';
+        }
+
+        function editpopupMsgOff() {
+            document.getElementById('editpopupback').style.display = 'none';
+            document.getElementById('editpopup').style.display = 'none';
         }
     </script>
 </head>
-<body onload="doLoad();" style="overflow:hidden" onresize="'doResize();">
+<body onload="doLoad();" style="overflow:hidden;background-image:unset" onresize="'doResize();">
+    <div id="tit1" class="popupHeader" style="text-align:center;">Usuarios</div>
+    <div class="popupContent" style="padding:5px;">
+        <div id="usuarios" class="verusuarios" style="clear:left;float:left;"></div>
+        <input id="btnAdd" type='button' class='btn' value='Agregar' onclick='doAdd();' style="clear:left;float:left;margin:5px" />
+    </div>
+    <div class="popupFooter">
+        <input id="btnCancelar" type='button' class='btn' value='Volver' onclick='doAtras();' style="margin:5px" />
+        <div id="referencias" style="padding:5px;"></div>
+    </div>
 
-        <div id="todo" class="ventana">
-            <table style="border-spacing:0px;border-collapse:collapse;width:100%">
-                <tr>
-                    <td><div id="tit1" class="titulo3" style="padding-top:10px;">Modificar usuarios</div></td>
-                    <td rowspan="2">
-                        <input id="btnCancelar" type='button' class='btn' value='Volver' onclick='doAtras();' style="float:right;margin:5px"/>
-                        <input id="btnActualizar" type='button' class='btn' value='Actualizar ' onclick='doActualizarUsuario();' style="float:right;margin:5px"/>   
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div id="response" class="titulo3"></div>
-                    </td>
-                </tr>
-            </table>                   
+    <!--editpopup-->
+    <div id="editpopupback" style="width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;"></div>
+    <div id="editpopup" class="popupmsg">
+        <div id="lemail" class="field1" style="width:70px;">Email</div>
+        <input id="email" type="text" class="field2" style="width:210px;" /><br />
 
-            <div style="border: 1px solid gray; border-radius: 10px;">
-                <table>
-                    <tr>
-                        <td>
-                            <input id="nombre" type="text" class="txt" size="16" placeholder="Nombre" style="margin:0px"/><br />
-                        </td>
-                        <td>
-                            <input id="email" type="text" class="txt" size="16" placeholder="Email"  style="margin:0px"/><br />
-                        </td>
-                        <td style="vertical-align:middle;">
-                            <input id="habilitado" type="checkbox" class="txt" /><span id="lHab" class="titulo4">Habilitado</span><br />
-                        </td>
-                        <td style="vertical-align:middle;">   
-                            <input id="isAdmin" type="checkbox" class="txt" /><span id="ladmin" class="titulo4" style="background-color:#0066CC;padding:3px;border-radius:3px">Admin</span><br />
-                        </td>
-                        <td style="vertical-align:middle;">
-                            <input id="isRepresentante" type="checkbox" class="txt" /><span id="lrepre"  class="titulo4" style="background-color:#00CC99;padding:3px;border-radius:3px">Representative</span><br />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:2px;">
-                            <input id="funcion" type="text" class="txt" size="16" placeholder="Funcion"  style="margin:0px"/><br />
-                        </td>
-                        <td style="padding:2px;">
-                            <input id="clave" type="password" class="txt" size="16" placeholder="Clave"  style="margin:0px"/>
-                        </td>
-                        <td style="padding:2px;vertical-align:middle">
-                            <input id="readOnly" type="checkbox" class="txt" /><span id="lsoloLec" class="titulo4"><nobr>Solo lectura</nobr></span>
-                        </td>
-                        <td style="padding:2px;vertical-align:middle">
-                            <input id="isSecretaria" type="checkbox" class="txt" /><span id="lsecre" class="titulo4" style="background-color:#FF66CC;padding:3px;border-radius:3px">Secretaria</span><br />
-                        </td>
-                        <td style="padding:2px;vertical-align:middle">
-                            <input id="isFacilitador" type="checkbox" class="txt" /><span id="lfacil" class="titulo4" style="background-color:#FF9900;padding:3px;border-radius:3px">Facilitator</span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <br />
+        <div id="lnombre" class="field1" style="width:70px;">Nombre</div>
+        <input id="nombre" type="text" class="field2" style="width:210px;" /><br />
 
-            <div id="usuarios" class="usuarios"></div>
-            <br />
-        </div>
-    </body>
+        <div id="lfuncion" class="field1" style="width:70px;">Funcion</div>
+        <input id="funcion" type="text" class="field2" style="width:210px;" /><br />
+
+        <div id="lclave" class="field1" style="width:70px;">Clave</div>
+        <input id="clave" type="password" class="field2" style="width:210px;"/><br />
+
+        <input id="habilitado" type="checkbox" class="field2" style="clear:left;padding:5px;margin-top:4px;height:20px;width:20px;" />
+        <span id="lHab" class="titulo4" style="float:left;margin:4px;width:115px">Habilitado</span>
+        <input id="readOnly" type="checkbox" class="field2" style="padding:5px;margin-top:4px;height:20px;width:20px;" />
+        <span id="lsoloLec" class="titulo4" style="float:left;margin:4px;"><nobr>Solo lectura</nobr></span>
+
+        <input id="isAdmin" type="checkbox" class="field2" style="clear:left;margin-top:4px;height:20px;width:20px;" /><span id="ladmin" class="titulo4" style="float:left;background-color:#0066CC;padding:3px;border-radius:3px;width:110px;margin:4px;">Admin</span><br />
+        <input id="isRepresentante" type="checkbox" class="field2" style="clear:left;margin-top:4px;height:20px;width:20px;" /><span id="lrepre" class="titulo4" style="float:left;background-color:#00CC99;padding:3px;border-radius:3px;width:110px;margin:4px;">Representative</span><br />
+        <input id="isSecretaria" type="checkbox" class="field2" style="clear:left;margin-top:4px;height:20px;width:20px;" /><span id="lsecre" class="titulo4" style="float:left;background-color:#FF66CC;padding:3px;border-radius:3px;width:110px;margin:4px;">Secretaria</span><br />
+        <input id="isFacilitador" type="checkbox" class="field2" style="clear:left;margin-top:4px;height:20px;width:20px;" /><span id="lfacil" class="titulo4" style="float:left;background-color:#FF9900;padding:3px;border-radius:3px;width:110px;margin:4px;">Facilitator</span>
+
+        <input id="btnOk" type='button' class='btn' value='Ok' onclick='doActualizarUsuario();' style="margin-top:15px;clear:left;margin-left:calc(50% - 25px);" />
+    </div>
+
+    <!--popmsg-->
+    <div id="popupmsgback" style="position:absolute;width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;" onclick="popupMsgOff();"></div>
+    <div id="popupmsg" class="popupmsg" onclick="popupMsgOff();">
+        <div id="popupmsgtext" style="text-align:center;"></div>
+    </div>
+</body>
 </html>

@@ -26,10 +26,6 @@ namespace nabu.plataforma.modelosEvaluacion
 {
     public class Enlace: ModeloEvaluacion
     {
-        private string temaNombre = "";
-        private string temaURL = "";
-        private string temaAutor = "";
-
         public Enlace()
         {
             modeloDocumento = "Enlace";
@@ -37,6 +33,7 @@ namespace nabu.plataforma.modelosEvaluacion
             titulo = "Evalucion de Enlace";
             preguntas = 5;
             icono = "res/enlace.png";
+            tipo = "externo";
 
 
             crearVariables();
@@ -179,17 +176,18 @@ namespace nabu.plataforma.modelosEvaluacion
                 ret += "<div class='titulo2'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
             //documento a evaluar
+            ret += "<div class='titulo2'><nobr>" + Tools.tr("Sobre la publicacion", g.idioma) + ":</nobr></div>";
             if (getText("s.basadoEnTemaExistente", prop) == "")
             {
-                ret += Tools.tr("Nombre de la publicacion", g.idioma) + ":" + HTMLText("s.nombre", prop, 150, g.idioma) + "<br>";
-                ret += Tools.tr("URL de la publicacion", g.idioma) + ":" + HTMLText("s.URL", prop, 300, g.idioma) + "<br>";
-                ret += Tools.tr("Autor de la publicacion", g.idioma) + ":" + HTMLText("s.autor", prop, 150, g.idioma) + "<br><br>";
+                ret += "<div class='field1' style='width: 80px' id='nom'>" + Tools.tr("Nombre", g.idioma) + "</div>" + HTMLText("s.nombre", prop, 200, g.idioma) + "<br>";
+                ret += "<div class='field1' style='width: 80px' id='nom'>" + Tools.tr("URL", g.idioma) + "</div>" + HTMLText("s.URL", prop, 200, g.idioma) + "<br>";
+                ret += "<div class='field1' style='width: 80px' id='nom'>" + Tools.tr("Autor", g.idioma) + "</div>" + HTMLText("s.autor", prop, 200, g.idioma) + "<br><br>";
             }
             else
             {
-                ret += Tools.tr("Nombre de la publicacion", g.idioma) + ":" + prop.bag["s.nombre"] + "<br>";
-                ret += Tools.tr("URL de la publicacion", g.idioma) + ":" + prop.bag["s.URL"] + "<br>";
-                ret += Tools.tr("Autor de la publicacion", g.idioma) + ":" + prop.bag["s.autor"] + "<br><br>";
+                ret += "<div class='field1' style='width: 80px' id='nom'>" + Tools.tr("Nombre", g.idioma) + "</div>" + prop.bag["s.nombre"] + "<br>";
+                ret += "<div class='field1' style='width: 80px' id='nom'>" + Tools.tr("URL", g.idioma) + "</div>" + prop.bag["s.URL"] + "<br>";
+                ret += "<div class='field1' style='width: 80px' id='nom'>" + Tools.tr("Autor", g.idioma) + "</div>" + prop.bag["s.autor"] + "<br><br>";
             }
 
             //defino valores internos

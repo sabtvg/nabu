@@ -16,6 +16,21 @@
 //  
 ///////////////////////////////////////////////////////////////////////////
 
+function popupMsgOn(text) {   
+    document.getElementById('popupmsgtext').innerHTML = text;
+    document.getElementById('popupmsgback').style.top = '0px';
+    document.getElementById('popupmsgback').style.left = '0px';
+    document.getElementById('popupmsgback').style.width = '100%';
+    document.getElementById('popupmsgback').style.height = '100%';
+    document.getElementById('popupmsgback').style.display = 'block';
+    document.getElementById('popupmsg').style.display = 'block';
+}
+
+function popupMsgOff() {
+    document.getElementById('popupmsgback').style.display = 'none';
+    document.getElementById('popupmsg').style.display = 'none';
+}
+
 function HTMLUsuarioExtendido(u, grupoParam, style) {
     var d = new Date();
     var s = "<div style='" + style + ";border: 2px solid #cccccc;border-radius:8px;text-align:center;margin:2px;padding:2px;max-width:350px;max-height:600px'>";
@@ -288,9 +303,9 @@ function actualizarDatosConsenso() {
     var ret = "";
     var ap = arbolPersonal;
 
-    ret = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "<br>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Si") + "<span style='font-family:arial'> &ge; </span>" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("No") + "<span style='font-family:arial'> &le; </span>" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
+    ret = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "<br>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
+    ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Si") + "<span style='font-family:arial'> &ge; </span>" + ap.minSiValue + " (" + ap.minSiPc + "%)</nobr></div>";
+    ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("No") + "<span style='font-family:arial'> &le; </span>" + ap.maxNoValue + " (" + ap.maxNoPc + "%)</nobr></div>";
     panel.innerHTML = ret;
 }
 
@@ -300,10 +315,10 @@ function actualizarDatosGrupo() {
     var ap = arbolPersonal;
     var born = new Date(ap.born.match(/\d+/)[0] * 1);
     var dias = Math.abs(new Date() - born) / (24 * 60 * 60 * 1000);
-    ret = "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Dias") + ":" + dias.toFixed(0) + "</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
-    ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Decisiones") + ":" + ap.documentos + "</nobr></div>";
+    ret = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Dias") + ":" + dias.toFixed(0) + "</nobr></div>";
+    ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "</nobr></div>";
+    ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
+    ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Decisiones") + ":" + ap.documentos + "</nobr></div>";
     //ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Comunes:0</nobr></div>";
     panel.innerHTML = ret;
     panel.style.display = 'inline';

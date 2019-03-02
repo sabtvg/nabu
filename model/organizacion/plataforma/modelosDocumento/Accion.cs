@@ -56,9 +56,7 @@ namespace nabu.plataforma.modelos
             variables.Add(new Variable("s.aquien", 3000, 2));
 
             //nivel 3
-            variables.Add(new Variable("s.materiales", 3000, 3));
-            variables.Add(new Variable("s.rrhh", 3000, 3));
-            variables.Add(new Variable("s.otros", 3000, 3));
+            variables.Add(new Variable("s.recursos", 3000, 3));
 
             //nivel 4
             variables.Add(new Variable("s.fases", 3000, 4));
@@ -102,9 +100,7 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 3)
                 {
-                    if (getText("s.materiales", prop) == ""
-                        && getText("s.software", prop) == ""
-                        && getText("s.rrhh", prop) == "")
+                    if (getText("s.recursos", prop) == "")
                     {
                         addError(3, "La propuesta no puede estar completamente vacia");
                     }
@@ -169,14 +165,8 @@ namespace nabu.plataforma.modelos
             }
             else if (nivel == 3)
             {
-                //Materiales
-                ret += HTMLSeccion("accion.materiales.titulo", "accion.materiales.tip", "s.materiales", editar, prop, tieneFlores, g, width);
-
-                //RRHH
-                ret += HTMLSeccion("accion.rrhh.titulo", "accion.rrhh.tip", "s.rrhh", editar, prop, tieneFlores, g, width);
-
-                //Otros
-                ret += HTMLSeccion("accion.software.titulo", "accion.software.tip", "s.otros", editar, prop, tieneFlores, g, width);
+                //Recursos
+                ret += HTMLSeccion("accion.recursos.titulo", "accion.recursos.tip", "s.recursos", editar, prop, tieneFlores, g, width);
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);

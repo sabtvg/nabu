@@ -535,7 +535,7 @@ namespace nabu
                     textos.Add(pr.texto);
                 }
                 ret += "</table><br>";
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' class='btn' style='float:unset;margin-left:calc(50% - 30px);' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
 
                 //obtengo palkabras clave
                 Dictionary<string, int> pals = new Dictionary<string, int>();

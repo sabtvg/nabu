@@ -185,8 +185,8 @@ function doLoad2() {
 
             if (cookie == "") {
                 //login normal con el grupo parametro
-                doResize();
                 loginEffectIn();
+                doResize();
             }
             else {
                 //login automatico to server
@@ -244,7 +244,6 @@ function gruposEffectIn() {
         s += "<span class='titulo0' style='position:relative;top:-10px;left:2px;font-size:30px;'>Nab&uacute;</span>";
     else
         s += "<span class='titulo0' style='position:relative;top:-27px;left:2px;font-size:44px;'>Nab&uacute;</span>";
-
     s += "</div>"
     s += "<div class='titulo1' style='clear:left;'><b>" + tr("Grupos") + "</b></div>";
     for (i in config.grupos) {
@@ -254,7 +253,7 @@ function gruposEffectIn() {
             s += "&idioma=" + idioma;
         s += "' class='grupo'><nobr>" + grupo + "</nobr></a>"
     }
-    s += "<br><br><input type='button' class='btn' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creargrupo.html?idioma=" + idioma + "'\">";
+    s += "<br><br><input type='button' class='btn' style='float:unset' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creargrupo.html?idioma=" + idioma + "'\">";
 
     document.getElementById("grupos").style.display = "block";
     document.getElementById("grupos").innerHTML = s;
@@ -385,26 +384,34 @@ function doResize() {
     showTimePanel();
 
     //resize del menuppal segun pantalla
-    var scale, menuscale;
+    var menuscale;
     if (window.innerWidth <= 400) {
         //movil vertical
-        scale = scalex;
+        scale = scaley * 0.3;
         menuscale = scalex * 2.1;
+        treeScale = window.innerHeight / 955;
         //if (menuscale > 2) menuscale = 2;
     }
     else if (window.innerWidth <= 800) {
         //movil horizontal
         scale = scalex;
         menuscale = scalex * 1.4;
+        treeScale = scale;
         if (menuscale > 0.8) menuscale = 0.8;
     }
     else {
         //ordenador
         scale = scalex;
         menuscale = scalex * 1.4;
+        treeScale = scale;
         if (menuscale > 0.8) menuscale = 0.8;
     }
 
+    //al recibir el foto en los textbox activa el teclado y ejecuta el resize. No se puede hacer
+    //if (estado == 'login') 
+    //    doResizeLogin();
+
+    //if (estado == 'menuppal') {
     document.getElementById("padrenombre").style.width = 800 * menuscale + 'px';
     document.getElementById("padrenombre").style.top = -15 - 5 * menuscale + 'px';
 
@@ -458,7 +465,7 @@ function doResize() {
     document.getElementById("ppal3").style.top = 200 * menuscale + 'px';
 
     document.getElementById("ppal4").src = "res/" + idioma + "/seguimiento.png";
-    document.getElementById("ppal4").title = tr("Seguimiento");  
+    document.getElementById("ppal4").title = tr("Seguimiento");
     document.getElementById("ppal4").style.width = 240 * menuscale + 'px';
     document.getElementById("ppal4").style.height = 84 * menuscale + 'px';
     document.getElementById("ppal4").style.left = 530 * menuscale + 'px';
@@ -472,7 +479,7 @@ function doResize() {
     document.getElementById("ppal5").style.height = 143 * menuscale + 'px';
     document.getElementById("ppal5").style.left = 338 * menuscale + 'px';
     document.getElementById("ppal5").style.top = 31 * menuscale + 'px';
-    
+
 
     document.getElementById("ppal7").src = "res/" + idioma + "/docRealizacion.png";
     document.getElementById("ppal7").onmouseover = "this.src='res/" + idioma + "/docRealizacion2.png';";
@@ -507,7 +514,7 @@ function doResize() {
     document.getElementById("clave").placeholder = tr("clave");
     //document.getElementById("tit1").innerHTML = tr("Sociocracia");
     document.getElementById("lnkSim").innerHTML = tr("simulacion");
-    document.getElementById("mejorVisto").innerHTML = tr("Mejor visto en");
+    document.getElementById("mejorVisto").innerHTML = tr("Mejor visto en Google Chrome");
     document.getElementById("version").innerHTML = tr("version beta");
     document.getElementById("lnkAyuda").innerHTML = tr("Ayuda");
     document.getElementById("titulo1").innerHTML = tr("Sociocracia");
@@ -527,10 +534,11 @@ function doResize() {
     document.getElementById("ufAceptar").value = tr("Aceptar");
     document.getElementById("ufCancelar").value = tr("Cancelar");
 
-    //arbol
-    translateArbol(translatex = 0, translatey = 0);
-    if (arbolPersonal) dibujarArbol(arbolPersonal.raiz);
-
+    if (estado == 'decidimos') {
+        //arbol
+        translateArbol(translatex = 0, translatey = 0);
+        if (d3Arbol) dibujarArbol(arbolPersonal.raiz);
+    }
 }
 
 function sendException(ex, flag) {
@@ -566,16 +574,20 @@ function loginEffectIn(){
             florXfin = window.innerWidth / 2 - 65;
             loginXfin = window.innerWidth / 2 - 140;
             tipYfin = 350;
+            efectoTop(document.getElementById("tip"), 800, window.innerHeight, tipYfin, TWEEN.Easing.Elastic.Out);
         }
         else if (window.innerWidth <= 800) {
-            //movil horizonta
+            //movil horizontal
         }
+        else {
+            efectoTop(document.getElementById("tip"), 800, window.innerHeight, tipYfin, TWEEN.Easing.Elastic.Out);
+        }
+
         document.getElementById("loginIn").style.top = loginTop + 'px';
         document.getElementById("loginFlor").style.top = florTop + 'px';
         efectoLeft(document.getElementById("loginIn"), 0, 750, window.innerWidth, loginXfin, TWEEN.Easing.Cubic.Out);
         efectoLeft(document.getElementById("loginFlor"), 0, 750, -200, florXfin, TWEEN.Easing.Exponential.Out);
 
-        efectoTop(document.getElementById("tip"), 800, window.innerHeight, tipYfin, TWEEN.Easing.Elastic.Out);
         timerFlores = setInterval(function () {
             rotFlores += 0.3;
             document.getElementById("loginFlor").style.transform = "rotate(" + rotFlores + "deg)";
@@ -588,7 +600,11 @@ function loginEffectIn(){
         document.getElementById("loginGrupo").style.left = (window.innerWidth / 2 - 250) + 'px';
         document.getElementById("loginGrupo").style.top = '3vh';
         document.getElementById("loginGrupo").style.visibility = "visible";
-        document.getElementById("loginGrupo").innerHTML = grupoParam;
+
+        document.getElementById("loginGrupo").innerHTML = usuario ? usuario.grupo : grupoParam;
+
+        //pie
+        document.getElementById("pie").style.display = "block";
 
         estado = 'login';
     }
@@ -597,6 +613,40 @@ function loginEffectIn(){
         sendException(ex, "loginEffectIn");
     }
 }
+
+function doResizeLogin() {
+
+        var florTop = window.innerHeight / 6;
+        var loginTop = window.innerHeight / 6;
+        var florXfin = window.innerWidth / 2 - 170;
+        var loginXfin = window.innerWidth / 2;
+        var tipYfin = window.innerHeight / 4 + 200;
+        if (window.innerWidth <= 400) {
+            //movil vertical
+            florTop = 260;
+            loginTop = 80;
+            florXfin = window.innerWidth / 2 - 65;
+            loginXfin = window.innerWidth / 2 - 140;
+            tipYfin = 350;
+            document.getElementById("tip").style.top = tipYfin + "px";
+        }
+        else if (window.innerWidth <= 800) {
+            //movil horizontal
+        }
+        else {
+            document.getElementById("tip").style.top = tipYfin + "px";
+        }
+
+        document.getElementById("loginIn").style.top = loginTop + 'px';
+        document.getElementById("loginFlor").style.top = florTop + 'px';
+        document.getElementById("loginIn").style.left = loginXfin + "px";
+        document.getElementById("loginFlor").style.left = florXfin + "px";
+
+        //nombre de grupo
+        document.getElementById("loginGrupo").style.left = (window.innerWidth / 2 - 250) + 'px';
+        document.getElementById("loginGrupo").style.top = '3vh';
+}
+
 
 function loginEffectOut() {
     //login effect
@@ -616,15 +666,29 @@ function loginEffectOut() {
         document.getElementById("tip").style.visibility = "hidden";
     }, 1000);
     document.getElementById("loginGrupo").style.visibility = "hidden";
+    //pie
+    document.getElementById("pie").style.display = "none";
+
 }
 
 function loginEffectNo() {
     //login effect
     var l = document.getElementById("loginIn");
-    var x = window.innerWidth / 2;
-    efectoLeft(l, 0, 100, x - 50, x - 10, TWEEN.Easing.Cubic.InOut);
-    efectoLeft(l, 100, 200, x - 10, x - 90, TWEEN.Easing.Cubic.InOut);
-    efectoLeft(l, 300, 100, x - 90, x - 50, TWEEN.Easing.Cubic.InOut);
+
+    var loginXfin = window.innerWidth / 2;
+    if (window.innerWidth <= 400) {
+        //movil vertical
+        loginXfin = window.innerWidth / 2 - 140;
+    }
+    else if (window.innerWidth <= 800) {
+        //movil horizontal
+    }
+    else {
+    }
+
+    efectoLeft(l, 0, 100, loginXfin - 50, loginXfin - 10, TWEEN.Easing.Cubic.InOut);
+    efectoLeft(l, 100, 200, loginXfin - 10, loginXfin - 90, TWEEN.Easing.Cubic.InOut);
+    efectoLeft(l, 300, 100, loginXfin - 90, loginXfin - 50, TWEEN.Easing.Cubic.InOut);
 }
 
 function animate(time) {
@@ -750,7 +814,6 @@ function doMenuppal() {
 
         //atras
         document.getElementById("atras").style.visibility = "visible";
-        document.getElementById("pie").style.display = "block";
 
         //panel de usuario
         document.getElementById("usuario").innerHTML = "<div id='usuarioNombre' style='color:blue;cursor: pointer;' onclick='showPerfil();'>" + arbolPersonal.usuario.nombre + "</div>";
@@ -857,7 +920,6 @@ function showPerfil() {
     document.getElementById("perfilEmail").value = arbolPersonal.usuario.email;
     document.getElementById("perfilNombre").value = arbolPersonal.usuario.nombre;
     document.getElementById("perfilFuncion").value = arbolPersonal.usuario.funcion;
-    document.getElementById("perfilValidacion").value = "";
     document.getElementById("googleLocation").value = "";
 
     document.getElementById("mision").value = arbolPersonal.usuario.mision;
@@ -877,7 +939,6 @@ function showCambiarClave() {
     document.getElementById("oldPass").value = "";
     document.getElementById("newPass").value = "";
     document.getElementById("repeat").value = "";
-    document.getElementById("cambiarClaveMsg").innerHTML = "";
     document.getElementById("cambiarClave").style.display = 'block';
 }
 
@@ -1011,7 +1072,7 @@ function doCambiarClave() {
     var repeat = document.getElementById("repeat").value;
 
     if (newPass != repeat)
-        document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + tr("Las nuevas claves no coinciden") + "</font>";
+        popupMsgOn("<font color='red'>" + tr("Las nuevas claves no coinciden") + "</font>");
     else {
         getHttp("doMain.aspx?actn=cambiarClave&grupo=" + arbolPersonal.nombre
             + "&email=" + arbolPersonal.usuario.email
@@ -1019,7 +1080,7 @@ function doCambiarClave() {
             + "&nuevaClave=" + newPass,
             function (data) {
                 if (data != '')
-                    document.getElementById("cambiarClaveMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
+                    popupMsgOn("<font color='red'>" + data.substring(6) + "</font>");
                 else 
                     document.getElementById("cambiarClave").style.display = 'none';
             });
@@ -1042,7 +1103,7 @@ function geocodeAddress() {
 
 function doCerrarPerfil() {
     if (arbolPersonal.usuario.lat == 0 || arbolPersonal.usuario.lng == 0)
-        document.getElementById("perfilValidacion").innerHTML = tr("Ubicacion no validada");
+        popupMsgOn(tr("Ubicacion no validada"));
     else {
         var perfilNombre = document.getElementById("perfilNombre").value;
         var perfilFuncion = document.getElementById("perfilFuncion").value;
@@ -1068,7 +1129,7 @@ function doCerrarPerfil() {
             post,
             function (data) {
                 if (data.substring(0, 6) == "Error=")
-                    document.getElementById("perfilMsg").innerHTML = "<font color='red'>" + data.substring(6) + "</font>";
+                    popupMsgOn("<font color='red'>" + data.substring(6) + "</font>");
                 else {
                     document.getElementById("perfil").style.display = 'none';
 
@@ -1097,6 +1158,7 @@ function doAtras() {
         //login voy a grupos
         loginEffectOut();
         setTimeout(gruposEffectIn, 600); //doy tiempo al login a irse
+        estado = "";
         doResize();
         document.getElementById("atras").style.visibility = "hidden";
         document.getElementById("timeBack").style.visibility = "hidden";
@@ -1113,7 +1175,7 @@ function doAtras() {
         document.getElementById("modelosDebate").style.display = "none";
         document.getElementById("modelosEvaluacion").style.display = "none";
         document.getElementById("joystickQueso").style.visibility = "hidden";
-        document.getElementById("pie").style.display = "block";
+        document.getElementById("pie").style.display = "none";
 
         quesoPersonal = null;
         estado = 'menuppal';
@@ -1178,7 +1240,7 @@ function doAtras() {
         document.getElementById("modelosDebate").style.display = "none";
         document.getElementById("panelConsenso").style.display = 'none';
         document.getElementById("documento").style.display = 'none';
-        document.getElementById("pie").style.display = "block";
+        document.getElementById("pie").style.display = "none";
         if (menu) menu.style.visibility = "hidden";
         clearInterval(timerFlores);
         clearInterval(timerArbol);
