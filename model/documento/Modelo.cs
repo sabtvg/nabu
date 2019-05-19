@@ -181,7 +181,6 @@ namespace nabu
 
             //etiqueta
             ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
-            etiqueta = Tools.tr("Manifiesto", g.idioma);
             if (prop == null)
                 ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div><br>";

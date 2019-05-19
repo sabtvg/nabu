@@ -119,7 +119,7 @@ var dictionary = [
     { key: 'Manifiesto del grupo', idioma: 'es', txt: 'Manifiesto del grupo' },
     { key: 'Mejor visto en', idioma: 'es', txt: 'Mejor visto en' },
     { key: 'Mensaje enviado al coordinador', idioma: 'es', txt: 'Mensaje enviado al coordinador' },
-    { key: 'Modelos de debate', idioma: 'es', txt: 'Modelos de debate' },
+    { key: 'Modelos de debate', idioma: 'es', txt: 'Nuevo debate' },
     { key: 'Modificar', idioma: 'es', txt: 'Modificar' },
     { key: 'Modificar usuarios', idioma: 'es', txt: 'Modificar usuarios' },
     { key: 'Nacido', idioma: 'es', txt: 'Nacido' },

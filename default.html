@@ -160,9 +160,7 @@
     <!--panel flores--------------------------------------------------------------------------------------------------->
     <table id="panelUsuario" class="panelUsuario" border="0">
         <tr>
-            <td style="width:1.7vw;"><img src="res/icono2.png" class="icono2" /></td>
-            <td id="floresDisponibles" class="titulo3" style="width:15px;vertical-align:middle;text-align:left"></td>
-            <td id="usuario" class="panelUsuarioNombre" style="vertical-align:middle;"></td>
+            <td id="usuarioNombre" class="panelUsuarioNombre" style="cursor:pointer;vertical-align:middle;color:blue;text-decoration:underline" onclick="showPerfil();"></td>
             <td style="width:1.7vw;">
                 <img id="alertaIcon" src="res/alerta.png" class="alertaicon" onclick="showAlertas();" />
             </td>
@@ -331,8 +329,8 @@
     </div>
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuNode" class="menuarbol">
-        <img class="menuimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
-        <img class="menuimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();" />
+            <img class="menuimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
+            <img class="menuimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();" />
     </div>
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuEvaluacion" class="menuqueso">

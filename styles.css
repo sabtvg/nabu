@@ -561,18 +561,20 @@ input[readonly] {
     border: 2px solid #006666;
     background-color: #0066CC;
     color: #FFFFFF;
-    border-radius: 16px;
     font-size: 15px;
     cursor: pointer;
     margin-left: 4px;
     margin-top: 4px;
     font-family:inherit;
+    border-radius: 10px;
+    padding:3px;
 }
 .btnnok {
     border: 2px solid #006666;
     background-color: #0066CC;
     color: #FFFFFF;
-    border-radius: 16px;
+    border-radius: 10px;
+    padding:3px;
     font-size: 15px;
     cursor: pointer;
     margin-left: 4px;
@@ -586,7 +588,8 @@ input[readonly] {
     border: 2px solid teal;
     background-color: teal;
     color: #FFFFFF;
-    border-radius: 16px;
+    border-radius: 10px;
+    padding:3px;
     font-size: 15px;
     cursor: pointer;
     margin-left: 4px;
@@ -600,7 +603,9 @@ input[readonly] {
     border: 2px solid #006666;
     background-color: #0066CC;
     color: #FFFFFF;
-    border-radius: 16px;
+    border-radius: 10px;
+    padding:3px;
+
     font-size: 11px;
     cursor: pointer;
     margin: 0px 0px 0px 5px;
@@ -609,7 +614,8 @@ input[readonly] {
     border: 2px solid #006666;
     background-color: #CCCCCC;
     color: #FFFFFF;
-    border-radius: 16px;
+    border-radius: 10px;
+    padding:3px;
     font-size: 15px;
     cursor: pointer;
     font-family:inherit;
@@ -618,7 +624,8 @@ input[readonly] {
     border: 2px solid #006666;
     background-color: #CCCCCC;
     color: #FFFFFF;
-    border-radius: 16px;
+    border-radius: 10px;
+    padding:3px;
     font-size: 11px;
     cursor: pointer;
     font-family:inherit;
@@ -703,19 +710,16 @@ input[readonly] {
 }
 .menuimg {
     cursor: pointer;
-    width: 40px;
+    width: 50px;
     height: auto;
     padding: 5px;
 }
 .menuarbol {
-    border: 1px solid #C0C0C0;
-    border-radius: 10px;
-    background-color: #FFFFFF;
     opacity: 0.8;
     visibility:hidden;
     position:fixed;
-    bottom:30px;
-    margin-left:-53px;
+    bottom:10px;
+    margin-left:-61px;
     left:50%;
 }
 .menuqueso {
@@ -1254,20 +1258,17 @@ input[readonly] {
     }
     .menuimg {
         cursor: pointer;
-        width: 30px;
+        width: 50px;
         height: auto;
-        padding: 2px;
+        padding: 6px;
     }
     .menuarbol {
-        border: 1px solid #C0C0C0;
-        border-radius: 10px;
-        background-color: #FFFFFF;
-        padding:2px;
+        padding: 2px;
         opacity: 0.8;
         visibility:hidden;
         position:fixed;
-        bottom:10px;
-        margin-left:-37px;
+        bottom:70px;
+        margin-left:-66px;
         left:50%;
     }
     .menuqueso {

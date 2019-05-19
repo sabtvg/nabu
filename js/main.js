@@ -87,6 +87,8 @@ function move(event) {
                 }
             }
             lastMouse = { clientX: event.clientX, clientY: event.clientY };
+            //hide menu
+            deselect();
             event.cancelBubble = true;
         }
         else if (event.which == 1 && event.ctrlKey) {
@@ -249,7 +251,7 @@ function gruposEffectIn() {
     for (i in config.grupos) {
         var grupo = config.grupos[i];
         s += " <a href='default.html?grupo=" + grupo;
-        if (idioma)
+        if (idioma) 
             s += "&idioma=" + idioma;
         s += "' class='grupo'><nobr>" + grupo + "</nobr></a>"
     }
@@ -260,6 +262,7 @@ function gruposEffectIn() {
 
     //pie
     document.getElementById("pie").style.display = "block";
+    document.getElementById("atras").style.visibility = "hidden";
 
     estado = 'grupos';
 }
@@ -569,7 +572,7 @@ function loginEffectIn(){
         var tipYfin = window.innerHeight / 4 + 200;
         if (window.innerWidth <= 400) {
             //movil vertical
-            florTop = 260;
+            florTop = 280;
             loginTop = 80;
             florXfin = window.innerWidth / 2 - 65;
             loginXfin = window.innerWidth / 2 - 140;
@@ -601,7 +604,10 @@ function loginEffectIn(){
         document.getElementById("loginGrupo").style.top = '3vh';
         document.getElementById("loginGrupo").style.visibility = "visible";
 
-        document.getElementById("loginGrupo").innerHTML = usuario ? usuario.grupo : grupoParam;
+        //get from url
+        var url = window.location.href;
+        var grupo = url.substring(url.indexOf('=') + 1, url.indexOf("&"));
+        document.getElementById("loginGrupo").innerHTML = usuario ? usuario.grupo : grupo;
 
         //pie
         document.getElementById("pie").style.display = "block";
@@ -675,20 +681,10 @@ function loginEffectNo() {
     //login effect
     var l = document.getElementById("loginIn");
 
-    var loginXfin = window.innerWidth / 2;
-    if (window.innerWidth <= 400) {
-        //movil vertical
-        loginXfin = window.innerWidth / 2 - 140;
-    }
-    else if (window.innerWidth <= 800) {
-        //movil horizontal
-    }
-    else {
-    }
-
-    efectoLeft(l, 0, 100, loginXfin - 50, loginXfin - 10, TWEEN.Easing.Cubic.InOut);
-    efectoLeft(l, 100, 200, loginXfin - 10, loginXfin - 90, TWEEN.Easing.Cubic.InOut);
-    efectoLeft(l, 300, 100, loginXfin - 90, loginXfin - 50, TWEEN.Easing.Cubic.InOut);
+    var loginXfin = parseInt(l.style.left.substring(0, l.style.left.length - 2));
+    efectoLeft(l, 0, 100, loginXfin, loginXfin + 50, TWEEN.Easing.Cubic.InOut);
+    efectoLeft(l, 100, 200, loginXfin + 50, loginXfin - 50, TWEEN.Easing.Cubic.InOut);
+    efectoLeft(l, 300, 100, loginXfin - 50, loginXfin, TWEEN.Easing.Cubic.InOut);
 }
 
 function animate(time) {
@@ -816,8 +812,8 @@ function doMenuppal() {
         document.getElementById("atras").style.visibility = "visible";
 
         //panel de usuario
-        document.getElementById("usuario").innerHTML = "<div id='usuarioNombre' style='color:blue;cursor: pointer;' onclick='showPerfil();'>" + arbolPersonal.usuario.nombre + "</div>";
-        document.getElementById("floresDisponibles").innerHTML = getFloresDisponibles().length;
+        document.getElementById("usuarioNombre").innerHTML = arbolPersonal.usuario.nombre;
+        document.getElementById("panelUsuario").style.display = "block";
 
         //panel consenso
         document.getElementById("panelConsenso").style.display = 'none';
@@ -831,7 +827,7 @@ function doMenuppal() {
         clearInterval(timerQueso);
 
         //panel usuario        
-        document.getElementById("panelUsuario").style.display = 'block';
+        //document.getElementById("panelUsuario").style.display = 'block';
 
         menuOptions();
 
@@ -1102,7 +1098,8 @@ function geocodeAddress() {
 }
 
 function doCerrarPerfil() {
-    if (arbolPersonal.usuario.lat == 0 || arbolPersonal.usuario.lng == 0)
+    var address = document.getElementById("address").value;
+    if (address != "" && arbolPersonal.usuario.lat == 0 && arbolPersonal.usuario.lng == 0)
         popupMsgOn(tr("Ubicacion no validada"));
     else {
         var perfilNombre = document.getElementById("perfilNombre").value;
@@ -1112,7 +1109,6 @@ function doCerrarPerfil() {
         var capacidades = document.getElementById("capacidades").value;
         var expectativas = document.getElementById("expectativas").value;
         var participacion = document.getElementById("participacion").value;
-        var address = document.getElementById("address").value;
 
         var post = "&nombre=" + perfilNombre
             + "&funcion=" + perfilFuncion
@@ -1170,7 +1166,7 @@ function doAtras() {
         document.getElementById("quesoDiv").style.display = "none";
 
         document.getElementById("titulo").style.visibility = 'hidden';
-        document.getElementById("panelUsuario").style.display = 'block';
+        //document.getElementById("panelUsuario").style.display = 'block';
         document.getElementById("menuEvaluacion").style.visibility = 'hidden';
         document.getElementById("modelosDebate").style.display = "none";
         document.getElementById("modelosEvaluacion").style.display = "none";
@@ -1198,7 +1194,7 @@ function doAtras() {
 
         arbolPersonal = null;
         propuestas = [];
-        setCookie("nabu-" + grupoParam, "", 1);
+        setCookie("nabu-" + grupoParam, "", 1);        
 
         document.getElementById("tituloNabu").style.visibility = "hidden";
         document.getElementById("email").value = '';
@@ -1224,7 +1220,7 @@ function doAtras() {
         objetivo.innerHTML = arbolPersonal.objetivo;
         objetivo.style.visibility = 'hidden';
 
-        document.getElementById("panelUsuario").style.display = 'block';
+        //document.getElementById("panelUsuario").style.display = 'block';
 
         //efecto de salida: podo el arbol
         var children = arbolPersonal.raiz.children;

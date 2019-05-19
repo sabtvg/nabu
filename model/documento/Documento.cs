@@ -140,7 +140,7 @@ namespace nabu
             //guardo
             Grupo g = grupo;
             grupo = null; //referencia ciclica
-            System.IO.StreamWriter fs = new System.IO.StreamWriter(path, false, System.Text.Encoding.UTF8);
+            System.IO.StreamWriter fs = new System.IO.StreamWriter(g.path + "\\" + path, false, System.Text.Encoding.UTF8);
             //System.IO.StreamWriter fs = System.IO.File.CreateText(path);
             fs.Write(Tools.toJson(this));
             fs.Close();

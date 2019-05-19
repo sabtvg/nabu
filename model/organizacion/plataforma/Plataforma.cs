@@ -212,7 +212,7 @@ namespace nabu.organizaciones
             doc.nombre = ac.nombre;
             doc.fname = fname;
             doc.modeloID = "";
-            doc.path = gr.path + "\\" + docPath + "\\" + fname + ".json";
+            doc.path = docPath + "\\" + fname + ".json";
             doc.URLPath = URL;
             doc.titulo = "Resultado de: " + ac.nombre;
 
@@ -236,6 +236,7 @@ namespace nabu.organizaciones
             }
             List<Propuesta> props = new List<Propuesta>();
             props.Add(prop);
+            doc.grupo = gr;
             doc.propuestas = props;
             doc.save();
 

@@ -490,7 +490,7 @@ namespace nabu
             doc.nombre = m.nombre;
             doc.fname = fname;
             doc.modeloID = n.modeloID;
-            doc.path = grupo.path + "\\" + docPath + "\\" + fname + ".json";
+            doc.path = docPath + "\\" + fname + ".json";
             doc.URLPath = URL;
             //obtengo el titulo
             //debo dibujar el documento

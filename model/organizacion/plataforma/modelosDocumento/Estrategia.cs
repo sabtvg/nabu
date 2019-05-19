@@ -508,18 +508,18 @@ namespace nabu.plataforma.modelos
             {
                 for (int i = grupo.logDecisiones.Count -1; i > 0; i--)
                 {
-                    //path fix if server is different
                     LogDocumento ldi = grupo.logDecisiones[i];
-                    string path = ldi.path;
-                    if (!path.StartsWith(Tools.startupPath))
-                        //fix
-                        path = Tools.startupPath + path.Substring(path.IndexOf("\\nabu\\") + 5);
+                    ////path fix if server is different
+                    //string path = ldi.path;
+                    //if (!path.StartsWith(Tools.startupPath))
+                    //    //fix
+                    //    path = Tools.startupPath + path.Substring(path.IndexOf("\\nabu\\") + 5);
 
-                    if (ldi.modeloNombre == nombre && System.IO.File.Exists(path))
+                    if (ldi.modeloNombre == nombre && System.IO.File.Exists(grupo.path + "\\" + ldi.path))
                     {
                         try
                         {
-                            string json = System.IO.File.ReadAllText(path);
+                            string json = System.IO.File.ReadAllText(grupo.path + "\\" + ldi.path);
                             Documento doc = Tools.fromJson<Documento>(json);
                             //string eSubGrupo = doc.getText("s.SubGrupo");
                             string eNombreProceso = doc.getText("s.nombreProceso");

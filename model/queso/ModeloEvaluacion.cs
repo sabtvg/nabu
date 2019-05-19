@@ -103,7 +103,7 @@ namespace nabu
             ret += toHTMLContenido(prop, g, email, width);
 
             //botones de poantalla o firma de consenso
-            ret += "<br>";
+            ret += "<div style='float:left;clear:left'>";
             if (modo == eModo.editar)
             {
                 //modo muestra
@@ -123,6 +123,7 @@ namespace nabu
                 ret += "<input type='button' class='btnok' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
                 ret += "<input type='button' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }
+            ret += "</div>";
 
             //ret += "<a id='btnDownload' href='' target='_blank'><font size='1'>Descargar esta versi&oacute;n</font></a>";
             return ret;

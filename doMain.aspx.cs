@@ -98,7 +98,7 @@ namespace nabu
                                 Usuario u = grupo.getUsuario(Request["email"]);
                                 if (u != null && u.isAdmin)
                                 {
-                                    borrarCarpeta(Server.MapPath("grupos"), grupo.nombre);
+                                    borrarCarpeta(grupo);
                                 }
                                 else
                                     throw new Exception("Debe ser coordinador");
@@ -592,21 +592,20 @@ namespace nabu
             return result;
         }
 
-        public void borrarCarpeta(string basePath, string nombre)
+        public void borrarCarpeta(Grupo g)
         {
-            if (System.IO.Directory.Exists(basePath))
-            {
-                System.IO.Directory.Move(basePath + "\\" + nombre, basePath + "\\..\\borrados\\" + nombre);
+            string de = g.path;
+            string to = g.path.Replace("\\grupos\\", "\\borrados\\");
+            System.IO.Directory.Move(de, to);           
+            
+            //System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(basePath);
+            //di.MoveTo("..\\..\\borrados");
 
-                //System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(basePath);
-                //di.MoveTo("..\\..\\borrados");
-
-                //foreach (System.IO.DirectoryInfo di2 in di.GetDirectories())
-                //    borrarCarpeta(di.FullName);
-                //foreach (System.IO.FileInfo fi in di.GetFiles())
-                //    System.IO.File.Delete(fi.FullName);
-                //System.IO.Directory.Delete(basePath);
-            }
+            //foreach (System.IO.DirectoryInfo di2 in di.GetDirectories())
+            //    borrarCarpeta(di.FullName);
+            //foreach (System.IO.FileInfo fi in di.GetFiles())
+            //    System.IO.File.Delete(fi.FullName);
+            //System.IO.Directory.Delete(basePath);
         }
 
         public string doOperativoAccion(string grupo, string email, string accion, HttpRequest req)

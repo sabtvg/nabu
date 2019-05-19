@@ -191,9 +191,6 @@ function recibirArbolPersonal(data) {
         //timestamp
         lastArbolRecibidoTs = (new Date()).getTime();
 
-        //flores disponibles
-        document.getElementById("floresDisponibles").innerHTML = getFloresDisponibles().length;
-
         //reactivo evento resize por si esta descativado
         reload = true;
     }
@@ -413,16 +410,6 @@ function tieneFlor(node) {
             return true;
     }
     return false;
-}
-
-function getFloresDisponibles() {
-    var ret = [];
-    for (var i in arbolPersonal.usuario.flores) {
-        var flor = arbolPersonal.usuario.flores[i];
-        if (flor.id == 0)
-            ret.push(flor);
-    }
-    return ret;
 }
 
 function pedirArbol() {

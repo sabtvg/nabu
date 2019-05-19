@@ -31,6 +31,7 @@ var maxWidth = 50;
 var useMaxWidth = false;
 var historico = historico || false;
 var parents = [];
+var flowerOffset = 0;
 
 function crearArbol() {
     var diameter = window.innerHeight / 2;
@@ -43,6 +44,14 @@ function crearArbol() {
     diagonal = d3.svg.diagonal.radial()
         .projection(function (d) { return [d.y, d.x / 180 * Math.PI - Math.PI / 2]; });
 
+    var i;
+    if (window.innerWidth <= 400)
+        i = 90;
+    else if (window.innerWidth <= 800)
+        i = 70;
+    else
+        i = 90;
+
     svgArbol = d3.select("svg")
         .attr("id", "arbol")
         .attr("style", "width: " + window.innerWidth + "px;height:" + window.innerHeight + "px;top:0px;left:0px;position:absolute;")
@@ -52,7 +61,7 @@ function crearArbol() {
         .on("mousewheel", doMousewheel1)
         //.on("DOMMouseScroll", doMousewheel2)  //firefox  //NO FUNCIONA EVENT
         .append("g")
-        .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
+        .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight - i).toFixed(0) + ")");
 
 
     dibujarArbol(arbolPersonal.raiz);
@@ -96,14 +105,19 @@ function doMousedown() {
     downEvent = { "x": e.clientX, "y": e.clientY, "translatex": translatex, "translatey": translatey };
     if (e.toElement.nodeName == 'svg') {
         //ha picado en el fondo
-        if (menu)
-            menu.style.visibility = "hidden";
-        selectedNode = null;
-        parents = [];
-        dibujarArbol(selectedNode);
-        hidePanelDer();
-        hidePanelIzq();
+        deselect();
     }
+}
+
+function deselect()
+{ 
+    if (menu)
+        menu.style.visibility = "hidden";
+    selectedNode = null;
+    parents = [];
+    dibujarArbol(selectedNode);
+    hidePanelDer();
+    hidePanelIzq();
 }
 
 function doMousemove() {
@@ -153,6 +167,7 @@ function dibujarArbol(referencia) {
     //    .select("g")
     //    .attr("transform", "translate(" + (window.innerWidth / 2).toFixed(0) + "," + (window.innerHeight * 0.90).toFixed(0) + ")");
 
+    flowerOffset = 0;
 
     //actualizo las flores de los padres
     useMaxWidth = false;
@@ -190,13 +205,9 @@ function dibujarArbol(referencia) {
         .on("click", nodeClick);
 
     nodeEnter.append("circle")
-        .attr("r", function (d) {
-            var r = d.totalFlores / 4 + 2;
-            if (useMaxWidth)
-                r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
-            if (r < 10) r = 10;
-            if (window.innerWidth <= 800) r = r * 2;
-            return r * scale;
+        .style("cursor", "pointer")
+        .attr("id", function (d) {
+            return 'c' + d.id;
         });
 
     //1ra linea de texto ETIQUETA
@@ -326,17 +337,30 @@ function dibujarArbol(referencia) {
                 i = 10;
             else
                 i = 8;
+
+            if (d.nivel == 0) //root
+                i = i * 1.5;
+
+            if (selectedNode && d.id == selectedNode.id)
+                i = 15;
+            if (selectedNode && isNodeFlor(d.id) && d.id == selectedNode.id)
+                i = 24;
+
             return i;
         })
         .style("stroke", function (d) {
             if (selectedNode)
                 return d.id == selectedNode.id ? "blue" : "gray";
+            else if (d.nivel == 0) //root
+                return "blue";
             else
                 return "gray";
         })
         .style("stroke-width", function (d) {
             if (selectedNode)
                 return d.id == selectedNode.id ? 8 : 2;
+            else if (d.nivel == 0) //root
+                return 8;
             else
                 return 2;
         })
@@ -350,6 +374,9 @@ function dibujarArbol(referencia) {
                 color = "#b0ffbd";
             else
                 color = "yellow";
+
+            if (isNodeFlor(d.id))
+                color = "none";
 
             return color;
         });   
@@ -394,14 +421,20 @@ function dibujarArbol(referencia) {
     nodes.forEach(function (d) {
         var t2 = document.getElementById('t2.' + d.id);
         if (t2 && d.no && !d.consensoAlcanzado) {
-            t2.style.fill = d.noColor; //actualizo el no texto
-            t2.innerHTML = d.no; //actualizo el no texto
+            if (d.nivel != 0) //root
+            {
+                t2.style.fill = d.noColor; //actualizo el no texto
+                t2.innerHTML = d.no; //actualizo el no texto
+            }
         }
 
         var t3 = document.getElementById('t3.' + d.id);
         if (t3 && d.si && !d.consensoAlcanzado) {
-            t3.style.fill = d.siColor; //actualizo el si texto
-            t3.innerHTML = d.si; //actualizo el si texto
+            if (d.nivel != 0) //root
+            {
+                t3.style.fill = d.siColor; //actualizo el si texto
+                t3.innerHTML = d.si; //actualizo el si texto
+            }
         }
     });
 
@@ -415,6 +448,7 @@ function dibujarArbol(referencia) {
         .on("click", florClick);
 
     florEnter.append("image")
+        .style("cursor", "pointer")
         .attr("class", "florImage")
         .attr("transform", "translate(0)")
         .attr("xlink:href", "res/icono2.png");
@@ -422,11 +456,22 @@ function dibujarArbol(referencia) {
     var florUpdate = flor.transition()
         .duration(duration)
         .attr("transform", function (d) {
-            if (d.id == 0)
+            if (d.id == 0) {
                 //flor disponible
-                return "rotate(0)translate(0)";
+                var libres = getFloresDisponibles().length;
+                var i;
+                if (window.innerWidth <= 400)
+                    i = 60;
+                else if (window.innerWidth <= 800)
+                    i = 90;
+                else
+                    i = 50;
+                var init = i * treeScale * (libres - 1);
+                return "rotate(0)translate(" + (init / 2 - i * treeScale * flowerOffset++) + "," + (i * treeScale) + ")";
+            }
             else {
                 var n = getNodo(d.id);
+
                 if (n)
                     return "rotate(" + (n.x - 180).toFixed(0) + ")translate(" + n.y.toFixed(0) + ")";
                 else
@@ -606,6 +651,15 @@ function dibujarArbol(referencia) {
     });
 }
 
+function isNodeFlor(id) {
+    for (var fi in arbolPersonal.usuario.flores) {
+        var flor = arbolPersonal.usuario.flores[fi];
+        if (flor.id == id)
+            return true;
+    }
+    return false;
+}
+
 function isNodeSelectedPath(n) {
     for (var i in parents)
         if (parents[i] == n)
@@ -774,6 +828,12 @@ function nodeClick(d) {
     //activo panel
     showPanel();
 
+    //muevo menuNode
+    var menuNode = document.getElementById("menuNode");
+
+    var transform = "translate(" + translatex.toFixed(0) + "px," + translatey.toFixed(0) + "px)rotate(" + (d.x - 180).toFixed(0) + "deg)translate(" + (d.y).toFixed(0) + "px)rotate(" + ((d.x - 180) * -1).toFixed(0) + "deg)";
+    menuNode.style.transform = transform;
+
     //activo menu contextual 
     if (!historico) {
         if (arbolPersonal.usuario.habilitado && !arbolPersonal.usuario.readOnly) {
@@ -810,4 +870,14 @@ function panx(x) {
     //        translateArbol(translatex += x, translatey)
     //    }, 20); //continuo
     //}
+}
+
+function getFloresDisponibles() {
+    var ret = []; 
+    for (var i in arbolPersonal.usuario.flores) {
+        var flor = arbolPersonal.usuario.flores[i];
+        if (flor.id == 0)
+            ret.push(flor);
+    }
+    return ret;
 }
