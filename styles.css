@@ -38,6 +38,7 @@ body {
 .abm {
     border:1px solid gray;
     border-radius: 8px;
+    padding: 4px;
 }
 
 .keyword {
@@ -723,9 +724,6 @@ input[readonly] {
     left:50%;
 }
 .menuqueso {
-    border: 1px solid #C0C0C0;
-    border-radius: 10px;
-    background-color: #FFFFFF;
     opacity: 0.8;
     visibility:hidden;
     position:fixed;
@@ -866,7 +864,7 @@ input[readonly] {
         font-size: 22px;
     }
     .titulo1 {
-        font-weight: bold;
+        font-weight: bold;.te
         padding: 1px;
         font-size: 16px;
     }
@@ -1273,9 +1271,6 @@ input[readonly] {
     }
     .menuqueso {
         padding:2px;
-        border: 1px solid #C0C0C0;
-        border-radius: 10px;
-        background-color: #FFFFFF;
         opacity: 0.8;
         visibility:hidden;
         position:fixed;

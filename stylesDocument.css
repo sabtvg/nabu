@@ -1,0 +1,109 @@
+﻿@font-face {
+    font-family: 'Wallie';
+    src: url('fonts/WallieFit.woff') format('woff'); /* Super Modern Browsers */
+}
+
+body {
+    font-family: Wallie, Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    margin: 1.9vw;
+}
+
+.seccion {
+}
+
+.titulo0 {
+    padding: 2px;
+    font-size: 36px;
+    font-family: 'Times New Roman';
+}
+
+.titulo1 {
+    padding: 2px;
+    font-size: 28px;
+}
+
+.titulo2 {
+    padding: 2px;
+    font-size: 24px;
+}
+
+.titulo3 {
+    padding: 2px;
+    font-size: 16px;
+}
+
+.titulo4 {
+    padding: 2px;
+    font-size: 14px;
+}
+
+.tema {
+    padding: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    padding-left: 0px;
+}
+
+.texto {
+    padding: 5px;
+    margin: 2px;
+    font-size: 14px;
+    overflow: auto;
+    border: 0px;
+}
+
+@media only screen and (max-width: 800px) {
+    body {
+        background-color: lightblue;
+    }
+
+    .seccion {
+        padding: 2px;
+        margin: 2px;
+        font-size: 14px;
+        vertical-align: top;
+        clear: left;
+        float: left;
+    }
+
+    .titulo0 {
+        padding: 1px;
+        font-size: 22px;
+    }
+
+    .titulo1 {
+        font-weight: bold;
+        padding: 1px;
+        font-size: 16px;
+    }
+
+    .titulo2 {
+        padding: 1px;
+        font-size: 14px;
+    }
+
+    .titulo3 {
+        padding: 1px;
+        font-size: 14px;
+    }
+
+    .titulo4 {
+        padding: 2px;
+        font-size: 12px;
+    }
+
+    .tema {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+        padding-left: 0px;
+        padding-bottom: 0px;
+    }
+
+    .texto {
+        padding-left: 0px;
+        margin-left: 0px;
+    }
+}

@@ -111,13 +111,15 @@ function doMousedown() {
 
 function deselect()
 { 
-    if (menu)
-        menu.style.visibility = "hidden";
-    selectedNode = null;
-    parents = [];
-    dibujarArbol(selectedNode);
-    hidePanelDer();
-    hidePanelIzq();
+    if (estado == "decidimos") {
+        if (menu)
+            menu.style.visibility = "hidden";
+        selectedNode = null;
+        parents = [];
+        dibujarArbol(selectedNode);
+        hidePanelDer();
+        hidePanelIzq();
+    }
 }
 
 function doMousemove() {
@@ -246,7 +248,8 @@ function dibujarArbol(referencia) {
             else
                 i = 15;
             var size = i * scale > 25 ? 25 : i * scale;
-            return size + 'px';
+            if (size < 10) size = 10;
+            return size.toFixed(0) + 'px';
         });
 
     //2da linea de texto NO
@@ -282,7 +285,8 @@ function dibujarArbol(referencia) {
             else
                 i = 15;
             var size = i * scale > 25 ? 25 : i * scale;
-            return size + 'px';
+            if (size < 10) size = 10;
+            return size.toFixed(0) + 'px';
         });
 
     //3da linea de texto SI
@@ -318,7 +322,8 @@ function dibujarArbol(referencia) {
             else
                 i = 15;
             var size = i * scale > 25 ? 25 : i * scale;
-            return size + 'px';
+            if (size < 10) size = 10;
+            return size.toFixed(0) + 'px';
         });
 
     // Transition nodes to their new position.

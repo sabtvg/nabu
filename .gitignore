@@ -44,5 +44,9 @@ Temporary Items
 
 grupos
 mails\errores\
+mails\cola\
 Web.config
-borrados/a77/a77.json
+borrados
+logs.html
+logDictionary.txt
+

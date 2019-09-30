@@ -247,6 +247,8 @@ function gruposEffectIn() {
     else
         s += "<span class='titulo0' style='position:relative;top:-27px;left:2px;font-size:44px;'>Nab&uacute;</span>";
     s += "</div>"
+
+    //groups
     s += "<div class='titulo1' style='clear:left;'><b>" + tr("Grupos") + "</b></div>";
     for (i in config.grupos) {
         var grupo = config.grupos[i];
@@ -256,6 +258,12 @@ function gruposEffectIn() {
         s += "' class='grupo'><nobr>" + grupo + "</nobr></a>"
     }
     s += "<br><br><input type='button' class='btn' style='float:unset' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creargrupo.html?idioma=" + idioma + "'\">";
+
+    //project page
+    s += "<br><br><a href='web/default.html?";
+    if (idioma)
+        s += "&idioma=" + idioma;
+    s += "' class='texto'><nobr>" + tr("Pagina de proyecto") + "</nobr></a><br><br>"
 
     document.getElementById("grupos").style.display = "block";
     document.getElementById("grupos").innerHTML = s;

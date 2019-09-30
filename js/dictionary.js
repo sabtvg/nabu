@@ -199,6 +199,7 @@ var dictionary = [
     { key: 'Participacion', idioma: 'es', txt: 'Participacion' },
     { key: 'Cambiar clave', idioma: 'es', txt: 'Cambiar clave' },
     { key: 'Otros', idioma: 'es', txt: 'Otros' },
+    { key: 'Pagina de proyecto', idioma: 'es', txt: '&iquest;Como usar Nab&uacute;?' },
     
 
 

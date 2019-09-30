@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -338,12 +338,12 @@
                     s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
 
                     //titulo
-                    s += "<text x='" + (x + dif + 32 * imgZoom) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
+                    s += "<text x='" + (x + dif * imgZoom) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
                         + ld.titulo + "</text>";
 
                     //seguimiento
                     var sdt = formatShortDate(toDate(ld.fecha));
-                    s += "<text x='" + (x + dif + 32 * imgZoom) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                    s += "<text x='" + (x + dif * imgZoom) + "' y='" + (y * zoom + 85 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
                 xant = x + dif;
                 dif = 0;

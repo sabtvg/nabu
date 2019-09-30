@@ -9815,3 +9815,893 @@
 13/02/19 Tu estado es inactivo|es
 13/02/19 Tu estado es inactivo|es
 18/02/19 Tu estado es inactivo|es
+19/02/19 %1 agregado|es
+19/02/19 %1 agregado|es
+19/02/19 %1 agregado|es
+19/02/19 SubGrupo.creado|es
+19/02/19 No se puede deshabilitar al admin|es
+19/02/19 No puede ser coordinador y representante|es
+19/02/19 No puede ser coordinador y representante|es
+19/02/19 No puede ser coordinador y representante|es
+19/02/19 No puede ser coordinador y representante|es
+19/02/19 No puede ser coordinador y representante|es
+19/02/19 No puede ser coordinador y representante|es
+19/02/19 Email no puede ser vacio|es
+19/02/19 No puede ser coordinador y representante|es
+19/02/19 evento.responsable.tip|es
+19/02/19 evento.responsable.tip|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Tu estado es inactivo|es
+19/02/19 Comunicado del grupo|es
+19/02/19 Al grupo hijo|es
+19/02/19 alhijo.introduccion.titulo|es
+19/02/19 La introduccion no puede ser vacia|es
+19/02/19 Comunicado del grupo|es
+19/02/19 Al grupo hijo|es
+19/02/19 alhijo.introduccion.titulo|es
+19/02/19 Comunicado del grupo|es
+19/02/19 Al grupo hijo|es
+19/02/19 alhijo.introduccion.titulo|es
+19/02/19 Comunicado del grupo|es
+19/02/19 Al grupo hijo|es
+19/02/19 alhijo.introduccion.titulo|es
+19/02/19 Comunicado del grupo|es
+19/02/19 Al grupo hijo|es
+19/02/19 alhijo.introduccion.titulo|es
+19/02/19 No se pudo publicar documento en el grupo hijo|es
+19/02/19 Comunicado del grupo|es
+19/02/19 Al grupo hijo|es
+19/02/19 alhijo.introduccion.titulo|es
+19/02/19 Nacido|es
+19/02/19 Decision|es
+19/02/19 Objetivo|es
+19/02/19 Estado final|es
+19/02/19 Estado final fecha|es
+19/02/19 Autor|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Sobre la publicacion|es
+20/02/19 URL|es
+20/02/19 Autor|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Si|es
+20/02/19 Si|es
+20/02/19 No|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 Tu estado es inactivo|es
+20/02/19 No puede ser coordinador y representante|es
+21/02/19 Tu estado es inactivo|es
+21/02/19 Tu estado es inactivo|es
+21/02/19 Tu estado es inactivo|es
+21/02/19 Tu estado es inactivo|es
+21/02/19 Tu estado es inactivo|es
+21/02/19 Grupo creado|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 %1 agregado|es
+26/02/19 SubGrupo.creado|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Galicia|es
+26/02/19 Madrid|es
+26/02/19 Cadiz|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Recorrer la ciudad|es
+26/02/19 Musicales|es
+26/02/19 Negocios|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Recorrer la ciudad|es
+26/02/19 Musicales|es
+26/02/19 Negocios|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Recorrer la ciudad|es
+26/02/19 Musicales|es
+26/02/19 Negocios|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Recorrer la ciudad|es
+26/02/19 Musicales|es
+26/02/19 Negocios|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Recorrer la ciudad|es
+26/02/19 Musicales|es
+26/02/19 Negocios|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Recorrer la ciudad|es
+26/02/19 Musicales|es
+26/02/19 Negocios|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Nueva york|es
+26/02/19 Thailandia|es
+26/02/19 Japon|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Recorrer la ciudad|es
+26/02/19 Musicales|es
+26/02/19 Negocios|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Limpiar la casa|es
+26/02/19 Cocinar para la semana|es
+26/02/19 Arreglar cosas atrasadas|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Limpiar la casa|es
+26/02/19 Cocinar para la semana|es
+26/02/19 Arreglar cosas atrasadas|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Limpiar la casa|es
+26/02/19 Cocinar para la semana|es
+26/02/19 Arreglar cosas atrasadas|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Limpiar la casa|es
+26/02/19 Cocinar para la semana|es
+26/02/19 Arreglar cosas atrasadas|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Limpiar la casa|es
+26/02/19 Cocinar para la semana|es
+26/02/19 Arreglar cosas atrasadas|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Limpiar la casa|es
+26/02/19 Cocinar para la semana|es
+26/02/19 Arreglar cosas atrasadas|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Tu estado es inactivo|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Excursiones, fiesta nocturna, comidas en familia|es
+26/02/19 Donde vamos?|es
+26/02/19 Nos quedamos en casa|es
+26/02/19 Viaje nacional|es
+26/02/19 Viaje internacional|es
+26/02/19 Que hacemos?|es
+26/02/19 Pasear y descansar|es
+26/02/19 Ver tele en el sofa|es
+26/02/19 Arreglar cosas de la casa|es
+26/02/19 Que hacemos? (mas concreto)|es
+26/02/19 Ciancia ficcion|es
+26/02/19 Documentales|es
+26/02/19 Policiales|es
+26/02/19 Costo asumido por cabeza|es
+26/02/19 En que gastaremos el dinero|es
+26/02/19 Tu estado es inactivo|es
+02/03/19 Tu estado es inactivo|es
+02/03/19 Usuario [%1] creado|es
+02/03/19 Tu estado es inactivo|es
+02/03/19 Tu estado es inactivo|es
+24/04/19 Tu estado es inactivo|es
+19/05/19 Flor caducada para [%1]|es
+19/05/19 El tema ha caido|es
+19/05/19 Tus flores han caido|es
+19/05/19 Tu estado es inactivo|es
+19/05/19 Grupo creado|es
+19/05/19 Tu estado es inactivo|es
+19/05/19 Tu estado es inactivo|es
+19/05/19 Nacido|es
+19/05/19 Decision|es
+19/05/19 Objetivo|es
+19/05/19 Estado final|es
+19/05/19 Estado final fecha|es
+19/05/19 Autor|es
+19/05/19 Tu estado es inactivo|es
+19/05/19 Tu estado es inactivo|es
+19/05/19 No|es
+19/05/19 Si|es
+19/05/19 No|es
+19/05/19 Si|es
+19/05/19 No|es
+19/05/19 Si|es
+19/05/19 No|es
+19/05/19 Si|es
+19/05/19 No|es
+19/05/19 Si|es
+19/05/19 Si|es
+19/05/19 No|es
+19/05/19 Tu estado es inactivo|es
+19/05/19 Tu estado es inactivo|es
