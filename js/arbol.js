@@ -102,8 +102,9 @@ function doMousedown() {
     //element.dispatchEvent(event);
 
     var e = window.event || Event || e; // old IE support
+    var element = e.toElement || e.target;
     downEvent = { "x": e.clientX, "y": e.clientY, "translatex": translatex, "translatey": translatey };
-    if (e.toElement.nodeName == 'svg') {
+    if (element.nodeName == 'svg') {
         //ha picado en el fondo
         deselect();
     }
@@ -175,6 +176,13 @@ function dibujarArbol(referencia) {
     useMaxWidth = false;
     setParents(arbolPersonal.raiz);
     updateFloresTotales(arbolPersonal.raiz);
+
+    //set maxWidth for proportional width when not much users
+    useMaxWidth = true;
+    maxWidth = 20 - arbolPersonal.usuarios;
+    if (maxWidth < 1) maxWidth = 1;
+    //if (maxWidth > 50) maxWidth = 50;
+    //if (maxWidth < 10) maxWidth = 10;
 
     // Compute the new tree layout.
     var nodes = d3Arbol.nodes(arbolPersonal.raiz).reverse(),
@@ -738,7 +746,7 @@ function updateFloresTotales(node) {
     for (var i in hijos) {
         var hijo = hijos[i];
         //hijo.nivel = node.nivel + 1;
-        updateFloresTotales(hijo);
+        updateFloresTotales(hijo);                          //<<------recursion
         totalFlores += hijo.totalFlores;
     }
     node.totalFlores = totalFlores + node.flores;

@@ -200,6 +200,7 @@ var dictionary = [
     { key: 'Cambiar clave', idioma: 'es', txt: 'Cambiar clave' },
     { key: 'Otros', idioma: 'es', txt: 'Otros' },
     { key: 'Pagina de proyecto', idioma: 'es', txt: '&iquest;Como usar Nab&uacute;?' },
+    { key: 'Borrar [%1]?', idioma: 'es', txt: 'Borrar [%1]?' },
     
 
 
@@ -719,7 +720,7 @@ var dictionary = [
 
     ];
 
-function tr(key) {
+function tr(key, values) {
     //aplico traduccion
 
     var trIdioma = navigator.language || navigator.userLanguage;
@@ -736,8 +737,17 @@ function tr(key) {
             if (entry.key.toLocaleLowerCase() == key.toLocaleLowerCase() && entry.idioma == trIdioma) {
                 if (entry.txt == "?")
                     return '[' + key + ']';
-                else
-                    return entry.txt;
+                else {
+                    //found
+                    //replace values
+                    var ret = entry.txt;
+                    if (values != undefined)
+                        for (var i in values) {
+                            var index = parseInt(i) + 1;
+                            ret = ret.replace("%" + index, values[i]);
+                        }
+                    return ret;
+                }
             }
         }
         return '[' + key + ']';

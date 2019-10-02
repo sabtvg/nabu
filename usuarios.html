@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -179,6 +179,13 @@
                 });
         }
 
+        function cut(s, len) {
+            if (s.length > len)
+                return s.substring(0, len - 3) + '...';
+            else
+                return s;
+        }
+
         function showLista() {
             var s = "";
             for (var i in usuarios) {
@@ -195,7 +202,7 @@
                     + usu.nombre + "<br>"
                     + usu.funcion + "<br>"
                     + usu.sLastLogin + "<br>"
-                    + "<a href='mailto:" + usu.email + "'>" + usu.email + "</a>"
+                    + "<a href='mailto:" + usu.email + "'>" + cut(usu.email, 22 ) + "</a>"
                     + "</div>";
 
                 s += "<div style='float:left;text-align:center;' onclick='doSelect(\"" + usu.email + "\");'>"
@@ -205,7 +212,7 @@
                     + "</div>"
                     + "</div>";
 
-                s += "<div style='float:left;text-align:center;padding-bottom:8px;' onclick='doSelect(\"" + usu.email + "\");'>"
+                s += "<div style='float:left;text-align:center;padding-bottom:8px;font-size:12px;' onclick='doSelect(\"" + usu.email + "\");'>"
                     + "<div style='background-color:" + (usu.habilitado ? "#ccffe6" : "#ffcccc")
                     + ";border-top-left-radius:8px;border-top-right-radius:8px;padding:2px;'>" + (usu.habilitado ? "Habilitad@" : "Deshabilitad@") + "</div>"
                     + "<div style='background-color:" + (!usu.readOnly ? "#ccffe6" : "#ffcccc")
@@ -262,24 +269,27 @@
         }
 
         function doBorrarUsuario(email) {
-            if (email == usuario.email)
-                popupMsgOn('<font color=red>' + tr("No se puede borrar el usuario actual") + '</font>');
-            else {
-                getHttp("doMain.aspx?actn=removeusuario&grupo=" + usuario.grupo
-                    + "&usuarioemail=" + email
-                    + "&email=" + usuario.email
-                    + "&clave=" + usuario.clave,
-                    function (data) {
-                        //atrapo el error si es que hay
-                        if (data.substring(0, 6) == "Error=") {
-                            //ha habido un error
-                            popupMsgOn('<font color=red>' + data + '</font>');
-                        }
-                        else {
-                            //actualizo lista
-                            getListaUsuarios();
-                        }
-                    });
+            var r = confirm(tr("Borrar [%1]?", [email]));
+            if (r == true) {
+                if (email == usuario.email)
+                    popupMsgOn('<font color=red>' + tr("No se puede borrar el usuario actual") + '</font>');
+                else {
+                    getHttp("doMain.aspx?actn=removeusuario&grupo=" + usuario.grupo
+                        + "&usuarioemail=" + email
+                        + "&email=" + usuario.email
+                        + "&clave=" + usuario.clave,
+                        function (data) {
+                            //atrapo el error si es que hay
+                            if (data.substring(0, 6) == "Error=") {
+                                //ha habido un error
+                                popupMsgOn('<font color=red>' + data + '</font>');
+                            }
+                            else {
+                                //actualizo lista
+                                getListaUsuarios();
+                            }
+                        });
+                }
             }
         }
 
@@ -369,6 +379,7 @@
     <!--editpopup-->
     <div id="editpopupback" style="width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;"></div>
     <div id="editpopup" class="popupmsg">
+
         <div id="lemail" class="field1" style="width:70px;">Email</div>
         <input id="email" type="text" class="field2" style="width:210px;" /><br />
 
@@ -379,7 +390,7 @@
         <input id="funcion" type="text" class="field2" style="width:210px;" /><br />
 
         <div id="lclave" class="field1" style="width:70px;">Clave</div>
-        <input id="clave" type="password" class="field2" style="width:210px;"/><br />
+        <input id="clave" type="password" class="field2" style="width:210px;" /><br />
 
         <input id="habilitado" type="checkbox" class="field2" style="clear:left;padding:5px;margin-top:4px;height:20px;width:20px;" />
         <span id="lHab" class="titulo4" style="float:left;margin:4px;width:115px">Habilitado</span>
@@ -390,8 +401,11 @@
         <input id="isRepresentante" type="checkbox" class="field2" style="clear:left;margin-top:4px;height:20px;width:20px;" /><span id="lrepre" class="titulo4" style="float:left;background-color:#00CC99;padding:3px;border-radius:3px;width:110px;margin:4px;">Representative</span><br />
         <input id="isSecretaria" type="checkbox" class="field2" style="clear:left;margin-top:4px;height:20px;width:20px;" /><span id="lsecre" class="titulo4" style="float:left;background-color:#FF66CC;padding:3px;border-radius:3px;width:110px;margin:4px;">Secretaria</span><br />
         <input id="isFacilitador" type="checkbox" class="field2" style="clear:left;margin-top:4px;height:20px;width:20px;" /><span id="lfacil" class="titulo4" style="float:left;background-color:#FF9900;padding:3px;border-radius:3px;width:110px;margin:4px;">Facilitator</span>
-
-        <input id="btnOk" type='button' class='btn' value='Ok' onclick='doActualizarUsuario();' style="margin-top:15px;clear:left;margin-left:calc(50% - 25px);" />
+       
+        <div style="clear:left;">
+            <input id="btnOk" type='button' class='btnok' value='Ok' onclick='doActualizarUsuario();' style="margin-top:15px;margin-left:calc(50% - 55px);" />
+            <input id="btnCerrar" type='button' class='btn' value='Cancelar' onclick='editpopupMsgOff();' style="margin-top:15px;" />
+        </div>
     </div>
 
     <!--popmsg-->

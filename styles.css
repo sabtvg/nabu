@@ -572,16 +572,15 @@ input[readonly] {
 }
 .btnnok {
     border: 2px solid #006666;
-    background-color: #0066CC;
+    background-color: lightcoral;
     color: #FFFFFF;
     border-radius: 10px;
-    padding:3px;
+    padding: 3px;
     font-size: 15px;
     cursor: pointer;
     margin-left: 4px;
     margin-top: 4px;
     font-family: inherit;
-    background-color: lightcoral;
     margin-right: 5px
 }
 
@@ -1078,7 +1077,7 @@ input[readonly] {
         float: left;
     }
     .btnok {
-        border: 2px solid teal;
+        border: 1px solid teal;
         background-color: teal;
         color: #FFFFFF;
         border-radius: 8px;

@@ -25,7 +25,7 @@ var estado = '';
 var rotacionCiclo = 0;
 var timerCiclo, timerFlores, timerArbol, timerGrupo, timerQueso;
 var rotFlores = 0;
-var refreshInterval = 10000; //10seg
+var refreshInterval = 5000;//5seg    10000; //10seg
 var lastArbolRecibidoTs = (new Date()).getTime();
 var joyInterval;
 var textAreas;
@@ -71,7 +71,8 @@ $(document).mousemove(function (event) {
 
 function move(event) {
     if (!preguntarAlSalir && event.target && (event.target.id == 'arbol' || event.target.id == 'svgAprendemos')) {
-        if (event.which == 1 && !event.ctrlKey) {
+        var ev = event.originalEvent; //firefox
+        if (ev.buttons != 0 && !event.ctrlKey) {
             //scroll
             if (lastMouse) {
                 if (estado == "aprendemos") {
@@ -260,10 +261,10 @@ function gruposEffectIn() {
     s += "<br><br><input type='button' class='btn' style='float:unset' value='" + tr("Crear nuevo grupo") + "' onclick=\"document.location='creargrupo.html?idioma=" + idioma + "'\">";
 
     //project page
-    s += "<br><br><a href='web/default.html?";
+    s += "<br><br><a href='web/default.html?" ;
     if (idioma)
         s += "&idioma=" + idioma;
-    s += "' class='texto'><nobr>" + tr("Pagina de proyecto") + "</nobr></a><br><br>"
+    s += "' target='_blank' class='texto'><nobr>" + tr("Pagina de proyecto") + "</nobr></a><br><br>"
 
     document.getElementById("grupos").style.display = "block";
     document.getElementById("grupos").innerHTML = s;
