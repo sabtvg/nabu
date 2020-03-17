@@ -173,16 +173,9 @@ function dibujarArbol(referencia) {
     flowerOffset = 0;
 
     //actualizo las flores de los padres
-    useMaxWidth = false;
+    useMaxWidth = true; //always true right now 3/10/2019
     setParents(arbolPersonal.raiz);
     updateFloresTotales(arbolPersonal.raiz);
-
-    //set maxWidth for proportional width when not much users
-    useMaxWidth = true;
-    maxWidth = 20 - arbolPersonal.usuarios;
-    if (maxWidth < 1) maxWidth = 1;
-    //if (maxWidth > 50) maxWidth = 50;
-    //if (maxWidth < 10) maxWidth = 10;
 
     // Compute the new tree layout.
     var nodes = d3Arbol.nodes(arbolPersonal.raiz).reverse(),
@@ -419,8 +412,9 @@ function dibujarArbol(referencia) {
     nodeExit.select("circle")
         .attr("r", function (d) {
             var r = d.totalFlores / 4 + 2;
+            var maxWidth = arbolPersonal.usuarios < 20 ? 20 : arbolPersonal.usuarios; //me aseguro que sea un poco ancho cuando son muy pocos usuarios
             if (useMaxWidth)
-                r = Math.ceil(r / arbolPersonal.usuarios / 4 * maxWidth);  //grosor proporcional solo cuando hay muchos votos
+                r = Math.ceil(r / arbolPersonal.usuarios * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             if (r < 10) r = 10;
             return r * scale;
         })
@@ -630,6 +624,8 @@ function dibujarArbol(referencia) {
         .duration(duration)
         .attr("style", function (d) {
             var w = d.target.totalFlores;
+            var maxWidth = arbolPersonal.usuarios < 20 ? 20 : arbolPersonal.usuarios; //me aseguro que sea un poco ancho cuando son muy pocos usuarios
+            if (maxWidth > 50) maxWidth = 50;
             if (useMaxWidth)
                 w = Math.ceil(w / arbolPersonal.usuarios * maxWidth);  //grosor proporcional solo cuando hay muchos votos
             var r = Math.round(255 / d.target.depth);
