@@ -42,11 +42,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-grupos/
-mails/errores/
-mails/cola/
+grupos
+mails\errores\
 Web.config
 borrados
-logs.html
-logDictionary.txt
-bin
+mails

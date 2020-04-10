@@ -41,6 +41,7 @@ namespace nabu
         public string padreNombre = "";
         public string tipoGrupo = "";
         public List<Hijo> hijos = new List<Hijo>();
+        public string msgBox = "";
 
         //log de consensos alcanzados
         public List<LogDocumento> logDecisiones = new List<LogDocumento>();

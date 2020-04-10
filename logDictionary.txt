@@ -10705,3 +10705,500 @@
 19/05/19 No|es
 19/05/19 Tu estado es inactivo|es
 19/05/19 Tu estado es inactivo|es
+30/09/19 Grupo creado|es
+30/09/19 %1 agregado|es
+30/09/19 %1 agregado|es
+30/09/19 SubGrupo.creado|es
+30/09/19 SubGrupo.actualizado|es
+30/09/19 SubGrupo.eliminado|es
+30/09/19 Nacido|es
+30/09/19 Decision|es
+30/09/19 Objetivo|es
+30/09/19 Estado final|es
+30/09/19 Estado final fecha|es
+30/09/19 Autor|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 Malo|es
+30/09/19 Bueno|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 Malo|es
+30/09/19 Bueno|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 Malo|es
+30/09/19 Bueno|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 No|es
+30/09/19 Si|es
+30/09/19 Malo|es
+30/09/19 Bueno|es
+01/10/19 Flor caducada para [%1]|es
+01/10/19 El tema ha caido|es
+01/10/19 Flor caducada para [%1]|es
+01/10/19 El tema ha caido|es
+01/10/19 Tus flores han caido|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Tu estado es inactivo|es
+01/10/19 Flor caducada para [%1]|es
+01/10/19 El tema ha caido|es
+01/10/19 Flor caducada para [%1]|es
+01/10/19 El tema ha caido|es
+01/10/19 Flor caducada para [%1]|es
+01/10/19 El tema ha caido|es
+01/10/19 Flor caducada para [%1]|es
+01/10/19 El tema ha caido|es
+01/10/19 Tus flores han caido|es
+02/10/19 %1 agregado|es
+02/10/19 SubGrupo.creado|es
+02/10/19 No hay integrantes|es
+02/10/19 SubGrupo.creado|es
+02/10/19 SubGrupo.actualizado|es
+02/10/19 SubGrupo.eliminado|es
+02/10/19 No hay integrantes|es
+02/10/19 SubGrupo.creado|es
+02/10/19 SubGrupo.eliminado|es
+02/10/19 SubGrupo.eliminado|es
+02/10/19 %1 agregado|es
+02/10/19 %1 agregado|es
+02/10/19 SubGrupo.creado|es
+02/10/19 SubGrupo.actualizado|es
+02/10/19 SubGrupo.actualizado|es
+03/10/19 alhijo.introduccion.titulo|es
+08/04/20 Flor caducada para [%1]|es
+08/04/20 El tema ha caido|es
+08/04/20 Flor caducada para [%1]|es
+08/04/20 Tus flores han caido|es
+08/04/20 Flor caducada para [%1]|es
+08/04/20 El tema ha caido|es
+08/04/20 Tus flores han caido|es
+10/04/20 SubGrupo.actualizado|es
+10/04/20 Comunicado del grupo|es
+10/04/20 Al grupo padre|es
+10/04/20 Comunicado del grupo|es
+10/04/20 Al grupo padre|es
+10/04/20 Comunicado del grupo|es
+10/04/20 Al grupo padre|es
+10/04/20 Comunicado del grupo|es
+10/04/20 Al grupo padre|es
+10/04/20 No se pudo publicar documento en el grupo padre|es
+10/04/20 Comunicado del grupo|es
+10/04/20 Al grupo padre|es
+10/04/20 alhijo.introduccion.titulo|es
+10/04/20 alhijo.introduccion.titulo|es
+10/04/20 alhijo.introduccion.titulo|es
+10/04/20 alhijo.introduccion.titulo|es
+10/04/20 No se pudo publicar documento en el grupo hijo|es
+10/04/20 alhijo.introduccion.titulo|es
+10/04/20 %1 agregado|es
+10/04/20 %1 agregado|es
+10/04/20 SubGrupo.creado|es
+10/04/20 SubGrupo.actualizado|es
+10/04/20 Tu estado es inactivo|es
+10/04/20 Tu estado es inactivo|es
+10/04/20 %1 agregado|es
+10/04/20 SubGrupo.creado|es
+10/04/20 SubGrupo.actualizado|es
+10/04/20 SubGrupo.actualizado|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 Excursiones, fiesta nocturna, comidas en familia|es
+10/04/20 Donde vamos?|es
+10/04/20 Nos quedamos en casa|es
+10/04/20 Viaje nacional|es
+10/04/20 Viaje internacional|es
+10/04/20 Que hacemos?|es
+10/04/20 Galicia|es
+10/04/20 Madrid|es
+10/04/20 Cadiz|es
+10/04/20 Que hacemos? (mas concreto)|es
+10/04/20 Tapas y noche|es
+10/04/20 Museos y moumentos|es
+10/04/20 Manifestacion|es
+10/04/20 Costo asumido por cabeza|es
+10/04/20 En que gastaremos el dinero|es
+10/04/20 En que gastaremos el dinero|es

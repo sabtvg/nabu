@@ -434,8 +434,12 @@ function doResize() {
     document.getElementById("tituloppal").style.top = 278 * menuscale + 'px';
     document.getElementById("tituloppal").style.left = 250 * menuscale + 'px';
     document.getElementById("tituloppal").style.width = 285 * menuscale + 'px';
-    if (arbolPersonal && arbolPersonal.nombre.length < 10)
+    if (arbolPersonal && arbolPersonal.nombre.length < 5)
+        document.getElementById("tituloppal").style.fontSize = 40 * menuscale + 'px';
+    else if (arbolPersonal && arbolPersonal.nombre.length < 10)
         document.getElementById("tituloppal").style.fontSize = 30 * menuscale + 'px';
+    else if (arbolPersonal && arbolPersonal.nombre.length < 20)
+        document.getElementById("tituloppal").style.fontSize = 20 * menuscale + 'px';
     else
         document.getElementById("tituloppal").style.fontSize = 16 * menuscale + 'px';
 
@@ -797,7 +801,7 @@ function doMenuppal() {
     setTimeout(function () {
         //link al padre
         var padreURL = arbolPersonal.padreURL + "/default.html?grupo=" + arbolPersonal.padreNombre + "&email=" + arbolPersonal.usuario.email + "&idioma=" + idiomaParam;
-        document.getElementById("padrenombre").innerHTML = "<a href='" + padreURL + "'>" + arbolPersonal.padreNombre + "</a>";
+        document.getElementById("padrenombre").innerHTML = "<a href='" + padreURL + "' target='_blank'>" + arbolPersonal.padreNombre + "</a>";
 
         //nombre del arbol
         document.getElementById("tituloppal").innerHTML = arbolPersonal.nombre;
@@ -811,7 +815,7 @@ function doMenuppal() {
         for (q in arbolPersonal.hijos) {
             var thijo = arbolPersonal.hijos[q];
             var hijoURL = thijo.URL + "/default.html?grupo=" + thijo.nombre + "&email=" + arbolPersonal.usuario.email;
-            hijos += "<td><a href='" + hijoURL + "'>" + thijo.nombre + "</a></td>";
+            hijos += "<td><a href='" + hijoURL + "' target='_blank'>" + thijo.nombre + "</a></td>";
             hijos += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         }
         hijos += "</nobr>";
@@ -899,9 +903,11 @@ function menuOptions() {
         //user options
         mnu += "<div class='menuItem'><a class='menuItem' href='verusuarios.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Usuarios") + "</a></div>";
     }
-    if (arbolPersonal.usuario.isFacilitador || arbolPersonal.usuario.isAdmin) {
-        mnu += "<div class='menuItem'><a class='menuItem' href='mailer.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Mailer") + "</a></div>";
-    }  
+
+    //disabled, not finished
+    //if (arbolPersonal.usuario.isFacilitador || arbolPersonal.usuario.isAdmin) {
+    //    mnu += "<div class='menuItem'><a class='menuItem' href='mailer.html?grupo=" + grupoParam + "&idioma=" + idiomaParam + "'>" + tr("Mailer") + "</a></div>";
+    //}  
 
     //movile page footer
     mnu += "<div class='menuItem'><a class='menuItem movilePie' href='javascript:' onclick='showMovileFooter();'>?</a></div>";
@@ -922,6 +928,8 @@ function doCloseHelp() {
 }
 
 function showPerfil() {
+    disableBackground();
+
     document.getElementById("perfilEmail").value = arbolPersonal.usuario.email;
     document.getElementById("perfilNombre").value = arbolPersonal.usuario.nombre;
     document.getElementById("perfilFuncion").value = arbolPersonal.usuario.funcion;
@@ -941,6 +949,7 @@ function showPerfil() {
 }
 
 function showCambiarClave() {
+    disableBackground();
     document.getElementById("oldPass").value = "";
     document.getElementById("newPass").value = "";
     document.getElementById("repeat").value = "";
@@ -1086,8 +1095,10 @@ function doCambiarClave() {
             function (data) {
                 if (data != '')
                     popupMsgOn("<font color='red'>" + data.substring(6) + "</font>");
-                else 
+                else {
                     document.getElementById("cambiarClave").style.display = 'none';
+                    enableBackground();
+                }
             });
     }
 }
@@ -1137,6 +1148,7 @@ function doCerrarPerfil() {
                     popupMsgOn("<font color='red'>" + data.substring(6) + "</font>");
                 else {
                     document.getElementById("perfil").style.display = 'none';
+                    enableBackground();
 
                     //local update
                     arbolPersonal.usuario.nombre = perfilNombre;
@@ -1153,6 +1165,7 @@ function doCerrarPerfil() {
 }
 
 function doHideCambiarClave() {
+    enableBackground();
     document.getElementById("cambiarClave").style.display = 'none';
 }
 
@@ -1228,6 +1241,9 @@ function doAtras() {
         var objetivo = document.getElementById("objetivo");
         objetivo.innerHTML = arbolPersonal.objetivo;
         objetivo.style.visibility = 'hidden';
+
+        enableBackground();
+        document.getElementById('ultimaFlor').style.visibility = 'Hidden';
 
         //document.getElementById("panelUsuario").style.display = 'block';
 

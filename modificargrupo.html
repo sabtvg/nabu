@@ -276,7 +276,7 @@
         }
 
         function doBorrarArbol() {
-            var r = confirm("El grupo [" + usuario.grupo + "] sera borrado con todos sus datos");
+            var r = confirm(tr("grupo.borrar", [usuario.grupo]));
             if (r == true) {
                 getHttp("doMain.aspx?actn=borrarGrupo&grupo=" + usuario.grupo
                 + "&email=" + usuario.email

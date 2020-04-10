@@ -513,11 +513,16 @@ namespace nabu
                 newWidth = (int)(newHeight * ratio);
             }
 
+            int InsertX = (maxSize - newWidth) / 2;
+            int InsertY = (maxSize - newHeight) / 2;
+
             //save
-            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(newWidth, newHeight);
-            bmp.SetResolution(img.HorizontalResolution, img.VerticalResolution);
+            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(maxSize, maxSize);
+            //bmp.SetResolution(img.HorizontalResolution, img.VerticalResolution);
+            bmp.SetResolution(maxSize, maxSize);
             System.Drawing.Graphics grp = System.Drawing.Graphics.FromImage(bmp);
-            System.Drawing.Rectangle rct = new System.Drawing.Rectangle(0, 0, newWidth, newHeight);
+            System.Drawing.Rectangle rct = new System.Drawing.Rectangle(InsertX, InsertY, newWidth, newHeight);
+            grp.Clear(System.Drawing.Color.Transparent);
             grp.DrawImage(img, rct, 0, 0, img.Width, img.Height, System.Drawing.GraphicsUnit.Pixel);
             if (System.IO.File.Exists(path + "\\" + name))
                 System.IO.File.Delete(path + "\\" + name);
@@ -596,8 +601,14 @@ namespace nabu
         {
             string de = g.path;
             string to = g.path.Replace("\\grupos\\", "\\borrados\\");
-            System.IO.Directory.Move(de, to);           
-            
+            try
+            {
+                System.IO.Directory.Move(de, to);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("borrarCarpeta: " + ex.Message + ". With: " + de + ", " + to);
+            }
             //System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(basePath);
             //di.MoveTo("..\\..\\borrados");
 
@@ -840,7 +851,7 @@ namespace nabu
                     u = new Usuario(g.arbol.cantidadFlores);
                     u.nombre = nombre;
                     u.funcion = funcion;
-                    u.email = email;
+                    u.email = email.Trim();
                     u.clave = clave;
                     u.habilitado = habilitado;
                     u.readOnly = readOnly;

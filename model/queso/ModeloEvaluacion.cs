@@ -103,25 +103,25 @@ namespace nabu
             ret += toHTMLContenido(prop, g, email, width);
 
             //botones de poantalla o firma de consenso
-            ret += "<div style='float:left;clear:left'>";
+            ret += "<div>";
             if (modo == eModo.editar)
             {
                 //modo muestra
-                ret += "<input type='button' class='btnok' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
-                ret += "<input type='button' class='btnnok' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' style='float:left;' class='btnok' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' style='float:right;' class='btnnok' value='" + Tools.tr("Cerrar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }
             else if (modo == eModo.prevista)
             {
                 if (!hayError())
                     ret += "<input type='button' class='btnok' value='" + Tools.tr("Crear evaluacion", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doCrearEvaluacion(\"" + id + "\");' />";
-                ret += "<input type='button' class='btn' value='" + Tools.tr("Revisar evaluacion", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisarEvaluacion(\"" + id + "\");' />";
-                ret += "<input type='button' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' style='float:left;' class='btn' value='" + Tools.tr("Revisar evaluacion", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisarEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' style='float:right;' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }
             else if (modo == eModo.revisar)
             {
                 //permito prevista
-                ret += "<input type='button' class='btnok' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
-                ret += "<input type='button' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
+                ret += "<input type='button' style='float:left;' class='btnok' value='" + Tools.tr("Prevista de evaluacion", g.idioma) + "' title='" + Tools.tr("Enseña vista previa antes de proponer", g.idioma) + "' onclick='doPrevistaEvaluacion(\"" + id + "\");' />";
+                ret += "<input type='button' style='float:right;' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }
             ret += "</div>";
 

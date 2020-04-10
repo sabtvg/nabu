@@ -35,6 +35,7 @@ namespace nabu.plataforma.modelos
             descripcion = "Estrategia operativa";
             tipo = "estructura";
             versionar = "titulo";
+            consensoMsg = "estrategia.consensoMsg";
 
             crearVariables();
         }
@@ -521,12 +522,12 @@ namespace nabu.plataforma.modelos
                         {
                             string json = System.IO.File.ReadAllText(grupo.path + "\\" + ldi.path);
                             Documento doc = Tools.fromJson<Documento>(json);
-                            //string eSubGrupo = doc.getText("s.SubGrupo");
+                            string eSubGrupo = doc.getText("s.SubGrupo");
                             string eNombreProceso = doc.getText("s.nombreProceso");
                             //string titulo = grupoTitulo.Split('.')[1];
                             //string subGrupo = grupoTitulo.Split('.')[0];
                             //if (Tools.HTMLDecode(eSubGrupo) == Tools.HTMLDecode(subGrupo) && Tools.HTMLDecode(eNombreProceso) == Tools.HTMLDecode(titulo))
-                            if (Tools.HTMLDecode(eNombreProceso) == Tools.HTMLDecode(grupoTitulo))
+                            if (Tools.HTMLDecode(eSubGrupo + "." + eNombreProceso) == Tools.HTMLDecode(grupoTitulo))
                             {
                                 if (lastDoc == null)
                                     lastDoc = doc;
@@ -559,8 +560,8 @@ namespace nabu.plataforma.modelos
                     if (props.Count > 0)
                         props[0].bag["r.accion"] = "existente"; //este valor permanece
                 }
-                else
-                    props.Clear();
+                //else
+                //    props.Clear();
             }
         }
     }

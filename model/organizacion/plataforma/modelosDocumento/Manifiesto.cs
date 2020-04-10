@@ -35,6 +35,7 @@ namespace nabu.plataforma.modelos
             descripcion = "Manifiesto";
             tipo = "estructura";
             versionar = "modelo";
+            consensoMsg = "manifiesto.consensoMsg";
 
             crearVariables();
         }
@@ -114,7 +115,9 @@ namespace nabu.plataforma.modelos
             if (modo == eModo.consenso)
                 ret += "<div class='titulo3'><nobr>" + Tools.tr("Fecha", g.idioma) + ":" + DateTime.Now.ToString("dd/MM/yy") + " " + DateTime.Now.ToShortTimeString() + "</nobr></div>";
 
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ": " + HTMLText("s.titulo", prop, width - 100, tieneFlores, g.idioma);
+            ret += "<div class='titulo3'><nobr>" + Tools.tr("Titulo", g.idioma) + ": " 
+                + HTMLText("s.titulo", prop, (width > 800 ? width - 250 : width - 75), tieneFlores, g.idioma);
+
             if (prop == null)
                 ret += "<br><span style='color:gray;font-size:12px;'>" + Tools.tr("(Aparece en el pie del arbol)", g.idioma);
             ret += "</nobr></div>";
@@ -265,9 +268,9 @@ namespace nabu.plataforma.modelos
         {
             //si es una modificaicon y el primero nivel esta vacio entonces traigo los datos del documento a modificar
             //traigo datos de este doc
-            if (System.IO.File.Exists(anterior.path))
+            if (System.IO.File.Exists(grupo.path + "\\" + anterior.path))
             {
-                string json = System.IO.File.ReadAllText(anterior.path);
+                string json = System.IO.File.ReadAllText(grupo.path + "\\" + anterior.path);
                 Documento doc = Tools.fromJson<Documento>(json);
                 //agrego contenido
                 props.Clear();

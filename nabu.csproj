@@ -20,6 +20,8 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +80,7 @@
     <Content Include="js\decidimos.js" />
     <Content Include="mailer.html" />
     <Content Include="js\common.js" />
+    <Content Include="stylesDocument.css" />
     <Content Include="verusuarios.html" />
     <Content Include="favicon.ico" />
     <Content Include="res\close.png" />

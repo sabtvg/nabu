@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -263,7 +263,7 @@
             nodo.torsion = 0;
 
             //verifico fallo de defincion de padre
-            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
+            //var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
             if (nodo.msg != "") 
                 s += msg(nodo.msg, centro);
             else if (!nodo.descargado){ 
@@ -278,7 +278,7 @@
                     nodo.activos + "/" + nodo.usuarios.length + " " + tr("Activos"),
                     centro,
                     radio,
-                    url,
+                    "",
                     nodo);
             return s;
         }
@@ -333,7 +333,10 @@
 			
                lastp = { x: p2.x, y : p2.y};
             }
-            s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;cursor:pointer;' onClick=\"document.location='" + url + "'\"/>";
+            s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;cursor:pointer;'";
+            if (url != "")
+                s += "onClick =\"document.location='" + url + "'\"";
+            s += "/>";
 
             return s;
         }

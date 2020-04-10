@@ -38,7 +38,7 @@
         var usuario;
         var offsetDays = 0;
         var stepY = 70;
-        var viewDaysInit = window.innerWidth <= 400 ? 30 : 90;
+        var viewDaysInit = window.innerWidth <= 400 ? 4 : 7;  //repeated in doLayout();
         var viewDays = viewDaysInit;
         var arbolPersonal;
         var scale = window.innerWidth / 1920;
@@ -225,7 +225,7 @@
             scalex = window.innerWidth / 1920;
             scaley = window.innerHeight / 955; //1080-bordes de pantalla
 
-            viewDaysInit = window.innerWidth <= 400 ? 30 : 90;
+            var viewDaysInit = window.innerWidth <= 400 ? 4 : 7;  
             viewDays = viewDaysInit;
             scale = window.innerWidth / 1920;
             zoom = window.innerWidth / 1920;

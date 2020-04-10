@@ -34,6 +34,7 @@ namespace nabu.plataforma.modelos
             nombre = "Evento";
             descripcion = "Evento";
             tipo = "seguimiento";
+            consensoMsg = "evento.consensoMsg";
 
             crearVariables();
         }
@@ -208,6 +209,7 @@ namespace nabu.plataforma.modelos
                         + Tools.tr("evento.fecha.tip", g.idioma)
                         + "</div>";
                 ret += HTMLDate("d.fecha", prop, tieneFlores, g.idioma);
+                ret += "<br>";
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);

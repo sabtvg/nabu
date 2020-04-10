@@ -35,6 +35,7 @@ namespace nabu.plataforma.modelos
             descripcion = "Grupo de trabajo";
             tipo = "estructura";
             versionar = "titulo";
+            consensoMsg = "subGrupo.consensoMsg";
 
             crearVariables();
         }
@@ -67,7 +68,7 @@ namespace nabu.plataforma.modelos
 
             //nivel 4
             variables.Add(new Variable("s.integrantes", 3000, 4));
-            variables.Add(new Variable("b.noHayUsuarios", 3000, 4));
+            variables.Add(new Variable("r.hayUsuarios", 3000, 4));
 
             //nivel 5
             variables.Add(new Variable("s.eficiencia", 3000, 5));
@@ -117,7 +118,7 @@ namespace nabu.plataforma.modelos
                 }
                 else if (prop.nivel == 4)
                 {
-                    if (getText("s.integrantes", prop) == "" && !getBool("b.noHayUsuarios", prop))
+                    if (getText("s.integrantes", prop) == "" && getRadio("r.hayUsuarios", prop)=="")
                     {
                         addError(4, "Debes proponer integrantes o marcar la casilla");
                     }
@@ -205,9 +206,9 @@ namespace nabu.plataforma.modelos
 
                 //tema
                 ret += "<div class='tema'>" + Tools.tr("SubGrupo.introduccion.titulo", g.idioma) + "</div>";
-                if (editar) 
+                if (editar)
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("SubGrupo.introduccion.tip", g.idioma) 
+                        + Tools.tr("SubGrupo.introduccion.tip", g.idioma)
                         + "</div>";
                 ret += HTMLArea("s.introduccion", prop, width, 120, tieneFlores, g.idioma);
 
@@ -229,9 +230,9 @@ namespace nabu.plataforma.modelos
                 {
                     //Objetivo a lograr
                     ret += "<div class='tema'>" + Tools.tr("SubGrupo.objetivo.titulo", g.idioma) + "</div>";
-                    if (editar) 
+                    if (editar)
                         ret += "<div class='smalltip'>"
-                            + Tools.tr("SubGrupo.objetivo.tip", g.idioma) 
+                            + Tools.tr("SubGrupo.objetivo.tip", g.idioma)
                             + "</div>";
                     ret += HTMLArea("s.objetivo", prop, width, 120, tieneFlores, g.idioma);
 
@@ -285,23 +286,36 @@ namespace nabu.plataforma.modelos
             else if (nivel == 4)
             {
                 ret += "<div class='tema'>" + Tools.tr("SubGrupo.integrantes.titulo", g.idioma) + "</div>";
-                if (editar) 
+                if (editar)
                     ret += "<div class='smalltip'>"
-                        + Tools.tr("SubGrupo.integrantes.tip", g.idioma) 
+                        + Tools.tr("SubGrupo.integrantes.tip", g.idioma)
                         + "</div>";
 
                 //lista de seleccion de usuarios
                 string lista = "";
-                foreach(Usuario u2 in g.getUsuariosHabilitados()) 
+                foreach (Usuario u2 in g.getUsuariosHabilitados())
                     lista += u2.email + ":" + u2.nombre + "|";
-                lista = lista .Substring(0, lista.Length-1);
-                ret += HTMLListaSeleccion("s.integrantes", prop, width - 50, 250, tieneFlores, lista, 
-                    Tools.tr("Pertenece al grupo", g.idioma), 
-                    Tools.tr("NO pertenece al grupo", g.idioma), 
+                lista = lista.Substring(0, lista.Length - 1);
+                ret += HTMLListaSeleccion("s.integrantes", prop, width - 50, 250, tieneFlores, lista,
+                    Tools.tr("Pertenece al grupo", g.idioma),
+                    Tools.tr("NO pertenece al grupo", g.idioma),
                     g.idioma);
 
-                ret += HTMLCheck("b.noHayUsuarios", prop, tieneFlores, getBool("b.noHayUsuarios", prop), g.idioma);
-                ret += tr("no hay integrantes");
+                string integrantes = getText("s.integrantes", prop);
+                if (integrantes != "" && prop != null)
+                    prop.bag["r.hayUsuarios"] = "";
+
+
+                if (integrantes == "" && (modo == eModo.editar || modo == eModo.revisar))
+                {
+                    ret += HTMLRadio("r.hayUsuarios", 1, prop, tieneFlores, "No", g.idioma);
+                    ret += "<span>" + tr("No hay integrantes") + "</span>";
+                }
+                else if (integrantes == "")
+                {
+                    if (getText("r.hayUsuarios", prop) == "No")
+                        ret += "<span>" + tr("No hay integrantes") + "</span>";
+                }
 
                 //variante
                 if (puedeVariante) ret += HTMLVariante(prop.nodoID, g, propFinal.nodoID);
@@ -580,15 +594,16 @@ namespace nabu.plataforma.modelos
             if (versionAnterior != null)
             {
                 //traigo datos de este doc
-                if (System.IO.File.Exists(versionAnterior.path))
+                if (System.IO.File.Exists(grupo.path + "\\" + versionAnterior.path))
                 {
-                    string json = System.IO.File.ReadAllText(versionAnterior.path);
+                    string json = System.IO.File.ReadAllText(grupo.path + "\\" + versionAnterior.path);
                     Documento doc = Tools.fromJson<Documento>(json);
                     //agrego contenido
                     props.Clear();
                     foreach (Propuesta prop in doc.propuestas)
                     {
                         prop.nodoID = 0;
+                        prop.consensoAlcanzado = false;
                         props.Add(prop);
                     }
                     if (props.Count > 0)

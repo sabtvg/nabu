@@ -38,7 +38,7 @@
         var usuario;
         var offsetDays = 0;
         var stepY = 70;
-        var viewDaysInit = window.innerWidth <= 400 ? 30 : 90;
+        var viewDaysInit = window.innerWidth <= 400 ? 4 : 7;  //repeated in doLayout();
         var viewDays = viewDaysInit;
         var arbolPersonal;
         var scale = window.innerWidth / 1920;
@@ -239,7 +239,7 @@
             scalex = window.innerWidth / 1920;
             scaley = window.innerHeight / 955; //1080-bordes de pantalla
 
-            viewDaysInit = window.innerWidth <= 400 ? 30 : 90;
+            viewDaysInit = window.innerWidth <= 400 ? 4 : 7;
             viewDays = viewDaysInit;
             scale = window.innerWidth / 1920;
             zoom = window.innerWidth / 1920;
@@ -307,7 +307,7 @@
                     s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:CornflowerBlue;stroke-width:1' />";
                     if (i > 4 && i < viewDays - 4) {
                         sdt = formatDate(fecha);
-                        s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo4' text-anchor='middle'>" + sdt + "</text>";
+                        s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo5' text-anchor='middle'>" + sdt + "</text>";
                     }
                 }
                 else if (fecha.getDay() == 1) {
@@ -315,7 +315,7 @@
                     s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:lightgray;stroke-width:1' />";
                     var labelX = i / viewDays * viewWidth;
                     if (labelX > viewLeft + 30 && labelX < viewLeft + viewWidth - viewRight) {
-                        s += "<text x='" + x + "' y='" + (y * zoom + 30) + "' fill='green' class='titulo4' text-anchor='middle'>" + tr("Lunes") + "</text>";
+                        s += "<text x='" + x + "' y='" + (y * zoom + 30) + "' fill='green' class='titulo5' text-anchor='middle'>" + tr("Lunes") + "</text>";
                     }
                 } else
                     //dias
@@ -338,12 +338,12 @@
                     s += "style='cursor:pointer;' onclick=\"openDoc('" + ld.docID + "')\"/>";
 
                     //titulo
-                    s += "<text x='" + (x + dif * imgZoom) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
+                    s += "<text x='" + (x + dif * imgZoom) + "' y='" + (y * zoom + 65 * imgZoom) + "' fill='blue' class='titulo5' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>"
                         + ld.titulo + "</text>";
 
                     //seguimiento
                     var sdt = formatShortDate(toDate(ld.fecha));
-                    s += "<text x='" + (x + dif * imgZoom) + "' y='" + (y * zoom + 85 * imgZoom) + "' fill='blue' class='titulo4' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
+                    s += "<text x='" + (x + dif * imgZoom) + "' y='" + (y * zoom + 85 * imgZoom) + "' fill='blue' class='titulo5' style='cursor:pointer' onclick=\"doSeguimiento('" + ld.docID + "')\" text-anchor='middle'>" + sdt + "</text>";
                 }
                 xant = x + dif;
                 dif = 0;
@@ -357,11 +357,11 @@
 
             //inicio (derecha)
             var sdt = formatDate(inicio.addDays(-offsetDays));
-            s += "<text x='" + x2 + "' y='" + (y * zoom + 45) + "' fill='gray' class='titulo4' text-anchor='end'>" + sdt + "</text>";
+            s += "<text x='" + x2 + "' y='" + (y * zoom + 45) + "' fill='gray' class='titulo5' text-anchor='end'>" + sdt + "</text>";
 
             //fin (izquierda)
             sdt = formatDate(final.addDays(-offsetDays));
-            s += "<text x='" + x1 + "' y='" + (y * zoom + 45) + "' fill='gray' class='titulo4' text-anchor='start'>" + sdt + "</text>";
+            s += "<text x='" + x1 + "' y='" + (y * zoom + 45) + "' fill='gray' class='titulo5' text-anchor='start'>" + sdt + "</text>";
 
 
             return s;

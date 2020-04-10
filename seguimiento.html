@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -494,30 +494,35 @@
         }
 
         function doFinalizar(index) {
-            var AC = operativo.seguimientos[index];
-            getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
-                + "&grupo=" + usuario.grupo
-                + "&clave=" + usuario.clave
-                + "&accion=seguimientoFinalizar"
-                + "&EID=" + AC.EID,
-                 function (data) {
-                     //atrapo el error si es que hay
-                     if (data.substring(0, 6) == "Error=") {
-                         //ha habido un error
-                         document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
-                     }
-                     else {
-                         document.getElementById("AC").innerHTML = "";
-                         document.getElementById("AC").style.display = "none";
-                         var respuesta = JSON.parse(data);
-                         operativo = respuesta.operativo;
-                         if (respuesta.resultado != 'ok')
-                             document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
+            var r = confirm(tr("seguimiento.finalizar"));
+            if (r == true) {
+                var AC = operativo.seguimientos[index];
+                getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
+                    + "&grupo=" + usuario.grupo
+                    + "&clave=" + usuario.clave
+                    + "&accion=seguimientoFinalizar"
+                    + "&EID=" + AC.EID,
+                    function (data) {
+                        //atrapo el error si es que hay
+                        if (data.substring(0, 6) == "Error=") {
+                            //ha habido un error
+                            document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                        }
+                        else {
+                            document.getElementById("AC").innerHTML = "";
+                            document.getElementById("AC").style.display = "none";
+                            var respuesta = JSON.parse(data);
+                            operativo = respuesta.operativo;
+                            if (respuesta.resultado != 'ok')
+                                document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
+                            else
+                                popupMsgOn(tr('seguimiento.finalizado'));
 
-                         dibujarTodo();
-                         editando = false;
-                     }
-                 });
+                            dibujarTodo();
+                            editando = false;
+                        }
+                    });
+            }
         }
 
         function doAgregarEstado(index) {
@@ -576,49 +581,66 @@
     </script>
 </head>
 <body onload="doLoad();" style="overflow:hidden" onresize="doResize();">
-        <svg id="todo"  style="position: absolute;left:0px;top:0px;width:100%;height:100%;">
-        </svg>
-        <!--titulo--------------------------------------------------------------------------------------------------->
-        <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
-            <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
-                <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
-            </a>
+    <svg id="todo" style="position: absolute;left:0px;top:0px;width:100%;height:100%;">
+    </svg>
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
+        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        </a>
         <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br />Digital</div>
-            <div id="msgDiv" class="msg"></div>
-        </div>
+        <div id="msgDiv" class="msg"></div>
+    </div>
 
-        <!--atras--------------------------------------------------------------------------------------------------->
-        <img id="atras" title="Atras" src="res/atras.png"  class="atras" onclick="doAtras();" />
+    <!--atras--------------------------------------------------------------------------------------------------->
+    <img id="atras" title="Atras" src="res/atras.png" class="atras" onclick="doAtras();" />
 
-        <!--titulo--------------------------------------------------------------------------------------------------->
-        <div id="titulo" class="tituloPagina"></div>       
-    
-        <!--joystick--------------------------------------------------------------------------------------------------->
-        <div id="joystick" style="position:fixed;bottom:0vh;padding: 5px; left:0vw;">
-            <nobr>
-                <img src="res/jzm.png" onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/ju.png" onclick="offsetY -= 30; transform();" class="img" />
-            </nobr>
-            <br />
-            <nobr>
-                <img src="res/jl.png" onclick="offsetDays -= 1; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/j00.png" onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/jr.png" onclick="offsetDays += 1; dibujarTodo(); saveSettings();" class="img" />
-            </nobr>
-            <br />
-            <nobr>
-                <img src="res/jzl.png" onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" class="img" />
-                <img src="res/jd.png" onclick="offsetY += 30; transform();" class="img" />
-            </nobr> 
-        </div>
+    <!--titulo--------------------------------------------------------------------------------------------------->
+    <div id="titulo" class="tituloPagina"></div>
 
-        <!--GT--------------------------------------------------------------------------------------------------->
-        <div id="AC" class="popup seguimiento" style="overflow:auto;"></div>
+    <!--joystick--------------------------------------------------------------------------------------------------->
+    <div id="joystick" style="position:fixed;bottom:0vh;padding: 5px; left:0vw;">
+        <nobr>
+            <img src="res/jzm.png" onclick="viewDays *= 0.9; dibujarTodo(); saveSettings();" class="img" />
+            <img src="res/ju.png" onclick="offsetY -= 30; transform();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jl.png" onclick="offsetDays -= 1; dibujarTodo(); saveSettings();" class="img" />
+            <img src="res/j00.png" onclick="viewDays = viewDaysInit; offsetDays = 0; dibujarTodo(); saveSettings();" class="img" />
+            <img src="res/jr.png" onclick="offsetDays += 1; dibujarTodo(); saveSettings();" class="img" />
+        </nobr>
+        <br />
+        <nobr>
+            <img src="res/jzl.png" onclick="viewDays *= 1.1; dibujarTodo(); saveSettings();" class="img" />
+            <img src="res/jd.png" onclick="offsetY += 30; transform();" class="img" />
+        </nobr>
+    </div>
 
-        <!--rotarpantalla--------------------------------------------------------------------------------------------------->
-        <div id="rotarpantalla" class="rotarpantalla">
-            <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
-            <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
-        </div>
-    </body>
+    <!--GT--------------------------------------------------------------------------------------------------->
+    <div id="AC" class="popup seguimiento" style="overflow:auto;"></div>
+
+    <!--rotarpantalla--------------------------------------------------------------------------------------------------->
+    <div id="rotarpantalla" class="rotarpantalla">
+        <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
+        <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
+    </div>
+
+    <!--fondo--------------------------------------------------------------------------------------------------->
+    <div id="fondo" style="top:0px;left:0px;visibility:hidden;width:100%;height:100%;position:absolute;background-color: aliceblue;opacity: 0.5;"></div>
+
+    <!--msgBox--------------------------------------------------------------------------------------------------->
+    <div id="msgBox" class="ventanaultimaflor" style="text-align:center;visibility:hidden;width:200px;margin:auto auto;">
+        <span id="msgText" class="titulo3"></span><br><br>
+        <input id="msgButton" type="button" value="Cerrar" style="float:unset" class="btn"
+               onclick="document.getElementById('msgBox').style.visibility = 'Hidden';document.getElementById('fondo').style.visibility = 'Hidden';">
+    </div>
+
+    <!--popmsg-->
+    <div id="popupmsgback" style="position:absolute;width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;" onclick="popupMsgOff();"></div>
+    <div id="popupmsg" class="popupmsg" onclick="popupMsgOff();">
+        <div id="popupmsgtext" style="text-align:center;"></div>
+    </div>
+
+</body>
 </html>

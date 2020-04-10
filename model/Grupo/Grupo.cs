@@ -350,7 +350,7 @@ namespace nabu
 
             foreach (Usuario u in usuarios)
             {
-                if (u.email.ToLower() == email.ToLower())
+                if (u.email.Trim().ToLower() == email.Trim().ToLower())
                 {
                     ret = u;
                     //muevo al inicio, cola lifo

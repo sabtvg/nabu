@@ -311,14 +311,18 @@ namespace nabu
             }
         }
 
-        private bool comprobarConsenso(string email)
+        private Nodo comprobarConsenso(string email)
         {
+            Nodo consenso = null;
             List<Nodo> nodos = toList();
             foreach (Nodo n in nodos)
                 if (n.nivel > 0)
-                    if (comprobarConsenso(n, email))
-                        return true;
-            return false;
+                {
+                    consenso = comprobarConsenso(n, email);
+                    if (consenso != null)
+                        return consenso;
+                }
+            return null;
         }
 
         public LogDocumento getLogDocumento(int docID)
@@ -331,9 +335,9 @@ namespace nabu
             return null;
         }
 
-        private bool comprobarConsenso(Nodo n, string email)
+        private Nodo comprobarConsenso(Nodo n, string email)
         {
-            bool ret = false;
+            Nodo ret = null;
             Modelo m = grupo.organizacion.getModeloDocumento(n.modeloID);
             List<Nodo> pathn = getPath(n.id);
 
@@ -361,12 +365,12 @@ namespace nabu
                     {
                         System.IO.Directory.CreateDirectory(grupo.path + "\\" + docPath);
                         System.IO.Directory.CreateDirectory(grupo.path + "\\" + docPath + "\\res\\documentos");
-                        System.IO.File.Copy(grupo.path + "\\..\\..\\styles.css", grupo.path + "\\" + docPath + "\\styles.css");
-                        //System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(grupo.path + "\\..\\..\\res\\documentos");
-                        //foreach (System.IO.FileInfo fi in di.GetFiles())
-                        //{
-                        //    System.IO.File.Copy(fi.FullName, grupo.path + "\\" + docPath + "\\res\\documentos\\" + fi.Name);
-                        //}
+                        System.IO.File.Copy(grupo.path + "\\..\\..\\stylesDocument.css", grupo.path + "\\" + docPath + "\\styles.css");
+                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(grupo.path + "\\..\\..\\res\\documentos");
+                        foreach (System.IO.FileInfo fi in di.GetFiles())
+                        {
+                            System.IO.File.Copy(fi.FullName, grupo.path + "\\" + docPath + "\\res\\documentos\\" + fi.Name);
+                        }
                     }
 
                     //titulo
@@ -461,7 +465,7 @@ namespace nabu
 
                     grupo.save(grupo.path + "\\" + docPath); //guardo copia del arbol
 
-                    ret = true;
+                    ret = n;
                 }
             }
             return ret;
@@ -536,7 +540,7 @@ namespace nabu
             }
             //firma consenso
             string ret = "";
-            ret += "<div style='clear:left;float:left;width:100%;font-size:12px;'>";
+            ret += "<div style='documentFirma'>";
             ret += "<hr>";
             ret += "Documento escrito de forma cooperativa.<br>";
             ret += "Titulo: " + titulo + "<br>";
@@ -636,9 +640,18 @@ namespace nabu
                     u.alertas.Add(new Alerta(Tools.tr("Tus flores han caido", grupo.idioma)));
                     //app.addLog("verifyFloresCaducadas", "", grupo.nombre, u.email, "Flor caducada. Usuario lastLogin: " + u.lastLogin);
                 }
-                comprobarConsenso(email);
 
+                //creo respuesta
                 ArbolPersonal ap = new ArbolPersonal();
+
+                //compruebo consenso
+                Nodo consenso = comprobarConsenso(email);
+                if (consenso != null)
+                {
+                    Modelo m = grupo.organizacion.getModeloDocumento(consenso.modeloID);
+                    ap.msgBox = Tools.tr(m.consensoMsg, grupo.idioma);
+                }
+
                 ap.raiz = raiz; //referecia cruzada pero no importa porque este objeto es para serializar
                 ap.objetivo = grupo.objetivo;
                 ap.URLEstatuto = grupo.URLEstatuto;

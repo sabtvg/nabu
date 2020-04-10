@@ -311,7 +311,7 @@
             }
 
             //verifico fallo de defincion de padre
-            var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
+            //var url = nodo.URL + '/default.html?grupo=' + nodo.nombre + "&idioma=" + idiomaParam;
             if (nodo.msg != "") 
                 //s += msg(nodo.msg, centro);
                 s += msg("[X]", centro, "red");
@@ -327,7 +327,7 @@
                     nodo.activos + "/" + nodo.usuarios.length + " " + tr("Activos"),
                     centro,
                     radio,
-                    url,
+                    "",
                     nodo);
             return s;
         }
@@ -354,7 +354,10 @@
                 //dibujo textos
                 //nombre de grupo
                 if (t1 != "" && fontSize1 > 8)
-                    s += "<text x='0' y='" + (-fontSize1 / 2).toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
+                    if (url != "")
+                        s += "<text x='0' y='" + (-fontSize1 / 2).toFixed(0) + "' fill='gray' style='cursor:pointer;font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle' onClick=\"document.location='" + url + "'\">" + t1 + "</text>";
+                    else
+                        s += "<text x='0' y='" + (-fontSize1 / 2).toFixed(0) + "' fill='gray' style='font-size:" + fontSize1.toFixed(0) + "px' text-anchor='middle'>" + t1 + "</text>";
                 if (t2 != "" && fontSize2 > 8)
                     s += "<text x='0' y='" + (fontSize1 + 2).toFixed(0) + "' fill='gray' style='font-size:" + (fontSize2).toFixed(0) + "px' text-anchor='middle'>" + t2 + "</text>";
                 if (t3 != "" && fontSize3 > 8)
@@ -401,7 +404,11 @@
 			
                lastp = { x: p2.x, y : p2.y};
             }
-            s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;cursor:pointer;' onClick=\"document.location='" + url + "'\"/>";
+
+            if (url != "")
+                s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;cursor:pointer;' onClick =\"document.location='" + url + "'\" />";
+            else
+                s += "<polygon points='" + points + "' style='fill:" + colorb + ";stroke:black;stroke-width:" + width + ";opacity:0.4;' />";
 
             //circulo
             //s += "<circle cx='0' cy='0' r='" + r.toFixed(0) + "' stroke='" + colorb + "' stroke-width='" + width + "' fill='" + colorb + "' fill-opacity='0.2' />";

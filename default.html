@@ -221,6 +221,10 @@
         <img id="ppal11" class="btnimg" src="res/es/operativo.png" style="position: inherit; left:120px; top:258px;cursor:default" />
         <div id="hijos" style="position: inherit; width:1600px; left:-400px; top:480px;text-align: center;" class="titulo2"></div>
     </div>
+
+    <!--background disable (antes de los demsa divs) --------------------------------------------------------------------------------------------------->
+    <div id="backgroundDiv" style="position:absolute;width:100%;height:100%;opacity:0.4;background-color:gray;display:none;padding:0px;margin:0px;" onclick="popupMsgOff();"></div>
+
     <!--perfil--------------------------------------------------------------------------------------------------->
     <div id="perfil" class="popup perfil" style="text-align:center">
         <div class="popupHeader" id="perfilTit">Perfil de usuario</div>
@@ -265,10 +269,11 @@
         </div>
         <div class="popupFooter">
             <input id="perfilBtn1" type="button" class="btnok" value="Guardar" onclick="doCerrarPerfil();" />
-            <input id="cambiarClaveBtn" type="button" class="btn" value="Cambiar clave" onclick="doCerrarPerfil(); showCambiarClave();" />
-            <input type="button" class="btnnok" value="Cancelar" onclick="document.getElementById('perfil').style.display = 'none';" />
+            <input id="cambiarClaveBtn" type="button" class="btn" value="Cambiar clave" onclick="document.getElementById('perfil').style.display = 'none'; showCambiarClave();" />
+            <input type="button" class="btnnok" value="Cancelar" onclick="enableBackground();document.getElementById('perfil').style.display = 'none';" />
         </div>
     </div>
+
     <!--cambiar clave--------------------------------------------------------------------------------------------------->
     <div id="cambiarClave" class="popup cambiarClave" style="text-align:center">
         <div class="popupHeader" id="perfilTit">Cambio de clave</div>
@@ -283,6 +288,7 @@
             <input id="btnCCCancelar" type="button" class="btnnok" value="Cancelar" onclick="doHideCambiarClave();" style="margin-right:15px;" /><br />
         </div>
     </div>
+
     <!--alta usuario--------------------------------------------------------------------------------------------------->
     <div id="altaUsuarioC" class="ventanaltausuario">
         <div id="auTit1C" class="titulo1">Alta de usuario</div>
@@ -319,31 +325,37 @@
     <!--lista consensos--------------------------------------------------------------------------------------------------->
     <div id="panelListaConsensos" style="visibility: hidden;position:absolute;width:1024px;overflow-x:auto;">
     </div>
+
     <!--confirmar quitar ultima flor--------------------------------------------------------------------------------------------------->
-    <div id="ultimaFlor" style="visibility: hidden;position:absolute;width:300px;">
+    <div id="ultimaFlor" style="visibility: hidden;position:absolute;width:300px;z-index:10">
         <div class="ventanaultimaflor" style="text-align:center;">
             <span id="ufTit1" class="titulo3">Si quitas la &uacute;ltima flor la propuesta dejar&aacute; de existir</span><br /><br />
-            <input id="ufAceptar" type="button" value="Aceptar" style="float:unset" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
-            <input id="ufCancelar" type="button" value="Cancelar" style="float:unset" class="btn" onclick="document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
+            <input id="ufAceptar" type="button" value="Aceptar" style="float:unset" class="btn" onclick="enableBackground();document.getElementById('ultimaFlor').style.visibility = 'Hidden'; doToggleFlor2();" />
+            <input id="ufCancelar" type="button" value="Cancelar" style="float:unset" class="btn" onclick="enableBackground();document.getElementById('ultimaFlor').style.visibility = 'Hidden';" />
         </div>
     </div>
+
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuNode" class="menuarbol">
-            <img class="menuimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
-            <img class="menuimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();" />
+        <img class="menuimg" title="ver documento" src="res/documento.png" onclick="doVerDocumento();" />
+        <img class="menuimg" title="poner/quitar flor" src="res/quitarflor.png" onclick="doToggleFlor();" />
     </div>
+
     <!--node options--------------------------------------------------------------------------------------------------->
     <div id="menuEvaluacion" class="menuqueso">
         <img class="menuimg" title="Crear evaluacion" src="res/documento.png" onclick="seleccionarModeloEvaluacion();" />
     </div>
+
     <!--panel--------------------------------------------------------------------------------------------------->
     <div id="panelDer" class="panel" style="visibility: hidden;">
     </div>
     <div id="panelIzq" class="panel" style="visibility: hidden;">
     </div>
+
     <!--documento--------------------------------------------------------------------------------------------------->
     <div id="documento" class="documento" style="z-index:5;">
     </div>
+
     <!--help--------------------------------------------------------------------------------------------------->
     <div id="help" class="documento">
         <table style="width: 100%;">
@@ -351,20 +363,25 @@
             <tr><td id="helpContent"></td></tr>
         </table>
     </div>
+
     <!--rotarpantalla--------------------------------------------------------------------------------------------------->
     <div id="rotarpantalla" class="rotarpantalla">
         <img src="res/rotarpantalla.png" style="margin: 0 auto;padding:50px;" />
         <img src="res/logo.png" style="margin: 0 auto;padding:50px;" />
     </div>
+
     <!--modelos documento--------------------------------------------------------------------------------------------------->
     <div id="modelosDebate" class="modelosDebate">
     </div>
+
     <!--modelos evaluacion--------------------------------------------------------------------------------------------------->
     <div id="modelosEvaluacion" class="modelosEvaluacion">
     </div>
+
     <!--panel alertas--------------------------------------------------------------------------------------------------->
     <div id="alertas" class="popup alertas" style="overflow:auto;">
     </div>
+
     <!--mobile pie--------------------------------------------------------------------------------------------------->
     <div id="movilePie" class="popup" style="text-align:center">
         <div class="popupHeader">

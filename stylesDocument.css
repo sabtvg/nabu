@@ -55,6 +55,18 @@ body {
     border: 0px;
 }
 
+.smalltip {
+    border: 1px solid #339966;
+    padding: 5px;
+    border-radius: 14px;
+    color: #339966;
+    font-size: 12px;
+    text-align: center;
+    margin: 2px;
+    width: -webkit-fill-available;
+    background-color: #FBFDFC;
+}
+
 @media only screen and (max-width: 800px) {
     body {
         background-color: lightblue;

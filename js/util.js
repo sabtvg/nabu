@@ -16,14 +16,26 @@
 //  
 ///////////////////////////////////////////////////////////////////////////
 
+function disableBackground() {
+    document.getElementById('backgroundDiv').style.top = '0px';
+    document.getElementById('backgroundDiv').style.left = '0px';
+    document.getElementById('backgroundDiv').style.width = '100%';
+    document.getElementById('backgroundDiv').style.height = '100%';
+    document.getElementById('backgroundDiv').style.display = 'block';
+}
+
 function popupMsgOn(text) {   
-    document.getElementById('popupmsgtext').innerHTML = text;
     document.getElementById('popupmsgback').style.top = '0px';
     document.getElementById('popupmsgback').style.left = '0px';
     document.getElementById('popupmsgback').style.width = '100%';
     document.getElementById('popupmsgback').style.height = '100%';
     document.getElementById('popupmsgback').style.display = 'block';
     document.getElementById('popupmsg').style.display = 'block';
+    document.getElementById('popupmsgtext').innerHTML = text;
+}
+
+function enableBackground() {
+    document.getElementById('backgroundDiv').style.display = 'none';
 }
 
 function popupMsgOff() {

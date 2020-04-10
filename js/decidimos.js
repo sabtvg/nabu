@@ -145,7 +145,8 @@ function seleccionarModelo() {
 
 function seleccionarModelo2(modeloID) {
     document.getElementById("modelosDebate").style.display = "none";
-    selectedNode.modeloID = modeloID; //se lo pongo temporalmente a la raiz
+    if (selectedNode)
+        selectedNode.modeloID = modeloID; //se lo pongo temporalmente a la raiz
     doVerDocumento();
 }
 
@@ -191,6 +192,10 @@ function recibirArbolPersonal(data) {
         //timestamp
         lastArbolRecibidoTs = (new Date()).getTime();
 
+        //msgBox
+        if (arbolPersonal.msgBox != "")
+            popupMsgOn(arbolPersonal.msgBox);
+
         //reactivo evento resize por si esta descativado
         reload = true;
     }
@@ -201,6 +206,7 @@ function doToggleFlor() {
     if (d.totalFlores == 1 && tieneFlor(d) && !d.consensoAlcanzado) {
         //quitara la ultima flor de un ultimo nodo
         //aviso que caera
+        disableBackground();
         document.getElementById("ultimaFlor").style.top = (window.innerHeight / 2 - 94).toFixed(0) + 'px';
         document.getElementById("ultimaFlor").style.left = (window.innerWidth / 2 - 150).toFixed(0) + 'px';
         document.getElementById("ultimaFlor").style.visibility = "Visible";
@@ -222,21 +228,6 @@ function doToggleFlor2() {
     dibujarArbol(selectedNode);
     hidePanelDer();
     hidePanelIzq();
-
-    //if (d.totalFlores == 1 && tieneFlor(d) && !d.consensoAlcanzado) {
-    //    //quitara la ultima flor de un ultimo nodo
-    //    //quito seleccionado y apago menu
-    //    doMousedown();
-    //    hidePanelIzq();
-    //    hidePanelDer();
-    //}
-    //else if (d.consensoAlcanzado) {
-    //    //quitara la ultima flor de un ultimo nodo
-    //    //quito seleccionado y apago menu
-    //    doMousedown();
-    //    hidePanelIzq();
-    //    hidePanelDer();
-    //}
 
     //pido nuevo arbol
     getHttp("doDecidimos.aspx?actn=toggleflor&email=" + arbolPersonal.usuario.email

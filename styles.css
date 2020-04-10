@@ -6,11 +6,19 @@
 
 body {
     font-family: Wallie, Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     background-image: url('res/background.jpg');
     background-repeat: no-repeat;
     background-size: 100%;
     margin:1.9vw;
+}
+
+.documentfirma {
+    clear: left;
+    float: left;
+    width: 100%;
+    font-size: 12px;
+    font-family:inherit;
 }
 
 .field1 {
@@ -38,7 +46,7 @@ body {
 .abm {
     border:1px solid gray;
     border-radius: 8px;
-    padding: 4px;
+    padding: 10px;
 }
 
 .keyword {
@@ -108,7 +116,7 @@ body {
 
 .seguimientoEstado {
     border: 2px solid #CCCCCC;
-    padding: 2px;
+    padding: 5px;
     margin: 2px;
     border-radius: 8px;
     background-color: aliceblue;
@@ -148,7 +156,7 @@ body {
     border: 1px solid #C0C0C0;
     border-radius: 8px;
     background-color: #FFFFDD;
-    font-size: 14px;
+    font-size: 16px;
     margin: 5px;
 }
 .editar {
@@ -158,7 +166,7 @@ body {
     border: 1px solid #C0C0C0;
     border-radius: 4px;
     background-color: #FFFFDD;
-    font-size: 14px;
+    font-size: 16px;
 }
 .editarComentario {
     padding: 2px;
@@ -187,7 +195,7 @@ body {
     border: 1px solid #FF5050;
     border-radius: 4px;
     background-color: #FFCCCC;
-    font-size: 14px;    
+    font-size: 16px;    
 }
 
 .textoBig {
@@ -201,7 +209,7 @@ body {
 .texto {
     padding: 5px;
     margin: 2px;
-    font-size: 14px;
+    font-size: 16px;
     overflow: auto;
     border:0px;
 }
@@ -286,11 +294,16 @@ body {
 }
 .titulo4 {
     padding: 2px;
+    font-size: 16px;
+}
+.titulo5 {
+    padding: 2px;
     font-size: 14px;
 }
 .img {
     width: 4vh;
     height: 4vh;
+    cursor: pointer;
 }
 .panelSim {
     padding: 5px;
@@ -386,7 +399,7 @@ input[readonly] {
     max-width: 85%;
     min-height: 15%;
     vertical-align:middle;
-    font-size:18px;
+    font-size:20px;
 }
 .alertaicon {
     width: 1.6vw;
@@ -513,13 +526,13 @@ input[readonly] {
 }
 .ventanaultimaflor {
     margin: auto;
-    padding: 5px;
+    padding: 20px;
     border-style: solid;
     border-width: 4px;
     border-radius: 15px;
     border-color: #403d3d;
     background-color: #C6ECFF;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 .loginFlor {
     visibility:hidden;
@@ -552,31 +565,31 @@ input[readonly] {
 .txt {
     margin-top: 5px;
     margin: 2px;
-    padding: 2px;
+    padding: 5px;
     border: 1px solid #cccccc;
     border-radius: 4px;
     background-color: #FFFFDD;
-    font-size: 14px;
+    font-size: 16px;
 }
 .btn {
     border: 2px solid #006666;
     background-color: #0066CC;
     color: #FFFFFF;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
     margin-left: 4px;
     margin-top: 4px;
     font-family:inherit;
     border-radius: 10px;
-    padding:3px;
+    padding:5px;
 }
 .btnnok {
     border: 2px solid #006666;
     background-color: lightcoral;
     color: #FFFFFF;
     border-radius: 10px;
-    padding: 3px;
-    font-size: 15px;
+    padding: 5px;
+    font-size: 16px;
     cursor: pointer;
     margin-left: 4px;
     margin-top: 4px;
@@ -589,8 +602,8 @@ input[readonly] {
     background-color: teal;
     color: #FFFFFF;
     border-radius: 10px;
-    padding:3px;
-    font-size: 15px;
+    padding:5px;
+    font-size: 16px;
     cursor: pointer;
     margin-left: 4px;
     margin-top: 4px;
@@ -604,9 +617,8 @@ input[readonly] {
     background-color: #0066CC;
     color: #FFFFFF;
     border-radius: 10px;
-    padding:3px;
-
-    font-size: 11px;
+    padding:5px;
+    font-size: 16px;
     cursor: pointer;
     margin: 0px 0px 0px 5px;
 }
@@ -615,8 +627,8 @@ input[readonly] {
     background-color: #CCCCCC;
     color: #FFFFFF;
     border-radius: 10px;
-    padding:3px;
-    font-size: 15px;
+    padding:5px;
+    font-size: 16px;
     cursor: pointer;
     font-family:inherit;
 }
@@ -625,8 +637,8 @@ input[readonly] {
     background-color: #CCCCCC;
     color: #FFFFFF;
     border-radius: 10px;
-    padding:3px;
-    font-size: 11px;
+    padding:5px;
+    font-size: 16px;
     cursor: pointer;
     font-family:inherit;
 }

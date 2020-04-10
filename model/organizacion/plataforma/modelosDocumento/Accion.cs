@@ -34,6 +34,7 @@ namespace nabu.plataforma.modelos
             nombre = "Accion";
             descripcion= "Accion";           
             tipo = "seguimiento";
+            consensoMsg = "accion.consensoMsg";
 
             crearVariables();
         }

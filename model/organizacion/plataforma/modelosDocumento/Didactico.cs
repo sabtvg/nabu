@@ -38,6 +38,7 @@ namespace nabu.plataforma.modelos
             niveles = 5;
             nombre = "Didactico";
             descripcion = "Modelo didactico";
+            consensoMsg = "didactico.consensoMsg";
 
             crearVariables();
         }
@@ -187,7 +188,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLEncabezado(prop, g, email, width);
 
                 //titulo
-                ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, width - 100, tieneFlores, g.idioma) + "</nobr></div>";
+                ret += "<div class='titulo2'><nobr>" + Tools.tr("Titulo", g.idioma) + ":" + HTMLText("s.titulo", prop, (width > 800 ? width - 250 : width - 75), tieneFlores, g.idioma) + "</nobr></div>";
 
                 //etiqueta
                 ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ":" + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);

@@ -34,6 +34,7 @@ namespace nabu.plataforma.modelos
             nombre = "Circular";
             descripcion = "Comunicado a todos los grupos hijo";
             tipo = "hijo";
+            consensoMsg = "circular.consensoMsg";
 
             crearVariables();
         }

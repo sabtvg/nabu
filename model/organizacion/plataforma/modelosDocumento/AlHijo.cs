@@ -34,6 +34,7 @@ namespace nabu.plataforma.modelos
             nombre = "AlHijo";
             descripcion = "Comunicado al grupo hijo";
             tipo = "hijo";
+            consensoMsg = "alHijo.consensoMsg";
 
             crearVariables();
         }

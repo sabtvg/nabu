@@ -193,10 +193,12 @@
                 var d = new Date();
                 s += "<div class='cuadro' style='float:left;'>";
 
+                //imagen de usuario
                 s += "<img style='float:left;border-radius:5px;width:60px;height:auto;' src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" "
                     + " onclick='doSelect(\"" + usu.email + "\");'"
                     + ">";
 
+                //datos de usuario
                 s += "<div style='float:left;vertical-align:top;font-size:12px;min-width:150px;padding:4px;' "
                     + " onclick='doSelect(\"" + usu.email + "\");'>"
                     + usu.nombre + "<br>"
@@ -372,7 +374,7 @@
         <input id="btnAdd" type='button' class='btn' value='Agregar' onclick='doAdd();' style="clear:left;float:left;margin:5px" />
     </div>
     <div class="popupFooter">
-        <input id="btnCancelar" type='button' class='btn' value='Volver' onclick='doAtras();' style="margin:5px" />
+        <input id="btnCancelar" type='button' class='btn' value='Volver' onclick='doAtras();' style="margin:10px" />
         <div id="referencias" style="padding:5px;"></div>
     </div>
 
