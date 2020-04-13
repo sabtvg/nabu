@@ -266,6 +266,15 @@ function gruposEffectIn() {
         s += "&idioma=" + idioma;
     s += "' target='_blank' class='texto'><nobr>" + tr("Pagina de proyecto") + "</nobr></a><br><br>"
 
+    //idiomas
+    s += "<div style='position:fixed;top:5px;right:5px'>"
+        + "<a href='default.html?idioma=es'>Espa&ntilde;ol</a> | "
+        + "<a href='default.html?idioma=fr'>Franc&eacute;s</a> | "
+        + "<a href='default.html?idioma=en'>Ingl&eacute;s</a> | "
+        + "<a href='default.html?idioma=ct'>Catal&aacute;n</a>"
+        + "</div>"
+        + "</div>"
+
     document.getElementById("grupos").style.display = "block";
     document.getElementById("grupos").innerHTML = s;
 
@@ -945,7 +954,7 @@ function showPerfil() {
     document.getElementById("cambiarClaveBtn").value = tr("Cambiar clave");
     var img = document.getElementById("perfilImg");
     var d = new Date();
-    img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email + "/" + arbolPersonal.usuario.email + ".png?now=" + d.getTime();
+    img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email.trim() + "/" + arbolPersonal.usuario.email.trim() + ".png?now=" + d.getTime();
 }
 
 function showCambiarClave() {
@@ -1048,7 +1057,7 @@ function uploadToServer(base64) {
             //muestro
             var d = new Date();
             var img = document.getElementById("perfilImg");
-            img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email + "/" + arbolPersonal.usuario.email + ".png?now=" + d.getTime();
+            img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email.trim() + "/" + arbolPersonal.usuario.email.trim() + ".png?now=" + d.getTime();
         });
 }
 

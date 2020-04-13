@@ -121,10 +121,9 @@
                             //popupMsgOn(data);
                             //actualizo lista
                             getListaUsuarios();
+                            editpopupMsgOff();
                         }
                     });
-
-                editpopupMsgOff();
             }
         }
 
@@ -191,7 +190,7 @@
             for (var i in usuarios) {
                 var usu = usuarios[i];
                 var d = new Date();
-                s += "<div class='cuadro' style='float:left;'>";
+                s += "<div class='cuadro' style='float:left;cursor:pointer;'>";
 
                 //imagen de usuario
                 s += "<img style='float:left;border-radius:5px;width:60px;height:auto;' src='grupos/" + grupoParam + "/usuarios/" + usu.email + "/" + usu.email + ".png?now=" + d.getTime() + "' onerror=\"this.src='res/perfilDefault.jpg'\" "
@@ -223,7 +222,7 @@
                     + ";border-bottom-left-radius:8px;border-bottom-right-radius:8px;padding:2px;'>" + (usu.isActive ? "Activ@" : "Inactiv@") + "</div>"
                     + "</div>";
 
-                s += "<div style='clear:left;float:left;width:160px;height:22px;'>"
+                s += "<div style='clear:left;float:left;width:160px;height:22px;'  onclick='doSelect(\"" + usu.email + "\");'>"
                     + box(usu.isAdmin, "#0066CC", tr("abrCoordinador"))
                     + box(usu.isSecretaria, "#FF66CC", tr("abrSecretaria"))
                     + box(usu.isRepresentante, "#00CC99", tr("abrRepresentante"))
@@ -253,20 +252,23 @@
         }
 
         function doEnviarMail(email) {
-            getHttp("doMain.aspx?actn=sendMailWelcome&grupo=" + usuario.grupo
-                + "&usuarioemail=" + email
-                + "&email=" + usuario.email
-                + "&clave=" + usuario.clave,
-                function (data) {
-                    //atrapo el error si es que hay
-                    if (data.substring(0, 6) == "Error=") {
-                        //ha habido un error
-                        popupMsgOn('<font color=red>' + data + '</font>');
-                    }
-                    else {
-                        popupMsgOn('<font color=green>' + email + ": " + data + '</font>');
-                    }
-                });
+            var r = confirm(tr("sendWelcomeMsg"));
+            if (r == true) {
+                getHttp("doMain.aspx?actn=sendMailWelcome&grupo=" + usuario.grupo
+                    + "&usuarioemail=" + email
+                    + "&email=" + usuario.email
+                    + "&clave=" + usuario.clave,
+                    function (data) {
+                        //atrapo el error si es que hay
+                        if (data.substring(0, 6) == "Error=") {
+                            //ha habido un error
+                            popupMsgOn('<font color=red>' + data + '</font>');
+                        }
+                        else {
+                            popupMsgOn('<font color=green>' + email + ": " + data + '</font>');
+                        }
+                    });
+            }
 
         }
 
@@ -379,7 +381,7 @@
     </div>
 
     <!--editpopup-->
-    <div id="editpopupback" style="width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;"></div>
+    <div id="editpopupback" style="position:absolute;width:100%;height:100%;opacity:0.4;background-color:gray;z-index:9;display:none;padding:0px;margin:0px;"></div>
     <div id="editpopup" class="popupmsg">
 
         <div id="lemail" class="field1" style="width:70px;">Email</div>

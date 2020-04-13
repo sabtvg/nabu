@@ -194,7 +194,7 @@ function recibirArbolPersonal(data) {
 
         //msgBox
         if (arbolPersonal.msgBox != "")
-            popupMsgOn(arbolPersonal.msgBox);
+            popupMsgOn("<img src='res/consenso.png'><br>" + tr("consenso alcanzado") + "<br>" + arbolPersonal.msgBox);
 
         //reactivo evento resize por si esta descativado
         reload = true;

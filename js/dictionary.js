@@ -204,6 +204,8 @@ var dictionary = [
     { key: 'seguimiento.finalizado', idioma: 'es', txt: 'El seguimiento ha finalizado. Se ha creado un documento de resultado y esta disponible para su evaluaci&oacute;n' },
     { key: 'grupo.borrar', idioma: 'es', txt: 'El grupo [%1] será borrado con todos sus datos' },
     { key: 'seguimiento.finalizar', idioma: 'es', txt: 'Se dará por terminado este proyecto' },
+    { key: 'consenso alcanzado', idioma: 'es', txt: '¡¡¡ Consenso alcanzado !!!' },
+    { key: 'sendWelcomeMsg', idioma: 'es', txt: '¿Enviar mail de bienvenida?' },
     
     { key: 'Acceso', idioma: 'ct', txt: 'Accés' },
     { key: 'Accion', idioma: 'ct', txt: 'Acci&oacute;' },
@@ -256,7 +258,7 @@ var dictionary = [
     { key: 'Documentos de resultado', idioma: 'ct', txt: 'Documents de resultat' },
     { key: 'El arbol', idioma: 'ct', txt: 'L\'arbre' },
     { key: 'El bosque', idioma: 'ct', txt: 'El bosc' },
-    { key: 'Email', idioma: 'ct', txt: 'Correu electr&ograve;nic' },
+    { key: 'Email', idioma: 'ct', txt: 'Correu electrònic' },
     { key: 'Email no puede ser vacio', idioma: 'ct', txt: 'El Correu electr&ograve;nic no pot estar buit' },
     { key: 'Entrar', idioma: 'ct', txt: 'Entrar' },
     { key: 'Enviar solicitud', idioma: 'ct', txt: 'Enviar sol-licitut' },
@@ -390,6 +392,8 @@ var dictionary = [
     { key: 'seguimiento.finalizado', idioma: 'ct', txt: 'El seguiment ha finalitzat.S\'ha creat un document de resultat i aquesta disponible per a la seva avaluaci&oacute;' },
     { key: 'grupo.borrar', idioma: 'ct', txt: 'El grup [%1] serà esborrat amb totes les dades' },
     { key: 'seguimiento.finalizar', idioma: 'ct', txt: 'Es donarà per acabat aquest projecte' },
+    { key: 'consenso alcanzado', idioma: 'ct', txt: '¡¡¡ Consens aconseguit !!!' },
+    { key: 'sendWelcomeMsg', idioma: 'ct', txt: 'Voleu enviar mail de benvinguda?' },
 
     { key: 'Acceso', idioma: 'en', txt: 'Access' },
     { key: 'Accion', idioma: 'en', txt: 'Action' },
@@ -564,6 +568,8 @@ var dictionary = [
     { key: 'seguimiento.finalizado', idioma: 'en', txt: 'The follow up has ended. A result document has been created and is available for evaluation' },
     { key: 'grupo.borrar', idioma: 'en', txt: 'The group [%1] will be deleted with all its data' },
     { key: 'seguimiento.finalizar', idioma: 'en', txt: 'This project will be terminated' },
+    { key: 'consenso alcanzado', idioma: 'en', txt: 'Consensus reached!!!' },
+    { key: 'sendWelcomeMsg', idioma: 'en', txt: 'Send welcome email?' },
 
     { key: 'Acceso', idioma: 'fr', txt: 'Acc&egrave;s' },
     { key: 'Accion', idioma: 'fr', txt: 'Action' },
@@ -739,6 +745,8 @@ var dictionary = [
     { key: 'seguimiento.finalizado', idioma: 'fr', txt: 'La surveillance est termin&eacute;e. Un document final a &eacute;t&eacute; cr&eacute;&eacute; et est disponible pour &eacute;valuation' },
     { key: 'grupo.borrar', idioma: 'fr', txt: 'Le groupe [%1] sera supprimé avec toutes ses données' },
     { key: 'seguimiento.finalizar', idioma: 'fr', txt: 'Ce projet sera terminé' },
+    { key: 'consenso alcanzado', idioma: 'fr', txt: '¡¡¡ Consensus atteint !!!' },
+    { key: 'sendWelcomeMsg', idioma: 'en', txt: 'Envoyer un e-mail de bienvenue?' },
 
     ];
 
