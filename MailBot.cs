@@ -74,7 +74,7 @@ namespace nabu
 
                 try
                 {
-                    ret = Tools.sendMail(para, asunto, body);
+                    ret = Tools.sendMail(para, asunto, body, "es");
                     if (ret.ToLower() != "enviado")
                         throw new Exception(ret);
                     else

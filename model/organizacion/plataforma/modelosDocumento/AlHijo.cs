@@ -219,7 +219,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
-            if (errores.ContainsKey(nivel))
+            if (errores.ContainsKey(nivel) && modo == eModo.prevista)
             {
                 ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
@@ -239,7 +239,8 @@ namespace nabu.plataforma.modelos
                     + "&docmodeloid=AlHijo"
                     + "&grupohijo=" + hijonombre
                     + "&grupopadre=" + doc.grupo.nombre,
-                    htmlpath);
+                    doc.grupo.path + "\\" + htmlpath);
+
                 if (ret == "ok")
                     doc.addLog(Tools.tr("Documento publicado en Evaluamos en el grupo hijo", doc.grupo.idioma) + ": " + hijonombre);
                 else

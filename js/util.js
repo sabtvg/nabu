@@ -85,19 +85,25 @@ function HTMLUsuarioExtendido(u, grupoParam, style) {
 
 function HTMLUsuario(u, grupoParam, style) {
     var d = new Date();
-    var s = "<div style='" + style + ";border: 2px solid #cccccc;border-radius:8px;text-align:center;margin:2px;padding:2px;'>";
+    var s = "<div class='ustatus' style='" + style + ";border: 1px solid #cccccc;border-radius:8px;text-align:center;margin:2px;padding:2px;'>";
     if (u != null) {
         s += "<img src='grupos/" + grupoParam + "/usuarios/" + u.email + "/" + u.email + ".png?now=" + d.getTime() + "' " +
             "style='border-radius:5px;height:60px;width:auto;' " +
             "onerror=\"this.src='res/perfilDefault.jpg'\">" +
             "<br>";
         s += u.nombre + "<br>";
-        s += u.funcion + "<br>";
+        s += scut(u.funcion, 12) + "<br>";
         //s += "<a href='mailto:" + u.email + "'>" + u.email + "</a>";
         if (u.estado)
             s += "<br><font color='red'>" + u.estado + "</font>";
     }
     s += "</div>";
+    return s;
+}
+
+function scut(s, len) {
+    if (s.length > len - 3)
+        s = s.substring(0, len - 3) + "...";
     return s;
 }
 

@@ -72,7 +72,7 @@ namespace nabu.plataforma.modelos
 
         private void validar(Propuesta prop)
         {
-            if (prop != null)
+            if (prop != null && modo == eModo.prevista)
             {
                 if (prop.nivel == 1)
                 {
@@ -234,7 +234,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
-            if (errores.ContainsKey(nivel))
+            if (errores.ContainsKey(nivel) && modo == eModo.prevista)
             {
                 ret += "<div class='error'>" + errores[nivel] + "</div>";
             }

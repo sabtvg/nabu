@@ -74,6 +74,13 @@
                 //login normal
                 document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;;
         }
+        
+        function cut(s, len) {
+            if (s.length > len)
+                return s.substring(0, len - 3) + '...';
+            else
+                return s;
+        }
 
         function getListaUsuarios() {
             var s = "";
@@ -100,7 +107,7 @@
                                 + usu.nombre + "<br>"
                                 + usu.funcion + "<br>"
                                 + usu.sLastLogin + "<br>"
-                                + "<a href='mailto:" + usu.email + "'>" + usu.email + "</a>"
+                                + "<a href='mailto:" + usu.email + "'>" + cut(usu.email, 22) + "</a>"
                                 + "</div>";
 
                             s += "<div style='float:left;text-align:center;'>"

@@ -115,7 +115,7 @@ body {
 }
 
 .seguimientoEstado {
-    border: 2px solid #CCCCCC;
+    border: 1px solid #CCCCCC;
     padding: 5px;
     margin: 2px;
     border-radius: 8px;
@@ -299,6 +299,10 @@ body {
 .titulo5 {
     padding: 2px;
     font-size: 14px;
+}
+.titulo6 {
+    padding: 2px;
+    font-size: 12px;
 }
 .img {
     width: 4vh;
@@ -617,10 +621,22 @@ input[readonly] {
     background-color: #0066CC;
     color: #FFFFFF;
     border-radius: 10px;
-    padding:5px;
+    padding: 5px;
     font-size: 16px;
     cursor: pointer;
     margin: 0px 0px 0px 5px;
+    font-family: inherit;
+}
+.btn3 {
+    border: 2px solid #006666;
+    background-color: #0066CC;
+    color: #FFFFFF;
+    border-radius: 10px;
+    padding: 2px;
+    font-size: 12px;
+    cursor: pointer;
+    margin: 0px 0px 0px 5px;
+    font-family: inherit;
 }
 .btnDis {
     border: 2px solid #006666;
@@ -860,6 +876,14 @@ input[readonly] {
 .movilePie {  
     display:none;
 }
+.ustatus{
+    font-size:12px;
+}
+.link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
 
 @media only screen and (max-width: 800px)  {
     body {
@@ -898,7 +922,7 @@ input[readonly] {
     }
     .menuItem {
         padding: 0px;
-        font-size: 11px;
+        font-size: 12px;
         padding-top:6px;
         padding-bottom:1.2vh;
         cursor:pointer;
@@ -1118,16 +1142,15 @@ input[readonly] {
         margin-right: 5px
     }
 
-
     .btn2 {
         border: 1px solid #006666;
-        background-color: #0066CC;
-        color: #FFFFFF;
         border-radius: 8px;
         font-size: 12px;
-        cursor: pointer;
-        margin: 0px 0px 0px 5px;
-        font-family: inherit;
+    }
+    .btn3 {
+        border: 1px solid #006666;
+        border-radius: 8px;
+        font-size: 10px;
     }
     .btnDis {
         border: 1px solid #006666;
@@ -1322,6 +1345,9 @@ input[readonly] {
         left: 0.3vw;
         top: 10vh;
     }
+    .panelUsuarioNombre {
+        font-size:12px;
+    }
     .panelConsenso {
         position: fixed;
         left: 0.3vw;
@@ -1397,6 +1423,10 @@ input[readonly] {
     .seguimientoEstado {
         width: 500px;
     }
+    .ustatus {
+        font-size: 10px;
+    }
+
 }
 
 @media only screen and (max-width: 400px) {
@@ -1462,6 +1492,10 @@ input[readonly] {
     .panelSim {
         top: 14vh;
     }
+    .ustatus {
+        font-size: 10px;
+    }
+
 
 }
 

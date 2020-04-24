@@ -314,7 +314,7 @@
                         s += "<b>" + tr("Decision fecha") + ":</b> " + PR.docTs + "<br>";
                         s += "<b>" + tr("Decision") + ":</b> <a href='" + PR.docURL + "' target='_blank'>" + getURLName(PR.docURL) + "</a><br>";
                         s += "<b>" + tr("Revision") + ":</b> " + PR.revision + "<br>";
-                        s += "<b>" + tr("Definicion") + ":</b><br> " + PR.definicion + "<br>";
+                        s += "<b>" + tr("Definicion") + ":</b> <div style='padding:5px;'>" + PR.definicion + "</div>";
                         s += "<br>";
                     }
                 }
@@ -346,45 +346,48 @@
                     s += "<b>" + tr("Nacido") + ":</b> " + GT.born + "<br>";
                     s += "<b>" + tr("Decision fecha") + ":</b> " + GT.docTs + "<br>";
                     s += "<b>" + tr("Decision") + ":</b> <a href='" + GT.docURL + "' target='_blank'>" + getURLName(GT.docURL) + "</a><br>";
-                    s += "<b>" + tr("Objetivo") + ":</b> " + GT.objetivo + "<br>";
                     s += "<b>" + tr("Revision") + ":</b> " + GT.revision + "<br>";
-                    s += "<br>";
+                    s += "<b>" + tr("Objetivo") + ":</b> <div style='padding:5px;'>" + GT.objetivo + "</div>";
                     s += "<b>" + tr("Integrantes") + ":</b><br>";
                     for (j in GT.usuarios) {
                         var u = GT.usuarios[j];
                         s += HTMLUsuario(u, grupoParam, "float:left");
                     }
+                    //grupo
+                    if (GT && GT.grupoNombre == "") {
+                        //no tiene grupo creado
+                        if (usuarioPertenece(GT)) {
+                            //se puede crear un nuevo grupo
+                            s += "<div id='showCrearArbolDiv' class='titulo6 link' style='clear:left;float:left;width:100%;text-align:right;' onclick = 'showCrearArbol();'>"
+                                + tr("Crear arbol")
+                                + "</div> "
+
+                            //opciones para crear
+                            s += "<div id='crearArbolDiv' style='display:none;clear:left;float:left;margin:5px;border: 1px solid #cccccc;border-radius:5px;width:-webkit-fill-available;padding:5px;'>";
+                            s += "<b>" + tr("Arbol") + ":</b><br>";
+                            s += "<table style='border-collapse: collapse; border-spacing: 0;'>";
+                            s += "<tr><td>Nombre</td><td><input type='text' class='editar' value='" + grupoParam + "." + GT.nombre + "' id='grupoNombre' style='width:200px'></td></tr>";
+                            s += "<tr><td>Organizaci&oacute;n</td><td><select id='organizacion' class='editar' style='width: 210px'>";
+                            s += "<option id='Plataforma'>Plataforma social</option>";
+                            s += "</select></td></tr>";
+                            s += "</table>";
+                            if (!historico)
+                                s += "<input type='button' class='btn' value='" + tr("Crear arbol") + "' onclick='doCrearArbolParaGrupo(" + GT.EID + ");'>";
+                            s += "<div id='retmsg'></div>"
+                            s += "</div>"
+                        }
+                        else
+                            s += "<div class='titulo5' style='clear:left;color:gray;padding-top:15px;'>Este grupo de trabajo no tiene &aacute;rbol creado</div>";
+                    }
+                    else {
+                        //ya tiene un grupo
+                        s += "<a href='" + GT.grupoURL + "?grupo=" + GT.grupoNombre + "&idioma=" + idiomaParam + "' target='_blank'>" + GT.grupoNombre + "</a>";
+                        if (usuarioPertenece(GT) && !historico)
+                            s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
+                    }
 
                     break;
                 }
-            }
-            s += "</div>";
-
-            //grupo
-            s += "<div style='clear:left;float:left;margin:5px;border: 1px solid #cccccc;border-radius:5px;width:-webkit-fill-available;padding:5px;'>";
-            s += "<b>" + tr("Arbol") + ":</b><br>";
-            if (GT && GT.grupoNombre == "") {
-                //no tiene grupo creado
-                if (usuarioPertenece(GT)){
-                    //se puede crear un nuevo grupo
-                    s += "<table style='border-collapse: collapse; border-spacing: 0;'>";
-                    s += "<tr><td>Nombre</td><td><input type='text' class='editar' value='" + GT.nombre + "' id='grupoNombre' style='width:200px'></td></tr>";
-                    s += "<tr><td>Organizaci&oacute;n</td><td><select id='organizacion' class='editar' style='width: 210px'>";
-                    s += "<option id='Plataforma'>Plataforma social</option>";
-                    s += "</select></td></tr>";
-                    s += "</table>";
-                    if (!historico)
-                        s += "<input type='button' class='btn' value='" + tr("Crear arbol") + "' onclick='doCrearArbolParaGrupo(" + GT.EID + ");'>";
-                    s += "<div id='retmsg'></div>"
-                }
-                else
-                    s += "Este grupo de trabajo no tiene &aacute;rbol creado";
-            }
-            else {
-                //ya tiene un grupo
-                s += "<a href='" + GT.grupoURL + "?grupo=" + GT.grupoNombre + "'>" + GT.grupoNombre + "</a>";
-                if (usuarioPertenece(GT) && !historico)
-                    s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
             }
             s += "</div>";
             s += "</div>";
@@ -398,35 +401,43 @@
 
         }
 
+        function showCrearArbol() {
+            document.getElementById("crearArbolDiv").style.display = "block";
+            document.getElementById("showCrearArbolDiv").style.display = "none";
+        }
+
         function doBorrarEnlace(EID) {
-            for (var i in operativo.subGrupos) {
-                var gt = operativo.subGrupos[i];
-                if (gt.EID == EID) {
-                    getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
-                        + "&grupo=" + usuario.grupo
-                        + "&clave=" + usuario.clave
-                        + "&accion=borrarEnlace"
-                        + "&EID=" + gt.EID,
-                        function (data) {
-                            //atrapo el error si es que hay
-                            if (data.substring(0, 6) == "Error=") {
-                                //ha habido un error
-                                document.getElementById("retmsg").innerHTML = '<font color=red>' + data + '</font>';
-                            }
-                            else {
-                                //tengo el bosque
-                                //document.getElementById("todo").innerHTML = data;
-                                var respuesta = JSON.parse(data);
-                                operativo = respuesta.operativo;
-                                if (respuesta.resultado != 'ok')
-                                    document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
-                                else {
-                                    dibujarTodo();
-                                    openGT(EID);
+            var r = confirm(tr("grupo.enlaceBorrar"));
+            if (r == true) {
+                for (var i in operativo.subGrupos) {
+                    var gt = operativo.subGrupos[i];
+                    if (gt.EID == EID) {
+                        getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
+                            + "&grupo=" + usuario.grupo
+                            + "&clave=" + usuario.clave
+                            + "&accion=borrarEnlace"
+                            + "&EID=" + gt.EID,
+                            function (data) {
+                                //atrapo el error si es que hay
+                                if (data.substring(0, 6) == "Error=") {
+                                    //ha habido un error
+                                    document.getElementById("retmsg").innerHTML = '<font color=red>' + data + '</font>';
                                 }
-                            }
-                        });
-                    break;
+                                else {
+                                    //tengo el bosque
+                                    //document.getElementById("todo").innerHTML = data;
+                                    var respuesta = JSON.parse(data);
+                                    operativo = respuesta.operativo;
+                                    if (respuesta.resultado != 'ok')
+                                        document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
+                                    else {
+                                        dibujarTodo();
+                                        openGT(EID);
+                                    }
+                                }
+                            });
+                        break;
+                    }
                 }
             }
         }
@@ -441,36 +452,39 @@
         }
 
         function doCrearArbolParaGrupo(EID) {
-            for (var i in operativo.subGrupos) {
-                var gt = operativo.subGrupos[i];
-                if (gt.EID == EID) {
-                    var grupoNombre = document.getElementById("grupoNombre");
-                    var organizacion = getSelectedId(document.getElementById("organizacion"));
-                    getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
-                        + "&grupo=" + usuario.grupo
-                        + "&clave=" + usuario.clave
-                        + "&accion=crearArbolParaGrupo"
-                        + "&EID=" + gt.EID
-                        + "&grupoNombre=" + grupoNombre.value
-                        + "&organizacion=" + organizacion,
-                        function (data) {
-                            //atrapo el error si es que hay
-                            if (data.substring(0, 6) == "Error=") {
-                                //ha habido un error
-                                document.getElementById("retmsg").innerHTML = '<font color=red>' + data + '</font>';
-                            }
-                            else {
-                                //tengo el bosque
-                                //document.getElementById("todo").innerHTML = data;
-                                var respuesta = JSON.parse(data);
-                                operativo = respuesta.operativo;
-                                if (respuesta.resultado != 'ok')
-                                    document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
-                                dibujarTodo();
-                                openGT(EID);
-                            }
-                        });
-                    break;
+            var r = confirm(tr("grupo.crearArbol"));
+            if (r == true) {
+                for (var i in operativo.subGrupos) {
+                    var gt = operativo.subGrupos[i];
+                    if (gt.EID == EID) {
+                        var grupoNombre = document.getElementById("grupoNombre");
+                        var organizacion = getSelectedId(document.getElementById("organizacion"));
+                        getHttp("doMain.aspx?actn=organizacion&email=" + usuario.email
+                            + "&grupo=" + usuario.grupo
+                            + "&clave=" + usuario.clave
+                            + "&accion=crearArbolParaGrupo"
+                            + "&EID=" + gt.EID
+                            + "&grupoNombre=" + grupoNombre.value
+                            + "&organizacion=" + organizacion,
+                            function (data) {
+                                //atrapo el error si es que hay
+                                if (data.substring(0, 6) == "Error=") {
+                                    //ha habido un error
+                                    document.getElementById("retmsg").innerHTML = '<font color=red>' + data + '</font>';
+                                }
+                                else {
+                                    //tengo el bosque
+                                    //document.getElementById("todo").innerHTML = data;
+                                    var respuesta = JSON.parse(data);
+                                    operativo = respuesta.operativo;
+                                    if (respuesta.resultado != 'ok')
+                                        document.getElementById("msgDiv").innerHTML = '<font color=red>' + data + '</font>';
+                                    dibujarTodo();
+                                    openGT(EID);
+                                }
+                            });
+                        break;
+                    }
                 }
             }
         }

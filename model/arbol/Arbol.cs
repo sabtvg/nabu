@@ -39,8 +39,8 @@ namespace nabu
         public Usuario lastSimUsuario;
 
         //condicion de consenso
-        public float minSiPc = 60; //porcentaje minimo de usuarios implicados en el debate (en una rama) para alcanzar consenso
-        public float maxNoPc = 15; //porcentaje maximo de usuarios en otras ramas del mismo debate (en una rama) para alcanzar consenso
+        public float minSiPc = 100; //porcentaje minimo de usuarios implicados en el debate (en una rama) para alcanzar consenso
+        public float maxNoPc = 0; //porcentaje maximo de usuarios en otras ramas del mismo debate (en una rama) para alcanzar consenso
 
         private Random rnd = new Random();
 

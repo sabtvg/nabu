@@ -101,7 +101,7 @@ namespace nabu.plataforma.modelosEvaluacion
 
         private void validar(Propuesta prop)
         {
-            if (prop != null)
+            if (prop != null && modo == eModo.prevista)
             {
                 if (getText("s.nombre", prop) == "")
                 {

@@ -275,6 +275,8 @@ function doSelectCelda(celdaid) {
                  //activo editores de estilo
                  activarStyleEditor();
 
+                 //show
+                 disableBackground();
                  document.getElementById("documento").style.display = 'block';
              }
          });
@@ -319,8 +321,8 @@ function getSVGPoints(index, iniDeg, finDeg, celda) {
 
 function seleccionarModeloEvaluacion() {
     //opciones de modelos de documentos
-    var listE = "<div class='modeloBox'><div><b>" + tr("Estructura") + "</b></div>";
-    var listS = "<div class='modeloBox'><div><b>" + tr("Seguimiento") + "</b></div>";
+    var listE = "<div class='modeloBox'><div><b>" + tr("Seguimiento") + "</b></div>";
+    var listS = "<div class='modeloBox'><div><b>" + tr("Externo") + "</b></div>";
 
     //si no hay manifiesto solo permito crear modelo Manifiesto
     for (var i in modelosEvaluacion) {
@@ -381,6 +383,8 @@ function doEvaluarTema(idTema) {
             //activo editores de estilo
             activarStyleEditor();
 
+            //show
+            disableBackground();
             document.getElementById("documento").style.display = 'block';
         }
     );
@@ -405,6 +409,8 @@ function doVerEvaluacion(modeloID) {
             //activo editores de estilo
             activarStyleEditor();
 
+            //show
+            disableBackground();
             document.getElementById("documento").style.display = 'block';
         }
     );
@@ -460,6 +466,7 @@ function doCrearEvaluacion(modeloID) {
     }, 1500); //doy tiempo al documento a salir de pantalla
 
     //cierro documento
+    enableBackground();
     document.getElementById("documento").style.display = "none";
     preguntarAlSalir = false;
 }

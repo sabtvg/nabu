@@ -585,6 +585,7 @@ namespace nabu
 
             //armo respuesta
             string ret = "";
+            int cant = 0;
             foreach (KeyValuePair<string, int> e in pals)
             {
                 if (e.Value > 1 && e.Key.Length < 30)
@@ -592,6 +593,10 @@ namespace nabu
                     int size = 12 + 2 * e.Value;
                     if (size > 30) size = 30;
                     ret += "<span class='keyword' style='font-size:" + (size) + "px'>" + e.Key + "</span> ";
+
+                    //maximo 14 palabras
+                    if (cant++ > 14)
+                        break;
                 }
             }
             if (ret.EndsWith(",")) ret = ret.Substring(0, ret.Length - 1);

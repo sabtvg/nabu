@@ -86,6 +86,7 @@ namespace nabu
         public bool habilitado = true;
         public string grupoDesde = "";
         public List<Alerta> alertas = new List<Alerta>();
+        public bool reactivado = true; //default para nuevos usuarios
 
         //perfil
         public string mision = "";

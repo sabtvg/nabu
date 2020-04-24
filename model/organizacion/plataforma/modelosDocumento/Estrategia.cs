@@ -76,7 +76,7 @@ namespace nabu.plataforma.modelos
 
         private void validar(Propuesta prop)
         {
-            if (prop != null)
+            if (prop != null && modo == eModo.prevista)
             {
                 if (prop.nivel == 1)
                 {
@@ -173,7 +173,7 @@ namespace nabu.plataforma.modelos
             ret += "<br>";
 
             //etiqueta
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
+            ret += "<div class='titulo4'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div><br><br>";
@@ -268,7 +268,7 @@ namespace nabu.plataforma.modelos
                         ret += "<div class='smalltip'>"
                             + Tools.tr("proceso.definicion.tip", g.idioma) 
                             + "</div>";
-                    ret += HTMLArea("s.definicion", prop, width, 220, tieneFlores, g.idioma);
+                    ret += HTMLArea("s.definicion", prop, width, 420, tieneFlores, g.idioma);
                 }
 
                 //variante
@@ -339,7 +339,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
-            if (errores.ContainsKey(nivel))
+            if (errores.ContainsKey(nivel) && modo == eModo.prevista)
             {
                 ret += "<div class='error'>" + errores[nivel] + "</div>";
             }

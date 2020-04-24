@@ -416,7 +416,7 @@
                 s += "<div class='seguimientoEstado' style='float:left;'>";
                 s += formatDate(toDate(estado.estadoTs));
                 s += "&nbsp;&nbsp;<img src='res/" + estado.luz + "' style='vertical-align:bottom'><br>";
-                s += "<b>" + estado.estado + "</b>:" + estado.avance + "%";
+                s += "<b>" + estado.estado + "</b>: " + estado.avance + "%";
                 s += "<span style='float:right'><b>" + einicio + " - " + efin + "</b></span><br>"
                 s += estado.descrip + "<br>";
                 s += "</div>";
@@ -426,11 +426,17 @@
             //agregar estado
             s += "<div style='clear:left;float:left;width:-webkit-fill-available;'>";
             s += "<br>";
-            if (usuario.email == operativo.admin || usuario.email == AC.responsable || usuario.email == adminEmail) {
+            if (usuario.email == operativo.admin.email || usuario.email == AC.responsable.email || usuario.email == adminEmail) {
                 //puede crear estados
                 einicio = formatDate(toDate(AC.estado.inicio));
                 efin = formatDate(toDate(AC.estado.fin));
-                s += "<hr><b>" + tr("Nuevo estado") + "</b>:<br>";
+
+                //se puede crear un nuevo grupo
+                s += "<input id='showCrearEstadoDiv' type='button' class='btn' value='" + tr("Nuevo estado") + "' onclick='showCrearEstado();'>";
+
+                //opciones para crear
+                s += "<div id='crearEstadoDiv' class='seguimientoEstado' style='display:none;clear:left;float:left;margin:5px;width:-webkit-fill-available;padding:5px;'>";
+                s += "<b>" + tr("Nuevo estado") + "</b>: <br>";
                 s += usuario.nombre + " ";
                 s += "<input type='text' id='estado' class='editar' placeholder='Estado' size=10>";
                 s += "<input type='text' id='avance' class='editar' placeholder='%' size=2>";
@@ -444,16 +450,14 @@
                 else
                     s += "  class='editar' ";
                 s += ">";
-                s += "<input type='text' id='fin' class='editar' placeholder='fin' size=10 style='float:left' value='" + efin + "'>";
+                s += "<input type='text' id='fin' class='editar' placeholder='fin' size=10 value='" + efin + "'>";
                 s += "<br>";
                 s += "<textarea id='descrip' class='editar' placeholder='Descripcion' style='width:100%;height:150px'></textarea>"
 
                 if (!historico)
                     s += "<input type='button' class='btn' value='" + tr("Agregar estado") + "' onclick='doAgregarEstado(" + index + ");'>";
                 s += "<div id='msg'></div>";
-                s += "<br>";
-                s += "<br>";
-                s += "<br>";
+                s += "</div>";
             }
             s += "</div>";
             s += "</div>";
@@ -461,7 +465,7 @@
             s += "<div class='popupFooter'>";
             //cierre
             s += "<input style='clear:left;float:left' type='button' class='btn' value='" + tr("Cerrar") + "' onclick='doCerrarDocumento();'>";
-            if ((usuario.email == adminEmail || usuario.email == AC.responsable) && !historico) {
+            if ((usuario.email == adminEmail || usuario.email == AC.responsable.email) && !historico) {
                 s += "<input type='button' class='btn' value='" + tr("Finalizar seguimiento") + "' onclick='doFinalizar(" + index + ");' style='float:right;background-color:lightcoral'>";
             }
             s += "</div>";
@@ -470,7 +474,12 @@
             document.getElementById("AC").style.display = "block";
 
         }
-          
+
+        function showCrearEstado() {
+            document.getElementById("crearEstadoDiv").style.display = "block";
+            document.getElementById("showCrearEstadoDiv").style.display = "none";
+        }
+
         function setLuz(i) {
             if (i == 0) {
                 luz = "verde.png";
@@ -516,7 +525,7 @@
                             if (respuesta.resultado != 'ok')
                                 document.getElementById("msg").innerHTML = '<font color=red>' + data + '</font>';
                             else
-                                popupMsgOn(tr('seguimiento.finalizado'));
+                                popupMsgOn("<img src='res/completado.png'><br>" + tr('seguimiento.finalizado'));
 
                             dibujarTodo();
                             editando = false;

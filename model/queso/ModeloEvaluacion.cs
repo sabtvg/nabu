@@ -113,7 +113,7 @@ namespace nabu
             else if (modo == eModo.prevista)
             {
                 if (!hayError())
-                    ret += "<input type='button' class='btnok' value='" + Tools.tr("Crear evaluacion", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doCrearEvaluacion(\"" + id + "\");' />";
+                    ret += "<input type='button' style='float:left;' class='btnok' value='" + Tools.tr("Crear evaluacion", g.idioma) + "' title='" + Tools.tr("Crea la propuesta", g.idioma) + "' onclick='doCrearEvaluacion(\"" + id + "\");' />";
                 ret += "<input type='button' style='float:left;' class='btn' value='" + Tools.tr("Revisar evaluacion", g.idioma) + "' title='" + Tools.tr("Permite corregir errores", g.idioma) + "' onclick='doRevisarEvaluacion(\"" + id + "\");' />";
                 ret += "<input type='button' style='float:right;' class='btnnok' value='" + Tools.tr("Cancelar", g.idioma) + "' onclick='doCerrarDocumento();' />";
             }

@@ -149,8 +149,8 @@ namespace nabu.plataforma.modelos
             ret += "<td colspan=2>" + HTMLText("s.titulo", prop, 60 * 8, tieneFlores, g.idioma) + "</td>";
             ret += "</tr>";
             ret += "<tr>";
-            ret += "<td class='titulo3'>" + Tools.tr("Etiqueta", g.idioma) + "</td>";
-            ret += "<td class='titulo3' style='width:80px'>" + Tools.tr("Acta", g.idioma) + "</td>";
+            ret += "<td class='titulo4'>" + Tools.tr("Etiqueta", g.idioma) + "</td>";
+            ret += "<td class='titulo4' style='width:80px'>" + Tools.tr("Acta", g.idioma) + "</td>";
             ret += "<td>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</td>";
             ret += "</tr>";
             ret += "</table>";
@@ -291,7 +291,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
-            if (errores.ContainsKey(nivel))
+            if (errores.ContainsKey(nivel) && modo == eModo.prevista)
             {
                 ret += "<div class='error'>" + errores[nivel] + "</div>";
             }

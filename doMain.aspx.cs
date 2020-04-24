@@ -183,11 +183,12 @@ namespace nabu
                             break;
 
                         case "sendmail":
+                            grupo = app.getGrupo(Request["grupo"]);
                             VerificarUsuario(Request["grupo"], Request["email"], Request["clave"]);
                             string email = Request["usuarioemail"];
                             string body = Request["body"];
                             string subject = Request["subject"];
-                            msg = Tools.sendMail(email, subject, body.Replace("\n","<br>"));
+                            msg = Tools.sendMail(email, subject, body.Replace("\n","<br>"), grupo.idioma);
                             Response.Write(msg);
                             break;
 
@@ -502,20 +503,23 @@ namespace nabu
             //resize
             float ratio = (float)img.Width / img.Height;
             int newWidth = img.Width, newHeight = img.Height;
+            int InsertX = 0;
+            int InsertY = 0;
             if (img.Width > maxSize && img.Width >= img.Height)
-            {
-                newWidth = maxSize;
-                newHeight = (int)(newWidth / ratio);
-            }
-            else if (img.Height > maxSize && img.Height >= img.Width)
             {
                 newHeight = maxSize;
                 newWidth = (int)(newHeight * ratio);
+                InsertX = (maxSize - newWidth) / 2;
+                InsertY = 0;
             }
-
-            int InsertX = (maxSize - newWidth) / 2;
-            int InsertY = (maxSize - newHeight) / 2;
-
+            else if (img.Height > maxSize && img.Height >= img.Width)
+            {
+                newWidth = maxSize;
+                newHeight = (int)(newWidth / ratio);
+                InsertY = 0; // (maxSize - newHeight) / 2;
+                InsertX = 0;
+            }
+                       
             //save
             System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(maxSize, maxSize);
             //bmp.SetResolution(img.HorizontalResolution, img.VerticalResolution);
@@ -524,9 +528,9 @@ namespace nabu
             System.Drawing.Rectangle rct = new System.Drawing.Rectangle(InsertX, InsertY, newWidth, newHeight);
             grp.Clear(System.Drawing.Color.Transparent);
             grp.DrawImage(img, rct, 0, 0, img.Width, img.Height, System.Drawing.GraphicsUnit.Pixel);
-            if (System.IO.File.Exists(path + "\\" + name))
-                System.IO.File.Delete(path + "\\" + name);
-            bmp.Save(path + "\\" + name, System.Drawing.Imaging.ImageFormat.Png);  // Or Png
+            if (System.IO.File.Exists(path + "\\" + name.Trim()))
+                System.IO.File.Delete(path + "\\" + name.Trim());
+            bmp.Save(path + "\\" + name.Trim(), System.Drawing.Imaging.ImageFormat.Png);  // Or Png
         }
 
         public string getBosque(string grupoNombre)
@@ -822,17 +826,27 @@ namespace nabu
                         if (u2.isFacilitador)
                             u2.isFacilitador = false;
 
+                //aseguro un admin
+                bool hayAdmin = false;
+                foreach (Usuario u2 in g.usuarios)
+                    if (u2.isAdmin)
+                        hayAdmin = true;
+
                 //actualizo
                 u = g.getUsuario(email);
                 if (u != null)
                 {
+                    if (!hayAdmin)
+                        u.isAdmin = true;
+                    else
+                        u.isAdmin = isAdmin;
+
                     //lo actualizo
                     u.nombre = nombre;
                     u.funcion = funcion;
                     u.clave = clave;
                     u.habilitado = habilitado;
                     u.readOnly = readOnly;
-                    u.isAdmin = isAdmin;
                     u.isSecretaria = isSecretaria;
                     u.isRepresentante = isRepresentante;
                     u.isFacilitador = isFacilitador;
@@ -849,13 +863,18 @@ namespace nabu
                 {
                     g.ts = DateTime.Now;
                     u = new Usuario(g.arbol.cantidadFlores);
+
+                    if (!hayAdmin)
+                        u.isAdmin = true;
+                    else
+                        u.isAdmin = isAdmin;
+
                     u.nombre = nombre;
                     u.funcion = funcion;
                     u.email = email.Trim();
                     u.clave = clave;
                     u.habilitado = habilitado;
                     u.readOnly = readOnly;
-                    u.isAdmin = isAdmin;
                     u.isSecretaria = isSecretaria;
                     u.isRepresentante = isRepresentante;
                     u.isFacilitador = isFacilitador;

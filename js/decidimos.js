@@ -69,6 +69,25 @@ function doDecidimos() {
 
     estado = 'decidimos';
     clearInterval(timerCiclo);
+
+    //activo cartel ayuda
+    if (arbolPersonal.usuario && arbolPersonal.usuario.reactivado && cartel1) {
+        showAyuda();
+        cartel1 = false; //no volver a enseñar
+    }
+}
+
+function showAyuda() {
+    disableBackground();
+    document.getElementById("ayudaNuevoDebate").innerHTML = tr("ayudaNuevoDebate");
+    document.getElementById("ayudaApoyar").innerHTML = tr("ayudaApoyar");
+    document.getElementById("ayudaVariante").innerHTML = tr("ayudaVariante");
+    document.getElementById("instrucciones").style.display = "block";
+}
+
+function hideAyuda() {
+    enableBackground();
+    document.getElementById("instrucciones").style.display = "none";
 }
 
 function cumplePermisos(modelo) {
@@ -239,6 +258,7 @@ function doToggleFlor2() {
 }
 
 function doCerrarDocumento() {
+    enableBackground();
     document.getElementById("documento").style.display = "none";
     preguntarAlSalir = false;
 }
@@ -305,6 +325,7 @@ function doProponer() {
         recibirArbolPersonal);
 
     //cierro documento
+    enableBackground();
     document.getElementById("documento").style.display = "none";
     preguntarAlSalir = false;
 }
@@ -319,7 +340,7 @@ function doVerDocumento() {
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
-        + "&width=" + (window.innerWidth - 10).toFixed(0),
+        + "&width=" + (window.innerWidth - 80).toFixed(0),
         function (data) {
             //puedo mostrar el documento
             hidePanelDer();
@@ -333,6 +354,8 @@ function doVerDocumento() {
             //activo editores de estilo
             activarStyleEditor();
 
+            //show
+            disableBackground();
             document.getElementById("documento").style.display = 'block';
         }
     );

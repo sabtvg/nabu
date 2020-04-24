@@ -203,7 +203,7 @@
                     + usu.nombre + "<br>"
                     + usu.funcion + "<br>"
                     + usu.sLastLogin + "<br>"
-                    + "<a href='mailto:" + usu.email + "'>" + cut(usu.email, 22 ) + "</a>"
+                    + "<a href='mailto:" + usu.email + "'>" + cut(usu.email, 22) + "</a>"
                     + "</div>";
 
                 s += "<div style='float:left;text-align:center;' onclick='doSelect(\"" + usu.email + "\");'>"
@@ -213,7 +213,7 @@
                     + "</div>"
                     + "</div>";
 
-                s += "<div style='float:left;text-align:center;padding-bottom:8px;font-size:12px;' onclick='doSelect(\"" + usu.email + "\");'>"
+                s += "<div class='ustatus' style='float:left;text-align:center;padding-bottom:8px;' onclick='doSelect(\"" + usu.email + "\");'>"
                     + "<div style='background-color:" + (usu.habilitado ? "#ccffe6" : "#ffcccc")
                     + ";border-top-left-radius:8px;border-top-right-radius:8px;padding:2px;'>" + (usu.habilitado ? "Habilitad@" : "Deshabilitad@") + "</div>"
                     + "<div style='background-color:" + (!usu.readOnly ? "#ccffe6" : "#ffcccc")
@@ -314,6 +314,14 @@
             document.getElementById("lclave").placeholder = tr("Clave");
             document.getElementById("lHab").innerHTML = tr("Habilitado");
             document.getElementById("lsoloLec").innerHTML = tr("Solo lectura");
+
+            document.getElementById("ladmin").innerHTML = tr("abrCoordinador");
+            document.getElementById("lrepre").innerHTML = tr("abrRepresentante");
+            document.getElementById("lsecre").innerHTML = tr("abrSecretaria");
+            document.getElementById("lfacil").innerHTML = tr("abrFacilitador");
+
+            document.getElementById("btnAdd").value = tr("crear");
+            document.getElementById("btnCancelar").value = tr("btnCancelar");
 
             var refs = "<table style='border-collapse: collapse; border-spacing: 0;font-size:12px'>"
                 + "<tr><td>&nbsp;</td><td>" + box(true, "#0066CC", tr("abrCoordinador")) + "</td><td>" + tr("Coordinador") + "</td>"

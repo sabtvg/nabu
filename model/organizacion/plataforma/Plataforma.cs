@@ -52,21 +52,8 @@ namespace nabu.organizaciones
 
                     try {favance = int.Parse(avance);} catch(Exception) {throw new appException("Valor inválido para avance");}
                     if (favance < 0 || favance > 100) throw new appException("Valor inválido para avance");
-                    try {
-                        string[] p = inicio.Split('/');
-                        finicio = new DateTime(Convert.ToInt32(p[2]),
-                            Convert.ToInt32(p[1]),
-                            Convert.ToInt32(p[0])); 
-                    }
-                    catch (Exception) { throw new appException("Valor inválido para inicio"); } 
-                    try {
-                        string[] p = fin.Split('/');
-                        ffin = new DateTime(Convert.ToInt32(p[2]),
-                            Convert.ToInt32(p[1]),
-                            Convert.ToInt32(p[0])); 
-
-                    } 
-                    catch (Exception) { throw new appException("Valor inválido para fin"); }
+                    finicio = Tools.toDate(inicio, g.idioma);
+                    ffin = Tools.toDate(fin, g.idioma);
                     if (finicio > ffin) throw new appException("Plazo inválido");
 
                     foreach (nabu.plataforma.Seguimiento a in seguimientos)
@@ -92,6 +79,7 @@ namespace nabu.organizaciones
                 }
                 else if (accion == "crearArbolParaGrupo")
                 {
+                    //este proceso crea un grupo nuevo con el nombre del subgrupo, crea los usuarios y los relaciona como hijo
                     int EID = int.Parse(req["EID"]);
                     string grupoNombre = req["grupoNombre"];
                     Usuario usuarioActual = g.getUsuario(email);

@@ -43,6 +43,9 @@ var historicoFecha;
 var grupoPersonal;
 var lastMouse = null;
 
+//carteles de ayuda
+var cartel1 = true;
+
 //parametros para consenso
 var vUsuarios, vActivos, vminSi, vmaxNo;
 
@@ -267,7 +270,7 @@ function gruposEffectIn() {
     s += "' target='_blank' class='texto'><nobr>" + tr("Pagina de proyecto") + "</nobr></a><br><br>"
 
     //idiomas
-    s += "<div style='position:fixed;top:5px;right:5px'>"
+    s += "<div class='ustatus' style='position:fixed;top:5px;right:5px'>"
         + "<a href='default.html?idioma=es'>Espa&ntilde;ol</a> | "
         + "<a href='default.html?idioma=fr'>Franc&eacute;s</a> | "
         + "<a href='default.html?idioma=en'>Ingl&eacute;s</a> | "

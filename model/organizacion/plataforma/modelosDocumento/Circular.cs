@@ -201,7 +201,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
-            if (errores.ContainsKey(nivel))
+            if (errores.ContainsKey(nivel) && modo == eModo.prevista)
             {
                 ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
@@ -218,24 +218,33 @@ namespace nabu.plataforma.modelos
 
                 foreach (Hijo h in g.hijos)
                 {
-                    string ret = Tools.getFileHttp(h.URL + "/doAprendemos.aspx?actn=crearEvaluacionAlHijo"
-                        + "&docnombre=" + doc.nombre
-                        + "&doctitulo=" + doc.titulo
-                        + "&docmodeloid=AlHijo"
-                        + "&grupohijo=" + h.nombre
-                        + "&grupopadre=" + doc.grupo.nombre,
-                        htmlpath);
+                    try
+                    {
+                        string ret = Tools.getFileHttp(h.URL + "/doAprendemos.aspx?actn=crearEvaluacionAlHijo"
+                            + "&docnombre=" + doc.nombre
+                            + "&doctitulo=" + doc.titulo
+                            + "&docmodeloid=AlHijo"
+                            + "&grupohijo=" + h.nombre
+                            + "&grupopadre=" + doc.grupo.nombre,
+                            g.path + "\\" + htmlpath);
 
-                    if (ret == "ok")
-                        doc.addLog(Tools.tr("Documento publicado en Evaluamos en el grupo hijo [%1]", h.nombre, doc.grupo.idioma));
-                    else
-                        doc.addLog(Tools.tr("Respuesta del grupo hijo [%1]", h.nombre, doc.grupo.idioma) + ": " + ret);
+                        if (ret == "ok")
+                            doc.addLog(Tools.tr("Documento publicado en Evaluamos en el grupo hijo [%1]", h.nombre, doc.grupo.idioma));
+                        else
+                            doc.addLog(Tools.tr("Respuesta del grupo hijo [%1]", h.nombre, doc.grupo.idioma) + ": " + ret);
+                    }
+                    catch (Exception ex)
+                    {
+                        doc.addLog(Tools.tr("No se pudo publicar documento en el grupo hijo [%1]: " + ex.Message,
+                            h.nombre, 
+                            doc.grupo.idioma) + ": " + ex.Message);
+                    }
                 }
 
             }
             catch (Exception ex)
             {
-                doc.addLog(Tools.tr("No se pudo publicar documento en el grupo hijo", doc.grupo.idioma) + ": " + ex.Message);
+                doc.addLog("Error: " + ex.Message);
             }
         }
 

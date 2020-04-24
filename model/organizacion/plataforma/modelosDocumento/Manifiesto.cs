@@ -123,7 +123,7 @@ namespace nabu.plataforma.modelos
             ret += "</nobr></div>";
 
             //etiqueta
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Manifiesto", g.idioma);
+            ret += "<div class='titulo4'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + Tools.tr("Manifiesto", g.idioma);
             etiqueta = Tools.tr("Manifiesto", g.idioma);
             if (prop == null)
                 ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
@@ -244,7 +244,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
-            if (errores.ContainsKey(nivel))
+            if (errores.ContainsKey(nivel) && modo == eModo.prevista)
             {
                 ret += "<div class='error'>" + errores[nivel] + "</div>";
             }

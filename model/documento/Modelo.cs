@@ -97,9 +97,9 @@ namespace nabu
                 //nuevo
                 ret += "<div class='abm'>";
                 ret += "<div style='clear:left;float:left;padding:4px;'>" + HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo", idioma) + "</div>";
-                ret += "<div class='titulo3'><b>" + Tools.tr("Crear", idioma) + "</b></div>";
-                ret += "<div class='titulo3'>";
-                if (prop != null && accion == "nuevo")
+                ret += "<div class='titulo4' style='padding-top:5px;'>" + Tools.tr("Crear", idioma) + "</div>";
+                ret += "<div class='titulo4'>";
+                if (accion == "nuevo")
                 {
                     ret += HTMLText(id, prop, xwidth, tieneFlores, idioma);
                 }
@@ -109,8 +109,8 @@ namespace nabu
                 if (lista != "")
                 {
                     ret += "<div style='clear:left;float:left;padding:4px;'>" + HTMLRadio("r.accion", 2, prop, tieneFlores, "existente", idioma) + "</div>";
-                    ret += "<div class='titulo3'><b>" + Tools.tr("Modificar", idioma) + "</b></div>";
-                    ret += "<div class='titulo3'>";
+                    ret += "<div class='titulo4' style='padding-top:5px;'>" + Tools.tr("Modificar", idioma) + "</div>";
+                    ret += "<div class='titulo4'>";
                     //nombre del grupo
                     if (prop != null && accion == "existente")
                     {
@@ -120,8 +120,8 @@ namespace nabu
 
                     //borrar
                     ret += "<div style='clear:left;float:left;padding:4px;'>" + HTMLRadio("r.accion", 3, prop, tieneFlores, "borrar", idioma) + "</div>";
-                    ret += "<div class='titulo3'><b>" + Tools.tr("Eliminar", idioma) + "</b></div>";
-                    ret += "<div class='titulo3'>";
+                    ret += "<div class='titulo4' style='padding-top:5px;'>" + Tools.tr("Eliminar", idioma) + "</div>";
+                    ret += "<div class='titulo4'>";
                     //nombre del grupo
                     if (prop != null && accion == "borrar")
                     {
@@ -140,7 +140,7 @@ namespace nabu
                     if (accion == "nuevo") labelAccion = Tools.tr("Crear", idioma);
                     if (accion == "existente") labelAccion = Tools.tr("Modificar", idioma);
                     if (accion == "borrar") labelAccion = Tools.tr("Eliminar", idioma);
-                    ret += "<div class='titulo3'><b>" + labelAccion + "</b></div>";
+                    ret += "<div class='titulo4' style='padding-top:5px;'>" + labelAccion + "</div>";
 
                     //ver
                     if (accion == "nuevo") ret += HTMLRadio("r.accion", 1, prop, tieneFlores, "nuevo", idioma);
@@ -195,7 +195,7 @@ namespace nabu
             ret += "</nobr></div>";
 
             //etiqueta
-            ret += "<div class='titulo3'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
+            ret += "<div class='titulo4'><nobr>" + Tools.tr("Etiqueta", g.idioma) + ": " + HTMLText("s.etiqueta", prop, 20 * 5, tieneFlores, g.idioma);
             if (prop == null)
                 ret += "&nbsp;<span style='color:gray;font-size:12px;'>" + Tools.tr("(Etiqueta en el arbol)", g.idioma) + "</span>";
             ret += "</nobr></div><br>";
@@ -362,7 +362,7 @@ namespace nabu
             {
                 //titulo si hay contenido
                 if (prop.comentarios.Count > 0 || (agregar && !prop.esPrevista()))
-                    ret += "<div class='titulo4' style='padding-left:3px'>" + Tools.tr("Comentarios", g.idioma) + ":</div>";
+                    ret += "<div class='titulo5' style='padding-left:3px'>" + Tools.tr("Comentarios", g.idioma) + ":</div>";
 
                 foreach (Comentario c in prop.comentarios)
                 {
@@ -387,7 +387,7 @@ namespace nabu
                 {
                     ret += "<textarea id='comentario" + prop.nodoID + "' maxlength='300' class='editarComentario' style='height: 50px;width:-webkit-fill-available'>";
                     ret += "</textarea><br>";
-                    ret += "<input type='button' class='btn2' style='margin:0px;' value='" + Tools.tr("Enviar", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ");'>";
+                    ret += "<input type='button' class='btn3' style='margin:0px;' value='" + Tools.tr("Enviar", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ");'>";
                     ret += "&nbsp;<font size='1'>(max: 300)</font>";
                     ret += "&nbsp;<input type='checkbox' id='objecion" + prop.nodoID + "'><span style='font-size:10px'>" + Tools.tr("Objecion", g.idioma) + "</span>";
                 }
@@ -497,9 +497,9 @@ namespace nabu
                 {
                     string[] item = l.Split('#');
                     if (item.Length == 1)
-                        ret += "<option " + (value == item[0] ? "selected" : "") + " id='" + item[0] + "'>" + item[0] + "</option>";
+                        ret += "<option " + (value == Tools.HtmlEncode(item[0]) ? "selected" : "") + " id='" + item[0] + "'>" + item[0] + "</option>";
                     else
-                        ret += "<option " + (value == item[0] ? "selected" : "") + " id='" + item[0] + "'>" + item[1] + "</option>";
+                        ret += "<option " + (value == Tools.HtmlEncode(item[0]) ? "selected" : "") + " id='" + item[0] + "'>" + item[1] + "</option>";
                 }
                 ret += "</select>";
             }
@@ -510,11 +510,11 @@ namespace nabu
                 foreach (string l in valores.Split('|'))
                 {
                     string[] item = l.Split('#');
-                    if (value == item[0])
+                    if (value == Tools.HtmlEncode(item[0]))
                     {
                         if (item.Length == 1)
                         {
-                            ret += "<div>" + item[0] + "</div>";
+                            ret += "<div class='" + v.className + "'>" + item[0] + "</div>";
                             //ret += "<input type='text' readonly ";
                             //ret += "class='" + v.className + "' ";
                             //ret += "style='width:" + width + "px;' ";
@@ -522,7 +522,7 @@ namespace nabu
                         }
                         else
                         {
-                            ret += "<div>" + item[1] + "</div>";
+                            ret += "<div class='" + v.className + "'>" + item[1] + "</div>";
                             //ret += "<input type='text' readonly ";
                             //ret += "class='" + v.className + "' ";
                             //ret += "style='width:" + width + "px;' ";
@@ -551,7 +551,7 @@ namespace nabu
                 foreach (string l in valores.Split('|'))
                 {
                     string[] item = l.Split('#');
-                    if (value == item[0])
+                    if (value == Tools.HtmlEncode(item[0]))
                     {
                         if (item.Length == 1)
                         {
@@ -876,6 +876,7 @@ namespace nabu
                     ret += "<input id='" + id + index + "' name='" + id + "' type='radio' ";
                     ret += "class='" + v.editClassName + "' ";
                     ret += "value='" + value + "' ";
+                    if (accion == value) ret += "checked ";
                     ret += "onclick=\"documentSubmit('" + id + "_click','" + value + "')\" style='cursor:pointer;width:15px;height:15px;'>";
                 }
             }
@@ -959,7 +960,7 @@ namespace nabu
             else if (prop != null)
             {
                 //ver
-                ret += value;
+                ret += "<span class='" + v.className + "'>" + value + "</span>";
                 //ret += "<input type='text' readonly ";
                 //ret += "class='" + v.className + "' ";
                 //ret += "style='width:" + width + "px;' ";

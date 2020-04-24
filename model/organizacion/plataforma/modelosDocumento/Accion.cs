@@ -70,7 +70,7 @@ namespace nabu.plataforma.modelos
 
         private void validar(Propuesta prop)
         {
-            if (prop != null)
+            if (prop != null && modo == eModo.prevista)
             {
                 if (prop.nivel == 1)
                 {
@@ -96,28 +96,28 @@ namespace nabu.plataforma.modelos
                         && getText("s.descripcion", prop) == ""
                         && getText("s.aquien", prop) == "")
                     {
-                        addError(2, "La propuesta no puede estar completamente vacia");
+                        addError(2, "Se debe completar algún valor");
                     }
                 }
                 else if (prop.nivel == 3)
                 {
                     if (getText("s.recursos", prop) == "")
                     {
-                        addError(3, "La propuesta no puede estar completamente vacia");
+                        addError(3, "Se debe completar algún valor");
                     }
                 }
                 else if (prop.nivel == 4)
                 {
                     if (getText("s.fases", prop) == "")
                     {
-                        addError(4, "La propuesta no puede estar completamente vacia");
+                        addError(4, "Se debe completar algún valor");
                     }
                 }
                 else if (prop.nivel == 5)
                 {
-                    if (getText("s.presupuesto", prop) == "")
+                    if (getText("s.presupuesto", prop) == "" && getText("s.responsable", prop) == "" && getText("s.revision", prop) == "")
                     {
-                        addError(5, "La propuesta no puede estar completamente vacia");
+                        addError(5, "Se debe completar algún valor");
                     }
                 }
             }
@@ -221,7 +221,7 @@ namespace nabu.plataforma.modelos
                 ret += HTMLFlores(g.arbol.getNodo(prop.nodoID), false, g.getUsuario(email));
 
             //mensajes de error
-            if (errores.ContainsKey(nivel))
+            if (errores.ContainsKey(nivel) && modo == eModo.prevista)
             {
                 ret += "<div class='error'>" + errores[nivel] + "</div>";
             }
