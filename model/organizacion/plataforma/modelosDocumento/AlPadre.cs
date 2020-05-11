@@ -48,7 +48,7 @@ namespace nabu.plataforma.modelos
         {
             variables.Clear();
             variables.Add(new Variable("s.etiqueta", 12, 1));
-            variables.Add(new Variable("s.titulo", 70, 1));
+            variables.Add(new Variable("s.titulo", 80, 1));
             variables.Add(new Variable("s.introduccion", 4000, 1));
 
             //nivel 2
@@ -127,8 +127,8 @@ namespace nabu.plataforma.modelos
                 else
                 {
                     //padre
-                    ret += "<div class='titulo2'>" + Tools.tr("Comunicado del grupo", g.idioma) + ":&nbsp;" + g.nombre + "</div>";
-                    ret += "<div class='titulo2'>" + Tools.tr("Al grupo padre", g.idioma) + ":&nbsp;" + g.padreNombre + "</div>";
+                    ret += "<div class='titulo3'>" + Tools.tr("Comunicado del grupo", g.idioma) + ":&nbsp;" + g.nombre + "</div>";
+                    ret += "<div class='titulo3'>" + Tools.tr("Al grupo padre", g.idioma) + ":&nbsp;" + g.padreNombre + "</div>";
 
                     //representantes
                     List<Usuario> reps = g.getRepresentantes();

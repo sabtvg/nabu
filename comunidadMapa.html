@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 ///////////////////////////////////////////////////////////////////////////
 //  Copyright 2015 - 2020 Sabrina Prestigiacomo nabu@nabu.pt
 //
@@ -95,10 +95,9 @@
                     var scaley = window.innerHeight / 1080;
 
                     //cargo datos iniciales
-                    var vals = cookie.split("|");
-                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+                    usuario = getUsuarioFromCookie(cookie);
 
-                    idiomaParam = vals[5]; //para el tradcutor
+                    idiomaParam = usuario.idioma; //para el tradcutor
                     idioma = idiomaParam;  //para el dicionario
 
                     if (!usuario) {
@@ -453,8 +452,8 @@
     
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh; padding: 0.3vw; visibility: visible; text-align: right;">
-        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
-            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        <a href="default.html" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><nobr>Nab&uacute;</nobr></div>
         </a>
         <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br>Digital</div>
         <div class='menuItem'><a id="menuItem1" href='comunidadGrupos.html'><nobr>Ver grupos</nobr></a></div>

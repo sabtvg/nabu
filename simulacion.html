@@ -77,8 +77,8 @@
             if (grupoParam) {
                 var cookie = getCookie("nabu-" + grupoParam);
                 if (cookie != "") {
-                    var vals = cookie.split("|");
-                    idiomaParam = vals[5]; //para el tradcutor
+                    usuario = getUsuarioFromCookie(cookie);
+                    idiomaParam = usuario.idioma; //para el tradcutor
                 }
             }
             idioma = idiomaParam;  //para el dicionario
@@ -243,8 +243,8 @@
     </div>
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;text-align: right;">
-        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
-            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        <a href="default.html" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><nobr>Nab&uacute;</nobr></div>
         </a>
         <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br />Digital</div>
         <div id="tit4" class="titulo1" style="color:red;"><nobr>Simulacion</nobr></div>

@@ -90,7 +90,7 @@
             if (intersects.length > 0) {
                 selected = intersects[0].object;
                 if (selected.name != "plano") {
-                    //obtengo tama�o del objeto seleccionado
+                    //obtengo tamano del objeto seleccionado
                     var bounds = new THREE.Box3();
                     bounds.setFromObject(selected);
                     var sizex = bounds.max.x - bounds.min.x;
@@ -107,8 +107,8 @@
                         .start();
                     //position
                     var finalPosition = selected.position.clone();
-                    finalPosition.z += sizex * 4;
-                    finalPosition.y += sizey * 2;
+                    finalPosition.z += sizex * 2;
+                    finalPosition.y += sizey * 1.5;
                     var tween = new TWEEN.Tween(camera.position)
                         .to(finalPosition, 1000)
                         .easing(TWEEN.Easing.Cubic.Out)
@@ -216,9 +216,9 @@
 
                         //cargo datos iniciales
                         var vals = cookie.split("|");
-                        usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+                        usuario = getUsuarioFromCookie(cookie);
 
-                        idiomaParam = vals[5]; //para el tradcutor
+                        idiomaParam = usuario.idioma; //para el tradcutor
                         idioma = idiomaParam;  //para el dicionario
 
                         if (!usuario) {
@@ -314,9 +314,9 @@
             //panelgrupo
             var usus = (usuarios.split(";").length - 1);
             var reps = (representantes.split(";").length - 1);
-            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + grupos + "</nobr></div>";
-            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + usus + "</nobr></div>";
-            //s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
+            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ": " + grupos + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + usus + "</nobr></div>";
+            //s += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ": " + (reps / usus * 100).toFixed(0) + "%</nobr></div>";
             //s += "<div class='menuItem' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
             s += "<div class='menuItem' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
 
@@ -346,6 +346,8 @@
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
             controls = new THREE.OrbitControls(camera);
+            controls.zoomSpeed = 0.5;
+            controls.rotateSpeed = 0.5;
             var fa = 150 * 0.025; //factor imagenes
             var sizex = 128 * fa;
             var sizey = 64 * fa;
@@ -387,9 +389,9 @@
             scene.add(AmbientLight);
 
             //panelgrupo
-            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ":" + 0 + "</nobr></div>";
-            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ":" + 0 + "</nobr></div>";
-            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ":" + 0 + "%</nobr></div>";
+            s = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Grupos") + ": " + 0 + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + 0 + "</nobr></div>";
+            s += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Horizontalidad") + ": " + 0 + "%</nobr></div>";
             s += "<div style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='actualizarBosque();'><nobr>" + tr("Actualizar") + "</nobr></div>";
             s += "<div style='margin: 0px;padding:0px;cursor:pointer;color:blue;text-decoration: underline;' onclick='generarBosque();'><nobr>" + tr("Generar") + "</nobr></div>";
             var panel = document.getElementById("panelGrupo");
@@ -427,12 +429,6 @@
             else {
                 //nombre
                 var fa = radio * 0.025; //factor imagenes
-                var offy = radio * 1.9;
-                if (offy < 40) offy = 40;
-                var fsize = 15 * radio / 150;
-                if (fsize < 8) fsize = 8;
-                text(nodo.nombre, fsize * fa, x, y + offy, z);
-
                 grupos += 1;
 
                 //usuarios
@@ -484,6 +480,9 @@
                 //arbol central
                 imgSize("res/3D/noticias.png", x, y - 64 * fa / 2, z, 128 * fa, 64 * fa);
                 imgSize("res/3D/debates.png", x, y + 64 * fa / 2, z, 128 * fa, 64 * fa);
+                var fsize = 15 * radio / 150;
+                if (fsize < 8) fsize = 8;
+                text(nodo.nombre, fsize * fa, x, y * fa + 64 * fa + 10 * fa, z);
 
                 //disco horizontal
                 var geometry = new THREE.CircleGeometry(6 * radio, 32);
@@ -532,7 +531,11 @@
                             if (imgIndex > imgs.length - 1) imgIndex = imgs.length - 1;
                             imgSize(imgs[imgIndex], x + Cimg.x, y + Cimg.y + h * fa / 2, z + Cimg.z, w * fa, h * fa);
                             imgIndex++;
-                            text(gajos[g].nombre, 15 * fsize * 0.0165, x + Cimg.x, y + h * fa / 2 + Cimg.y + 25 , z + Cimg.z);
+                            text(gajos[g].nombre, 
+                                15 * fsize * 0.0165,
+                                x + Cimg.x,
+                                y + h * fa / 2 + Cimg.y + h * fa / 2 + 10 * fa,
+                                z + Cimg.z);
                         }
                     }
                 }
@@ -548,7 +551,7 @@
         function text(s, size, x, y, z) {
             var font = getCache('fonts/helvetiker_regular.typeface.json.txt');
             if (font) {
-                var shapes = font.generateShapes(s, size, 2);
+                var shapes = font.generateShapes(unescape(s), size, 2);
                 var geometry = new THREE.ShapeGeometry(shapes);
                 var material = new THREE.MeshBasicMaterial({
                     color: "black",
@@ -733,8 +736,8 @@
     
     <!--titulo--------------------------------------------------------------------------------------------------->
     <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh; padding: 0.3vw; visibility: visible; text-align: right;">
-        <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
-            <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+        <a href="default.html" style="color:black;text-decoration:none;">
+            <div id="titulo0" class="titulo0" style="cursor: pointer;"><nobr>Nab&uacute;</nobr></div>
         </a>
         <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br>Digital</div>
         <div class='menuItem'><a id="menuItem1" href='comunidadGrupos.html'><nobr>Ver grupos</nobr></a></div>

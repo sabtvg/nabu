@@ -59,10 +59,9 @@
                     var scaley = window.innerHeight / 1080;
 
                     //cargo datos iniciales
-                    var vals = cookie.split("|");
-                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+                    usuario = getUsuarioFromCookie(cookie);
 
-                    idiomaParam = vals[5]; //para el tradcutor
+                    idiomaParam = usuario.idioma; //para el tradcutor
                     idioma = idiomaParam;  //para el dicionario
 
                     traducir();

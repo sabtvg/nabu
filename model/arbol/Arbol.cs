@@ -540,7 +540,7 @@ namespace nabu
             }
             //firma consenso
             string ret = "";
-            ret += "<div style='documentFirma'>";
+            ret += "<div class='documentFirma'>";
             ret += "<hr>";
             ret += "Documento escrito de forma cooperativa.<br>";
             ret += "Titulo: " + titulo + "<br>";
@@ -1021,7 +1021,7 @@ namespace nabu
         public void actualizarModelosEnUso()
         {
             //marco los modelos de documentos que estan en uso
-            foreach (Modelo m in grupo.organizacion.getModelosDocumento())
+            foreach (Modelo m in grupo.organizacion.getModelosDocumento(grupo.idioma))
             {
                 m.enUso = false;
                 foreach (Propuesta p in propuestas)

@@ -48,7 +48,7 @@ namespace nabu.plataforma.modelos
         {
             variables.Clear();
             variables.Add(new Variable("s.etiqueta", 12, 1));
-            variables.Add(new Variable("s.titulo", 70, 1));
+            variables.Add(new Variable("s.titulo", 80, 1));
             variables.Add(new Variable("s.introduccion", 4000, 1));
 
             //nivel 2

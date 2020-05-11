@@ -733,18 +733,21 @@ namespace nabu
                 if (u != null && u.habilitado)
                 {
                     //login correcto
+                    //reactivo
+                    u.reactivado = DateTime.Now.Subtract(u.lastLogin).TotalDays > 7;
+                    u.lastLogin = DateTime.Now;
+
                     //devuelvo el arbol personal con las flores de este usuario y sus modelos
                     a.actualizarModelosEnUso();
                     //knowtypes para modelos
                     List<Type> tipos = new List<Type>();
                     tipos.Add((new Alerta()).GetType());
-                    foreach (Modelo m in g.organizacion.getModelosDocumento()) tipos.Add(m.GetType());
+                    foreach (Modelo m in g.organizacion.getModelosDocumento(g.idioma)) tipos.Add(m.GetType());
                     foreach (ModeloEvaluacion m in g.organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
                     ret = "{\"msg\":\"\", \"grupo\":" + g.toJson() + ", ";
-                    ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(), tipos) + ", ";
+                    ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(g.idioma), tipos) + ", ";
                     ret += "\"modelosEvaluacion\":" + Tools.toJson(g.organizacion.getModelosEvaluacion(), tipos) + ", ";
                     ret += "\"arbolPersonal\":" + Tools.toJson(a.getArbolPersonal(u.email)) + "}";
-                    u.lastLogin = DateTime.Now;
                 }
                 else if (u != null && !u.habilitado)
                 {

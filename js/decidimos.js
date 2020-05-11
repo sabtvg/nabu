@@ -45,7 +45,7 @@ function doDecidimos() {
     objetivo.style.visibility = 'visible';
 
     //flores
-    timerFlores = setInterval(rotarFlores, 200);
+    timerFlores = setInterval(rotarFlores, 100);
 
     if (window.innerWidth <= 400)
         treeScale = scale * 3;
@@ -102,7 +102,9 @@ function cumplePermisos(modelo) {
 function getModeloIcon(modelo) {
     var ret = "<div class='modeloIcon'>";
     ret += "<img src='" + modelo.icono + "' style='float:left;clear:left;width:32px;height:40px;cursor:pointer;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>";
-    ret += "<div style='float:left;text-align:left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>" + modelo.nombre + "</div>";
+    ret += "<div style='float:left;text-align:left;margin:5px;cursor:pointer;padding:4px;' onclick='seleccionarModelo2(\"" + modelo.id + "\");'>"
+        + modelo.trNombre
+        + "</div>";
     ret += "</div>";
     return ret;
 }
@@ -361,13 +363,13 @@ function doVerDocumento() {
     );
 }
 
-function doComentar(id) {
+function doComentar(id, objecion) {
     var comentario = URIEncode(document.getElementById("comentario" + id).value);
     postHttp("doDecidimos.aspx?actn=doComentar&id=" + id
         + "&grupo=" + arbolPersonal.nombre
         + "&email=" + arbolPersonal.usuario.email
         + "&clave=" + arbolPersonal.usuario.clave
-        + "&objecion=" + document.getElementById("objecion" + id).checked,
+        + "&objecion=" + objecion,
         "comentario=" + comentario,
         function (data) {
             //muestro

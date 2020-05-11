@@ -177,7 +177,7 @@ namespace nabu
                 {
                     tipos.Add(org.GetType());
                     //modelos de documento
-                    foreach (Modelo mod in org.getModelosDocumento())
+                    foreach (Modelo mod in org.getModelosDocumento(""))
                         tipos.Add(mod.GetType());
 
                     //modelos de evaluacion

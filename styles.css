@@ -638,6 +638,17 @@ input[readonly] {
     margin: 0px 0px 0px 5px;
     font-family: inherit;
 }
+.btnComentario {
+    border: 1px solid #006666;
+    background-color: #0066CC;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    margin: 0px 0px 0px 5px;
+    font-family: inherit;
+}
 .btnDis {
     border: 2px solid #006666;
     background-color: #CCCCCC;
@@ -868,10 +879,10 @@ input[readonly] {
     border-radius: 10px;
     margin: 5px;
     min-height: 150px;
-    min-width: 150px;
+    min-width: 275px;
 }
 .modeloIcon {
-    width: 150px;
+    width: 275px;
 }
 .movilePie {  
     display:none;
@@ -1004,9 +1015,9 @@ input[readonly] {
         padding: 5px 5px 5px 5px;
         border-radius: 0px;
         background-color: #C6ECFF;
-        opacity: 0.9; 
+        opacity: 0.9;
         display: none;
-        position: absolute;    
+        position: absolute;
         left: 0px;
         top: 0px;
         width: -webkit-fill-available;
@@ -1151,6 +1162,11 @@ input[readonly] {
         border: 1px solid #006666;
         border-radius: 8px;
         font-size: 10px;
+    }
+    .btnComentario {
+        border: 1px solid #006666;
+        border-radius: 8px;
+        font-size: 10px;        
     }
     .btnDis {
         border: 1px solid #006666;
@@ -1407,9 +1423,15 @@ input[readonly] {
     .movilePie {
         display:block;
     }
+    .modeloBox {
+        width: -webkit-fill-available;
+    }
     .texto {
         padding-left: 0px;
         margin-left: 0px;
+    }
+    .documentfirma {
+        font-size: 10px;
     }
     .field1 {
         clear: left;

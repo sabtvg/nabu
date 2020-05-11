@@ -20,6 +20,7 @@
         var offsetY = 0;
         var operativo;
         var col = 200;
+        var box = 100;
         var row = 90;
         var scale = window.innerWidth / 1920;
         var zoom = scale;
@@ -129,10 +130,9 @@
                         document.body.style.backgroundImage = "url('res/night.jpg')";
 
                     //cargo datos iniciales
-                    var vals = cookie.split("|");
-                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+                    usuario = getUsuarioFromCookie(cookie);
 
-                    idiomaParam = vals[5]; //para el tradcutor
+                    idiomaParam = usuario.idioma; //para el tradcutor
                     idioma = idiomaParam;  //para el dicionario
 
 
@@ -227,6 +227,7 @@
             //manifiesto
             var zrow = row * zoom;
             var zcol = col * zoom;
+            var zbox = box * zoom;
             var s = "";
             //var txt = "<a href='" + operativo.URLEstatuto + "' target='_blank'>" + operativo.objetivo + "</a>";
             if (operativo.objetivo!="")
@@ -235,8 +236,7 @@
             //grupos de trabjo
             for (i in operativo.subGrupos) {
                 var gt = operativo.subGrupos[i];
-                //var gtX = x - operativo.subGrupos.length * 2 * ancho / 2 + i * 2 * ancho;
-                var gtX = x - operativo.subGrupos.length * 2 * zcol / 2 + i * 2 * zcol + 2 * zcol / 2;
+                var gtX = x - operativo.subGrupos.length * (zbox + zcol) / 2 + i * (zbox + zcol) + (zbox + zcol) / 2;
                 var gtY = y + zrow * 1.5;
                 s += caja(gt.nombre, gtX, gtY, "#4169E1", zoom, "openGT(" + gt.EID + ");");
 
@@ -356,7 +356,7 @@
                     //grupo
                     if (GT && GT.grupoNombre == "") {
                         //no tiene grupo creado
-                        if (usuarioPertenece(GT)) {
+                        if (usuario.isAdmin) {
                             //se puede crear un nuevo grupo
                             s += "<div id='showCrearArbolDiv' class='titulo6 link' style='clear:left;float:left;width:100%;text-align:right;' onclick = 'showCrearArbol();'>"
                                 + tr("Crear arbol")
@@ -366,7 +366,7 @@
                             s += "<div id='crearArbolDiv' style='display:none;clear:left;float:left;margin:5px;border: 1px solid #cccccc;border-radius:5px;width:-webkit-fill-available;padding:5px;'>";
                             s += "<b>" + tr("Arbol") + ":</b><br>";
                             s += "<table style='border-collapse: collapse; border-spacing: 0;'>";
-                            s += "<tr><td>Nombre</td><td><input type='text' class='editar' value='" + grupoParam + "." + GT.nombre + "' id='grupoNombre' style='width:200px'></td></tr>";
+                            s += "<tr><td>Nombre</td><td><input type='text' class='editar' value='" + grupoParam + "." + GT.nombre + "' id='grupoNombre' style='width:350px'></td></tr>";
                             s += "<tr><td>Organizaci&oacute;n</td><td><select id='organizacion' class='editar' style='width: 210px'>";
                             s += "<option id='Plataforma'>Plataforma social</option>";
                             s += "</select></td></tr>";
@@ -381,7 +381,7 @@
                     }
                     else {
                         //ya tiene un grupo
-                        s += "<a href='" + GT.grupoURL + "?grupo=" + GT.grupoNombre + "&idioma=" + idiomaParam + "' target='_blank'>" + GT.grupoNombre + "</a>";
+                        s += "<a style='float:left;clear:left;margin-top:25px;' href='" + GT.grupoURL + "?grupo=" + GT.grupoNombre + "&idioma=" + idiomaParam + "' target='_blank'>" + GT.grupoNombre + "</a>";
                         if (usuarioPertenece(GT) && !historico)
                             s += "<input type='button' class='btn' value='" + tr("Borrar datos de enlace") + "' onclick='doBorrarEnlace(" + GT.EID + ");' style='float:right;background-color:lightcoral'>";
                     }
@@ -508,8 +508,8 @@
         </svg>
         <!--titulo--------------------------------------------------------------------------------------------------->
         <div id="tituloNabu" style="position: fixed; right: 0vw; top: 0vh;padding:0.3vw;visibility: hidden; text-align: right;">
-            <a href="help.html" target="_blank" style="color:black;text-decoration:none;">
-                <div id="titulo0" class="titulo0" style="cursor: pointer;"><font color="blue" size="2">[?]</font><nobr>Nab&uacute;</nobr></div>
+            <a href="default.html" style="color:black;text-decoration:none;">
+                <div id="titulo0" class="titulo0" style="cursor: pointer;"><nobr>Nab&uacute;</nobr></div>
             </a>
             <div id="titulo1" class="titulo2" style="font-weight:normal">Sociocracia<br />Digital</div>
             <div id="msgDiv" class="msg"></div>

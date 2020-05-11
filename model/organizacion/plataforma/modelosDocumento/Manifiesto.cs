@@ -48,7 +48,7 @@ namespace nabu.plataforma.modelos
         protected override void crearVariables()
         {
             variables.Clear();
-            variables.Add(new Variable("s.titulo", 70, 1));
+            variables.Add(new Variable("s.titulo", 80, 1));
             variables.Add(new Variable("s.vision", 4000, 1));
 
             //nivel 2

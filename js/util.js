@@ -122,20 +122,36 @@ function clone(obj) {
 }
 
 function setCookie(cname, cvalue, exdays) {
-    cname = cname.replace(' ', '').toLowerCase();
+    cname = fullReplace(cname, ' ', '');
+    //cname = cname.toLowerCase();
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
 }
 
+function fullReplace(s, s1, s2) {
+    if (s.indexOf(s1) >= 0) {
+        return fullReplace(s.replace(s1, s2), s1, s2);
+    }
+    else
+        return s;
+}
+
 function getCookie(cname) {
-    var name = cname.replace(' ', '').toLowerCase() + "=";
+    var name = fullReplace(cname, ' ', '');
+
+    //cname = cname.toLowerCase() + "=";
+    cname += "=";
+
     var ca = document.cookie.split(';');
     for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1);
-        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        while (c.charAt(0) == ' ')
+            c = c.substring(1);
+
+        if (c.indexOf(name + "=") == 0)
+            return c.substring(name.length + 1, c.length);
     }
     return "";
 }
@@ -333,10 +349,10 @@ function actualizarDatosGrupo() {
     var ap = arbolPersonal;
     var born = new Date(ap.born.match(/\d+/)[0] * 1);
     var dias = Math.abs(new Date() - born) / (24 * 60 * 60 * 1000);
-    ret = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Dias") + ":" + dias.toFixed(0) + "</nobr></div>";
+    ret = "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Dias") + ": " + dias.toFixed(0) + "</nobr></div>";
     ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Usuarios") + ": " + ap.usuarios + "</nobr></div>";
     ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Activos") + ": " + ap.activos + "</nobr></div>";
-    ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Decisiones") + ":" + ap.documentos + "</nobr></div>";
+    ret += "<div style='margin: 0px;padding:0px;'><nobr>" + tr("Decisiones") + ": " + ap.documentos + "</nobr></div>";
     //ret += "<div class='titulo3' style='margin: 0px;padding:0px;'><nobr>Comunes:0</nobr></div>";
     panel.innerHTML = ret;
     panel.style.display = 'inline';
@@ -355,8 +371,17 @@ function jsonToDate(jsondate) {
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
-    url = url.toLowerCase();
     name = name.toLowerCase();
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function getParameterByNameCase(name, url) {
+    if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
@@ -383,7 +408,7 @@ function URIDencode(s) {
     while (s.indexOf("&gt;") >= 0)
         s = s.replace("&gt;", ">");
 
-    s = dencodeURIComponent(s);
+    s = decodeURIComponent(s);
     return (s);
 }
 
@@ -426,4 +451,16 @@ function setBackgroundImage() {
         document.body.style.backgroundSize = window.innerWidth + "px " + (window.innerWidth / screenFactor).toFixed(0) + "px";
     else
         document.body.style.backgroundSize = (window.innerHeight * screenFactor).toFixed(0) + "px " + window.innerHeight + "px";
+}
+
+function getUsuarioFromCookie(cookie) {
+    var vals = cookie.split("|");
+    return {
+        nombre: vals[0],
+        email: vals[1],
+        clave: vals[2],
+        grupo: vals[3],
+        isAdmin: vals[4] == "true",
+        idioma: vals[5]
+    };
 }

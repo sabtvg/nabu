@@ -86,7 +86,7 @@
         });
 
         function move(event) {
-            if (firefoxWhich == 1 && !event.ctrlKey) {
+            if ((firefoxWhich == 1 || event.which == 1) && !event.ctrlKey) {
                 //scroll
                 //document.getElementById("joystick").innerHTML = "mousemove.event.which: " + event.which;
 
@@ -101,13 +101,15 @@
                 }
                 lastMouse = { clientX: event.clientX, clientY: event.clientY };
             }
-            else if (event.which == 1 && event.ctrlKey) {
+            else if ((firefoxWhich == 1 || event.which == 1) && event.ctrlKey) {
                 //zoom
                 if (lastMouse) {
                     var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
-                    viewDays += (lastMouse.clientX - event.clientX) / diaPixels;
-                    if (viewDays > 500) viewDays = 500;
-                    if (viewDays < 0.5) viewDays = 0.5;
+                    viewDays += (lastMouse.clientX - event.clientX) * 5 / diaPixels;
+                    if (viewDays > 500)
+                        viewDays = 500;
+                    if (viewDays < 1 / 24)
+                        viewDays = 1 / 24; //una hora
                     //document.body.style.cursor = "w-resize";
                     dibujarTodo();
                     saveSettings();
@@ -145,7 +147,7 @@
             grupoParam = getParameterByName('grupo');
             if (grupoParam && grupoParam != "" && grupoParam != "null") {
                 //leo cookie
-                var cookie = getCookie("nabu-" + grupoParam.replace(' ',''));
+                var cookie = getCookie("nabu-" + grupoParam);
                 if (cookie == "")
                     //login normal
                     document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
@@ -158,11 +160,10 @@
                         document.body.style.backgroundImage = "url('res/night.jpg')";
 
                     //cargo datos iniciales
-                    var vals = cookie.split("|");
-                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+                    usuario = getUsuarioFromCookie(cookie);
 
                     //idioma
-                    idiomaParam = vals[5]; //para el tradcutor
+                    idiomaParam = usuario.idioma; //para el tradcutor
                     idioma = idiomaParam;  //para el dicionario
 
 
@@ -170,7 +171,7 @@
                     doLayout();
 
                     //loadsettings
-                    var cookie = getCookie("nabu-" + grupoParam.replace(' ', '') + "-Decisiones");
+                    var cookie = getCookie("nabu-" + grupoParam + "-Decisiones");
                     if (cookie != "") {
                         var vals = cookie.split("|");
                         offsetDays = parseFloat(vals[0]);
@@ -226,11 +227,16 @@
             setCookie(cname, offsetDays + "|" + viewDays);
         }
 
-         Date.prototype.addDays = function (days) {
-             var dat = new Date(this.valueOf());
-             dat.setDate(dat.getDate() + days);
-             return dat;
-         }
+        Date.prototype.addDays = function (days) {
+            var dat = new Date(this.valueOf());
+            dat.setDate(dat.getDate() + days);
+            return dat;
+        }
+
+        Date.prototype.addHours = function (h) {
+            this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+            return this;
+        }
 
         function doLayout() {
             //background
@@ -255,6 +261,7 @@
             var s = "";
             s += dibujarFrutos(arbolPersonal.logDecisiones);
             document.getElementById("todo").innerHTML = s;
+            //document.getElementById("titulo").innerHTML = viewDays;
         }
 
         function dibujarFrutos(lds) {
@@ -298,28 +305,48 @@
             //}
 
             //marcas
-            var y = viewTop + modelos.length * stepY + 50 + offsetY ;
-            for (var i = 0; i < viewDays; i++) {
-                var x = viewLeft + i / viewDays * viewWidth;
-                var fecha = final.addDays(-i - offsetDays);
-                if (fecha.getDate() == 1) {
-                    //1 del mes
-                    s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:CornflowerBlue;stroke-width:1' />";
-                    if (i > 4 && i < viewDays - 4) {
-                        sdt = formatDate(fecha);
-                        s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo5' text-anchor='middle'>" + sdt + "</text>";
+            var y = viewTop + modelos.length * stepY + 50 + offsetY;
+            if (viewDays > 1) {
+                for (var i = 0; i < viewDays; i++) {
+                    var x = viewLeft + i / viewDays * viewWidth;
+                    var fecha = final.addDays(-i - offsetDays);
+                    if (fecha.getDate() == 1) {
+                        //1 del mes
+                        s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:CornflowerBlue;stroke-width:8' />";
+                        if (i > 0.05 * viewDays && i < 0.95 * viewDays) {
+                            sdt = formatDate(fecha);
+                            s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo5' text-anchor='middle'>" + sdt + "</text>";
+                        }
+                    }
+                    else if (fecha.getDay() == 1) {
+                        //lunes
+                        s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:lightgray;stroke-width:4' />";
+                        var labelX = i / viewDays * viewWidth;
+                        if (labelX > viewLeft + 30 && labelX < viewLeft + viewWidth - viewRight) {
+                            s += "<text x='" + x + "' y='" + (y * zoom + 30) + "' fill='green' class='titulo5' text-anchor='middle'>" + tr("Lunes") + "</text>";
+                        }
+                    }
+                    else {
+                        //dias
+                        s += "<line x1='" + x + "' y1='" + (y * zoom - 5 * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 5 * zoom) + "' style='stroke:gray;stroke-width:2' />";
+                        if (viewDays < 15 && i > 0.05 * viewDays && i < 0.95 * viewDays) {
+                            //dibujo dias
+                            sdt = formatDate(fecha);
+                            s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo5' text-anchor='middle'>" + sdt + "</text>";
+                        }
                     }
                 }
-                else if (fecha.getDay() == 1) {
-                    //lunes
-                    s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:lightgray;stroke-width:1' />";
-                    var labelX = i / viewDays * viewWidth;
-                    if (labelX > viewLeft + 30 && labelX < viewLeft + viewWidth - viewRight) {
-                        s += "<text x='" + x + "' y='" + (y * zoom + 30) + "' fill='green' class='titulo5' text-anchor='middle'>" + tr("Lunes") + "</text>";
-                    }
-                } else
-                    //dias
+            }
+            else {
+                //viewDays < 1
+                for (var i = 0; i < viewDays; i += 1/24) {
+                    //horas
+                    var x = viewLeft + i / viewDays * viewWidth;
                     s += "<line x1='" + x + "' y1='" + (y * zoom - 5 * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 5 * zoom) + "' style='stroke:gray;stroke-width:1' />";
+                    //dibujo horas
+                    //var sdt = final.addDays(-i - offsetDays).addHours(- i * 24).getHours();
+                    //s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo5' text-anchor='middle'>" + sdt + "</text>";
+                }
             }
 
             //documentos

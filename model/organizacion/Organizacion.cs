@@ -39,7 +39,7 @@ namespace nabu
 
         public Modelo getModeloDocumento(string id)
         {
-            foreach (Modelo m in getModelosDocumento())
+            foreach (Modelo m in getModelosDocumento(grupoIdioma))
             {
                 if (m.id == id)
                     return m;
@@ -57,7 +57,7 @@ namespace nabu
             throw new Exception("Modelo [" + id + "] no existe");
         }
 
-        public abstract List<Modelo> getModelosDocumento();
+        public abstract List<Modelo> getModelosDocumento(string idioma);
         public abstract List<ModeloEvaluacion> getModelosEvaluacion();
         public abstract List<object> getSeriealizableObjects();
 

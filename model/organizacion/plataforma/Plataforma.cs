@@ -429,7 +429,7 @@ namespace nabu.organizaciones
             return ret;
         }
 
-        public override List<Modelo> getModelosDocumento()
+        public override List<Modelo> getModelosDocumento(string idioma)
         {
             List<Modelo> ret = new List<Modelo>();
             ret.Add(new plataforma.modelos.Manifiesto());
@@ -443,6 +443,11 @@ namespace nabu.organizaciones
             ret.Add(new plataforma.modelos.Didactico());
             ret.Add(new plataforma.modelos.Circular());
             //ret.Add(new plataforma.modelos.Proceso());
+
+            //traduzco
+            foreach(Modelo m in ret)
+                m.trNombre = Tools.tr("modeloDocumento." + m.GetType().Name, idioma);
+
             return ret;
         }
 

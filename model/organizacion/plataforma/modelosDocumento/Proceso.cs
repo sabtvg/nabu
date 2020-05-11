@@ -48,7 +48,7 @@ namespace nabu.plataforma.modelos
         {
             variables.Clear();
             variables.Add(new Variable("s.etiqueta", 12, 1));
-            Variable v = new Variable("s.nombreProceso", 30, 1);
+            Variable v = new Variable("s.nombreProceso", 80, 1);
             v.className = "textoBig";
             v.editClassName = "editarBig";
             variables.Add(v);

@@ -185,7 +185,7 @@ function doLoad2() {
         //si hay cookie, login automatico si no login normal
         var cookie = "";
         if (grupoParam && grupoParam != "" && grupoParam != "null") {
-            cookie = getCookie("nabu-" + grupoParam.replace(' ', ''));
+            cookie = getCookie("nabu-" + fullReplace(grupoParam, ' ', ''));
 
             document.getElementById("pie").style.display = "none";
 
@@ -197,10 +197,9 @@ function doLoad2() {
             else {
                 //login automatico to server
                 //obtengo datos de cookie
-                var vals = cookie.split("|");
-                var usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+                usuario = getUsuarioFromCookie(cookie);
 
-                idiomaParam = vals[5]; //para el tradcutor
+                idiomaParam = usuario.idioma; //para el tradcutor
                 idioma = idiomaParam;  //para el dicionario
 
                 doResize();
@@ -630,9 +629,8 @@ function loginEffectIn(){
         document.getElementById("loginGrupo").style.visibility = "visible";
 
         //get from url
-        var url = window.location.href;
-        var grupo = url.substring(url.indexOf('=') + 1, url.indexOf("&"));
-        document.getElementById("loginGrupo").innerHTML = usuario ? usuario.grupo : grupo;
+        var grupoParamCase = getParameterByNameCase('grupo');
+        document.getElementById("loginGrupo").innerHTML = usuario ? usuario.grupo : grupoParamCase;
 
         //pie
         document.getElementById("pie").style.display = "block";
@@ -953,11 +951,32 @@ function showPerfil() {
     document.getElementById("participacion").value = arbolPersonal.usuario.participacion;
     document.getElementById("address").value = arbolPersonal.usuario.address;
 
-    document.getElementById("perfil").style.display = 'block';    
-    document.getElementById("cambiarClaveBtn").value = tr("Cambiar clave");
+    //traducir
+    document.getElementById("cambiarClaveBtn").innerHTML = tr("Cambiar clave");
+    document.getElementById("perfilTitulo").innerHTML = tr("perfilTitulo");
+    document.getElementById("perfilMision").innerHTML = tr("perfilMision");
+    document.getElementById("perfilMisionTip").innerHTML = tr("perfilMisionTip");
+    document.getElementById("perfilCapacidades").innerHTML = tr("perfilCapacidades");
+    document.getElementById("perfilCapacidadesTip").innerHTML = tr("perfilCapacidadesTip");
+    document.getElementById("perfilExpectativas").innerHTML = tr("perfilExpectativas");
+    document.getElementById("perfilExpectativasTip").innerHTML = tr("perfilExpectativasTip");
+    document.getElementById("perfilParticipacion").innerHTML = tr("perfilParticipacion");
+    document.getElementById("perfilParticipacionTip").innerHTML = tr("perfilParticipacionTip");
+    document.getElementById("perfilUbicacion").innerHTML = tr("perfilUbicacion");
+    document.getElementById("perfilUbicacionTip").innerHTML = tr("perfilUbicacionTip");   
+    document.getElementById("perfilBtn1").value = tr("Guardar");  
+    document.getElementById("cambiarClaveBtn").value = tr("Cambiar clave");  
+    document.getElementById("perfilCancelar").value = tr("Cancelar");  
+    document.getElementById("geocodeAddress").value = tr("geocodeAddress");  
+    document.getElementById("cambioClave").innerHTML = tr("Cambiar clave");  
+    
+        
+
     var img = document.getElementById("perfilImg");
     var d = new Date();
     img.src = "grupos/" + grupoParam + "/usuarios/" + arbolPersonal.usuario.email.trim() + "/" + arbolPersonal.usuario.email.trim() + ".png?now=" + d.getTime();
+
+    document.getElementById("perfil").style.display = 'block';   
 }
 
 function showCambiarClave() {

@@ -8,7 +8,7 @@ namespace nabu.organizaciones
     public class Cooperativa: Organizacion
     {
 
-        public override List<Modelo> getModelosDocumento()
+        public override List<Modelo> getModelosDocumento(string idioma)
         {
             //deberian ser modelos propios!!!!!
             List<Modelo> ret = new List<Modelo>();

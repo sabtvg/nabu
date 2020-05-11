@@ -418,7 +418,7 @@ namespace nabu.plataforma.modelos
                     if (gt.nombre == doc.titulo)
                     {
                         plataforma.subgrupos.Remove(gt);
-                        doc.addLog(Tools.tr("SubGrupo.eliminado", doc.grupo.idioma));
+                        doc.addLog(Tools.tr("SubGrupo.eliminado", gt.nombre, doc.grupo.idioma));
                         break;
                     }
                 }
@@ -456,11 +456,28 @@ namespace nabu.plataforma.modelos
             }
             else
             {
+                //valido existencia
+                string nombre = doc.titulo;
+                bool found = true;
+                while (found)
+                {
+                    found = false;
+                    foreach (plataforma.SubGrupo gt2 in plataforma.subgrupos)
+                    {
+                        if (gt2.nombre == nombre)
+                        {
+                            //nombre ya existe
+                            nombre += "-";
+                            found = true;
+                        }
+                    }
+                }
+
                 //nuevo
                 nabu.plataforma.SubGrupo gt = new plataforma.SubGrupo();
                 gt.EID = plataforma.getEID();
                 gt.grupoIdioma = doc.grupo.idioma;
-                gt.nombre = doc.titulo;
+                gt.nombre = nombre;
                 gt.docURL = doc.URLPath;
                 gt.docTs = DateTime.Now;
                 gt.revision = (string)doc.getValor("s.revision");

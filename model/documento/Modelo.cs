@@ -39,6 +39,7 @@ namespace nabu
         public string permisos = "";
         public string versionar = ""; //modelo o titulo
         public string consensoMsg = "";
+        public string trNombre = ""; //traducido
 
         protected string accion = "nuevo"; //para que existe en otros nivels mientras dibujo. Solo se usa en modelos que tengan ABM
         protected int niveles = 0;
@@ -60,6 +61,7 @@ namespace nabu
         {
             return 0; //por si el documento tiene revision periodica
         }
+
 
 
         public Dictionary<int, object> errores = new Dictionary<int, object>();
@@ -385,11 +387,11 @@ namespace nabu
                 //agregar
                 if (agregar && !prop.esPrevista())
                 {
-                    ret += "<textarea id='comentario" + prop.nodoID + "' maxlength='300' class='editarComentario' style='height: 50px;width:-webkit-fill-available'>";
+                    ret += "<textarea id='comentario" + prop.nodoID + "' maxlength='600' class='editarComentario' style='height: 50px;width:-webkit-fill-available'>";
                     ret += "</textarea><br>";
-                    ret += "<input type='button' class='btn3' style='margin:0px;' value='" + Tools.tr("Enviar", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ");'>";
-                    ret += "&nbsp;<font size='1'>(max: 300)</font>";
-                    ret += "&nbsp;<input type='checkbox' id='objecion" + prop.nodoID + "'><span style='font-size:10px'>" + Tools.tr("Objecion", g.idioma) + "</span>";
+                    ret += "<input type='button' class='btnComentario' style='color:gray;background-color:#FFD2E3' value='" + Tools.tr("Objecion", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ", true);'>";
+                    ret += "<input type='button' class='btnComentario' style='color:gray;background-color:#D6F5DB;float:right' value='" + Tools.tr("Aclaracion", g.idioma) + "' onclick='doComentar(" + prop.nodoID + ", false);'>";
+
                 }
             }
 
@@ -497,9 +499,9 @@ namespace nabu
                 {
                     string[] item = l.Split('#');
                     if (item.Length == 1)
-                        ret += "<option " + (value == Tools.HtmlEncode(item[0]) ? "selected" : "") + " id='" + item[0] + "'>" + item[0] + "</option>";
+                        ret += "<option " + (value == item[0] ? "selected" : "") + " id='" + item[0] + "'>" + item[0] + "</option>";
                     else
-                        ret += "<option " + (value == Tools.HtmlEncode(item[0]) ? "selected" : "") + " id='" + item[0] + "'>" + item[1] + "</option>";
+                        ret += "<option " + (value == item[0] ? "selected" : "") + " id='" + item[0] + "'>" + item[1] + "</option>";
                 }
                 ret += "</select>";
             }
@@ -660,7 +662,7 @@ namespace nabu
                     //seleccionados
                     ret += "<table style='width:-webkit-fill-available;height:" + height + "px;'>";
                     ret += "<tr><td><b>" + pertenece + "</b></td><td><b>" + NoPertenece + "</b></td></tr>";
-                    ret += "<tr><td class='" + v.editClassName + "' style='overflow:scroll;width:-webkit-fill-available;vertical-align:top;'>";
+                    ret += "<tr><td class='" + v.editClassName + "' style='overflow:scroll;width:-webkit-fill-available;height:inherit;vertical-align:top;'>";
                     if (value != "" && value != "*")
                         foreach (string item in value.Split('|'))
                         {
@@ -674,7 +676,7 @@ namespace nabu
                     ret += "</td>"; 
 
                     //disponibles
-                    ret += "<td class='" + v.editClassName + "' style='float:left;width:-webkit-fill-available;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
+                    ret += "<td class='" + v.editClassName + "' style='width:-webkit-fill-available;height:inherit;overflow:scroll;vertical-align:top;'>";
                     if (lista != "")
                         foreach (string item in lista.Split('|'))
                         {
@@ -699,10 +701,10 @@ namespace nabu
             {
                 //revisar
                 //seleccionados
-                ret += "<table style='width:-webkit-fill-available;height:" + height + "px;'>";
+                ret += "<table style='width:-webkit-fill-available;height:" + height + "px'>";
                 ret += "<tr><td style='width:-webkit-fill-available;'><b>" + pertenece + "</b></td><td><b>" + NoPertenece + "</b></td></tr>";
                 ret += "<tr><td class='" + v.editClassName + "' ";
-                ret += "style='overflow:scroll;width:" + (width / 2 - 15) + "px;vertical-align:top;'>";
+                ret += "style='overflow:scroll;width:" + (width / 2 - 15) + "px;height:inherit;vertical-align:top;'>";
                 if (value != "" && value != "*")
                     foreach (string item in value.Split('|'))
                     {
@@ -715,7 +717,7 @@ namespace nabu
                 ret += "</td>";
 
                 //disponibles
-                ret += "<td class='" + v.editClassName + "' style='float:left;width:-webkit-fill-available;height:" + height + "px;overflow:scroll;vertical-align:top;'>";
+                ret += "<td class='" + v.editClassName + "' style='width:-webkit-fill-available;height:inherit;overflow:scroll;vertical-align:top;'>";
                 if (lista != "")
                     foreach (string item in lista.Split('|'))
                     {

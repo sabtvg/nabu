@@ -51,13 +51,15 @@ namespace nabu
 
         public static Grupo newGrupo(string grupo, string organizacion, string nombreAdmin, string email, string clave, string idioma, string tipoGrupo, string URL)
         {
+            grupo = grupo.Trim();
+
             if (grupo == "")
                 throw new appException("Nombre de grupo no puede ser vacio");
             if (email == "")
                 throw new appException("Email no puede ser vacio");
             if (clave == "")
                 throw new appException("Clave no puede ser vacio");
-            if (Tools.HtmlEncode(grupo) != grupo)
+            if (Tools.HtmlEncode(grupo.Replace(" ","")) != grupo.Replace(" ", ""))
                 throw new appException("Nombre de grupo inv&aacute;lido. Evite acentos y caracteres especiales");
             if (Tools.HtmlEncode(email) != email)
                 throw new appException("Email inv&aacute;lido. Evite acentos y caracteres especiales");
@@ -192,7 +194,7 @@ namespace nabu
             queso.grupo = null; //luego lo recupero
 
             List<Type> tipos = new List<Type>();
-            foreach (Modelo m in organizacion.getModelosDocumento()) tipos.Add(m.GetType());
+            foreach (Modelo m in organizacion.getModelosDocumento(idioma)) tipos.Add(m.GetType());
             foreach (ModeloEvaluacion m in organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
             foreach (Organizacion m in Organizacion.getOrganizaciones()) tipos.Add(m.GetType());
             tipos.Add(new plataforma.Accion().GetType());

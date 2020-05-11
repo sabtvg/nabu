@@ -48,7 +48,7 @@ namespace nabu.plataforma.modelos
         {
             variables.Clear();
             variables.Add(new Variable("s.etiqueta", 12, 1));
-            variables.Add(new Variable("s.titulo", 70, 1));
+            variables.Add(new Variable("s.titulo", 80, 1));
             variables.Add(new Variable("s.hijonombre", 70, 1));
             variables.Add(new Variable("s.hijourl", 70, 1));
             variables.Add(new Variable("s.introduccion", 4000, 1));
@@ -138,8 +138,8 @@ namespace nabu.plataforma.modelos
                     foreach (Hijo h in g.hijos)
                         listahijos += h.nombre + "|";
 
-                    ret += "<div class='titulo2'>" + Tools.tr("Comunicado del grupo", g.idioma) + ":" + g.nombre + "</div>";
-                    ret += "<div class='titulo2'>" + Tools.tr("Al grupo hijo", g.idioma) + ":" + HTMLLista("s.hijonombre", listahijos, prop, 250, tieneFlores, g.idioma) + "</div>";
+                    ret += "<div class='titulo3'>" + Tools.tr("Comunicado del grupo", g.idioma) + ":" + g.nombre + "</div>";
+                    ret += "<div class='titulo3'>" + Tools.tr("Al grupo hijo", g.idioma) + ":" + HTMLLista("s.hijonombre", listahijos, prop, 250, tieneFlores, g.idioma) + "</div>";
 
                     //fiho url
                     if (getText("s.hijonombre", prop) != "")

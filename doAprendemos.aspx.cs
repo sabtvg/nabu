@@ -73,7 +73,7 @@ namespace nabu
 
                                 //devuelvo el queso
                                 List<Type> tipos = new List<Type>();
-                                foreach (Modelo m in grupo.organizacion.getModelosDocumento()) tipos.Add(m.GetType());
+                                foreach (Modelo m in grupo.organizacion.getModelosDocumento(grupo.idioma)) tipos.Add(m.GetType());
                                 foreach (ModeloEvaluacion m in grupo.organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
                                 ret = Tools.toJson(grupo.queso.getQuesoPersonal(Request["email"]), tipos);
                             }

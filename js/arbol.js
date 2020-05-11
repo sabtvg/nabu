@@ -32,6 +32,8 @@ var useMaxWidth = false;
 var historico = historico || false;
 var parents = [];
 var flowerOffset = 0;
+var trSi = "";
+var trNo = "";
 
 function crearArbol() {
     var diameter = window.innerHeight / 2;
@@ -51,6 +53,9 @@ function crearArbol() {
         i = 70;
     else
         i = 90;
+
+    trSi = tr('Si');
+    trNo = tr('No');
 
     svgArbol = d3.select("svg")
         .attr("id", "arbol")
@@ -158,8 +163,43 @@ function rotarFlores() {
         //ordenador
         offFlor = -19
     }
+    //flores
     svgArbol.selectAll(".florImage")
         .attr("transform", "rotate(" + rotFlores.toFixed(0) + ")translate(" + (offFlor * scale).toFixed(0) + "," + (offFlor * scale).toFixed(0) + ")");
+    //objeciones
+    svgArbol.selectAll("._nodo")
+        .attr("r", function (d) {
+            if (!d.consensoAlcanzado && !historico && (!selectedNode || (d.id != selectedNode.id))) {
+                    var i = getNodeR(d);
+                    if (d.objecion)
+                        i += Math.sin(rotFlores / 2) * 3 + 1.5;
+                    else if (d.comentario)
+                        i += Math.sin(rotFlores / 10) * 3 + 1.5;
+                    return i;
+            }
+            else
+                return getNodeR(d);
+        })
+}
+
+function getNodeR(d) {
+    //get radio
+    var i;
+    if (window.innerWidth <= 400)
+        i = 10;
+    else if (window.innerWidth <= 800)
+        i = 10;
+    else
+        i = 8;
+
+    if (d.nivel == 0) //root
+        i = i * 1.5;
+
+    if (selectedNode && d.id == selectedNode.id)
+        i = 15;
+    if (selectedNode && isNodeFlor(d.id) && d.id == selectedNode.id)
+        i = 24;
+    return i;
 }
 
 function dibujarArbol(referencia) {
@@ -335,24 +375,9 @@ function dibujarArbol(referencia) {
         })
 
     nodeUpdate.select("circle")
+        .attr("class", "_nodo")
         .attr("r", function (d) {
-            var i;
-            if (window.innerWidth <= 400)
-                i = 10;
-            else if (window.innerWidth <= 800)
-                i = 10;
-            else
-                i = 8;
-
-            if (d.nivel == 0) //root
-                i = i * 1.5;
-
-            if (selectedNode && d.id == selectedNode.id)
-                i = 15;
-            if (selectedNode && isNodeFlor(d.id) && d.id == selectedNode.id)
-                i = 24;
-
-            return i;
+            return getNodeR(d);
         })
         .style("stroke", function (d) {
             if (selectedNode)
@@ -636,6 +661,7 @@ function dibujarArbol(referencia) {
             //selected
             if (isNodeSelectedPath(d.target)) {
                 w = 18;
+                stroke = 'blue';
                 //stroke = "blue";
             }
 
@@ -757,13 +783,13 @@ function updateFloresTotales(node) {
     if (modelo && node.nivel == node.niveles) {
         //es una hoja de un debate completo, mido condicion de consenso
 
-        node.si = tr('Si') + ':' + node.flores; // + "≥" + ap.minSiValue;
+        node.si = trSi + ':' + node.flores; // + "≥" + ap.minSiValue;
         if (node.flores >= ap.minSiValue)
             node.siColor = 'green';
         else
             node.siColor = 'red';
 
-        node.no = tr('No') + ':' + node.negados; // + "≤" + ap.maxNoValue;
+        node.no = trNo + ':' + node.negados; // + "≤" + ap.maxNoValue;
         if (node.negados <= ap.maxNoValue)
             node.noColor = 'green';
         else

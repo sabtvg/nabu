@@ -190,10 +190,10 @@ namespace nabu
 
                             //escribo respuesta
                             List<Type> tipos = new List<Type>();
-                            foreach (Modelo m in g.organizacion.getModelosDocumento()) tipos.Add(m.GetType());
+                            foreach (Modelo m in g.organizacion.getModelosDocumento(g.idioma)) tipos.Add(m.GetType());
                             foreach (ModeloEvaluacion m in g.organizacion.getModelosEvaluacion()) tipos.Add(m.GetType());
                             ret = "{\"arbolPersonal\": " + Tools.toJson(a.getArbolPersonal("u1")) + ",";
-                            ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(), tipos) + ",";
+                            ret += "\"modelos\":" + Tools.toJson(g.organizacion.getModelosDocumento(g.idioma), tipos) + ",";
                             ret += "\"modelosEvaluacion\":" + Tools.toJson(g.organizacion.getModelosEvaluacion(), tipos) + "}";
                             lock (app.grupos)
                             {

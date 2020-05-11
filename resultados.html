@@ -47,7 +47,7 @@
         var viewWidth;
         var viewRight = 45;
         var viewLeft = 40;
-        var viewTop = 600;
+        var viewTop = 200;
         var grupoParam;
         var idiomaParam;
         var monthNames;
@@ -86,7 +86,7 @@
         });
 
         function move(event) {
-            if (firefoxWhich == 1 && !event.ctrlKey) {
+            if ((firefoxWhich == 1 || event.which == 1) && !event.ctrlKey) {
                 //scroll
                 if (lastMouse) {
                     var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
@@ -99,12 +99,15 @@
                 }
                 lastMouse = { clientX: event.clientX, clientY: event.clientY };
             }
-            else if (firefoxWhich == 1 && event.ctrlKey) {
+            else if ((firefoxWhich == 1 || event.which == 1) && event.ctrlKey) {
                 //zoom
                 if (lastMouse) {
                     var diaPixels = (window.innerWidth - viewRight - viewLeft) / viewDays;
-                    viewDays += (lastMouse.clientX - event.clientX) / diaPixels;
-                    //document.body.style.cursor = "w-resize";
+                    viewDays += (- lastMouse.clientX + event.clientX) * 5 / diaPixels;
+                    if (viewDays > 500)
+                        viewDays = 500;
+                    if (viewDays < 1 / 24)
+                        viewDays = 1 / 24; //una hora
                     dibujarTodo();
                     saveSettings();
                 }
@@ -138,7 +141,7 @@
             grupoParam = getParameterByName('grupo');
             if (grupoParam && grupoParam != "" && grupoParam != "null") {
                 //leo cookie
-                var cookie = getCookie("nabu-" + grupoParam.replace(' ',''));
+                var cookie = getCookie("nabu-" + grupoParam);
                 if (cookie == "")
                     //login normal
                     document.location = 'default.html?grupo=' + grupoParam + "&idioma=" + idiomaParam;
@@ -147,11 +150,10 @@
                     var scaley = window.innerHeight / 1080;
 
                     //cargo datos iniciales
-                    var vals = cookie.split("|");
-                    usuario = { nombre: vals[0], email: vals[1], clave: vals[2], grupo: vals[3], isAdmin: vals[4], idioma: vals[5] };
+                    usuario = getUsuarioFromCookie(cookie);
 
                     //idioma
-                    idiomaParam = vals[5]; //para el tradcutor
+                    idiomaParam = usuario.idioma; //para el tradcutor
                     idioma = idiomaParam;  //para el dicionario
 
                     //resize
@@ -162,7 +164,7 @@
                         document.body.style.backgroundImage = "url('res/night.jpg')";
 
                     //loadsettings
-                    var cookie = getCookie("nabu-" + grupoParam.replace(' ', '') + "-Resultados");
+                    var cookie = getCookie("nabu-" + grupoParam + "-Resultados");
                     if (cookie != "") {
                         var vals = cookie.split("|");
                         offsetDays = parseFloat(vals[0]);
@@ -241,6 +243,7 @@
             var s = "";
             s += dibujarFrutos(arbolPersonal.logResultados);
             document.getElementById("todo").innerHTML = s;
+            //document.getElementById("titulo").innerHTML = viewDays;
         }
 
         function dibujarFrutos(lds) {
@@ -285,28 +288,47 @@
             //marcas
             var y = viewTop + modelos.length * stepY + 50 + offsetY;
             var totalDias = days(final) - days(inicio);
-            for (var i = 0; i < totalDias; i++) {
-                var x = window.innerWidth - viewRight - i / viewDays * viewWidth;
-                var fecha = final.addDays(-i - offsetDays);
-                if (fecha.getDate() == 1) {
-                    //1 del mes
-                    s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6) + "' style='stroke:CornflowerBlue;stroke-width:1' />";
-                    if (i > 4 && i < viewDays - 4) {
-                        sdt = formatDate(fecha);
-                        s += "<text x='" + x + "' y='" + (y * zoom + 30) + "' fill='CornflowerBlue' class='titulo4' text-anchor='middle'>" + sdt + "</text>";
+            if (viewDays > 1) {
+                for (var i = 0; i < totalDias; i++) {
+                    var x = window.innerWidth - viewRight - i / viewDays * viewWidth;
+                    var fecha = final.addDays(-i - offsetDays);
+                    if (fecha.getDate() == 1) {
+                        //1 del mes
+                        s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:CornflowerBlue;stroke-width:8' />";
+                        if (i > 0.05 * viewDays && i < 0.95 * viewDays) {
+                            sdt = formatDate(fecha);
+                            s += "<text x='" + x + "' y='" + (y * zoom + 30) + "' fill='CornflowerBlue' class='titulo4' text-anchor='middle'>" + sdt + "</text>";
+                        }
+                    }
+                    else if (fecha.getDay() == 1) {
+                        //lunes
+                        s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6 * zoom) + "' style='stroke:lightgray;stroke-width:4' />";
+                        var labelX = i / viewDays * viewWidth;
+                        if (labelX < window.innerWidth - viewRight + 30 && labelX > viewLeft) {
+                            s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='green' class='titulo4' text-anchor='middle'>" + tr("Lunes") + "</text>";
+                        }
+                    }
+                    else {
+                        //dias
+                        s += "<line x1='" + x + "' y1='" + (y * zoom - 5 * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 5 * zoom) + "' style='stroke:gray;stroke-width:2' />";
+                        if (viewDays < 15 && i > 0.05 * viewDays && i < 0.95 * viewDays) {
+                            //dibujo dias
+                            sdt = formatDate(fecha);
+                            s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo5' text-anchor='middle'>" + sdt + "</text>";
+                        }
                     }
                 }
-                else if (fecha.getDay() == 1) {
-                    //lunes
-                    s += "<line x1='" + x + "' y1='" + (viewTop * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 6) + "' style='stroke:lightgray;stroke-width:1' />";
-                    var labelX = i / viewDays * viewWidth;
-                    if (labelX < window.innerWidth - viewRight + 30 && labelX > viewLeft) {
-                        s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='green' class='titulo4' text-anchor='middle'>" + tr("Lunes") + "</text>";
-                    }
+            }
+            else {
+                //viewDays < 1
+                for (var i = 0; i < viewDays; i += 1 / 24) {
+                    //horas
+                    var x = viewLeft + i / viewDays * viewWidth;
+                    s += "<line x1='" + x + "' y1='" + (y * zoom - 5 * zoom) + "' x2='" + x + "' y2='" + (y * zoom + 5 * zoom) + "' style='stroke:gray;stroke-width:1' />";
+                    //dibujo horas
+                    //var sdt = final.addDays(-i - offsetDays).addHours(- i * 24).getHours();
+                    //s += "<text x='" + x + "' y='" + (y * zoom + 15) + "' fill='CornflowerBlue' class='titulo5' text-anchor='middle'>" + sdt + "</text>";
                 }
-                else
-                    //dias
-                    s += "<line x1='" + x + "' y1='" + (y * zoom - 5) + "' x2='" + x + "' y2='" + (y * zoom + 5) + "' style='stroke:gray;stroke-width:1' />";
             }
 
             //documentos
